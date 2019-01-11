@@ -52,7 +52,6 @@ class TestResultsDAO {
     var params = this.generateBatchWritePartialParams()
 
     vinIdPairsToBeDeleted.forEach((vinIdPairToBeDeleted) => {
-
       var vinToBeDeleted = Object.keys(vinIdPairToBeDeleted)[0]
       var testResultIdToBeDeleted = vinIdPairToBeDeleted[vinToBeDeleted]
 

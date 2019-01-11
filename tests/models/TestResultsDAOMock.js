@@ -18,6 +18,12 @@ class TestResultsDaoMock {
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
     return Promise.resolve(responseObject)
   }
+
+  createSingle (payload) {
+    if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
+
+    return Promise.resolve({})
+  }
 }
 
 module.exports = TestResultsDaoMock
