@@ -36,7 +36,7 @@ If you choose to run the DynamoDB instance separately, you can send the seed com
 
 ```sls dynamodb seed --seed=seed_name```
 
-Under `custom > dynamodb > seed` you can define new seed operations with the following config:
+Under `custom > dynamodb > seed` you can define new seed operations with the following config:
 ```
 custom:
     dynamodb:

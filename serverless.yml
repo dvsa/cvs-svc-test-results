@@ -18,7 +18,7 @@ custom:
       port: 8004
       inMemory: true
       migrate: true
-      seed: true
+      seed: false
     seed:
       test-results:
         sources:

@@ -96,8 +96,9 @@ class TestResultsService {
   deleteTestResultsList (testResultsVinIdPairs) {
     return this.testResultsDAO.deleteMultiple(testResultsVinIdPairs)
       .then((data) => {
-        if (data.UnprocessedItems) { 
-          return data.UnprocessedItems }
+        if (data.UnprocessedItems) {
+          return data.UnprocessedItems
+        }
       })
       .catch((error) => {
         if (error) {

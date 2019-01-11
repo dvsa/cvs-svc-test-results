@@ -72,15 +72,7 @@ const testResultsSchema = Joi.object().keys({
   testEndTimestamp: Joi.date().iso().required(),
   testStatus: Joi.any().only([ 'Submitted', 'Canceled' ]).required(),
   reasonForCancellation: Joi.string().max(500).required(),
-  vehicleClass: Joi.any().only([
-    '2 (MotorBikes over 200cc or with a sidecar)', 'N (Not Applicable)',
-    'S (Small PSV i.e less than or equal to 22 seats)',
-    '1 (Motorbikes upto 200cc)',
-    'T (Trailer)',
-    'L (LARGE PSV (ie. greater than 23 seats)',
-    '3 (wheelers)',
-    'V (Heavy Goods Vehicle)'
-  ]).required(),
+  vehicleClass: Joi.any().only(['2', 'S', '1', 'T', 'L', '3', 'V']).required(),
   vehicleType: Joi.any().only(['PSV', 'HGV', 'TRL', 'Others']).required(),
   numberOfSeats: Joi.number().min(1).max(4).required(),
   vehicleStatus: Joi.any().only(['1', '2', '3']).required(),
