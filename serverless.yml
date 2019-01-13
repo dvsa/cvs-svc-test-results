@@ -1,0 +1,110 @@
+service: cvs-svc-test-results
+
+openapi: 3.0.0
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+  - serverless-openapi-documentation
+
+custom:
+  serverless-offline:
+    port: 3006
+  dynamodb:
+    start:
+      port: 8004
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      test-results:
+        sources:
+          - table: cvs-local-test-results
+            sources: [./tests/resources/test-results.json]
+  documentation:
+    version: '1'
+    title: 'Get Test Results List API'
+    description: 'This is the API spec for retrieving those rests that correspond with an input VIN'
+    models:
+      - name: "TestResults"
+        description: "Successful response"
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            vin:
+              type: string
+
+functions:
+  getTestResults:
+    handler: src/handler.handler
+    events:
+    - http:
+        path: test-results/{vin}
+        method: get
+        request:
+          parameters:
+            paths:
+              vin: true
+        documentation:
+          summary: "Get Test Results list"
+          description: "Retrieves the tests for the input VIN"
+          parameters:
+            - name: vin
+              in: path
+              description: Vehicle Identification Number
+              required: true
+              schema:
+                type: string
+            - name: status
+              in: query
+              description: Test Status
+              required: false
+              schema:
+                type: string
+            - name: fromDateTime
+              in: query
+              description: Query Begining Date
+              required: false
+              schema:
+                type: date
+            - name: toDateTime
+              in: query
+              description: Query End Date
+              required: false
+              schema:
+                type: date
+          methodResposes:
+            - statusCode: 200
+              responseBody:
+                description: "List of tests"
+              responseModels:
+                "application/json": "TestResults"
+            - statusCode: 404
+              responseBody:
+                description: "No resources match the search criteria"
+              responseModels:
+                content:
+                  application/json:
+                    schema:
+                      type: string
+
+resources:
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: cvs-local-test-results
+        AttributeDefinitions:
+        - AttributeName: vin
+          AttributeType: S
+        KeySchema:
+        - AttributeName: vin
+          KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

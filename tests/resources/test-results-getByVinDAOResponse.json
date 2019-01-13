@@ -1,0 +1,110 @@
+[  
+  { "vrm": "57347",
+    "vin": "12345",
+    "testResults":
+    [
+    {
+      "testStationName": "demoName",
+      "testStationPnumber": "demoStationPnumber",
+      "locationType(ATF or GVTS)": "ATF",
+      "testerName": "demoTesterName",
+      "testerStaffID": "demoStaffId",
+      "testStartTimeStamp": "2018-12-20T10:15:53.106Z",
+      "testEndTimeStamp": "2018-12-20T10:15:53.106Z",
+      "testStatus": "submitted",
+      "reasonForCancellation": "demoReasonForCancellation",
+      "vehicleClass": 2,
+      "numberOfSeats": 0,
+      "vehicleStatus": 1,
+      "vehicleConfiguration": "R (Rigid)",
+      "odometerReading": 0,
+      "odometerReadingunits": "kilometers",
+      "preparerId": "string",
+      "preparerName": "string",
+      "euVehicleCategory": "M1",
+      "countryOfRegistration": "string",
+      "testTypes": [
+        {
+          "createdAt": "2018-12-20T10:15:53.106Z",
+          "lastUpdatedAt": "2018-12-20T10:15:53.106Z",
+          "testCode": 0,
+          "testTypename": 0,
+          "testID": 0,
+          "certificateNumber": 0,
+          "testExpiryDate": "2018-12-20",
+          "testTypestartTimeStamp": "2018-12-20T10:15:53.106Z",
+          "testTypeendTimeStamp": "2018-12-20T10:15:53.106Z",
+          "numberOfSeatBeltsfitted": 0,
+          "lastSeatbeltInstallationCheckdate": "2018-12-20",
+          "seatBeltInstallationCheckdate": true,
+          "testResult": "Failure",
+          "prohibitionIssued": "Yes",
+          "reasonForAbandoning": "demoReasonForAbandoning",
+          "additionalNotesrecorded": "demoAdditionalNotesrecorded",
+          "defects": [
+            {
+              "imNumber": 0,
+              "imDescription": "demoImDescription",
+              "forVehicleType": [
+                "psv"
+              ],
+              "additionalInfo": {
+                "psv": {
+                  "location": {
+                    "vertical": [
+                      "upper"
+                    ],
+                    "horizontal": [
+                      "inner"
+                    ],
+                    "lateral": [
+                      "nearside"
+                    ],
+                    "longitudinal": [
+                      "front"
+                    ],
+                    "rowNumber": [
+                      0
+                    ],
+                    "seatNumber": [
+                      0
+                    ],
+                    "axleNumber": [
+                      0
+                    ]
+                  },
+                  "notes": true
+                },
+                "hgv": {},
+                "trl": {}
+              },
+              "items": [
+                {
+                  "itemNumber": 0,
+                  "itemDescription": "demoItemDescription",
+                  "forVehicleType": [
+                    "psv"
+                  ],
+                  "deficiencies": [
+                    {
+                      "ref": "string",
+                      "deficiencyId": "string",
+                      "deficiencySubId": "string",
+                      "deficiencyCategory": "advisory",
+                      "deficiencyText": "string",
+                      "stdForProhibition": true,
+                      "forVehicleType": [
+                        "psv"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    ]
+    }
+  ]

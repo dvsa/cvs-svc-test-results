@@ -1,0 +1,23 @@
+openapi: 3.0.0
+components:
+  schemas:
+    TestResults:
+      type: object
+      properties:
+        vin:
+          type: string
+  securitySchemes: {}
+info:
+  title: Get Test Results List API
+  description: >-
+    This is the API spec for retrieving those Test Results that
+    correspond with an input VIN
+  version: '1'
+paths:
+  '/test-results/{vin}'
+    get:
+      operationId: getTestResults
+      summary: Get Test Results list
+      description: >-
+        Retrieves the Test Results for the input VIN
+      responses: {}
