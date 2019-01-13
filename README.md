@@ -61,5 +61,5 @@ In order to test, you need to run the following:
 ### Seeding the database
 
 - From within the resource folder type the following:
-```cat techRecords.json | json-dynamo-putrequest cvs-BRANCH-dft-tech-records --beautify >test.json```
+```cat test-results.json | json-dynamo-putrequest cvs-BRANCH-test-results --beautify >test.json```
 ```aws dynamodb batch-write-item --request-items file://test.json --region=eu-west-1```
