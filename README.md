@@ -1,4 +1,4 @@
-# cvs-svc-technical-records
+# cvs-svc-test-results
 
 #### Run AWS Lambda node functions locally with a mock API Gateway and DynamoDB to test against
 - `npm install`
