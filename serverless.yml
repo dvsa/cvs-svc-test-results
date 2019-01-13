@@ -1,0 +1,65 @@
+service: cvs-svc-test-results
+
+openapi: 3.0.0
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    port: 3006
+  dynamodb:
+    start:
+      port: 8004
+      inMemory: true
+      migrate: true
+      seed: true
+    seed:
+      test-results:
+        sources:
+          - table: cvs-local-test-results
+            sources: [./tests/resources/test-results.json]
+
+functions:
+  getTestResults:
+    handler: src/handler.handler
+    events:
+    - http:
+        path: test-results
+        method: post
+    - http:
+        path: test-results/{vin}
+        method: get
+        request:
+          parameters:
+            paths:
+              vin: true
+            query:
+              status: false
+              fromDateTime: false
+              toDateTime: false
+
+resources:
+  Resources:
+    Users:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: cvs-local-test-results
+        AttributeDefinitions:
+        - AttributeName: vin
+          AttributeType: S
+        - AttributeName: testResultId
+          AttributeType: S
+        KeySchema:
+        - AttributeName: vin
+          KeyType: HASH
+        - AttributeName: testResultId
+          KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
