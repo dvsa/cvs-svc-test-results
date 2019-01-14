@@ -8,29 +8,39 @@ class TestResultsDAO {
     this.tableName = config.DYNAMODB_TABLE_NAME
   }
 
-  getAll () {
-    return dbClient.scan({ TableName: this.tableName }).promise()
+  getByVin (vin) {
+    let params = {
+      TableName: this.tableName,
+      KeyConditionExpression: '#vin = :vin',
+      ExpressionAttributeNames: {
+        '#vin': 'vin'
+      },
+      ExpressionAttributeValues: {
+        ':vin': vin
+      }
+    }
+
+    return dbClient.query(params).promise()
   }
 
-  getByVin (vin) {
-    var params = this.generateReadPartialParams()
-    params.RequestItems[this.tableName].Keys.push(
-      {
-        vin: vin
-      }
-    )
-    return dbClient.batchGet(params).promise()
+  createSingle (payload) {
+    const query = {
+      TableName: this.tableName,
+      Item: payload
+    }
+
+    return dbClient.put(query).promise()
   }
 
   createMultiple (testResultsItems) {
-    var params = this.generateWritePartialParams()
+    var params = this.generateBatchWritePartialParams()
 
-    testResultsItems.forEach(testResultsItem => {
+    testResultsItems.forEach(testResultItem => {
       params.RequestItems[this.tableName].push(
         {
           PutRequest:
             {
-              Item: testResultsItem
+              Item: testResultItem
             }
         })
     })
@@ -39,7 +49,7 @@ class TestResultsDAO {
   }
 
   deleteMultiple (vinsToBeDeleted) {
-    var params = this.generateWritePartialParams()
+    var params = this.generateBatchWritePartialParams()
 
     vinsToBeDeleted.forEach(vinToBeDeleted => {
       params.RequestItems[this.tableName].push(
@@ -57,22 +67,11 @@ class TestResultsDAO {
     return dbClient.batchWrite(params).promise()
   }
 
-  generateWritePartialParams () {
+  generateBatchWritePartialParams () {
     return {
       RequestItems:
       {
         [this.tableName]: []
-      }
-    }
-  }
-
-  generateReadPartialParams () {
-    return {
-      RequestItems:
-      {
-        [this.tableName]: {
-          Keys: []
-        }
       }
     }
   }

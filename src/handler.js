@@ -1,5 +1,5 @@
 'use strict'
 
-const getTestResults = require('./functions/getTestResults')
+const testResultsLambda = require('./functions/testResultsLambda')
 
-module.exports.handler = getTestResults
+module.exports.handler = testResultsLambda

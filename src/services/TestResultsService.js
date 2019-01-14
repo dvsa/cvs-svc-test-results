@@ -1,7 +1,11 @@
 'use strict'
 
 const HTTPError = require('../models/HTTPError')
+const testResultsSchema = require('../models/TestResultsSchema')
+const uuidv4 = require('uuid/v4')
+const Joi = require('joi')
 const dateFns = require('../../node_modules/date-fns')
+
 /**
  * Fetches the entire list of Technical Records from the database.
  * @returns Promise
@@ -11,20 +15,20 @@ class TestResultsService {
     this.testResultsDAO = testResultsDAO
   }
 
-  getTestResultsByVinAndStatus (vin, testStatus, fromDateTime, toDateTime) {
+  getTestResultsByVinAndStatus (vin, status, fromDateTime, toDateTime) {
     return this.testResultsDAO.getByVin(vin)
       .then(data => {
-        if (data.UnprocessedKeys > 0) {
-          throw new HTTPError(501, 'Unprocessed Items')
-        } else if ((data.Responses[this.testResultsDAO.tableName]).length === 0) {
+        if (data.Count === 0) {
           throw new HTTPError(404, 'No resources match the search criteria')
         }
 
-        var testResults = data.Responses[this.testResultsDAO.tableName][0].testResults
+        const testResults = data.Items
+
         // filter by status
         var filteredTestResults = testResults.filter(
-          function (testResult) { return testResult.testStatus === testStatus }
+          function (testResult) { return testResult.testStatus === status }
         )
+
         // filter by date
         for (let i = 0; i < filteredTestResults.length; i++) {
           filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
@@ -42,6 +46,10 @@ class TestResultsService {
         if (filteredTestResults.length === 0) {
           throw new HTTPError(404, 'No resources match the search criteria')
         }
+
+        // remove testResultId property from objects
+        for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
+
         return filteredTestResults
       })
       .catch(error => {
@@ -50,6 +58,25 @@ class TestResultsService {
           error = new HTTPError(500, 'Internal Server Error')
         }
         throw error
+      })
+  }
+
+  insertTestResult (payload) {
+    Object.assign(payload, { testResultId: uuidv4() })
+
+    let validation = Joi.validate(payload, testResultsSchema)
+
+    if (validation.error) {
+      return Promise.reject(new HTTPError(400, {
+        errors: validation.error.details.map((details) => {
+          return details.message
+        })
+      }))
+    }
+
+    return this.testResultsDAO.createSingle(payload)
+      .catch((error) => {
+        throw new HTTPError(error.statusCode, error.message)
       })
   }
 
