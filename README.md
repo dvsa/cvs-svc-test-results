@@ -1,4 +1,4 @@
-# cvs-svc-technical-records
+# cvs-svc-test-results
 
 #### Run AWS Lambda node functions locally with a mock API Gateway and DynamoDB to test against
 - `npm install`
@@ -56,10 +56,3 @@ In order to test, you need to run the following:
 ### Environmental variables
 
 - The `BRANCH` environment variable indicates in which environment is this application running. Use `BRANCH=local` for local deployment. This variable is required when starting the application or running tests.
-
-
-### Seeding the database
-
-- From within the resource folder type the following:
-```cat techRecords.json | json-dynamo-putrequest cvs-BRANCH-dft-tech-records --beautify >test.json```
-```aws dynamodb batch-write-item --request-items file://test.json --region=eu-west-1```
