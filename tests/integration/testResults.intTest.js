@@ -66,8 +66,6 @@ describe('testResults', () => {
             request.get('test-results/1B7GG36N12S678425?status=cancelled')
               .end((err, res) => {
                 if (err) { expect.fail(err) }
-                console.log(res.body)
-                console.log('---------')
                 expect(res.statusCode).to.equal(404)
                 expect(res.headers['access-control-allow-origin']).to.equal('*')
                 expect(res.headers['access-control-allow-credentials']).to.equal('true')
