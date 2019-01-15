@@ -41,7 +41,7 @@ describe('getTestResultsByVinAndStatus', () => {
   })
   context('when db return undifined data', () => {
     it('should return 404-No resources match the search criteria if db return null data', () => {
-      testResultsDAOMock.techRecordsMock = undefined
+      testResultsDAOMock.testResultsMock = undefined
       testResultsDAOMock.numberOfrecords = 0
       testResultsDAOMock.numberOfScannedRecords = 0
       var testResultsService = new TestResultsService(testResultsDAOMock)
