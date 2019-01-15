@@ -48,22 +48,28 @@ class TestResultsDAO {
     return dbClient.batchWrite(params).promise()
   }
 
-  deleteMultiple (vinsToBeDeleted) {
+  deleteMultiple (vinIdPairsToBeDeleted) {
     var params = this.generateBatchWritePartialParams()
 
-    vinsToBeDeleted.forEach(vinToBeDeleted => {
+    vinIdPairsToBeDeleted.forEach((vinIdPairToBeDeleted) => {
+
+      var vinToBeDeleted = Object.keys(vinIdPairToBeDeleted)[0]
+      var testResultIdToBeDeleted = vinIdPairToBeDeleted[vinToBeDeleted]
+
       params.RequestItems[this.tableName].push(
         {
           DeleteRequest:
           {
             Key:
             {
-              vin: vinToBeDeleted
+              vin: vinToBeDeleted,
+              testResultId: testResultIdToBeDeleted
             }
           }
         }
       )
     })
+
     return dbClient.batchWrite(params).promise()
   }
 

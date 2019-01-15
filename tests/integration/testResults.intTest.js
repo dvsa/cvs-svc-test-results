@@ -13,7 +13,6 @@ describe('testResults', () => {
       var testResultsService = null
       var testResultsDAO = null
       const databaseSeed = require('../resources/test-results.json')
-      const lambdaResponse = require('../resources/test-results-getTestResultsLambdaResponse')
 
       // Populating the database
       before((done) => {
@@ -28,13 +27,15 @@ describe('testResults', () => {
           context('and toDateTime and fromDateTime are not provided', () => {
             context('and there are test results for that VIN that have status \'submitted\' and createdAt date value between two years ago and today', () => {
               it('should return the test results for that VIN with default status \'submitted\' and default date interval which is from to years ago until today', (done) => {
-                request.get('test-results/12345/')
+                request.get('test-results/1B7GG36N12S678410/')
                   .end((err, res) => {
+                    const expectedResponse = Array.of(databaseSeed[0])
+                    delete expectedResponse[0].testResultId
                     if (err) { expect.fail(err) }
                     expect(res.statusCode).to.equal(200)
                     expect(res.headers['access-control-allow-origin']).to.equal('*')
                     expect(res.headers['access-control-allow-credentials']).to.equal('true')
-                    expect(_.isEqual(lambdaResponse, res.body)).to.equal(true)
+                    expect(_.isEqual(expectedResponse, res.body)).to.equal(true)
                     done()
                   })
               })
@@ -44,14 +45,15 @@ describe('testResults', () => {
         context('and status is provided', () => {
           context('and toDateTime and fromDateTime are provided', () => {
             context('and there are test results in the db that satisfy both conditions', () => {
-              it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-01-01', (done) => {
-                request.get('test-results/12345?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-01-01')
+              it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-01-15', (done) => {
+                request.get('test-results/1B7GG36N12S678410?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-01-15')
                   .end((err, res) => {
+                    const expectedResponse = Array.of(databaseSeed[0])
                     if (err) { expect.fail(err) }
                     expect(res.statusCode).to.equal(200)
                     expect(res.headers['access-control-allow-origin']).to.equal('*')
                     expect(res.headers['access-control-allow-credentials']).to.equal('true')
-                    expect(_.isEqual(lambdaResponse, res.body)).to.equal(true)
+                    expect(_.isEqual(expectedResponse, res.body)).to.equal(true)
                     done()
                   })
               })
@@ -61,9 +63,11 @@ describe('testResults', () => {
 
         context('and there are no test results for that VIN that have status \'cancelled\'', () => {
           it('should return 404', (done) => {
-            request.get('test-results/12345?status=cancelled')
+            request.get('test-results/1B7GG36N12S678425?status=cancelled')
               .end((err, res) => {
                 if (err) { expect.fail(err) }
+                console.log(res.body)
+                console.log('---------')
                 expect(res.statusCode).to.equal(404)
                 expect(res.headers['access-control-allow-origin']).to.equal('*')
                 expect(res.headers['access-control-allow-credentials']).to.equal('true')
@@ -76,7 +80,7 @@ describe('testResults', () => {
         context('and toDateTime and fromDateTime are provided', () => {
           context('and there are no test results for that VIN that have createdAt date between 2015-01-01 and 2017-01-01 ', () => {
             it('should return 404', (done) => {
-              request.get('test-results/12345?fromDateTime=2015-01-01&toDateTime=2017-01-01')
+              request.get('test-results/1B7GG36N12S678410?fromDateTime=2015-01-01&toDateTime=2017-01-01')
                 .end((err, res) => {
                   if (err) { expect.fail(err) }
                   expect(res.statusCode).to.equal(404)
@@ -91,7 +95,7 @@ describe('testResults', () => {
       })
 
       after((done) => {
-        testResultsService.deleteTestResultsList(['12345'])
+        testResultsService.deleteTestResultsList([{'1B7GG36N12S678410': '1'},{'1B7GG36N12S678410': '2'},{'1B7GG36N12S678425': '3'}])
         done()
       })
     })

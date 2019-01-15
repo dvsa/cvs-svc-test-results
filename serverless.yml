@@ -23,7 +23,7 @@ custom:
       test-results:
         sources:
           - table: cvs-local-test-results
-            sources: [./test/resources/test-results.json]
+            sources: [./tests/resources/test-results.json]
 
 functions:
   getTestResults:

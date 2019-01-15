@@ -6,18 +6,21 @@ const HTTPError = require('../../src/models/HTTPError')
 
 describe('getTestResultsByVinAndStatus', () => {
   var testResultsDAOMock = new TestResultsDAOMock()
+  var testResultsMockDB = require('../resources/test-results.json')
 
   context('when a record is found', () => {
     it('should return a populated response and status code 200', () => {
-      testResultsDAOMock.testResultsGetByVinResponseMock = require('../resources/test-results-getByVinDAOResponse.json')
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
-      const getByVinStatusServiceResponseMock = require('../resources/../resources/test-results-getByVinAndStatusServiceResponse.json')
-      return testResultsService.getTestResultsByVinAndStatus('12345', 'submitted', '2017-01-01', '2019-01-01')
+
+      return testResultsService.getTestResultsByVinAndStatus('1B7GG36N12S678410', 'submitted', '2017-01-01', '2019-01-15')
         .then((returnedRecords) => {
           expect(returnedRecords).to.not.equal(undefined)
           expect(returnedRecords).to.not.equal({})
-          expect(JSON.stringify(returnedRecords)).to.equal(JSON.stringify(getByVinStatusServiceResponseMock))
-          expect(returnedRecords.length).to.be.equal(getByVinStatusServiceResponseMock.length)
+          expect(JSON.stringify(returnedRecords)).to.equal(JSON.stringify(testResultsDAOMock.testResultsResponseMock))
+          expect(returnedRecords.length).to.be.equal(testResultsDAOMock.testResultsResponseMock.length)
         })
     })
   })
