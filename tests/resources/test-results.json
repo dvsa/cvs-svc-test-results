@@ -1,0 +1,257 @@
+[
+  {
+    "testResultId": "1",
+    "vrm": "GO79FAT",
+    "vin": "1B7GG36N12S678410",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "locationType": "ATF",
+    "testerName": "George",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": "none",
+    "vehicleClass": "2 (MotorBikes over 200cc or with a sidecar)",
+    "vehicleType": "PSV",
+    "numberOfSeats": 1,
+    "vehicleStatus": "1",
+    "vehicleConfiguration": "R (Rigid)",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometers",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "M1",
+    "countryOfRegistration": "string",
+    "testTypes": [
+      {
+        "createdAt": "2019-01-14T10:36:33.987Z",
+        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
+        "testCode": "ASD",
+        "testTypeName": "string",
+        "testId": "string",
+        "certificateNumber": "string",
+        "testExpiryDate": "2019-01-14",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "Failure",
+        "prohibitionIssued": "Yes",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "forVehicleType": [
+              "psv"
+            ],
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "item": {
+              "itemNumber": 0,
+              "itemDescription": "string",
+              "forVehicleType": [
+                "psv"
+              ],
+              "deficiency": {
+                "ref": "REFERENCELOL",
+                "deficiencyId": "a",
+                "deficiencySubId": "M",
+                "deficiencyCategory": "advisory",
+                "deficiencyText": "oops it doesn't work",
+                "stdForProhibition": true,
+                "prs": true,
+                "forVehicleType": [
+                  "psv"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testResultId": "2",
+    "vrm": "GO79FAT",
+    "vin": "1B7GG36N12S678410",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "locationType": "ATF",
+    "testerName": "George",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "cancelled",
+    "reasonForCancellation": "none",
+    "vehicleClass": "2 (MotorBikes over 200cc or with a sidecar)",
+    "vehicleType": "PSV",
+    "numberOfSeats": 1,
+    "vehicleStatus": "1",
+    "vehicleConfiguration": "R (Rigid)",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometers",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "M1",
+    "countryOfRegistration": "string",
+    "testTypes": [
+      {
+        "createdAt": "2018-01-14T10:36:33.987Z",
+        "lastUpdatedAt": "2018-01-14T10:36:33.987Z",
+        "testCode": "ASD",
+        "testTypeName": "string",
+        "testId": "string",
+        "certificateNumber": "string",
+        "testExpiryDate": "2019-01-14",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "Failure",
+        "prohibitionIssued": "Yes",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "forVehicleType": [
+              "psv"
+            ],
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "item": {
+              "itemNumber": 0,
+              "itemDescription": "string",
+              "forVehicleType": [
+                "psv"
+              ],
+              "deficiency": {
+                "ref": "REFERENCELOL",
+                "deficiencyId": "a",
+                "deficiencySubId": "M",
+                "deficiencyCategory": "advisory",
+                "deficiencyText": "oops it doesn't work",
+                "stdForProhibition": true,
+                "prs": true,
+                "forVehicleType": [
+                  "psv"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testResultId": "3",
+    "vrm": "GO79FAT",
+    "vin": "1B7GG36N12S678425",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "locationType": "ATF",
+    "testerName": "George",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2017-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2017-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": "none",
+    "vehicleClass": "2 (MotorBikes over 200cc or with a sidecar)",
+    "vehicleType": "PSV",
+    "numberOfSeats": 1,
+    "vehicleStatus": "1",
+    "vehicleConfiguration": "R (Rigid)",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometers",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "M1",
+    "countryOfRegistration": "string",
+    "testTypes": [
+      {
+        "createdAt": "2019-01-14T10:36:33.987Z",
+        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
+        "testCode": "ASD",
+        "testTypeName": "string",
+        "testId": "string",
+        "certificateNumber": "string",
+        "testExpiryDate": "2019-01-14",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "Failure",
+        "prohibitionIssued": "Yes",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "forVehicleType": [
+              "psv"
+            ],
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "item": {
+              "itemNumber": 0,
+              "itemDescription": "string",
+              "forVehicleType": [
+                "psv"
+              ],
+              "deficiency": {
+                "ref": "REFERENCELOL",
+                "deficiencyId": "a",
+                "deficiencySubId": "M",
+                "deficiencyCategory": "advisory",
+                "deficiencyText": "oops it doesn't work",
+                "stdForProhibition": true,
+                "prs": true,
+                "forVehicleType": [
+                  "psv"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
