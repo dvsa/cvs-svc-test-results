@@ -7,7 +7,7 @@ const Joi = require('joi')
 const dateFns = require('../../node_modules/date-fns')
 
 /**
- * Fetches the entire list of Technical Records from the database.
+ * Service for retrieving and creating Test Results from/into the db
  * @returns Promise
  */
 class TestResultsService {
