@@ -61,7 +61,7 @@ class TestResultsService {
       })
   }
 
-  insertTestResult (payload) {
+  async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
 
     let validation = Joi.validate(payload, testResultsSchema)
@@ -74,7 +74,8 @@ class TestResultsService {
       }))
     }
 
-    return this.testResultsDAO.createSingle(payload)
+    var newPayload = await this.testResultsDAO.setTestCodeByCallingTestTypes(payload)
+    return this.testResultsDAO.createSingle(newPayload)
       .catch((error) => {
         throw new HTTPError(error.statusCode, error.message)
       })
