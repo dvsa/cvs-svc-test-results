@@ -5,6 +5,7 @@ const testResultsSchema = require('../models/TestResultsSchema')
 const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
 const dateFns = require('../../node_modules/date-fns')
+const rp = require('request-promise')
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -74,10 +75,55 @@ class TestResultsService {
       }))
     }
 
+    payload = this.setTestCode(payload)
+
     return this.testResultsDAO.createSingle(payload)
       .catch((error) => {
         throw new HTTPError(error.statusCode, error.message)
       })
+  }
+
+  setTestCode (payload) {
+    var vehicleType = payload.vehicleType
+    var vehicleSize = 'large'
+    var vehicleConfiguration = payload.vehicleConfiguration
+
+    if (payload.testTypes.length === 0) {
+      return Promise.reject(new HTTPError(400, 'Bad request'))
+    } else if (payload.testTypes.length === 1) {
+      var testTypeId = payload.testTypes[0].testID
+      let options = {
+        uri: `http://localhost/${testTypeId}?vehicleType=${vehicleType}&vehicleSize=${vehicleSize}&vehicleConfiguration=${vehicleConfiguration}`,
+        json: true
+      }
+
+      return rp(options)
+        .then(testCodeResponse => {
+          payload.testTypes[0].testCode = testCodeResponse.defaultTestCode
+          return payload
+        }).catch(err => {
+          console.error(err)
+          throw new HTTPError(500, 'Internal Server Error')
+        })
+    } else {
+      for (let i = 0; i < payload.testTypes.length; i++) {
+        testTypeId = payload.testTypes[i].testID
+
+        let options = {
+          uri: `http://localhost/${testTypeId}?vehicleType=${vehicleType}&vehicleSize=${vehicleSize}&vehicleConfiguration=${vehicleConfiguration}`,
+          json: true
+        }
+
+        return rp(options)
+          .then(testCodeResponse => {
+            payload.testTypes[i].testCode = (testCodeResponse.linkedTestCode) ? testCodeResponse.linkedTestCode : testCodeResponse.defaultTestCode
+            return payload
+          }).catch(err => {
+            console.error(err)
+            throw new HTTPError(500, 'Internal Server Error')
+          })
+      }
+    }
   }
 
   insertTestResultsList (testResultsItems) {
