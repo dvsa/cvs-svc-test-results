@@ -1,29 +1,26 @@
+const configData = require('./config.json')
+
 function generateConfig () {
   var BRANCH = process.env.BRANCH
-
-  var localConfig =
+  var LOCAL_DYNAMODB_DOCUMENTCLIENT_PARAMS =
   {
-    DYNAMODB_DOCUMENTCLIENT_PARAMS:
-    {
-      region: 'localhost',
-      endpoint: 'http://localhost:8004/'
-    },
-    DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results'
+    region: configData.REGION,
+    endpoint: 'http://localhost:8004'
   }
 
-  var pipelineConfig =
+  var config =
   {
     DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
-    DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results'
+    DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
+    TEST_TYPES_ENDPOINT: configData.TEST_TYPES_ENDPOINT
   }
 
   if (!BRANCH) {
     console.error('Please define BRANCH environment variable')
   } else if (BRANCH === 'local') {
-    return localConfig
-  } else {
-    return pipelineConfig
+    config.DYNAMODB_DOCUMENTCLIENT_PARAMS = LOCAL_DYNAMODB_DOCUMENTCLIENT_PARAMS
   }
+  return config
 }
 
 module.exports = generateConfig
