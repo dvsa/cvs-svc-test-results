@@ -3,11 +3,15 @@
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
-const dateFns = require('../../node_modules/date-fns')
+const dateFns = require('date-fns')
+const Path = require('path-parser').default
 
 const getTestResults = (event) => {
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
+
+  const basePath = '/test-results'
+  const path = (process.env.BRANCH === 'local') ? event.path : `${basePath}/${event.pathParameters.proxy}`
 
   if (!event) {
     return Promise.resolve(new HTTPResponse(500, 'AWS Event is undefined.'))
@@ -15,45 +19,58 @@ const getTestResults = (event) => {
 
   switch (event.httpMethod) {
     case 'GET':
-      const vin = (process.env.BRANCH === 'local') ? event.pathParameters.vin : (event.pathParameters.proxy).substr(14, (event.pathParameters.proxy).length)
-      var testStatus = 'Submitted'
-      var toDateTime = dateFns.endOfToday()
-      var fromDateTime = dateFns.subYears(toDateTime, 2)
+      const getTestResultsByVIN = new Path('/test-results/:vin')
 
-      if (event.queryStringParameters) {
-        if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
-        if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
-        if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }
+      if (getTestResultsByVIN.test(path)) {
+        const vin = getTestResultsByVIN.test(path).vin
+        let testStatus = 'Submitted'
+        let toDateTime = dateFns.endOfToday()
+        let fromDateTime = dateFns.subYears(toDateTime, 2)
+
+        if (event.queryStringParameters) {
+          if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
+          if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
+          if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }
+        }
+
+        return testResultsService.getTestResultsByVinAndStatus(vin, testStatus, fromDateTime, toDateTime)
+          .then((data) => {
+            return new HTTPResponse(200, data)
+          })
+          .catch((error) => {
+            return new HTTPResponse(error.statusCode, error.body)
+          })
       }
-
-      return testResultsService.getTestResultsByVinAndStatus(vin, testStatus, fromDateTime, toDateTime)
-        .then((data) => {
-          return new HTTPResponse(200, data)
-        })
-        .catch((error) => {
-          return new HTTPResponse(error.statusCode, error.body)
-        })
+      break
     case 'POST':
-      let payload = event.body
+      const postTestResults = new Path('/test-results')
 
-      try {
-        payload = JSON.parse(event.body)
-      } catch (e) {
-        return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
+      if (postTestResults.test(path)) {
+        let payload = event.body
+
+        try {
+          payload = JSON.parse(event.body)
+        } catch (e) {
+          return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
+        }
+
+        if (!payload) {
+          return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
+        }
+
+        return testResultsService.insertTestResult(payload)
+          .then(() => {
+            return new HTTPResponse(201, 'Test records created')
+          })
+          .catch((error) => {
+            return new HTTPResponse(error.statusCode, error.body)
+          })
       }
-
-      if (!payload) {
-        return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
-      }
-
-      return testResultsService.insertTestResult(payload)
-        .then(() => {
-          return new HTTPResponse(201, 'Test records created')
-        })
-        .catch((error) => {
-          return new HTTPResponse(error.statusCode, error.body)
-        })
   }
+
+  // If you get to this point, your URL is bad
+  console.log(event)
+  return Promise.resolve(new HTTPResponse(400, `Cannot GET ${path}`))
 }
 
 module.exports = getTestResults

@@ -46,6 +46,7 @@
   "dependencies": {
     "aws-sdk": "^2.332.0",
     "joi": "^14.3.1",
+    "path-parser": "^4.2.0",
     "uuid": "^3.3.2"
   }
 }
