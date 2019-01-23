@@ -13,23 +13,82 @@
     "testStatus": "Submitted",
     "reasonForCancellation": "none",
     "vehicleClass": "2",
-    "vehicleType": "PSV",
+    "vehicleType": "psv",
     "numberOfSeats": 1,
     "vehicleStatus": "1",
-    "vehicleConfiguration": "R (Rigid)",
+    "vehicleConfiguration": "rigid",
     "odometerReading": 7,
     "odometerReadingUnits": "kilometers",
     "preparerId": "string",
     "preparerName": "string",
     "euVehicleCategory": "M1",
     "countryOfRegistration": "string",
+    "vehicleSize": "small",
     "testTypes": [
       {
         "createdAt": "2019-01-14T10:36:33.987Z",
         "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
         "testCode": "ASD",
         "testTypeName": "string",
-        "testId": "string",
+        "testId": "3",
+        "certificateNumber": "string",
+        "testExpiryDate": "2019-01-14",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "Failure",
+        "prohibitionIssued": "Yes",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "forVehicleType": [
+              "psv"
+            ],
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "item": {
+              "itemNumber": 0,
+              "itemDescription": "string",
+              "forVehicleType": [
+                "psv"
+              ],
+              "deficiency": {
+                "ref": "REFERENCELOL",
+                "deficiencyId": "a",
+                "deficiencySubId": "M",
+                "deficiencyCategory": "advisory",
+                "deficiencyText": "oops it doesn't work",
+                "stdForProhibition": true,
+                "prs": true,
+                "forVehicleType": [
+                  "psv"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "createdAt": "2019-01-14T10:36:33.987Z",
+        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
+        "testCode": "ASD",
+        "testTypeName": "string",
+        "testId": "3",
         "certificateNumber": "string",
         "testExpiryDate": "2019-01-14",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
@@ -98,16 +157,17 @@
     "testStatus": "Cancelled",
     "reasonForCancellation": "none",
     "vehicleClass": "2",
-    "vehicleType": "PSV",
+    "vehicleType": "psv",
     "numberOfSeats": 1,
     "vehicleStatus": "1",
-    "vehicleConfiguration": "R (Rigid)",
+    "vehicleConfiguration": "rigid",
     "odometerReading": 7,
     "odometerReadingUnits": "kilometers",
     "preparerId": "string",
     "preparerName": "string",
     "euVehicleCategory": "M1",
     "countryOfRegistration": "string",
+    "vehicleSize": "large",
     "testTypes": [
       {
         "createdAt": "2018-01-14T10:36:33.987Z",
@@ -183,10 +243,10 @@
     "testStatus": "Submitted",
     "reasonForCancellation": "none",
     "vehicleClass": "2",
-    "vehicleType": "PSV",
+    "vehicleType": "psv",
     "numberOfSeats": 1,
     "vehicleStatus": "1",
-    "vehicleConfiguration": "R (Rigid)",
+    "vehicleConfiguration": "rigid",
     "odometerReading": 7,
     "odometerReadingUnits": "kilometers",
     "preparerId": "string",
