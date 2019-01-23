@@ -36,7 +36,7 @@ describe('getTestResultsByVin', () => {
                   expect(res.statusCode).to.equal(200)
                   expect(res.headers['access-control-allow-origin']).to.equal('*')
                   expect(res.headers['access-control-allow-credentials']).to.equal('true')
-                  expect(expectedResponse).to.eql(res.body)
+                  expect(res.body).to.eql(expectedResponse)
                   done()
                 })
             })
@@ -132,12 +132,9 @@ describe('insertTestResults', () => {
         .send(JSON.stringify(mockData[0]))
         .end((err, res) => {
           if (err) { expect.fail(err) }
-
           expect(res.statusCode).to.equal(201)
           expect(res.headers['access-control-allow-origin']).to.equal('*')
           expect(res.headers['access-control-allow-credentials']).to.equal('true')
-          expect(_.isEqual('Test records created', res.body)).to.equal(true)
-
           // Remove the record we just created
           testResultsDAO.getByVin(mockData[0].vin)
             .then((object) => {
@@ -201,4 +198,6 @@ describe('insertTestResults', () => {
         })
     })
   })
+
+
 })

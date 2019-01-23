@@ -73,17 +73,18 @@ const testResultsSchema = Joi.object().keys({
   testStatus: Joi.any().only([ 'Submitted', 'Canceled' ]).required(),
   reasonForCancellation: Joi.string().max(500).required(),
   vehicleClass: Joi.any().only(['2', 'S', '1', 'T', 'L', '3', 'V']).required(),
-  vehicleType: Joi.any().only(['psv', 'hgv', 'trl', 'others']).required(),
-  numberOfSeats: Joi.number().min(1).required(),
+  vehicleType: Joi.any().only(['psv', 'hgv', 'trl', 'Others']).required(),
+  numberOfSeats: Joi.number().min(1).max(4).required(),
   vehicleStatus: Joi.any().only(['1', '2', '3']).required(),
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
-  odometerReading: Joi.number().required(),
+  odometerReading: Joi.number().min(1).max(7).required(),
   odometerReadingUnits: Joi.any().only(['kilometers', 'miles']).required(),
   preparerId: Joi.string().required(),
   preparerName: Joi.string().required(),
   euVehicleCategory: Joi.any().only(['M1', 'M2', 'M3', 'N1', 'N2', 'N3', 'O1', 'O2', 'O3', 'O4']).required(),
   countryOfRegistration: Joi.string().required(),
-  testTypes: Joi.array().items(testTypesSchema).required()
+  testTypes: Joi.array().items(testTypesSchema).required(),
+  vehicleSize: Joi.any().only(['small', 'large']).required()
 })
 
 module.exports = testResultsSchema
