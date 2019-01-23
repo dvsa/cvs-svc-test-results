@@ -112,7 +112,7 @@ class TestResultsService {
         testTypeId = payload.testTypes[i].testId
 
         let options = {
-          uri: `${config.TEST_TYPES_ENDPOINT}//${testTypeId}?vehicleType=${vehicleType}&vehicleSize=${vehicleSize}&vehicleConfiguration=${vehicleConfiguration}&fields=${fields}`,
+          uri: `${config.TEST_TYPES_ENDPOINT}/${testTypeId}?vehicleType=${vehicleType}&vehicleSize=${vehicleSize}&vehicleConfiguration=${vehicleConfiguration}&fields=${fields}`,
           json: true,
           port: 3006
         }
