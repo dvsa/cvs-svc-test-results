@@ -135,6 +135,7 @@ describe('insertTestResults', () => {
           expect(res.statusCode).to.equal(201)
           expect(res.headers['access-control-allow-origin']).to.equal('*')
           expect(res.headers['access-control-allow-credentials']).to.equal('true')
+
           // Remove the record we just created
           testResultsDAO.getByVin(mockData[0].vin)
             .then((object) => {
@@ -155,7 +156,6 @@ describe('insertTestResults', () => {
         .send({})
         .end((err, res) => {
           if (err) { expect.fail(err) }
-
           expect(res.statusCode).to.equal(400)
           expect(res.headers['access-control-allow-origin']).to.equal('*')
           expect(res.headers['access-control-allow-credentials']).to.equal('true')
