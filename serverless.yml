@@ -19,6 +19,7 @@ custom:
       inMemory: true
       migrate: true
       seed: false
+      noStart: true
     seed:
       test-results:
         sources:
