@@ -14,7 +14,8 @@
     "prepush": "BRANCH=local npm test && npm run eslint",
     "predeploy": "npm install && npm run prepush",
     "security-checks": "git secrets --scan && git log -p | scanrepo",
-    "eslint": "eslint . --config=.eslintrc.json --fix"
+    "eslint": "eslint . --config=.eslintrc.json --fix",
+    "sonar-scanner": "echo 'TODO'"
   },
   "repository": {
     "type": "git",
