@@ -39,11 +39,11 @@ podTemplate(label: label, containers: [
                 --table-name cvs-local-test-results \
                 --attribute-definitions \
                     AttributeName=vin,AttributeType=S AttributeName=testResultId,AttributeType=S \
-                --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultID,KeyType=RANGE\
+                --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultId,KeyType=RANGE\
                 --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --region=eu-west-1 --endpoint-url http://localhost:8004
                 '''
 
-                sh "sls dynamodb seed --seed=defects"
+                sh "sls dynamodb seed --seed=test-results"
             }
             stage ("sonar") {
                 sh "npm run sonar-scanner"
