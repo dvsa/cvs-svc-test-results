@@ -38,7 +38,7 @@ podTemplate(label: label, containers: [
                 aws dynamodb create-table \
                 --table-name cvs-local-test-results \
                 --attribute-definitions \
-                    AttributeName=vin,AttributeType=s AttributeName=testResultId,AttributeType=s \
+                    AttributeName=vin,AttributeType=S AttributeName=testResultId,AttributeType=S \
                 --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultID,KeyType=RANGE\
                 --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --region=eu-west-1 --endpoint-url http://localhost:8004
                 '''
