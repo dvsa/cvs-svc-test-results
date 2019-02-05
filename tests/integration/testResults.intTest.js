@@ -30,13 +30,13 @@ describe('getTestResultsByVin', () => {
             it('should return the test results for that VIN with default status \'submitted\' and default date interval which is from to years ago until today', (done) => {
               request.get('test-results/1B7GG36N12S678410/')
                 .end((err, res) => {
-                  const expectedResponse = Array.of(databaseSeed[0])
+                  const expectedResponse = Array.of(databaseSeed[1])
                   delete expectedResponse[0].testResultId
                   if (err) { expect.fail(err) }
                   expect(res.statusCode).to.equal(200)
                   expect(res.headers['access-control-allow-origin']).to.equal('*')
                   expect(res.headers['access-control-allow-credentials']).to.equal('true')
-                  expect(_.isEqual(expectedResponse, res.body)).to.equal(true)
+                  expect(expectedResponse).to.eql(res.body)
                   done()
                 })
             })
@@ -49,12 +49,12 @@ describe('getTestResultsByVin', () => {
             it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-01-15', (done) => {
               request.get('test-results/1B7GG36N12S678410?status=Submitted&fromDateTime=2017-01-01&toDateTime=2019-01-15')
                 .end((err, res) => {
-                  const expectedResponse = Array.of(databaseSeed[0])
+                  const expectedResponse = Array.of(databaseSeed[1])
                   if (err) { expect.fail(err) }
                   expect(res.statusCode).to.equal(200)
                   expect(res.headers['access-control-allow-origin']).to.equal('*')
                   expect(res.headers['access-control-allow-credentials']).to.equal('true')
-                  expect(_.isEqual(expectedResponse, res.body)).to.equal(true)
+                  expect(expectedResponse).to.eql(res.body)
                   done()
                 })
             })
