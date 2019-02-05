@@ -1,10 +1,10 @@
 def label = "jenkins-node-${UUID.randomUUID().toString()}"
 podTemplate(label: label, containers: [
-    containerTemplate(name: 'dynamodb',
-                      image: 'amazon/dynamodb-local',
-                      command: 'java -jar /home/dynamodblocal/DynamoDBLocal.jar -inMemory -sharedDb -port 8001',
-                      ports: [portMapping(name: 'dynamoport', containerPort: 8001, hostPort: 8001)]),
-    containerTemplate(name: 'node', image: '086658912680.dkr.ecr.eu-west-1.amazonaws.com/cvs/nodejs-builder:latest', ttyEnabled: true, alwaysPullImage: true, command: 'cat'),]){
+        containerTemplate(name: 'dynamodb',
+                image: 'amazon/dynamodb-local',
+                command: 'java -jar /home/dynamodblocal/DynamoDBLocal.jar -inMemory -sharedDb -port 8001',
+                ports: [portMapping(name: 'dynamoport', containerPort: 8001, hostPort: 8001)]),
+        containerTemplate(name: 'node', image: '086658912680.dkr.ecr.eu-west-1.amazonaws.com/cvs/nodejs-builder:latest', ttyEnabled: true, alwaysPullImage: true, command: 'cat'),]){
     node(label) {
 
         stage('checkout') {
@@ -12,22 +12,26 @@ podTemplate(label: label, containers: [
         }
 
         container('node'){
-            LBRANCH=BRANCH.toLowerCase()
+
+            withFolderProperties{
+                LBRANCH="${env.BRANCH}".toLowerCase()
+            }
+
             stage ("npm deps") {
                 sh "npm install"
             }
 
             stage ("security") {
-                 sh "git secrets --register-aws"
-                 sh "git secrets --scan"
-                 sh "git log -p | scanrepo"
+                sh "git secrets --register-aws"
+                sh "git secrets --scan"
+                sh "git log -p | scanrepo"
             }
 
             stage ("credentials") {
-               withCredentials([usernamePassword(credentialsId: 'dummy-credentials', passwordVariable: 'SECRET', usernameVariable: 'KEY')]) {
-                   sh "sls config credentials --provider aws --key ${KEY} --secret ${SECRET}"
+                withCredentials([usernamePassword(credentialsId: 'dummy-credentials', passwordVariable: 'SECRET', usernameVariable: 'KEY')]) {
+                    sh "sls config credentials --provider aws --key ${KEY} --secret ${SECRET}"
                 }
-            } 
+            }
             stage ("create-seed-table") {
 
                 sh '''
@@ -65,11 +69,11 @@ podTemplate(label: label, containers: [
 
             stage("upload to s3") {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-                       accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                           credentialsId: 'jenkins-iam',
-                       secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
+                                  accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                                  credentialsId: 'jenkins-iam',
+                                  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
 
-                sh "aws s3 cp ${LBRANCH}.zip s3://cvs-services/test-results/${LBRANCH}.zip"
+                    sh "aws s3 cp ${LBRANCH}.zip s3://cvs-services/test-results/${LBRANCH}.zip"
                 }
             }
         }
