@@ -132,6 +132,7 @@ describe('insertTestResults', () => {
         .send(JSON.stringify(mockData[0]))
         .end((err, res) => {
           if (err) { expect.fail(err) }
+          console.log(res)
           expect(res.statusCode).to.equal(201)
           expect(res.headers['access-control-allow-origin']).to.equal('*')
           expect(res.headers['access-control-allow-credentials']).to.equal('true')

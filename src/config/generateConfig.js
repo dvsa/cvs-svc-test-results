@@ -9,21 +9,21 @@ function generateConfig () {
       endpoint: 'http://localhost:8004/'
     },
     DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-    TEST_TYPES_ENDPOINT: 'http://localhost:3006/test-results'
+    TEST_TYPES_ENDPOINT: 'http://localhost:3002/test-types'
   }
 
   var pipelineConfig =
   {
     DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
     DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-    TEST_TYPES_ENDPOINT: 'http://localhost:3006/test-results'
+    TEST_TYPES_ENDPOINT: 'http://localhost:3002/test-types'
   }
 
   var nonprodConfig =
     {
       DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
       DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-      TEST_TYPES_ENDPOINT: 'https://services.nonprod.cvs.dvsacloud.uk/test-results'
+      TEST_TYPES_ENDPOINT: 'https://services.nonprod.cvs.dvsacloud.uk/test-types'
     }
 
   if (!BRANCH) {
