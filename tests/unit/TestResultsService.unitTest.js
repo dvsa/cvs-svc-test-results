@@ -84,7 +84,10 @@ describe('insertTestResult', () => {
       const mockData = require('../resources/test-results')
 
       return testResultsService.insertTestResult(mockData[0])
-        .catch((error) => {
+        .then((testResult) => {
+          expect(testResult).to.not.be.equal(null)
+          expect(testResult).to.not.be.equal(undefined)
+        }).catch(() => {
           expect.fail()
         })
     })

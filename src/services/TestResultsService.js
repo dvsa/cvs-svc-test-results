@@ -76,7 +76,7 @@ class TestResultsService {
       }))
     }
 
-    var newPayload = await this.setTestCode(payload)
+    var newPayload = await this.testResultsDAO.setTestCodeByCallingTestTypes(payload)
     return this.testResultsDAO.createSingle(newPayload)
       .catch((error) => {
         throw new HTTPError(error.statusCode, error.message)

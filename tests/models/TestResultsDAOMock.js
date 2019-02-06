@@ -21,8 +21,11 @@ class TestResultsDaoMock {
 
   createSingle (payload) {
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
+    return Promise.resolve(payload)
+  }
 
-    return Promise.resolve({})
+  setTestCodeByCallingTestTypes (payload) {
+    return Promise.resolve(payload)
   }
 }
 
