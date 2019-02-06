@@ -35,8 +35,8 @@ podTemplate(label: label, containers: [
                         aws dynamodb create-table \
                         --table-name cvs-test-test-results \
                         --attribute-definitions \
-                            AttributeName=imNumber,AttributeType=N \
-                        --key-schema AttributeName=imNumber,KeyType=HASH \
+                            AttributeName=vin,AttributeType=S AttributeName=testResultId,AttributeType=S \
+                        --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultId,KeyType=RANGE\
                         --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
                         --region=eu-west-1
                         '''
