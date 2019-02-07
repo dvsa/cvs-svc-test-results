@@ -23,7 +23,7 @@ function generateConfig () {
     {
       DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
       DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-      TEST_TYPES_ENDPOINT: 'https://services.nonprod.cvs.dvsacloud.uk/test-types'
+      TEST_TYPES_ENDPOINT: 'https://api.nonprod.cvs.dvsacloud.uk/test/test-types/'
     }
 
   if (!BRANCH) {
