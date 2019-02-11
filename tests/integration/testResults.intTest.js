@@ -197,6 +197,4 @@ describe('insertTestResults', () => {
         })
     })
   })
-
-
 })
