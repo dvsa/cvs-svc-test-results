@@ -47,7 +47,7 @@ describe('getTestResultsByVin', () => {
         context('and toDateTime and fromDateTime are provided', () => {
           context('and there are test results in the db that satisfy both conditions', () => {
             it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-01-15', (done) => {
-              request.get('test-results/1B7GG36N12S678410?status=Submitted&fromDateTime=2017-01-01&toDateTime=2019-01-15')
+              request.get('test-results/1B7GG36N12S678410?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-01-15')
                 .end((err, res) => {
                   const expectedResponse = Array.of(databaseSeed[1])
                   if (err) { expect.fail(err) }
