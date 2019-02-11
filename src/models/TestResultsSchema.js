@@ -27,7 +27,7 @@ const defectsSchema = Joi.object().keys({
     deficiency: Joi.object().keys({
       ref: Joi.string().required(),
       deficiencyId: Joi.string().regex(/^[a-z]+$/).min(1).max(1).allow(null).required(),
-      deficiencySubId: Joi.string().regex(/^[MDCLXVI]+$/).allow(null).required(),
+      deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).allow(null).required(),
       deficiencyCategory: Joi.any().only([ 'advisory', 'dangerous', 'major', 'minor', 'prs' ]).required(),
       deficiencyText: Joi.string().required(),
       stdForProhibition: Joi.boolean().required(),
@@ -81,7 +81,7 @@ const testResultsSchema = Joi.object().keys({
   odometerReadingUnits: Joi.any().only(['kilometers', 'miles']).required(),
   preparerId: Joi.string().required(),
   preparerName: Joi.string().required(),
-  euVehicleCategory: Joi.any().only(['m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'O1', 'O2', 'O3', 'O4']).required(),
+  euVehicleCategory: Joi.any().only(['m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4']).required(),
   countryOfRegistration: Joi.string().required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   vehicleSize: Joi.any().only(['small', 'large']).required()
