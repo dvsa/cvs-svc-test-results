@@ -1,6 +1,6 @@
 {
-    "region": "",
-    "localDB": "",
-    "localEndpoint": "",
-    "nonProdEndpoint": ""
+  "region": "localhost",
+  "localDB": "http://localhost:8004/",
+  "localEndpoint": "http://localhost:3002/test-types",
+  "nonProdEndpoint": "https://api.nonprod.cvs.dvsacloud.uk/test/test-types/"
 }
