@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/handler.js",
   "scripts": {
-    "start": "npm run eslint && BRANCH=local ./node_modules/serverless/bin/serverless offline start",
+    "start": "npm run eslint && npm run copy-config && BRANCH=local ./node_modules/serverless/bin/serverless offline start",
     "start:test": "npm run eslint && SLS_DEBUG=* BRANCH=local node_modules/gulp/bin/gulp.js start-serverless",
     "end:test": "node_modules/gulp/bin/gulp.js kill-serverless",
     "debug": "export SLS_DEBUG=* && BRANCH=local node --inspect ./node_modules/serverless/bin/serverless offline start",
@@ -15,6 +15,7 @@
     "predeploy": "npm install && npm run prepush",
     "security-checks": "git secrets --scan && git log -p | scanrepo",
     "eslint": "eslint . --config=.eslintrc.json --fix",
+    "copy-config": "node_modules/.bin/cpx ./tests/resources/config.json ./src/config/",
     "sonar-scanner": "echo 'TODO'"
   },
   "repository": {
@@ -47,7 +48,8 @@
     "standard": "^12.0.1",
     "supertest": "^3.3.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2"
+    "request-promise": "^4.2.2",
+    "cpx": "^1.5.0"
   },
   "dependencies": {
     "aws-sdk": "^2.332.0",

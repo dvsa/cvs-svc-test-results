@@ -1,3 +1,5 @@
+const config = require('./config.json')
+
 function generateConfig () {
   var BRANCH = process.env.BRANCH
 
@@ -5,25 +7,25 @@ function generateConfig () {
   {
     DYNAMODB_DOCUMENTCLIENT_PARAMS:
     {
-      region: 'localhost',
-      endpoint: 'http://localhost:8004/'
+      region: config.region,
+      endpoint: config.localDB
     },
     DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-    TEST_TYPES_ENDPOINT: 'http://localhost:3002/test-types'
+    TEST_TYPES_ENDPOINT: config.localEndpoint
   }
 
   var pipelineConfig =
   {
     DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
     DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-    TEST_TYPES_ENDPOINT: 'http://localhost:3002/test-types'
+    TEST_TYPES_ENDPOINT: config.localEndpoint
   }
 
   var nonprodConfig =
     {
       DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
       DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-      TEST_TYPES_ENDPOINT: 'https://api.nonprod.cvs.dvsacloud.uk/test/test-types/'
+      TEST_TYPES_ENDPOINT: config.nonprodConfig
     }
 
   if (!BRANCH) {
