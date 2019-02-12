@@ -26,13 +26,10 @@
     "vehicleSize": "small",
     "testTypes": [
       {
-        "createdAt": "2019-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
-        "testCode": "asd",
+        "name": "string",
         "testTypeName": "string",
-        "testId": "3",
+        "testTypeId": "3",
         "certificateNumber": "string",
-        "testExpiryDate": "2019-01-14",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 0,
@@ -42,6 +39,7 @@
         "prohibitionIssued": "true",
         "reasonForAbandoning": "string",
         "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
             "imNumber": 0,
@@ -84,13 +82,10 @@
         ]
       },
       {
-        "createdAt": "2019-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
-        "testCode": "asd",
+        "name": "string",
         "testTypeName": "string",
-        "testId": "3",
+        "testTypeId": "3",
         "certificateNumber": "string",
-        "testExpiryDate": "2019-01-14",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 0,
@@ -100,6 +95,7 @@
         "prohibitionIssued": "true",
         "reasonForAbandoning": "string",
         "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
             "imNumber": 0,
@@ -165,18 +161,15 @@
     "odometerReadingUnits": "kilometers",
     "preparerId": "string",
     "preparerName": "string",
-    "euVehicleCategory": "M1",
+    "euVehicleCategory": "m1",
     "countryOfRegistration": "string",
     "vehicleSize": "large",
     "testTypes": [
       {
-        "createdAt": "2018-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2018-01-14T10:36:33.987Z",
-        "testCode": "asd",
+        "name": "string",
         "testTypeName": "string",
-        "testId": "string",
+        "testTypeId": "string",
         "certificateNumber": "string",
-        "testExpiryDate": "2019-01-14",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 0,
@@ -186,6 +179,7 @@
         "prohibitionIssued": "true",
         "reasonForAbandoning": "string",
         "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
             "imNumber": 0,
@@ -214,7 +208,7 @@
               "deficiency": {
                 "ref": "REFERENCELOL",
                 "deficiencyId": "a",
-                "deficiencySubId": "M",
+                "deficiencySubId": "m",
                 "deficiencyCategory": "advisory",
                 "deficiencyText": "oops it doesn't work",
                 "stdForProhibition": true,
@@ -255,13 +249,10 @@
     "countryOfRegistration": "string",
     "testTypes": [
       {
-        "createdAt": "2019-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
-        "testCode": "asd",
+        "name": "string",
         "testTypeName": "string",
-        "testId": "string",
+        "testTypeId": "string",
         "certificateNumber": "string",
-        "testExpiryDate": "2019-01-14",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 0,
@@ -271,6 +262,7 @@
         "prohibitionIssued": "true",
         "reasonForAbandoning": "string",
         "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
             "imNumber": 0,

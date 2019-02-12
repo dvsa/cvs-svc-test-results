@@ -24,8 +24,14 @@ class TestResultsDaoMock {
     return Promise.resolve(payload)
   }
 
-  setTestCodeByCallingTestTypes (payload) {
-    return Promise.resolve(payload)
+  getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
+    let testCodeAndClassificationResponse = {
+      linkedTestCode: 'wde',
+      defaultTestCode: 'bde',
+      testTypeClassification: 'Anual With Certificate'
+    }
+
+    return Promise.resolve(testCodeAndClassificationResponse)
   }
 }
 
