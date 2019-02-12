@@ -77,6 +77,7 @@ describe('getTestResultsByVinAndStatus', () => {
 
 describe('insertTestResult', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
+
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
