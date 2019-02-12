@@ -27,7 +27,6 @@ class TestResultsService {
         var filteredTestResults = testResults.filter(
           function (testResult) { return testResult.testStatus === status }
         )
-
         // filter by date
         for (let i = 0; i < filteredTestResults.length; i++) {
           filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
@@ -73,11 +72,62 @@ class TestResultsService {
       }))
     }
 
-    var newPayload = await this.testResultsDAO.setTestCodeByCallingTestTypes(payload)
-    return this.testResultsDAO.createSingle(newPayload)
-      .catch((error) => {
-        throw new HTTPError(error.statusCode, error.message)
+    this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration)
+      .then((newTestTypes) => {
+        payload.testTypes = newTestTypes
       })
+      .then(() => {
+        payload = this.removeVehicleClassification(payload)
+        return this.testResultsDAO.createSingle(payload)
+          .catch((error) => {
+            console.error(error)
+            throw new HTTPError(error.statusCode, error.message)
+          })
+      }).catch(error => {
+        console.error(error)
+        throw error
+      })
+  }
+  removeVehicleClassification (payload) {
+    payload.testTypes.forEach((testType) => {
+      delete testType.testTypeClassification
+    })
+    return payload
+  }
+
+  getTestTypesWithTestCodesAndClassification (testTypes, vehicleType, vehicleSize, vehicleConfiguration) {
+    let promiseArray = []
+    let allTestCodesAndClassifications = []
+    for (let i = 0; i < testTypes.length; i++) {
+      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testId, vehicleType, vehicleSize, vehicleConfiguration)
+        .then((currentTestCodesAndClassification) => {
+          allTestCodesAndClassifications.push(currentTestCodesAndClassification)
+        }).catch(error => {
+          console.error(error)
+          throw error
+        })
+      promiseArray.push(promise)
+    }
+    return Promise.all(promiseArray).then(() => {
+      if (testTypes.length === 1) {
+        testTypes[0].testCode = allTestCodesAndClassifications[0].defaultTestCode
+        testTypes[0].testTypeClassification = allTestCodesAndClassifications[0].testTypeClassification
+      } else {
+        for (let i = 0; i < testTypes.length; i++) {
+          if (allTestCodesAndClassifications[i].linkedTestCode) {
+            testTypes[i].testCode = allTestCodesAndClassifications[i].linkedTestCode
+          } else {
+            testTypes[i].testCode = allTestCodesAndClassifications[i].defaultTestCode
+          }
+          testTypes[i].testTypeClassification = allTestCodesAndClassifications[i].testTypeClassification
+        }
+      }
+    }).then(() => {
+      return testTypes
+    }).catch((err) => {
+      console.error(err)
+      throw err
+    })
   }
 
   insertTestResultsList (testResultsItems) {

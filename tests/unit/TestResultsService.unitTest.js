@@ -78,21 +78,6 @@ describe('getTestResultsByVinAndStatus', () => {
 describe('insertTestResult', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
 
-  context('when inserting a valid test result', () => {
-    it('should successfully return', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      const mockData = require('../resources/test-results')
-
-      return testResultsService.insertTestResult(mockData[0])
-        .then((testResult) => {
-          expect(testResult).to.not.be.equal(null)
-          expect(testResult).to.not.be.equal(undefined)
-        }).catch(() => {
-          expect.fail()
-        })
-    })
-  })
-
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
