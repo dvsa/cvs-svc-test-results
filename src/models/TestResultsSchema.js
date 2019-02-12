@@ -53,7 +53,7 @@ const testTypesSchema = Joi.object().keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required(),
   seatbeltInstallationCheckDate: Joi.boolean().required(),
   testResult: Joi.any().only([ 'failure', 'pass', 'prs', 'abandonned', 'successful', 'unsuccessful' ]).required(),
-  prohibitionIssued: Joi.any().only([ 'yes', 'no' ]).required(),
+  prohibitionIssued: Joi.boolean().required(),
   reasonForAbandoning: Joi.string().min(1).max(500).required(),
   additionalNotesRecorded: Joi.string().min(1).max(500).required(),
   defects: Joi.array().items(defectsSchema).required()
