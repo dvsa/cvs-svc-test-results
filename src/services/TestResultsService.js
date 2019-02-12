@@ -5,6 +5,7 @@ const testResultsSchema = require('../models/TestResultsSchema')
 const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
 const dateFns = require('../../node_modules/date-fns')
+
 /**
  * Service for retrieving and creating Test Results from/into the db
  * @returns Promise
@@ -27,6 +28,7 @@ class TestResultsService {
         var filteredTestResults = testResults.filter(
           function (testResult) { return testResult.testStatus === status }
         )
+
         // filter by date
         for (let i = 0; i < filteredTestResults.length; i++) {
           filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
