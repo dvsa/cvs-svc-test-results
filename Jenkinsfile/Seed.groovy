@@ -7,7 +7,10 @@ podTemplate(label: label, containers: [
             checkout scm
         }
         
-        container('node'){    
+        container('node'){
+               withFolderProperties{
+                   LBRANCH="${env.BRANCH}".toLowerCase()
+                } 
             
             sh "cp -r /tmp/seed ."
             
@@ -25,27 +28,27 @@ podTemplate(label: label, containers: [
                 
                 stage ("delete-table") {
     
-                    sh "aws dynamodb delete-table --table-name cvs-test-test-results --region=eu-west-1 || true"
-                    sh "aws dynamodb wait table-not-exists --table-name cvs-test-test-results --region=eu-west-1"
+                    sh "aws dynamodb delete-table --table-name cvs-${LBRANCH}-test-results --region=eu-west-1 || true"
+                    sh "aws dynamodb wait table-not-exists --table-name cvs-${LBRANCH}-test-results --region=eu-west-1"
 
                 }
                 
                 stage ("create-table") {
-                    sh '''
+                    sh """
                         aws dynamodb create-table \
-                        --table-name cvs-test-test-results \
+                        --table-name cvs-${LBRANCH}-test-results \
                         --attribute-definitions \
                             AttributeName=vin,AttributeType=S AttributeName=testResultId,AttributeType=S \
                         --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultId,KeyType=RANGE\
                         --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
                         --region=eu-west-1
-                        '''
-                    sh "aws dynamodb wait table-exists --table-name cvs-test-test-results --region=eu-west-1"
+                        """
+                    sh "aws dynamodb wait table-exists --table-name cvs-${LBRANCH}-test-results --region=eu-west-1"
 
                 }
                 
                 stage ("seed-table") {
-                        sh "./seed.js cvs-test-test-results ../tests/resources/test-results.json"
+                        sh "./seed.js cvs-${LBRANCH}-test-results ../tests/resources/test-results.json"
                 }
             }
         }
