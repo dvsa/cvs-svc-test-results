@@ -2,8 +2,8 @@ def label = "jenkins-node-${UUID.randomUUID().toString()}"
 podTemplate(label: label, containers: [
     containerTemplate(name: 'dynamodb',
                       image: '086658912680.dkr.ecr.eu-west-1.amazonaws.com/cvs/dynamodb-local:latest',
-                      command: 'java -jar /home/dynamodblocal/DynamoDBLocal.jar -inMemory -sharedDb -port 8001',
-                      ports: [portMapping(name: 'dynamoport', containerPort: 8001, hostPort: 8001)]),
+                      command: 'java -jar /home/dynamodblocal/DynamoDBLocal.jar -inMemory -sharedDb -port 8004',
+                      ports: [portMapping(name: 'dynamoport', containerPort: 8004, hostPort: 8004)]),
     containerTemplate(name: 'node', image: '086658912680.dkr.ecr.eu-west-1.amazonaws.com/cvs/nodejs-builder:latest', ttyEnabled: true, alwaysPullImage: true, command: 'cat'),]){
     node(label) {
 
@@ -40,7 +40,8 @@ podTemplate(label: label, containers: [
                 --attribute-definitions \
                     AttributeName=vin,AttributeType=S AttributeName=testResultId,AttributeType=S \
                 --key-schema AttributeName=vin,KeyType=HASH AttributeName=testResultId,KeyType=RANGE\
-                --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --region=eu-west-1 --endpoint-url http://localhost:8004
+                --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 --region=eu-west-1 \
+                --endpoint-url http://localhost:8004
                 '''
 
                 sh "sls dynamodb seed --seed=test-results"
