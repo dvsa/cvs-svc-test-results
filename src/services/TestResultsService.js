@@ -26,6 +26,7 @@ class TestResultsService {
         const testResults = data.Items
 
         // filter by status
+        if(testResults !== null) {
         var filteredTestResults = testResults.filter(
           function (testResult) { return testResult.testStatus === status }
         )
@@ -46,7 +47,7 @@ class TestResultsService {
         if (filteredTestResults.length === 0) {
           throw new HTTPError(404, 'No resources match the search criteria')
         }
-
+        }
         // remove testResultId property from objects
         for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
 
@@ -59,28 +60,28 @@ class TestResultsService {
         }
         throw error
       })
+      
   }
 
   async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
-
     if (payload.testStatus === 'submitted') {
       validation = Joi.validate(payload, testResultsSchemaSubmitted)
     } else if (payload.testStatus === 'cancelled') {
       validation = Joi.validate(payload, testResultsSchemaCancelled)
     }
+
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
-    if (validation.error) {
+    if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
         errors: validation.error.details.map((details) => {
           return details.message
         })
       }))
     }
-
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload)
     this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration)
       .then((testTypesWithTestCodesAndClassification) => {
@@ -93,7 +94,6 @@ class TestResultsService {
             payloadWithoutClassification = this.setAnniversaryDate(payloadWithoutClassification)
             return this.testResultsDAO.createSingle(payloadWithoutClassification)
               .catch((error) => {
-                console.error(error)
                 throw new HTTPError(error.statusCode, error.message)
               })
           })
@@ -163,7 +163,9 @@ class TestResultsService {
         testResults.forEach((testResult) => {
           this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration)
             .then((testTypes) => {
-              testTypes.filter(testTypes.testTypeClassification === 'Annual With Certificate')
+              if(testTypes.testTypeClassification) {
+                testTypes.filter(testTypes.testTypeClassification === 'Annual With Certificate')
+              }
             })
         })
         return testTypes
