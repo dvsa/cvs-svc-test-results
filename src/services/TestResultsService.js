@@ -102,7 +102,7 @@ class TestResultsService {
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     if (payload.testType) {
       payload.testTypes.forEach(testType => {
-        if (testType.testResult === 'abandonned' && !testType.reasonForAbandoning) {
+        if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
           return false
         }
       })
