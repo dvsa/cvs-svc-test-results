@@ -98,8 +98,6 @@ describe('insertTestResults', () => {
   let mockData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json')))
   let testResultsService = null
   let testResultsDAO = null
-
-  // Populating the database
   before((done) => {
     testResultsDAO = new TestResultsDAO()
     testResultsService = new TestResultsService(testResultsDAO)
@@ -116,14 +114,6 @@ describe('insertTestResults', () => {
           expect(res.statusCode).to.equal(201)
           expect(res.headers['access-control-allow-origin']).to.equal('*')
           expect(res.headers['access-control-allow-credentials']).to.equal('true')
-
-          // Remove the record we just created
-          testResultsDAO.getByVin(mockData[0].vin)
-            .then((object) => {
-              let scheduledForDeletion = {}
-              scheduledForDeletion[object.Items[0].vin] = object.Items[0].testResultId
-              testResultsService.deleteTestResultsList([scheduledForDeletion])
-            })
 
           done()
         })
@@ -162,5 +152,23 @@ describe('insertTestResults', () => {
           done()
         })
     })
+  })
+
+  after((done) => {
+    testResultsDAO.getByVin(mockData[0].vin)
+      .then((object) => {
+        let scheduledForDeletion = {}
+        scheduledForDeletion[object.Items[0].vin] = object.Items[0].testResultId
+        testResultsService.deleteTestResultsList([scheduledForDeletion])
+      })
+
+    done()
+  })
+
+  beforeEach((done) => {
+    setTimeout(done, 500)
+  })
+  afterEach((done) => {
+    setTimeout(done, 500)
   })
 })
