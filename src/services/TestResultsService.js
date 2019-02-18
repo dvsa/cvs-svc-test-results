@@ -26,27 +26,27 @@ class TestResultsService {
         const testResults = data.Items
 
         // filter by status
-        if(testResults !== null) {
-        var filteredTestResults = testResults.filter(
-          function (testResult) { return testResult.testStatus === status }
-        )
-        // filter by date
-        for (let i = 0; i < filteredTestResults.length; i++) {
-          filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
-            function (testType) {
-              return (!(dateFns.isAfter(testType.createdAt, toDateTime) || dateFns.isBefore(testType.createdAt, fromDateTime)))
+        if (testResults !== null) {
+          var filteredTestResults = testResults.filter(
+            function (testResult) { return testResult.testStatus === status }
+          )
+          // filter by date
+          for (let i = 0; i < filteredTestResults.length; i++) {
+            filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
+              function (testType) {
+                return (!(dateFns.isAfter(testType.createdAt, toDateTime) || dateFns.isBefore(testType.createdAt, fromDateTime)))
+              })
+          }
+
+          // if after filtering, there are any testResult items that contain no testType, remove the whole testResult from response
+          filteredTestResults = filteredTestResults.filter(
+            function (testResult) {
+              return testResult.testTypes.length !== 0
             })
-        }
 
-        // if after filtering, there are any testResult items that contain no testType, remove the whole testResult from response
-        filteredTestResults = filteredTestResults.filter(
-          function (testResult) {
-            return testResult.testTypes.length !== 0
-          })
-
-        if (filteredTestResults.length === 0) {
-          throw new HTTPError(404, 'No resources match the search criteria')
-        }
+          if (filteredTestResults.length === 0) {
+            throw new HTTPError(404, 'No resources match the search criteria')
+          }
         }
         // remove testResultId property from objects
         for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
@@ -60,7 +60,6 @@ class TestResultsService {
         }
         throw error
       })
-      
   }
 
   async insertTestResult (payload) {
@@ -92,6 +91,7 @@ class TestResultsService {
           .then((payloadWithExpiryDate) => {
             let payloadWithoutClassification = this.removeVehicleClassification(payloadWithExpiryDate)
             payloadWithoutClassification = this.setAnniversaryDate(payloadWithoutClassification)
+            payloadWithoutClassification = this.setVehicleId(payloadWithoutClassification)
             return this.testResultsDAO.createSingle(payloadWithoutClassification)
               .catch((error) => {
                 throw new HTTPError(error.statusCode, error.message)
@@ -123,6 +123,11 @@ class TestResultsService {
     payload.testTypes.forEach((testType) => {
       delete testType.testTypeClassification
     })
+    return payload
+  }
+
+  setVehicleId (payload) {
+    payload.vehicleId = payload.vrm
     return payload
   }
 
@@ -163,7 +168,7 @@ class TestResultsService {
         testResults.forEach((testResult) => {
           this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration)
             .then((testTypes) => {
-              if(testTypes.testTypeClassification) {
+              if (testTypes.testTypeClassification) {
                 testTypes.filter(testTypes.testTypeClassification === 'Annual With Certificate')
               }
             })
