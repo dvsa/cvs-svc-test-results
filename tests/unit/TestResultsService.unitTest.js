@@ -15,7 +15,7 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('1B7GG36N12S678410', 'Submitted', '2017-01-01', '2019-01-15')
+      return testResultsService.getTestResultsByVinAndStatus('1B7GG36N12S678410', 'submitted', '2017-01-01', '2019-01-15')
         .then((returnedRecords) => {
           expect(returnedRecords).to.not.equal(undefined)
           expect(returnedRecords).to.not.equal({})
@@ -77,18 +77,6 @@ describe('getTestResultsByVinAndStatus', () => {
 
 describe('insertTestResult', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
-
-  context('when inserting a valid test result', () => {
-    it('should successfully return', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      const mockData = require('../resources/test-results')
-
-      return testResultsService.insertTestResult(mockData[0])
-        .catch((error) => {
-          expect.fail()
-        })
-    })
-  })
 
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {

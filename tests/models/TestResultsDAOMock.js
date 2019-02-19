@@ -21,8 +21,17 @@ class TestResultsDaoMock {
 
   createSingle (payload) {
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
+    return Promise.resolve(payload)
+  }
 
-    return Promise.resolve({})
+  getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
+    let testCodeAndClassificationResponse = {
+      linkedTestCode: 'wde',
+      defaultTestCode: 'bde',
+      testTypeClassification: 'Anual With Certificate'
+    }
+
+    return Promise.resolve(testCodeAndClassificationResponse)
   }
 }
 

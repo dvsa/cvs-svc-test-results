@@ -26,5 +26,3 @@ node_modules/**
 # Serverless specific files
 .dynamodb/**
 
-# Config file generated based on environment
-src/config/config.json

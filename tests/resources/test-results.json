@@ -1,84 +1,120 @@
 [
   {
     "testResultId": "1",
-    "vrm": "JY58FPP",
-    "vin": "XMGDE02FS0H012345",
-    "testStationName": "Rowe, Wunsch and Wisoky",
-    "testStationPNumber": "87-1369569",
-    "locationType": "gvts",
-    "testerName": "Dorel",
+    "vrm": "GO79FAT",
+    "vin": "1B7GG36N12S678410",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "testStationType": "atf",
+    "testerName": "George",
     "testerStaffId": "1",
+    "testerEmailAddress": "string",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
-    "testStatus": "Submitted",
+    "testStatus": "submitted",
     "reasonForCancellation": "none",
-    "vehicleClass": "L",
+    "vehicleClass": {
+      "code": "2",
+      "description": "over 200cc or with a sidecar"
+    },
     "vehicleType": "psv",
-    "numberOfSeats": 45,
-    "vehicleStatus": "1",
+    "numberOfSeats": 1,
     "vehicleConfiguration": "rigid",
-    "odometerReading": 100000,
-    "odometerReadingUnits": "kilometers",
-    "preparerId": "ak4434",
-    "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "M1",
-    "countryOfRegistration": "united kingdom",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "m1",
+    "countryOfRegistration": "string",
+    "vehicleSize": "small",
     "testTypes": [
       {
-        "createdAt": "2019-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
-        "testCode": "aal",
-        "testTypeName": "Annual test",
-        "testId": "1",
-        "certificateNumber": "1234",
-        "testExpiryDate": "2019-01-14",
+        "name": "string",
+        "testTypeName": "string",
+        "testTypeId": "3",
+        "testNumber": "string",
+        "certificateNumber": "string",
+        "certificateLink": "string",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
-        "numberOfSeatbeltsFitted": 2,
+        "numberOfSeatbeltsFitted": 0,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "seatbeltInstallationCheckDate": true,
-        "testResult": "Failure",
-        "prohibitionIssued": false,
-        "reasonForAbandoning": "none",
-        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "testResult": "fail",
+        "prohibitionIssued": "true",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
-            "imNumber": 1,
-            "imDescription": "Registration Plate",
-            "forVehicleType": [
-              "psv"
-            ],
+            "imNumber": 0,
+            "imDescription": "string",
             "additionalInformation": {
               "location": {
-                "vertical": null,
+                "vertical": "upper",
                 "horizontal": null,
-                "lateral": null,
-                "longitudinal": "front",
-                "rowNumber": null,
-                "seatNumber": null,
-                "axleNumber": null
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
               },
-              "notes": "None"
+              "notes": "string"
             },
-            "item": {
-              "itemNumber": 1,
-              "itemDescription": "A registration plate:",
-              "forVehicleType": [
-                "psv"
-              ],
-              "deficiency": {
-                "ref": "1.1.a",
-                "deficiencyId": "a",
-                "deficiencySubId": null,
-                "deficiencyCategory": "major",
-                "deficiencyText": "missing.",
-                "stdForProhibition": false,
-                "prs": false,
-                "forVehicleType": [
-                  "psv"
-                ]
-              }
-            }
+            "itemNumber": 0,
+            "itemDescription": "string",
+            "deficiencyRef": "REFERENCELOL",
+            "deficiencyId": "a",
+            "deficiencySubId": "m",
+            "deficiencyCategory": "advisory",
+            "deficiencyText": "oops it doesn't work",
+            "stdForProhibition": true,
+            "prs": true
+          }
+        ]
+      },
+      {
+        "name": "string",
+        "testTypeName": "string",
+        "testTypeId": "3",
+        "testNumber": "string",
+        "certificateNumber": "string",
+        "certificateLink": "string",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "fail",
+        "prohibitionIssued": "true",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "itemNumber": 0,
+            "itemDescription": "string",
+            "deficiencyRef": "REFERENCELOL",
+            "deficiencyId": "a",
+            "deficiencySubId": "m",
+            "deficiencyCategory": "advisory",
+            "deficiencyText": "oops it doesn't work",
+            "stdForProhibition": true,
+            "prs": true
           }
         ]
       }
@@ -86,84 +122,150 @@
   },
   {
     "testResultId": "2",
-    "vrm": "BQ91YHQ",
+    "vrm": "GO79FAT",
     "vin": "1B7GG36N12S678410",
-    "testStationName": "Larson, Nader and Okuneva",
-    "testStationPNumber": "84-926821",
-    "locationType": "atf",
-    "testerName": "Gica",
-    "testerStaffId": "15",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "testStationType": "atf",
+    "testerName": "George",
+    "testerStaffId": "1",
+    "testerEmailAddress": "string",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
-    "testStatus": "Submitted",
+    "testStatus": "cancelled",
     "reasonForCancellation": "none",
-    "vehicleClass": "S",
+    "vehicleClass": {
+      "code": "2",
+      "description": "over 200cc or with a sidecar"
+    },
     "vehicleType": "psv",
-    "numberOfSeats": 45,
-    "vehicleStatus": "1",
+    "numberOfSeats": 1,
     "vehicleConfiguration": "rigid",
-    "odometerReading": 350000,
-    "odometerReadingUnits": "kilometers",
-    "preparerId": "bl5545",
-    "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "M1",
-    "countryOfRegistration": "united kingdom",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "m1",
+    "countryOfRegistration": "string",
+    "vehicleSize": "large",
     "testTypes": [
       {
-        "createdAt": "2019-01-14T10:36:33.987Z",
-        "lastUpdatedAt": "2019-01-14T10:36:33.987Z",
-        "testCode": "aas",
-        "testTypeName": "Annual test",
-        "testId": "19",
-        "certificateNumber": "12334",
-        "testExpiryDate": "2019-01-14",
+        "name": "string",
+        "testTypeName": "string",
+        "testTypeId": "string",
+        "testNumber": "string",
+        "certificateNumber": "string",
+        "certificateLink": "string",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
-        "numberOfSeatbeltsFitted": 2,
+        "numberOfSeatbeltsFitted": 0,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "seatbeltInstallationCheckDate": true,
-        "testResult": "Failure",
-        "prohibitionIssued": false,
-        "reasonForAbandoning": "none",
-        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "testResult": "fail",
+        "prohibitionIssued": "true",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
         "defects": [
           {
-            "imNumber": 3,
-            "imDescription": "Seat Belts & Supplementary Restraint Systems",
-            "forVehicleType": [
-              "psv"
-            ],
+            "imNumber": 0,
+            "imDescription": "string",
             "additionalInformation": {
               "location": {
                 "vertical": "upper",
                 "horizontal": null,
-                "lateral": "centre",
-                "longitudinal": null,
-                "rowNumber": 1,
-                "seatNumber": 2,
-                "axleNumber": null
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
               },
-              "notes": "seatbelt missing"
+              "notes": "string"
             },
-            "item": {
-              "itemNumber": 1,
-              "itemDescription": "Obligatory Seat Belt:",
-              "forVehicleType": [
-                "psv"
-              ],
-              "deficiency": {
-                "ref": "3.1.a",
-                "deficiencyId": "a",
-                "deficiencySubId": null,
-                "deficiencyCategory": "major",
-                "deficiencyText": "missing.",
-                "stdForProhibition": false,
-                "prs": false,
-                "forVehicleType": [
-                  "psv"
-                ]
-              }
-            }
+            "itemNumber": 0,
+            "itemDescription": "string",
+            "deficiencyRef": "REFERENCELOL",
+            "deficiencyId": "a",
+            "deficiencySubId": "m",
+            "deficiencyCategory": "advisory",
+            "deficiencyText": "oops it doesn't work",
+            "stdForProhibition": true,
+            "prs": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "testResultId": "3",
+    "vrm": "GO79FAT",
+    "vin": "1B7GG36N12S678425",
+    "testStationName": "Station Name",
+    "testStationPNumber": "12345",
+    "testStationType": "atf",
+    "testerName": "George",
+    "testerStaffId": "1",
+    "testerEmailAddress": "string",
+    "testStartTimestamp": "2017-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2017-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": "none",
+    "vehicleClass": {
+      "code": "2",
+      "description": "over 200cc or with a sidecar"
+    },
+    "vehicleType": "psv",
+    "numberOfSeats": 1,
+    "vehicleConfiguration": "rigid",
+    "odometerReading": 7,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "string",
+    "preparerName": "string",
+    "euVehicleCategory": "m1",
+    "countryOfRegistration": "string",
+    "testTypes": [
+      {
+        "name": "string",
+        "testTypeName": "string",
+        "testTypeId": "string",
+        "testNumber": "string",
+        "certificateNumber": "string",
+        "certificateLink": "string",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 0,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "fail",
+        "prohibitionIssued": "true",
+        "reasonForAbandoning": "string",
+        "additionalNotesRecorded": "string",
+        "additionalCommentsForAbandon": "string",
+        "defects": [
+          {
+            "imNumber": 0,
+            "imDescription": "string",
+            "additionalInformation": {
+              "location": {
+                "vertical": "upper",
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "rear",
+                "rowNumber": 2,
+                "seatNumber": 1,
+                "axleNumber": 1
+              },
+              "notes": "string"
+            },
+            "itemNumber": 0,
+            "itemDescription": "string",
+            "deficiencyRef": "REFERENCELOL",
+            "deficiencyId": "a",
+            "deficiencySubId": "m",
+            "deficiencyCategory": "advisory",
+            "deficiencyText": "oops it doesn't work",
+            "stdForProhibition": true,
+            "prs": true
           }
         ]
       }
