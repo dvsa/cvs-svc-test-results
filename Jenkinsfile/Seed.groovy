@@ -40,6 +40,12 @@ podTemplate(label: label, containers: [
                         --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
                         --region=eu-west-1
                         '''
+                    sh "sleep 10"
+                    sh """ aws dynamodb tag-resource \
+                        --resource-arn arn:aws:dynamodb:eu-west-1:006106226016:table/cvs-${LBRANCH}-test-results \
+                        --tags Key=is_managed,Value=true \
+                        --region=eu-west-1
+                      """
                     sh "aws dynamodb wait table-exists --table-name cvs-test-test-results --region=eu-west-1"
 
                 }
