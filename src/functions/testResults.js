@@ -15,7 +15,7 @@ const getTestResults = (event) => {
 
   switch (event.httpMethod) {
     case 'GET':
-      const vin = (process.env.BRANCH === 'local') ? event.pathParameters.vin : (event.pathParameters.proxy).substr(14, (event.pathParameters.proxy).length)
+      const vin = (process.env.BRANCH === 'local') ? event.pathParameters.vin : event.pathParameters.proxy
       var testStatus = 'submitted'
       var toDateTime = dateFns.endOfToday()
       var fromDateTime = dateFns.subYears(toDateTime, 2)
