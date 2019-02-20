@@ -88,7 +88,7 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.equal(400)
-          expect(error.body.errors[0]).to.equal('"vrm" is required')
+          expect(error.body.errors[0]).to.equal('"testStatus" should be one of ["submitted", "cancelled"]')
         })
     })
   })
