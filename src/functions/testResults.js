@@ -3,7 +3,7 @@
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
-const dateFns = require('../../node_modules/date-fns')
+const dateFns = require('date-fns')
 
 const getTestResults = (event) => {
   const testResultsDAO = new TestResultsDAO()
