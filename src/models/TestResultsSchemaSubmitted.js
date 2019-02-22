@@ -12,7 +12,7 @@ const defectsSchema = Joi.object().keys({
       rowNumber: Joi.number().max(20).allow(null),
       seatNumber: Joi.number().max(6).allow(null),
       axleNumber: Joi.number().max(10).allow(null)
-    }),
+    }).allow(null),
     notes: Joi.string().max(500)
   }),
   itemNumber: Joi.number().required(),

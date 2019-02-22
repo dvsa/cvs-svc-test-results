@@ -76,9 +76,12 @@ class TestResultsService {
     } else if (payload.testStatus === 'cancelled') {
       validation = Joi.validate(payload, testResultsSchemaCancelled)
     }
-
-    if (!this.reasonForAbandoningPresentOnAllAbandonedTests) {
+    if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
+    }
+
+    if (this.locationNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)) {
+      return Promise.reject(new HTTPError(400, 'An additional information location is null for a defect with deficiency category other than advisory'))
     }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
@@ -105,14 +108,31 @@ class TestResultsService {
           })
       })
   }
-  reasonForAbandoningPresentOnAllAbandonedTests (payload) {
-    if (payload.testType) {
+  locationNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
+    let bool = false
+    if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
-        if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
-          return false
+        if (testType.defects) {
+          testType.defects.forEach(defect => {
+            if (defect.deficiencyCategory !== 'advisory' && defect.additionalInformation.location === null) {
+              bool = true
+            }
+          })
         }
       })
     }
+    return bool
+  }
+  reasonForAbandoningPresentOnAllAbandonedTests (payload) {
+    let bool = true
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
+          bool = false
+        }
+      })
+    }
+    return bool
   }
   setCreatedAtAndLastUpdatedAtDates (payload) {
     if (payload.testTypes) {
