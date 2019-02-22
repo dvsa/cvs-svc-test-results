@@ -21,7 +21,7 @@ const defectsSchema = Joi.object().keys({
   deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).allow(null),
   deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).allow(null),
   deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor', 'prs']).required(),
-  deficiencyText: Joi.string().required(),
+  deficiencyText: Joi.string().required().allow(null),
   stdForProhibition: Joi.boolean(),
   prs: Joi.boolean()
 })
