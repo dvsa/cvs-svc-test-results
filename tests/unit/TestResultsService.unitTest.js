@@ -15,8 +15,9 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('1B7GG36N12S678410', 'submitted', '2017-01-01', '2019-01-15')
+      return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', '2017-01-01', new Date().toString())
         .then((returnedRecords) => {
+          console.log(returnedRecords)
           expect(returnedRecords).to.not.equal(undefined)
           expect(returnedRecords).to.not.equal({})
           expect(JSON.stringify(returnedRecords)).to.equal(JSON.stringify(testResultsDAOMock.testResultsResponseMock))

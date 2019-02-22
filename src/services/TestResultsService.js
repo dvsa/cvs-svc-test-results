@@ -49,7 +49,9 @@ class TestResultsService {
           }
         }
         // remove testResultId property from objects
-        for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
+        if (filteredTestResults) {
+          for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
+        }
 
         return filteredTestResults
       })

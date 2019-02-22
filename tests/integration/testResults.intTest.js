@@ -13,7 +13,7 @@ describe('getTestResultsByVin', () => {
   context('when database is populated', () => {
     var testResultsService = null
     var testResultsDAO = null
-    const databaseSeed = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json')))
+    const databaseSeed = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json')))
 
     // Populating the database
     before((done) => {
@@ -95,7 +95,7 @@ describe('getTestResultsByVin', () => {
 })
 
 describe('insertTestResults', () => {
-  let mockData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json')))
+  let mockData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json')))
   let testResultsService = null
   let testResultsDAO = null
   before((done) => {
