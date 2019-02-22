@@ -23,37 +23,16 @@ class TestResultsService {
           throw new HTTPError(404, 'No resources match the search criteria')
         }
 
-        const testResults = data.Items
-
-        // filter by status
+        let testResults = data.Items
         if (testResults !== null) {
-          var filteredTestResults = testResults.filter(
-            function (testResult) { return testResult.testStatus === status }
-          )
-          // filter by date
-          for (let i = 0; i < filteredTestResults.length; i++) {
-            filteredTestResults[i].testTypes = filteredTestResults[i].testTypes.filter(
-              function (testType) {
-                return (!(dateFns.isAfter(testType.createdAt, toDateTime) || dateFns.isBefore(testType.createdAt, fromDateTime)))
-              })
-          }
-
-          // if after filtering, there are any testResult items that contain no testType, remove the whole testResult from response
-          filteredTestResults = filteredTestResults.filter(
-            function (testResult) {
-              return testResult.testTypes.length !== 0
-            })
-
-          if (filteredTestResults.length === 0) {
+          testResults = this.filterTestResultsByStatus(testResults, status)
+          testResults = this.filterTestResultByDate(testResults, fromDateTime, toDateTime)
+          if (testResults.length === 0) {
             throw new HTTPError(404, 'No resources match the search criteria')
           }
         }
-        // remove testResultId property from objects
-        if (filteredTestResults) {
-          for (let i = 0; i < filteredTestResults.length; i++) { delete filteredTestResults[i].testResultId }
-        }
-
-        return filteredTestResults
+        testResults = this.removeTestResultId(testResults)
+        return testResults
       })
       .catch(error => {
         if (!(error instanceof HTTPError)) {
@@ -62,6 +41,31 @@ class TestResultsService {
         }
         throw error
       })
+  }
+  removeTestResultId (testResults) {
+    if (testResults) {
+      for (let i = 0; i < testResults.length; i++) { delete testResults[i].testResultId }
+    }
+    return testResults
+  }
+  filterTestResultsByStatus (testResults, status) {
+    var filteredTestResults = testResults.filter(
+      function (testResult) { return testResult.testStatus === status }
+    )
+    return filteredTestResults
+  }
+  filterTestResultByDate (testResults, fromDateTime, toDateTime) {
+    for (let i = 0; i < testResults.length; i++) {
+      testResults[i].testTypes = testResults[i].testTypes.filter(
+        function (testType) {
+          return (!(dateFns.isAfter(testType.createdAt, toDateTime) || dateFns.isBefore(testType.createdAt, fromDateTime)))
+        })
+    }
+    testResults = testResults.filter(
+      function (testResult) {
+        return testResult.testTypes.length !== 0
+      })
+    return testResults
   }
 
   async insertTestResult (payload) {
