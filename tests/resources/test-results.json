@@ -1,5 +1,6 @@
 [
   {
+    "testResultId": "1",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -81,6 +82,7 @@
     "euVehicleCategory": "m1"
   },
   {
+    "testResultId": "2",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -160,6 +162,7 @@
     "euVehicleCategory": "m1"
   },
   {
+    "testResultId": "3",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -239,6 +242,7 @@
     "euVehicleCategory": "m1"
   },
   {
+    "testResultId": "4",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
