@@ -244,6 +244,28 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "canceled",
+    "vehicleClass": {
+      "description": "over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012461",
+    "vehicleSize": "small",
+    "testStationName": "Larson, Nader and Okuneva",
+    "vehicleId": "AA12BCD",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "bl5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 350000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "atf",
+    "reasonForCancellation": "mistake",
+    "testerName": "Dorel",
+    "vrm": "AA12BCD",
+    "testStationPNumber": "84-926821",
+    "numberOfSeats": 45,
+    "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
     "testTypes": []
   }
 ]
