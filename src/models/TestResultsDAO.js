@@ -96,6 +96,17 @@ class TestResultsDAO {
       throw new HTTPError(500, 'Internal Server Error')
     })
   }
+  getTestNumber () {
+    let options = {
+      uri: `${config.TEST_NUMBER_ENDPOINT}`,
+      method: 'POST',
+      json: true,
+      port: 3008
+    }
+    return rp(options).then(testNumberResponse => {
+      return testNumberResponse
+    })
+  }
 }
 
 module.exports = TestResultsDAO

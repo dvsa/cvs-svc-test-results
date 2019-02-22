@@ -1,4 +1,5 @@
 {
   "REGION": "localhost",
-  "TEST_TYPES_ENDPOINT": "http://localhost:3002/test-types"
+  "TEST_TYPES_ENDPOINT": "http://localhost:3002/test-types",
+  "TEST_NUMBER_ENDPOINT": "http://localhost:3008/test-number"
 }

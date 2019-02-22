@@ -76,7 +76,6 @@ class TestResultsService {
   async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
-
     if (payload.testStatus === 'submitted') {
       validation = Joi.validate(payload, testResultsSchemaSubmitted)
     } else if (payload.testStatus === 'cancelled') {
@@ -111,14 +110,18 @@ class TestResultsService {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
       .then(() => {
-        return this.setExpiryDate(payload)
-          .then((payloadWithExpiryDate) => {
-            let payloadWithoutClassification = this.removeVehicleClassification(payloadWithExpiryDate)
-            payloadWithoutClassification = this.setAnniversaryDate(payloadWithoutClassification)
-            payloadWithoutClassification = this.setVehicleId(payloadWithoutClassification)
-            return this.testResultsDAO.createSingle(payloadWithoutClassification)
-              .catch((error) => {
-                throw new HTTPError(error.statusCode, error.message)
+        return this.setTestNumber(payload)
+          .then((payloadWithTestNumber) => {
+            return this.setExpiryDate(payloadWithTestNumber)
+              .then((payloadWithExpiryDate) => {
+                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
+                let payloadWithoutClassification = this.removeVehicleClassification(payloadWithVehicleId)
+                return this.testResultsDAO.createSingle(payloadWithoutClassification)
+                  .catch((error) => {
+                    console.error(error)
+                    throw new HTTPError(error.statusCode, error.message)
+                  })
               })
           })
       })
