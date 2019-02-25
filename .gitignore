@@ -26,3 +26,10 @@ node_modules/**
 # Serverless specific files
 .dynamodb/**
 
+#coverage
+.nyc_output/**
+coverage/**
+
+#sonarqube
+.scannerwork/**
+report.json
