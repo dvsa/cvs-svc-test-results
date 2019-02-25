@@ -80,7 +80,7 @@ class TestResultsService {
       validation = {
         error: {
           details: [
-            { message: "\"testStatus\" should be one of [\"submitted\", \"cancelled\"]" }
+            { message: '"testStatus" should be one of ["submitted", "cancelled"]' }
           ]
         }
       }
