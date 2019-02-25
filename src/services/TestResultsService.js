@@ -161,6 +161,20 @@ class TestResultsService {
     })
     return { result: bool, missingFields: missingFieldsString }
   }
+
+  setTestNumber (payload) {
+    if (payload.testTypes) {
+      return this.testResultsDAO.getTestNumber()
+        .then((testNumberResponse) => {
+          payload.testTypes.forEach(testType => {
+            testType.testNumber = testNumberResponse.testNumber
+          })
+          return payload
+        })
+    } else {
+      return Promise.resolve(payload)
+    }
+  }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
     if (payload.testTypes) {
