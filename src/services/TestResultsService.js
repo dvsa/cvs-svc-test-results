@@ -71,10 +71,19 @@ class TestResultsService {
   async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
+
     if (payload.testStatus === 'submitted') {
       validation = Joi.validate(payload, testResultsSchemaSubmitted)
     } else if (payload.testStatus === 'cancelled') {
       validation = Joi.validate(payload, testResultsSchemaCancelled)
+    } else {
+      validation = {
+        error: {
+          details: [
+            { message: '"testStatus" should be one of ["submitted", "cancelled"]' }
+          ]
+        }
+      }
     }
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))

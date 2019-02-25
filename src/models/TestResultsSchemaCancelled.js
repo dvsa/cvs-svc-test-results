@@ -3,7 +3,6 @@ const Joi = require('joi')
 const defectsSchema = Joi.object().keys({
   imNumber: Joi.number().required(),
   imDescription: Joi.string().required(),
-
   additionalInformation: Joi.object().keys({
     location: Joi.object().keys({
       vertical: Joi.any().only(['upper', 'lower']).allow(null),
@@ -31,9 +30,6 @@ const testTypesSchema = Joi.object().keys({
   name: Joi.string().required(),
   testTypeName: Joi.string().required(),
   testTypeId: Joi.string().required(),
-  testNumber: Joi.string(),
-  certificateNumber: Joi.string(),
-  certificateLink: Joi.string(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso(),
   numberOfSeatbeltsFitted: Joi.number().max(4),
