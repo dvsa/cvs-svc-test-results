@@ -21,9 +21,9 @@ const defectsSchema = Joi.object().keys({
   deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).allow(null),
   deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).allow(null),
   deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor', 'prs']).required(),
-  deficiencyText: Joi.string().required().allow(null).required(),
-  stdForProhibition: Joi.boolean().allow(null).required(),
-  prs: Joi.boolean().allow(null).required()
+  deficiencyText: Joi.string().required().allow(null),
+  stdForProhibition: Joi.boolean().allow(null),
+  prs: Joi.boolean().allow(null)
 })
 
 const testTypesSchema = Joi.object().keys({
@@ -33,11 +33,11 @@ const testTypesSchema = Joi.object().keys({
   testNumber: Joi.string(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso().required(),
-  numberOfSeatbeltsFitted: Joi.number().allow(null).required(),
-  lastSeatbeltInstallationCheckDate: Joi.date().allow(null).required(),
+  numberOfSeatbeltsFitted: Joi.number().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean(),
   testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-  prohibitionIssued: Joi.boolean().allow(null).required(),
+  prohibitionIssued: Joi.boolean().allow(null),
   reasonForAbandoning: Joi.string().max(500),
   additionalNotesRecorded: Joi.string().max(500),
   additionalCommentsForAbandon: Joi.string().max(500),
