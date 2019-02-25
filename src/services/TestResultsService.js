@@ -80,7 +80,7 @@ class TestResultsService {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
 
-    if (this.locationNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)) {
+    if (this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)) {
       return Promise.reject(new HTTPError(400, 'An additional information location is null for a defect with deficiency category other than advisory'))
     }
     if (validation !== null && validation.error) {
@@ -108,13 +108,13 @@ class TestResultsService {
           })
       })
   }
-  locationNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
+  fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
     let bool = false
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
         if (testType.defects) {
           testType.defects.forEach(defect => {
-            if (defect.deficiencyCategory !== 'advisory' && defect.additionalInformation.location === null) {
+            if (defect.deficiencyCategory !== 'advisory' && (defect.additionalInformation.location === null ||defect.deficiencyId === null || defect.deficiencySubId === null || defect.deficiencyText === null || defect.stdForProhibition === null || defect.prs === null)) {
               bool = true
             }
           })
