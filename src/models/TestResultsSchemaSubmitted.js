@@ -12,7 +12,7 @@ const defectsSchema = Joi.object().keys({
       rowNumber: Joi.number().max(20).allow(null),
       seatNumber: Joi.number().max(6).allow(null),
       axleNumber: Joi.number().max(10).allow(null)
-    }),
+    }).allow(null),
     notes: Joi.string().max(500)
   }),
   itemNumber: Joi.number().required(),
@@ -21,9 +21,9 @@ const defectsSchema = Joi.object().keys({
   deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).allow(null),
   deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).allow(null),
   deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor', 'prs']).required(),
-  deficiencyText: Joi.string().required(),
-  stdForProhibition: Joi.boolean(),
-  prs: Joi.boolean()
+  deficiencyText: Joi.string().required().allow(null),
+  stdForProhibition: Joi.boolean().allow(null),
+  prs: Joi.boolean().allow(null)
 })
 
 const testTypesSchema = Joi.object().keys({

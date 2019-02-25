@@ -13,7 +13,7 @@ describe('getTestResultsByVin', () => {
   context('when database is populated', () => {
     var testResultsService = null
     var testResultsDAO = null
-    const databaseSeed = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json')))
+    const databaseSeed = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json')))
 
     // Populating the database
     before((done) => {
@@ -45,8 +45,8 @@ describe('getTestResultsByVin', () => {
       context('and status is provided', () => {
         context('and toDateTime and fromDateTime are provided', () => {
           context('and there are test results in the db that satisfy both conditions', () => {
-            it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-01-15', (done) => {
-              request.get('test-results/1B7GG36N12S678410?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-01-15')
+            it('should return the test results for that VIN with status \'submitted\' and that have createdAt value between 2017-01-01 and 2019-02-23', (done) => {
+              request.get('test-results/1B7GG36N12S678410?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-02-23')
                 .end((err, res) => {
                   if (err) { expect.fail(err) }
                   expect(res.statusCode).to.equal(200)
