@@ -80,8 +80,9 @@ class TestResultsService {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
 
-    if (this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)) {
-      return Promise.reject(new HTTPError(400, 'An additional information location is null for a defect with deficiency category other than advisory'))
+    let fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)
+    if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
+      return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
@@ -109,19 +110,39 @@ class TestResultsService {
       })
   }
   fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
+    let missingFields = []
     let bool = false
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
         if (testType.defects) {
           testType.defects.forEach(defect => {
-            if (defect.deficiencyCategory !== 'advisory' && (defect.additionalInformation.location === null ||defect.deficiencyId === null || defect.deficiencySubId === null || defect.deficiencyText === null || defect.stdForProhibition === null || defect.prs === null)) {
-              bool = true
+            if (defect.deficiencyCategory !== 'advisory') {
+              if (defect.additionalInformation.location === null) {
+                missingFields.push('location')
+                bool = true
+              }
+              if (defect.deficiencyText === null) {
+                missingFields.push('deficiencyText')
+                bool = true
+              }
+              if (defect.stdForProhibition === null) {
+                missingFields.push('stdForProhibition')
+                bool = true
+              }
+              if (defect.prs === null) {
+                missingFields.push('prs')
+                bool = true
+              }
             }
           })
         }
       })
     }
-    return bool
+    let missingFieldsString = ''
+    missingFields.forEach(missingField => {
+      missingFieldsString = missingFieldsString + '/' + missingField
+    })
+    return { result: bool, missingFields: missingFieldsString }
   }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
