@@ -97,6 +97,9 @@ class TestResultsService {
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
+    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
+      return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC test type'))
+    }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
         errors: validation.error.details.map((details) => {
@@ -125,6 +128,17 @@ class TestResultsService {
               })
           })
       })
+  }
+  lecTestTypeWithoutCertificateNumber (payload) {
+    let bool = false
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (testType.testTypeId === '39' && !testType.certificateNumber) {
+          return true
+        }
+      })
+    }
+    return bool
   }
   fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
     let missingFields = []
