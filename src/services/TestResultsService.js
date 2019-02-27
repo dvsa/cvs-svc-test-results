@@ -17,12 +17,17 @@ class TestResultsService {
   }
 
   getTestResultsByVinAndStatus (vin, status, fromDateTime, toDateTime) {
+    let isToDatetimeValid = new Date(toDateTime) instanceof Date && !isNaN(new Date(toDateTime));
+    let isFromDateTimeValid = new Date(fromDateTime) instanceof Date && !isNaN(new Date(fromDateTime))
     return this.testResultsDAO.getByVin(vin)
       .then(data => {
-        if (data.Count === 0) {
+        if (data.Count === 0 || !(isToDatetimeValid && isFromDateTimeValid)) {
           throw new HTTPError(404, 'No resources match the search criteria')
+        } else if(!isToDatetimeValid) {
+          throw new HTTPError(404, 'To Date field format is not valid')
+        } else if(!isFromDateTimeValid) {
+          throw new HTTPError(404, 'From Date field format is not valid')
         }
-
         let testResults = data.Items
         if (testResults !== null) {
           testResults = this.filterTestResultsByStatus(testResults, status)
@@ -316,6 +321,7 @@ class TestResultsService {
         }
       })
   }
+
 }
 
 module.exports = TestResultsService

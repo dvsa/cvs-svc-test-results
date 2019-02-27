@@ -17,7 +17,6 @@ describe('getTestResultsByVinAndStatus', () => {
 
       return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', '2017-01-01', new Date().toString())
         .then((returnedRecords) => {
-          console.log(returnedRecords)
           expect(returnedRecords).to.not.equal(undefined)
           expect(returnedRecords).to.not.equal({})
           expect(JSON.stringify(returnedRecords)).to.equal(JSON.stringify(testResultsDAOMock.testResultsResponseMock))
