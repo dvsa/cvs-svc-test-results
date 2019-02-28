@@ -12,7 +12,8 @@ function generateConfig () {
   {
     DYNAMODB_DOCUMENTCLIENT_PARAMS: {},
     DYNAMODB_TABLE_NAME: 'cvs-' + BRANCH + '-test-results',
-    TEST_TYPES_ENDPOINT: configData.TEST_TYPES_ENDPOINT
+    TEST_TYPES_ENDPOINT: configData.TEST_TYPES_ENDPOINT,
+    TEST_NUMBER_ENDPOINT: configData.TEST_NUMBER_ENDPOINT
   }
 
   if (!BRANCH) {

@@ -17,15 +17,15 @@ class TestResultsService {
   }
 
   getTestResultsByVinAndStatus (vin, status, fromDateTime, toDateTime) {
-    let isToDatetimeValid = new Date(toDateTime) instanceof Date && !isNaN(new Date(toDateTime));
+    let isToDatetimeValid = new Date(toDateTime) instanceof Date && !isNaN(new Date(toDateTime))
     let isFromDateTimeValid = new Date(fromDateTime) instanceof Date && !isNaN(new Date(fromDateTime))
     return this.testResultsDAO.getByVin(vin)
       .then(data => {
         if (data.Count === 0 || !(isToDatetimeValid && isFromDateTimeValid)) {
           throw new HTTPError(404, 'No resources match the search criteria')
-        } else if(!isToDatetimeValid) {
+        } else if (!isToDatetimeValid) {
           throw new HTTPError(404, 'To Date field format is not valid')
-        } else if(!isFromDateTimeValid) {
+        } else if (!isFromDateTimeValid) {
           throw new HTTPError(404, 'From Date field format is not valid')
         }
         let testResults = data.Items
@@ -76,7 +76,6 @@ class TestResultsService {
   async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
-
     if (payload.testStatus === 'submitted') {
       validation = Joi.validate(payload, testResultsSchemaSubmitted)
     } else if (payload.testStatus === 'cancelled') {
@@ -98,6 +97,9 @@ class TestResultsService {
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
+    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
+      return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC test type'))
+    }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
         errors: validation.error.details.map((details) => {
@@ -111,17 +113,32 @@ class TestResultsService {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
       .then(() => {
-        return this.setExpiryDate(payload)
-          .then((payloadWithExpiryDate) => {
-            let payloadWithoutClassification = this.removeVehicleClassification(payloadWithExpiryDate)
-            payloadWithoutClassification = this.setAnniversaryDate(payloadWithoutClassification)
-            payloadWithoutClassification = this.setVehicleId(payloadWithoutClassification)
-            return this.testResultsDAO.createSingle(payloadWithoutClassification)
-              .catch((error) => {
-                throw new HTTPError(error.statusCode, error.message)
+        return this.setTestNumber(payload)
+          .then((payloadWithTestNumber) => {
+            return this.setExpiryDate(payloadWithTestNumber)
+              .then((payloadWithExpiryDate) => {
+                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
+                let payloadWithoutClassification = this.removeVehicleClassification(payloadWithVehicleId)
+                return this.testResultsDAO.createSingle(payloadWithoutClassification)
+                  .catch((error) => {
+                    console.error(error)
+                    throw new HTTPError(error.statusCode, error.message)
+                  })
               })
           })
       })
+  }
+  lecTestTypeWithoutCertificateNumber (payload) {
+    let bool = false
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (testType.testTypeId === '39' && !testType.certificateNumber) {
+          return true
+        }
+      })
+    }
+    return bool
   }
   fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
     let missingFields = []
@@ -157,6 +174,20 @@ class TestResultsService {
       missingFieldsString = missingFieldsString + '/' + missingField
     })
     return { result: bool, missingFields: missingFieldsString }
+  }
+
+  setTestNumber (payload) {
+    if (payload.testTypes) {
+      return this.testResultsDAO.getTestNumber()
+        .then((testNumberResponse) => {
+          payload.testTypes.forEach(testType => {
+            testType.testNumber = testNumberResponse.testNumber
+          })
+          return payload
+        })
+    } else {
+      return Promise.resolve(payload)
+    }
   }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
@@ -207,6 +238,7 @@ class TestResultsService {
         if (this.atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate(payload.testTypes)) {
           payload.testTypes.forEach((testType) => {
             if ((testType.testResult === 'pass' || testType.testResult === 'prs')) {
+              testType.certificateNumber = testType.testNumber
               if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                 testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
               } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
@@ -321,7 +353,6 @@ class TestResultsService {
         }
       })
   }
-
 }
 
 module.exports = TestResultsService

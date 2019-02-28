@@ -32,6 +32,7 @@ const testTypesSchema = Joi.object().keys({
   testTypeId: Joi.string().required(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso(),
+  certificateNumber: Joi.string(),
   numberOfSeatbeltsFitted: Joi.number().max(4),
   lastSeatbeltInstallationCheckDate: Joi.date(),
   seatbeltInstallationCheckDate: Joi.boolean(),
