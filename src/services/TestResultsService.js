@@ -37,6 +37,7 @@ class TestResultsService {
           }
         }
         testResults = this.removeTestResultId(testResults)
+        testResults = testResults.map((testResult) => this.removeVehicleClassification(testResult))
         return testResults
       })
       .catch(error => {
@@ -76,6 +77,7 @@ class TestResultsService {
   async insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
+
     if (payload.testStatus === 'submitted') {
       validation = Joi.validate(payload, testResultsSchemaSubmitted)
     } else if (payload.testStatus === 'cancelled') {
@@ -119,8 +121,7 @@ class TestResultsService {
               .then((payloadWithExpiryDate) => {
                 let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
                 let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
-                let payloadWithoutClassification = this.removeVehicleClassification(payloadWithVehicleId)
-                return this.testResultsDAO.createSingle(payloadWithoutClassification)
+                return this.testResultsDAO.createSingle(payloadWithVehicleId)
                   .catch((error) => {
                     console.error(error)
                     throw new HTTPError(error.statusCode, error.message)
@@ -211,6 +212,7 @@ class TestResultsService {
     }
     return payload
   }
+
   removeVehicleClassification (payload) {
     payload.testTypes.forEach((testType) => {
       delete testType.testTypeClassification
