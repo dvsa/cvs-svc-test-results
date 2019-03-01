@@ -1,13 +1,12 @@
 const AWS = require('aws-sdk')
-const generateConfig = require('../config/generateConfig')
-const config = generateConfig()
-const dbClient = new AWS.DynamoDB.DocumentClient(config.DYNAMODB_DOCUMENTCLIENT_PARAMS)
+const Configuration = require('../utils/Configuration')
+const dbConfig = Configuration.getInstance().getDynamoDBConfig()
+const dbClient = new AWS.DynamoDB.DocumentClient(dbConfig.params)
 const HTTPError = require('../models/HTTPError')
-const rp = require('request-promise')
 
 class TestResultsDAO {
   constructor () {
-    this.tableName = config.DYNAMODB_TABLE_NAME
+    this.tableName = dbConfig.table
   }
 
   getByVin (vin) {
@@ -82,31 +81,51 @@ class TestResultsDAO {
     }
   }
   getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
+    let testTypesLambdaConfig = Configuration.getInstance().getEndpoints('getTestTypesById')
     const fields = 'defaultTestCode,linkedTestCode,testTypeClassification'
-    let options = {
-      uri: `${config.TEST_TYPES_ENDPOINT}/${testTypeId}?vehicleType=${vehicleType}&vehicleSize=${vehicleSize}&vehicleConfiguration=${vehicleConfiguration}&fields=${fields}`,
-      json: true,
-      port: 3006
+    let testTypesLambda = new AWS.Lambda({
+      apiVersion: testTypesLambdaConfig.apiVersion
+      // ,
+      // region: testTypesLambdaConfig.region,
+      // endpoint: testTypesLambdaConfig.endpoint
+    })
+    var event = {
+      path: '/test-types/' + testTypeId,
+      queryStringParameters: {
+        vehicleType: vehicleType,
+        vehicleSize: vehicleSize,
+        vehicleConfiguration: vehicleConfiguration,
+        fields: fields
+      },
+      pathParameters: {
+        id: testTypeId
+      },
+      httpMethod: 'GET',
+      resource: '/test-types/{id}'
     }
+    return testTypesLambda.invoke({
+      FunctionName: testTypesLambdaConfig.functionName,
+      InvocationType: "Event",
+      Payload: JSON.stringify(event)
+    }).promise().then((data) => {
+      return data.Payload
+    }).catch((error) => {
+      return new HTTPError(error.StatusCode, error.body)
+    })
+  }
 
-    return rp(options).then(testCodeAndClassificationResponse => {
-      return testCodeAndClassificationResponse
-    }).catch(err => {
-      console.error(err)
-      throw new HTTPError(500, 'Internal Server Error')
-    })
-  }
-  getTestNumber () {
-    let options = {
-      uri: `${config.TEST_NUMBER_ENDPOINT}`,
-      method: 'POST',
-      json: true,
-      port: 3008
-    }
-    return rp(options).then(testNumberResponse => {
-      return testNumberResponse
-    })
-  }
+  // TO BE REFACTORED...
+  // getTestNumber () {
+  //   let options = {
+  //     uri: `${config.TEST_NUMBER_ENDPOINT}`,
+  //     method: 'POST',
+  //     json: true,
+  //     port: 3008
+  //   }
+  //   return rp(options).then(testNumberResponse => {
+  //     return testNumberResponse
+  //   })
+  // }
 }
 
 module.exports = TestResultsDAO

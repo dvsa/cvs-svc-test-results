@@ -1,0 +1,49 @@
+functions:
+- postTestResults:
+    method: POST
+    path: /test-results
+    proxy: null
+    function: postTestResults
+- getTestResultsByVin:
+    method: GET
+    path: /test-results/{+proxy}
+    proxy: :vin
+    function: getTestResultsByVin
+dynamodb:
+  local:
+    params:
+      region: localhost
+      endpoint: http://localhost:8004
+    table: cvs-local-test-results
+  local-global:
+    params:
+      region: localhost
+      endpoint: http://localhost:8000
+    table: cvs-local-global-test-results
+  develop:
+    params: {}
+    table: cvs-${BRANCH}-test-results
+serverless:
+  basePath: /${BRANCH}
+  port: 3006
+endpoints:
+  getTestTypesById:
+    local-global:
+      apiVersion: '2015-03-31'
+      region: eu-west-1
+      endpoint: http://localhost:4000
+      functionName: cvs-svc-global-dev-getTestTypesById
+    develop: {
+      apiVersion: '2015-03-31',
+      functionName: test-types-develop
+    }
+  getTestNumber:
+    local-global:
+      apiVersion: '2015-03-31'
+      region: eu-west-1
+      endpoint: http://localhost:4000
+      functionName: cvs-svc-global-dev-generateTestNumber
+    develop: {
+      apiVersion: '2015-03-31',
+      functionName: test-number-develop
+    }
