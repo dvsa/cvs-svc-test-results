@@ -195,12 +195,14 @@ class TestResultsService {
   }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
-    if (payload.testTypes.length > 0) {
-      payload.testTypes.forEach(testType => {
-        if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
-          bool = false
-        }
-      })
+    if(payload.testTypes) {
+      if (payload.testTypes.length > 0) {
+        payload.testTypes.forEach(testType => {
+          if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
+            bool = false
+          }
+        })
+      }
     }
     return bool
   }
