@@ -73,8 +73,7 @@ class TestResultsService {
       })
     return testResults
   }
-
-  async insertTestResult (payload) {
+  insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
 
@@ -110,7 +109,7 @@ class TestResultsService {
       }))
     }
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload)
-    this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration)
+    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration)
       .then((testTypesWithTestCodesAndClassification) => {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
@@ -122,11 +121,16 @@ class TestResultsService {
                 let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
                 let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
-                  .catch((error) => {
-                    throw new HTTPError(error.statusCode, error.message)
+                  .catch(() => {
+                    throw new HTTPError(500, 'Internal server error')
                   })
               })
+          }).catch(() => {
+            throw new HTTPError(500, 'Internal server error')
           })
+      }).catch((error) => {
+        console.error(error)
+        return Promise.reject(new HTTPError(error.statusCode, error.body))
       })
   }
   lecTestTypeWithoutCertificateNumber (payload) {
