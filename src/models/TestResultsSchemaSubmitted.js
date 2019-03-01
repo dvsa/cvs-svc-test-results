@@ -5,44 +5,43 @@ const defectsSchema = Joi.object().keys({
   imDescription: Joi.string().required(),
   additionalInformation: Joi.object().keys({
     location: Joi.object().keys({
-      vertical: Joi.any().only(['upper', 'lower']).allow(null),
-      horizontal: Joi.any().only(['inner', 'outer']).allow(null),
-      lateral: Joi.any().only(['nearside', 'centre', 'offside']).allow(null),
-      longitudinal: Joi.any().only(['front', 'rear']).allow(null),
-      rowNumber: Joi.number().max(20).allow(null),
-      seatNumber: Joi.number().max(6).allow(null),
-      axleNumber: Joi.number().max(10).allow(null)
-    }).allow(null),
-    notes: Joi.string().max(500)
-  }),
+      vertical: Joi.any().only(['upper', 'lower']).required().allow(null),
+      horizontal: Joi.any().only(['inner', 'outer']).required().allow(null),
+      lateral: Joi.any().only(['nearside', 'centre', 'offside']).required().allow(null),
+      longitudinal: Joi.any().only(['front', 'rear']).required().allow(null),
+      rowNumber: Joi.number().max(20).required().allow(null),
+      seatNumber: Joi.number().max(6).required().allow(null),
+      axleNumber: Joi.number().max(10).required().allow(null)
+    }).required().allow(null),
+    notes: Joi.string().max(500).required().allow(null)
+  }).required().allow(null),
   itemNumber: Joi.number().required(),
   itemDescription: Joi.string().required(),
   deficiencyRef: Joi.string().required(),
-  deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).allow(null),
-  deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).allow(null),
+  deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).required().allow(null),
+  deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).required().allow(null),
   deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor', 'prs']).required(),
   deficiencyText: Joi.string().required().allow(null),
-  stdForProhibition: Joi.boolean().allow(null),
-  prs: Joi.boolean().allow(null)
+  stdForProhibition: Joi.boolean().required().allow(null),
+  prs: Joi.boolean().required().allow(null)
 })
 
 const testTypesSchema = Joi.object().keys({
   name: Joi.string().required(),
   testTypeName: Joi.string().required(),
   testTypeId: Joi.string().required(),
-  testNumber: Joi.string(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso().required(),
-  numberOfSeatbeltsFitted: Joi.number().allow(null),
-  lastSeatbeltInstallationCheckDate: Joi.date().allow(null),
-  seatbeltInstallationCheckDate: Joi.boolean(),
+  numberOfSeatbeltsFitted: Joi.number().required().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
+  seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-  prohibitionIssued: Joi.boolean().allow(null),
-  certificateNumber: Joi.string(),
-  reasonForAbandoning: Joi.string().max(500),
-  additionalNotesRecorded: Joi.string().max(500),
-  additionalCommentsForAbandon: Joi.string().max(500),
-  defects: Joi.array().items(defectsSchema)
+  prohibitionIssued: Joi.boolean().required().allow(null),
+  certificateNumber: Joi.string().required().allow(null),
+  reasonForAbandoning: Joi.string().max(500).required().allow(null),
+  additionalNotesRecorded: Joi.string().max(500).required().allow(null),
+  additionalCommentsForAbandon: Joi.string().max(500).required().allow(null),
+  defects: Joi.array().items(defectsSchema).required()
 })
 
 const testResultsSchema = Joi.object().keys({
@@ -61,19 +60,19 @@ const testResultsSchema = Joi.object().keys({
   vehicleClass: Joi.object().keys({
     code: Joi.any().only(['1', '2', '3', 'n', 't', 'l', 's', 'v']).required(),
     description: Joi.any().only(['over 200cc or with a sidecar', 'not applicable', 'small psv (ie: less than or equal to 22 seats)', 'motorbikes up to 200cc', 'trailer', 'large psv(ie: greater than 23 seats)', '3 wheelers', 'heavy goods vehicle']).required()
-  }),
+  }).required(),
   vehicleType: Joi.any().only(['psv', 'hgv', 'trl']).required(),
   numberOfSeats: Joi.number().required(),
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
   odometerReading: Joi.number().required(),
   odometerReadingUnits: Joi.any().only(['kilometres', 'miles']).required(),
-  preparerId: Joi.string().allow(null).required(),
+  preparerId: Joi.string().required().allow(''),
   preparerName: Joi.string().required(),
   euVehicleCategory: Joi.any().only(['m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4']).required(),
   countryOfRegistration: Joi.string().required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   vehicleSize: Joi.any().only(['small', 'large']).required(),
-  reasonForCancellation: Joi.string().max(500)
+  reasonForCancellation: Joi.string().max(500).required().allow(null)
 })
 
 module.exports = testResultsSchema

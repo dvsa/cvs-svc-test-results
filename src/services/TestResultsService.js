@@ -123,7 +123,6 @@ class TestResultsService {
                 let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
                   .catch((error) => {
-                    console.error(error)
                     throw new HTTPError(error.statusCode, error.message)
                   })
               })
@@ -192,7 +191,7 @@ class TestResultsService {
   }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
-    if (payload.testTypes) {
+    if (payload.testTypes.length > 0) {
       payload.testTypes.forEach(testType => {
         if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
           bool = false
@@ -202,7 +201,7 @@ class TestResultsService {
     return bool
   }
   setCreatedAtAndLastUpdatedAtDates (payload) {
-    if (payload.testTypes) {
+    if (payload.testTypes.length > 0) {
       payload.testTypes.forEach(testType => {
         Object.assign(testType,
           {
