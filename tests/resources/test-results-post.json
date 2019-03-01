@@ -39,6 +39,7 @@
         "testResult": "fail",
         "prohibitionIssued": false,
         "reasonForAbandoning": "none",
+        "certificateNumber": null,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
         "additionalCommentsForAbandon": "none",
         "defects": [
@@ -113,6 +114,7 @@
         "reasonForAbandoning": "none",
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
         "additionalCommentsForAbandon": "none",
+        "certificateNumber": null,
         "defects": [
           {
             "imNumber": 3,
@@ -185,6 +187,7 @@
         "reasonForAbandoning": "none",
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
         "additionalCommentsForAbandon": "none",
+        "certificateNumber": null,
         "defects": [
           {
             "imNumber": 3,
