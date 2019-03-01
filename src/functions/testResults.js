@@ -8,7 +8,6 @@ const dateFns = require('date-fns')
 const getTestResults = (event) => {
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
-
   if (!event) {
     return Promise.resolve(new HTTPResponse(500, 'AWS Event is undefined.'))
   }
@@ -19,12 +18,19 @@ const getTestResults = (event) => {
       var testStatus = 'submitted'
       var toDateTime = dateFns.endOfToday()
       var fromDateTime = dateFns.subYears(toDateTime, 2)
-
       if (event.queryStringParameters) {
-        if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
-        if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
-        if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }
+        if(!event.queryStringParameters.toDateTime.length) {
+          return Promise.resolve(new HTTPResponse(404, 'To Data is empty'))
+        } else if(!event.queryStringParameters.fromDateTime.length) {
+          return Promise.resolve(new HTTPResponse(404, 'From Data is empty'))
+        }
+        else {
+          if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
+          if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
+          if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }  
+        } 
       }
+              
 
       return testResultsService.getTestResultsByVinAndStatus(vin, testStatus, fromDateTime, toDateTime)
         .then((data) => {
