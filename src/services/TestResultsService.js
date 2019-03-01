@@ -114,20 +114,20 @@ class TestResultsService {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
       .then(() => {
-        return this.setTestNumber(payload)
-          .then((payloadWithTestNumber) => {
-            return this.setExpiryDate(payloadWithTestNumber)
-              .then((payloadWithExpiryDate) => {
-                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
-                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
-                return this.testResultsDAO.createSingle(payloadWithVehicleId)
-                  .catch(() => {
-                    throw new HTTPError(500, 'Internal server error')
-                  })
+        // return this.setTestNumber(payload)
+        //   .then((payloadWithTestNumber) => {
+        return this.setExpiryDate(payload)
+          .then((payloadWithExpiryDate) => {
+            let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+            let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
+            return this.testResultsDAO.createSingle(payloadWithVehicleId)
+              .catch(() => {
+                throw new HTTPError(500, 'Internal server error')
               })
-          }).catch(() => {
-            throw new HTTPError(500, 'Internal server error')
           })
+          // }).catch(() => {
+          //   throw new HTTPError(500, 'Internal server error')
+          // })
       }).catch((error) => {
         console.error(error)
         return Promise.reject(new HTTPError(error.statusCode, error.body))
@@ -195,7 +195,7 @@ class TestResultsService {
   }
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
-    if(payload.testTypes) {
+    if (payload.testTypes) {
       if (payload.testTypes.length > 0) {
         payload.testTypes.forEach(testType => {
           if (testType.testResult === 'abandoned' && !testType.reasonForAbandoning) {
