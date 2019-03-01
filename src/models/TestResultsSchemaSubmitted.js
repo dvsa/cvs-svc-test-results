@@ -13,7 +13,7 @@ const defectsSchema = Joi.object().keys({
       seatNumber: Joi.number().max(6).required().allow(null),
       axleNumber: Joi.number().max(10).required().allow(null)
     }).required().allow(null),
-    notes: Joi.string().max(500)
+    notes: Joi.string().max(500).required().allow(null)
   }).required().allow(null),
   itemNumber: Joi.number().required(),
   itemDescription: Joi.string().required(),
@@ -66,7 +66,7 @@ const testResultsSchema = Joi.object().keys({
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
   odometerReading: Joi.number().required(),
   odometerReadingUnits: Joi.any().only(['kilometres', 'miles']).required(),
-  preparerId: Joi.string().required(),
+  preparerId: Joi.string().required().allow(''),
   preparerName: Joi.string().required(),
   euVehicleCategory: Joi.any().only(['m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4']).required(),
   countryOfRegistration: Joi.string().required(),

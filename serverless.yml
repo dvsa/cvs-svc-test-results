@@ -17,7 +17,7 @@ custom:
     start:
       port: 8004
       inMemory: true
-      migrate: true
+      migrate: false
       seed: false
       noStart: true
     seed:
