@@ -20,9 +20,9 @@ const getTestResults = (event) => {
       var fromDateTime = dateFns.subYears(toDateTime, 2)
       if (event.queryStringParameters) {
         if (event.queryStringParameters.toDateTime === '') {
-          return Promise.resolve(new HTTPResponse(404, 'To Data is empty'))
+          return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
         } else if (event.queryStringParameters.fromDateTime === '') {
-          return Promise.resolve(new HTTPResponse(404, 'From Data is empty'))
+          return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
         } else {
           if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
           if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
