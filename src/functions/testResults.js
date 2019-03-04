@@ -19,19 +19,16 @@ const getTestResults = (event) => {
       var toDateTime = dateFns.endOfToday()
       var fromDateTime = dateFns.subYears(toDateTime, 2)
       if (event.queryStringParameters) {
-        if(!event.queryStringParameters.toDateTime.length) {
+        if (event.queryStringParameters.toDateTime === '') {
           return Promise.resolve(new HTTPResponse(404, 'To Data is empty'))
-        } else if(!event.queryStringParameters.fromDateTime.length) {
+        } else if (event.queryStringParameters.fromDateTime === '') {
           return Promise.resolve(new HTTPResponse(404, 'From Data is empty'))
-        }
-        else {
+        } else {
           if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
           if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
-          if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }  
-        } 
+          if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }
+        }
       }
-              
-
       return testResultsService.getTestResultsByVinAndStatus(vin, testStatus, fromDateTime, toDateTime)
         .then((data) => {
           return new HTTPResponse(200, data)
