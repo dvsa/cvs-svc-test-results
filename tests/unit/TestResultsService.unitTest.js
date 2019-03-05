@@ -26,7 +26,7 @@ describe('getTestResultsByVinAndStatus', () => {
   })
 
   context('when db returns empty data', () => {
-    it('should return 404-No resources match the search criteria', () => {
+    it('should return 400-Bad request', () => {
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
       return testResultsService.getTestResultsByVinAndStatus('nonExistentVin', 'nonExistentStatus')
@@ -34,8 +34,8 @@ describe('getTestResultsByVinAndStatus', () => {
           expect.fail()
         }).catch((errorResponse) => {
           expect(errorResponse).to.be.instanceOf(HTTPError)
-          expect(errorResponse.statusCode).to.equal(404)
-          expect(errorResponse.body).to.equal('No resources match the search criteria')
+          expect(errorResponse.statusCode).to.equal(400)
+          expect(errorResponse.body).to.equal('Bad request')
         })
     })
   })
