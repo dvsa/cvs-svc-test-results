@@ -21,12 +21,12 @@ class TestResultsService {
     let isFromDateTimeValid = new Date(fromDateTime) instanceof Date && !isNaN(new Date(fromDateTime))
     return this.testResultsDAO.getByVin(vin)
       .then(data => {
-        if (data.Count === 0 || !(isToDatetimeValid && isFromDateTimeValid)) {
+        if (data.Count === 0) {
           throw new HTTPError(404, 'No resources match the search criteria')
         } else if (!isToDatetimeValid) {
-          throw new HTTPError(404, 'To Date field format is not valid')
+          throw new HTTPError(400, 'Bad request')
         } else if (!isFromDateTimeValid) {
-          throw new HTTPError(404, 'From Date field format is not valid')
+          throw new HTTPError(400, 'Bad request')
         }
         let testResults = data.Items
         if (testResults !== null) {
