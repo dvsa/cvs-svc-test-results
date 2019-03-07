@@ -20,30 +20,28 @@ dynamodb:
       region: localhost
       endpoint: http://localhost:8000
     table: cvs-local-global-test-results
-  develop:
+  remote:
     params: {}
     table: cvs-${BRANCH}-test-results
 serverless:
   basePath: /${BRANCH}
   port: 3006
 endpoints:
-  getTestTypesById:
-    local-global:
+  local-global:
+    params:
       apiVersion: '2015-03-31'
       region: eu-west-1
       endpoint: http://localhost:4000
-      functionName: cvs-svc-global-dev-getTestTypesById
-    develop: {
-      apiVersion: '2015-03-31',
-      functionName: test-types-develop
-    }
-  getTestNumber:
-    local-global:
+    functions:
+      getTestTypesById:
+        name: cvs-svc-global-dev-getTestTypesById
+      getTestNumber:
+        name: cvs-svc-global-dev-generateTestNumber
+  remote:
+    params:
       apiVersion: '2015-03-31'
-      region: eu-west-1
-      endpoint: http://localhost:4000
-      functionName: cvs-svc-global-dev-generateTestNumber
-    develop: {
-      apiVersion: '2015-03-31',
-      functionName: test-number-develop
-    }
+    functions:
+      getTestTypesById:
+        name: test-types-${BRANCH}
+      getTestNumber:
+        name: test-number-${BRANCH}
