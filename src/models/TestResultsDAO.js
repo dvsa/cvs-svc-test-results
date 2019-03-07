@@ -2,6 +2,7 @@ const AWS = require('aws-sdk')
 const Configuration = require('../utils/Configuration')
 const dbConfig = Configuration.getInstance().getDynamoDBConfig()
 const dbClient = new AWS.DynamoDB.DocumentClient(dbConfig.params)
+const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints()
 const HTTPError = require('../models/HTTPError')
 
 class TestResultsDAO {
@@ -81,14 +82,10 @@ class TestResultsDAO {
     }
   }
   getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
-    let testTypesLambdaConfig = Configuration.getInstance().getEndpoints('getTestTypesById')
     const fields = 'defaultTestCode,linkedTestCode,testTypeClassification'
-    let testTypesLambda = new AWS.Lambda({
-      apiVersion: testTypesLambdaConfig.apiVersion
-      // ,
-      // region: testTypesLambdaConfig.region,
-      // endpoint: testTypesLambdaConfig.endpoint
-    })
+    
+    let testTypesLambda = new AWS.Lambda(lambdaInvokeEndpoints.params)
+
     var event = {
       path: '/test-types/' + testTypeId,
       queryStringParameters: {
@@ -104,8 +101,8 @@ class TestResultsDAO {
       resource: '/test-types/{id}'
     }
     return testTypesLambda.invoke({
-      FunctionName: testTypesLambdaConfig.functionName,
-      InvocationType: "Event",
+      FunctionName: lambdaInvokeEndpoints.functions.getTestTypesById.name,
+      InvocationType: 'Event',
       Payload: JSON.stringify(event)
     }).promise().then((data) => {
       return data.Payload
