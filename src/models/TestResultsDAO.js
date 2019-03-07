@@ -102,7 +102,7 @@ class TestResultsDAO {
     }
     return testTypesLambda.invoke({
       FunctionName: lambdaInvokeEndpoints.functions.getTestTypesById.name,
-      InvocationType: 'Event',
+      InvocationType: 'RequestResponse',
       Payload: JSON.stringify(event)
     }).promise().then((data) => {
       return data.Payload
