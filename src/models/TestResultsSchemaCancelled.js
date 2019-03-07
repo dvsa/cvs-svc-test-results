@@ -53,7 +53,7 @@ const testResultsSchema = Joi.object().keys({
   testStationType: Joi.any().only(['atf', 'gvts', 'hq']).required(),
   testerName: Joi.string().min(1).max(60).required(),
   testerEmailAddress: Joi.string().min(1).max(60).required(),
-  testerStaffId: Joi.string().min(1).max(9).required(),
+  testerStaffId: Joi.string().max(36).required(),
   testStartTimestamp: Joi.date().iso().required(),
   testEndTimestamp: Joi.date().iso().required(),
   testStatus: Joi.any().only(['submitted', 'cancelled']).required(),
