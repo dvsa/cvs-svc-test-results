@@ -114,8 +114,6 @@ class TestResultsService {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
       .then(() => {
-        // return this.setTestNumber(payload)
-        //   .then((payloadWithTestNumber) => {
         return this.setExpiryDate(payload)
           .then((payloadWithExpiryDate) => {
             let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
@@ -125,9 +123,6 @@ class TestResultsService {
                 throw new HTTPError(500, 'Internal server error')
               })
           })
-          // }).catch(() => {
-          //   throw new HTTPError(500, 'Internal server error')
-          // })
       }).catch((error) => {
         console.error(error)
         return Promise.reject(new HTTPError(error.statusCode, error.body))
