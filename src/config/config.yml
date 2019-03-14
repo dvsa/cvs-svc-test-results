@@ -14,14 +14,17 @@ dynamodb:
     params:
       region: localhost
       endpoint: http://localhost:8004
+      convertEmptyValues: true
     table: cvs-local-test-results
   local-global:
     params:
       region: localhost
       endpoint: http://localhost:8000
+      convertEmptyValues: true
     table: cvs-local-global-test-results
   remote:
-    params: {}
+    params:
+      convertEmptyValues: true
     table: cvs-${BRANCH}-test-results
 serverless:
   basePath: /${BRANCH}
