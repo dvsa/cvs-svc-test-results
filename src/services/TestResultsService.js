@@ -124,8 +124,11 @@ class TestResultsService {
               })
           })
       }).catch((error) => {
-        console.error(error)
-        return Promise.reject(new HTTPError(error.statusCode, error.body))
+        if (!(error instanceof HTTPError)) {
+          console.error(error)
+          error = new HTTPError(500, 'Internal server error')
+        }
+        return Promise.reject(error)
       })
   }
   lecTestTypeWithoutCertificateNumber (payload) {
