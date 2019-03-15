@@ -44,6 +44,13 @@ functions:
               status: false
               fromDateTime: false
               toDateTime: false
+  getTestResultsByTesterStaffId:
+    handler: src/functions/getTestResultsByTesterStaffId.getTestResultsByTesterStaffId
+    events:
+    - http:
+        path: test-results/getTestResultsByTesterStaffId
+        method: get
+
 
 resources:
   Resources:
@@ -56,11 +63,31 @@ resources:
           AttributeType: S
         - AttributeName: testResultId
           AttributeType: S
+        - AttributeName: testerStaffId
+          AttributeType: S
         KeySchema:
         - AttributeName: vin
           KeyType: HASH
         - AttributeName: testResultId
           KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: TesterStaffIdIndex
+            KeySchema:
+              - AttributeName: testerStaffId
+                KeyType: HASH
+            Projection:
+              NonKeyAttributes:
+                - testStartTimestamp
+                - testEndTimestamp
+                - testTypes
+                - vrm
+                - numberOfSeats
+                - testStationPNumber
+                - vehicleType
+              ProjectionType: INCLUDE
+            ProvisionedThroughput:
+              ReadCapacityUnits: '1'
+              WriteCapacityUnits: '1'
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

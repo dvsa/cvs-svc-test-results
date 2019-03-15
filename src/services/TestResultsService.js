@@ -5,7 +5,8 @@ const testResultsSchemaSubmitted = require('../models/TestResultsSchemaSubmitted
 const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled')
 const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
-const dateFns = require('date-fns')
+const GetTestResults = require('../utils/GetTestResults')
+const PutTestResults = require('../utils/PutTestResults')
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -16,64 +17,56 @@ class TestResultsService {
     this.testResultsDAO = testResultsDAO
   }
 
-  getTestResultsByVinAndStatus (vin, status, fromDateTime, toDateTime) {
-    let isToDatetimeValid = new Date(toDateTime) instanceof Date && !isNaN(new Date(toDateTime))
-    let isFromDateTimeValid = new Date(fromDateTime) instanceof Date && !isNaN(new Date(fromDateTime))
-    return this.testResultsDAO.getByVin(vin)
-      .then(data => {
-        if (data.Count === 0) {
-          throw new HTTPError(404, 'No resources match the search criteria')
-        } else if (!isToDatetimeValid) {
-          throw new HTTPError(400, 'Bad request')
-        } else if (!isFromDateTimeValid) {
-          throw new HTTPError(400, 'Bad request')
-        }
-        let testResults = data.Items
-        if (testResults !== null) {
-          testResults = this.filterTestResultsByStatus(testResults, status)
-          testResults = this.filterTestResultByDate(testResults, fromDateTime, toDateTime)
-          if (testResults.length === 0) {
-            throw new HTTPError(404, 'No resources match the search criteria')
-          }
-        }
-        testResults = this.removeTestResultId(testResults)
-        testResults = testResults.map((testResult) => this.removeVehicleClassification(testResult))
-        return testResults
-      })
-      .catch(error => {
+  getTestResults (filters) {
+    if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+      throw new HTTPError(400, 'Bad request')
+    }
+    if (filters.vin) {
+      return this.testResultsDAO.getByVin(filters.vin).then(response => {
+        return this.checkDAOResponse(response, filters)
+      }).catch(error => {
         if (!(error instanceof HTTPError)) {
           console.error(error)
           error = new HTTPError(500, 'Internal Server Error')
         }
         throw error
       })
-  }
-
-  removeTestResultId (testResults) {
-    if (testResults) {
-      for (let i = 0; i < testResults.length; i++) { delete testResults[i].testResultId }
-    }
-    return testResults
-  }
-
-  filterTestResultsByStatus (testResults, status) {
-    var filteredTestResults = testResults.filter(
-      function (testResult) { return testResult.testStatus === status }
-    )
-    return filteredTestResults
-  }
-
-  filterTestResultByDate (testResults, fromDateTime, toDateTime) {
-    for (let i = 0; i < testResults.length; i++) {
-      testResults[i].testTypes = testResults[i].testTypes.filter(
-        function (testType) {
-          return (!(dateFns.isAfter(testType.createdAt, toDateTime) || dateFns.isBefore(testType.createdAt, fromDateTime)))
-        })
-    }
-    testResults = testResults.filter(
-      function (testResult) {
-        return testResult.testTypes.length !== 0
+    } else if (filters.testerStaffId) {
+      return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
+        return this.checkDAOResponse(data, filters)
+      }).catch(error => {
+        if (!(error instanceof HTTPError)) {
+          console.error(error)
+          error = new HTTPError(500, 'Internal Server Error')
+        }
+        throw error
       })
+    }
+  }
+  checkTestResults (data) {
+    if (data) {
+      if (!data.Count) {
+        throw new HTTPError(404, 'No resources match the search criteria')
+      }
+    }
+    return data.Items
+  }
+
+  checkDAOResponse (data, filters) {
+    let testResults
+    testResults = this.checkTestResults(data)
+    testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime)
+    if (filters.testStatus) {
+      testResults = GetTestResults.filterTestResultsByParam(testResults, 'testStatus', filters.testStatus)
+    }
+    if (filters.testStationPNumber) {
+      testResults = GetTestResults.filterTestResultsByParam(testResults, 'testStationPNumber', filters.testStationPNumber)
+    }
+    if (testResults.length === 0) {
+      return new HTTPError(404, 'No resources match the search criteria')
+    }
+    testResults = GetTestResults.removeTestResultId(testResults)
+    testResults = testResults.map((testResult) => PutTestResults.removeVehicleClassification(testResult))
     return testResults
   }
 
@@ -94,15 +87,15 @@ class TestResultsService {
         }
       }
     }
-    if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
+    if (!PutTestResults.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
 
-    let fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)
+    let fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = PutTestResults.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
-    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
+    if (PutTestResults.lecTestTypeWithoutCertificateNumber(payload)) {
       return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC test type'))
     }
     if (validation !== null && validation.error) {
@@ -120,10 +113,10 @@ class TestResultsService {
       .then(() => {
         return this.setTestNumber(payload)
           .then((payloadWithTestNumber) => {
-            return this.setExpiryDate(payloadWithTestNumber)
+            return PutTestResults.setExpiryDate(payloadWithTestNumber)
               .then((payloadWithExpiryDate) => {
-                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
-                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
+                let payloadWithAnniversaryDate = PutTestResults.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithVehicleId = PutTestResults.setVehicleId(payloadWithAnniversaryDate)
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
               })
           })
@@ -131,18 +124,6 @@ class TestResultsService {
         console.error(error)
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
-  }
-
-  lecTestTypeWithoutCertificateNumber (payload) {
-    let bool = false
-    if (payload.testTypes) {
-      payload.testTypes.forEach(testType => {
-        if (testType.testTypeId === '39' && !testType.certificateNumber) {
-          return true
-        }
-      })
-    }
-    return bool
   }
 
   fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
@@ -224,27 +205,6 @@ class TestResultsService {
           })
       })
     }
-    return payload
-  }
-
-  removeVehicleClassification (payload) {
-    payload.testTypes.forEach((testType) => {
-      delete testType.testTypeClassification
-    })
-    return payload
-  }
-
-  setVehicleId (payload) {
-    payload.vehicleId = payload.vrm
-    return payload
-  }
-
-  setAnniversaryDate (payload) {
-    payload.testTypes.forEach(testType => {
-      if (testType.testExpiryDate) {
-        testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString()
-      }
-    })
     return payload
   }
 
