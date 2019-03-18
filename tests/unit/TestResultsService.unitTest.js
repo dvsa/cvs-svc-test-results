@@ -137,27 +137,6 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting a submitted testResult', () => {
-    it('should return valid payload', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      let mockData = testResultsMockDB[0]
-
-      for (let testType of mockData.testTypes) {
-        delete testType.testCode
-        delete testType.testNumber
-        delete testType.lastUpdatedAt
-        delete testType.testAnniversaryDate
-        delete testType.createdAt
-        delete testType.testExpiryDate
-        delete testType.certificateLink
-      }
-      delete mockData.vehicleId
-
-      return testResultsService.insertTestResult(mockData)
-        .then(response => {
-          expect(response).to.not.equal(undefined)
-        })
-    })
-
     it('should return a 400 error when certificateNumber not present on lec', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[2]
