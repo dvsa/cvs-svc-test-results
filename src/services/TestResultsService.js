@@ -18,10 +18,10 @@ class TestResultsService {
   }
 
   getTestResults (filters) {
-    if (filters) {
+    if (Object.keys(filters).length !== 0) {
       if (filters.fromDateTime && filters.toDateTime) {
         if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
-          throw new HTTPError(400, 'Bad request')
+          return Promise.reject(new HTTPError(400, 'Bad request'))
         }
       }
       if (filters.vin) {
@@ -44,6 +44,8 @@ class TestResultsService {
           }
           throw error
         })
+      } else {
+        return Promise.reject(new HTTPError(400, 'Bad request'))
       }
     } else {
       return Promise.reject(new HTTPError(400, 'Bad request'))
