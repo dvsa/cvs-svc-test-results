@@ -9,7 +9,7 @@ const getTestResultsByVin = (event) => {
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 
-  const vin = event.pathParameters.vin;
+  const vin = event.pathParameters.vin
   let testStatus = 'submitted'
   let toDateTime = dateFns.endOfToday()
   let fromDateTime = dateFns.subYears(toDateTime, 2)
