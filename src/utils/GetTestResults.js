@@ -7,7 +7,7 @@ class GetTestResults {
     let isToDatetimeValid = !isNaN(new Date(toDateTime))
     let isFromDateTimeValid = !isNaN(new Date(fromDateTime))
 
-    return !(!isToDatetimeValid || !isFromDateTimeValid);
+    return !(!isToDatetimeValid || !isFromDateTimeValid)
   }
 
   static removeTestResultId (testResults) {
@@ -28,7 +28,6 @@ class GetTestResults {
       return dateFns.isAfter(testResult.testStartTimestamp, fromDateTime) && dateFns.isBefore(testResult.testEndTimestamp, toDateTime)
     })
   }
-
 }
 
 module.exports = GetTestResults

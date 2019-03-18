@@ -5,8 +5,8 @@ const testResultsSchemaSubmitted = require('../models/TestResultsSchemaSubmitted
 const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled')
 const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
+const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
-const PutTestResults = require('../utils/PutTestResults')
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -18,29 +18,35 @@ class TestResultsService {
   }
 
   getTestResults (filters) {
-    if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
-      throw new HTTPError(400, 'Bad request')
-    }
-    if (filters.vin) {
-      return this.testResultsDAO.getByVin(filters.vin).then(response => {
-        return this.checkDAOResponse(response, filters)
-      }).catch(error => {
-        if (!(error instanceof HTTPError)) {
-          console.error(error)
-          error = new HTTPError(500, 'Internal Server Error')
+    if (filters) {
+      if (filters.fromDateTime && filters.toDateTime) {
+        if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+          throw new HTTPError(400, 'Bad request')
         }
-        throw error
-      })
-    } else if (filters.testerStaffId) {
-      return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-        return this.checkDAOResponse(data, filters)
-      }).catch(error => {
-        if (!(error instanceof HTTPError)) {
-          console.error(error)
-          error = new HTTPError(500, 'Internal Server Error')
-        }
-        throw error
-      })
+      }
+      if (filters.vin) {
+        return this.testResultsDAO.getByVin(filters.vin).then(response => {
+          return this.checkDAOResponse(response, filters)
+        }).catch(error => {
+          if (!(error instanceof HTTPError)) {
+            console.error(error)
+            error = new HTTPError(500, 'Internal Server Error')
+          }
+          throw error
+        })
+      } else if (filters.testerStaffId) {
+        return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
+          return this.checkDAOResponse(data, filters)
+        }).catch(error => {
+          if (!(error instanceof HTTPError)) {
+            console.error(error)
+            error = new HTTPError(500, 'Internal Server Error')
+          }
+          throw error
+        })
+      }
+    } else {
+      return Promise.reject(new HTTPError(400, 'Bad request'))
     }
   }
   checkTestResults (data) {
@@ -66,7 +72,7 @@ class TestResultsService {
       return new HTTPError(404, 'No resources match the search criteria')
     }
     testResults = GetTestResults.removeTestResultId(testResults)
-    testResults = testResults.map((testResult) => PutTestResults.removeVehicleClassification(testResult))
+    testResults = testResults.map((testResult) => this.removeVehicleClassification(testResult))
     return testResults
   }
 
@@ -87,15 +93,15 @@ class TestResultsService {
         }
       }
     }
-    if (!PutTestResults.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
+    if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
 
-    let fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = PutTestResults.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)
+    let fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload)
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
-    if (PutTestResults.lecTestTypeWithoutCertificateNumber(payload)) {
+    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
       return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC test type'))
     }
     if (validation !== null && validation.error) {
@@ -113,10 +119,10 @@ class TestResultsService {
       .then(() => {
         return this.setTestNumber(payload)
           .then((payloadWithTestNumber) => {
-            return PutTestResults.setExpiryDate(payloadWithTestNumber)
+            return this.setExpiryDate(payloadWithTestNumber)
               .then((payloadWithExpiryDate) => {
-                let payloadWithAnniversaryDate = PutTestResults.setAnniversaryDate(payloadWithExpiryDate)
-                let payloadWithVehicleId = PutTestResults.setVehicleId(payloadWithAnniversaryDate)
+                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
               })
           })
@@ -324,6 +330,39 @@ class TestResultsService {
           throw new HTTPError(500, 'Internal Server Error')
         }
       })
+  }
+
+  lecTestTypeWithoutCertificateNumber (payload) {
+    let bool = false
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (testType.testTypeId === '39' && !testType.certificateNumber) {
+          return true
+        }
+      })
+    }
+    return bool
+  }
+
+  removeVehicleClassification (payload) {
+    payload.testTypes.forEach((testType) => {
+      delete testType.testTypeClassification
+    })
+    return payload
+  }
+
+  setVehicleId (payload) {
+    payload.vehicleId = payload.vrm
+    return payload
+  }
+
+  setAnniversaryDate (payload) {
+    payload.testTypes.forEach(testType => {
+      if (testType.testExpiryDate) {
+        testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString()
+      }
+    })
+    return payload
   }
 }
 
