@@ -14,7 +14,7 @@ const validateInvocationResponse = (response) => {
   try {
     payload = JSON.parse(response.Payload)
   } catch (error) {
-    throw new HTTPError(500, `Lambda invocation returned bad data: ${JSON.stringify(payload)}.`)
+    throw new HTTPError(500, `Lambda invocation returned bad data: ${response.Payload}.`)
   }
 
   if (payload.statusCode >= 400) {
