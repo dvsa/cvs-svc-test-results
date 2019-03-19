@@ -60,7 +60,7 @@ const testResultsSchema = Joi.object().keys({
   reasonForCancellation: Joi.string().max(500).required(),
   vehicleClass: Joi.object().keys({
     code: Joi.any().only(['1', '2', '3', 'n', 't', 'l', 's', 'v']).required(),
-    description: Joi.any().only(['over 200cc or with a sidecar', 'not applicable', 'small psv', 'motorbikes up to 200cc', 'trailer', 'large psv', '3 wheelers', 'heavy goods vehicle']).required()
+    description: Joi.any().only(['motorbikes over 200cc or with a sidecar', 'not applicable', 'small psv (ie: less than or equal to 22 seats)', 'motorbikes up to 200cc', 'trailer', 'large psv(ie: greater than 23 seats)', '3 wheelers', 'heavy goods vehicle']).required()
   }).required(),
   vehicleType: Joi.any().only(['psv', 'hgv', 'trl']).required(),
   numberOfSeats: Joi.number().min(1).required(),

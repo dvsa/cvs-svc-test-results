@@ -59,7 +59,7 @@
       }
     ],
     "vehicleClass": {
-      "description": "over 200cc or with a sidecar",
+      "description": "motorbikes over 200cc or with a sidecar",
       "code": "2"
     },
     "vin": "XMGDE02FS0H012345",
@@ -139,7 +139,7 @@
       }
     ],
     "vehicleClass": {
-      "description": "over 200cc or with a sidecar",
+      "description": "motorbikes over 200cc or with a sidecar",
       "code": "2"
     },
     "vin": "1B7GG36N12S678410",
@@ -219,7 +219,7 @@
       }
     ],
     "vehicleClass": {
-      "description": "over 200cc or with a sidecar",
+      "description": "motorbikes over 200cc or with a sidecar",
       "code": "2"
     },
     "vin": "XMGDE02FS0H012461",
@@ -249,7 +249,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "canceled",
     "vehicleClass": {
-      "description": "over 200cc or with a sidecar",
+      "description": "motorbikes over 200cc or with a sidecar",
       "code": "2"
     },
     "vin": "XMGDE02FS0H012461",
