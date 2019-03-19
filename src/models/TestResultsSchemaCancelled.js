@@ -9,9 +9,9 @@ const defectsSchema = Joi.object().keys({
       horizontal: Joi.any().only(['inner', 'outer']).required().allow(null),
       lateral: Joi.any().only(['nearside', 'centre', 'offside']).required().allow(null),
       longitudinal: Joi.any().only(['front', 'rear']).required().allow(null),
-      rowNumber: Joi.number().min(1).max(20).required().allow(null),
-      seatNumber: Joi.number().min(1).max(6).required().allow(null),
-      axleNumber: Joi.number().min(1).max(10).required().allow(null)
+      rowNumber: Joi.number().max(20).required().allow(null),
+      seatNumber: Joi.number().max(6).required().allow(null),
+      axleNumber: Joi.number().max(10).required().allow(null)
     }).required().allow(null),
     notes: Joi.string().max(500).required().allow(null)
   }),
@@ -63,9 +63,9 @@ const testResultsSchema = Joi.object().keys({
     description: Joi.any().only(['motorbikes over 200cc or with a sidecar', 'not applicable', 'small psv (ie: less than or equal to 22 seats)', 'motorbikes up to 200cc', 'trailer', 'large psv(ie: greater than 23 seats)', '3 wheelers', 'heavy goods vehicle']).required()
   }).required(),
   vehicleType: Joi.any().only(['psv', 'hgv', 'trl']).required(),
-  numberOfSeats: Joi.number().min(1).required(),
+  numberOfSeats: Joi.number().required(),
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
-  odometerReading: Joi.number().min(1).required().allow(null),
+  odometerReading: Joi.number().required().allow(null),
   odometerReadingUnits: Joi.any().only(['kilometres', 'miles']).required().allow(null),
   preparerId: Joi.string().required().allow(''),
   preparerName: Joi.string().required(),
