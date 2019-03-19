@@ -14,7 +14,7 @@
     "reasonForCancellation": "none",
     "vehicleClass": {
       "code": "2",
-      "description": "over 200cc or with a sidecar"
+      "description": "motorbikes over 200cc or with a sidecar"
     },
     "vehicleType": "psv",
     "numberOfSeats": 45,
@@ -87,7 +87,7 @@
     "reasonForCancellation": "none",
     "vehicleClass": {
       "code": "2",
-      "description": "over 200cc or with a sidecar"
+      "description": "motorbikes over 200cc or with a sidecar"
     },
     "vehicleType": "psv",
     "numberOfSeats": 45,
@@ -160,7 +160,7 @@
     "reasonForCancellation": "mistake",
     "vehicleClass": {
       "code": "2",
-      "description": "over 200cc or with a sidecar"
+      "description": "motorbikes over 200cc or with a sidecar"
     },
     "vehicleType": "psv",
     "numberOfSeats": 45,
