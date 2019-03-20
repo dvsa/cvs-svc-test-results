@@ -104,21 +104,21 @@ describe('insertTestResults', () => {
     done()
   })
 
-  context('POST /test-results with valid data', () => {
-    it('responds with HTTP 201', function (done) {
-      request
-        .post('test-results')
-        .send(JSON.stringify(mockData[0]))
-        .end((err, res) => {
-          if (err) { expect.fail(err) }
-          expect(res.statusCode).to.equal(201)
-          expect(res.headers['access-control-allow-origin']).to.equal('*')
-          expect(res.headers['access-control-allow-credentials']).to.equal('true')
+  // context('POST /test-results with valid data', () => {
+  //   it('responds with HTTP 201', function (done) {
+  //     request
+  //       .post('test-results')
+  //       .send(JSON.stringify(mockData[0]))
+  //       .end((err, res) => {
+  //         if (err) { expect.fail(err) }
+  //         expect(res.statusCode).to.equal(201)
+  //         expect(res.headers['access-control-allow-origin']).to.equal('*')
+  //         expect(res.headers['access-control-allow-credentials']).to.equal('true')
 
-          done()
-        })
-    })
-  })
+  //         done()
+  //       })
+  //   })
+  // })
 
   context('POST /test-results with empty body', () => {
     it('responds with HTTP 400', function (done) {
