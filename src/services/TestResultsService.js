@@ -114,21 +114,17 @@ class TestResultsService {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
       .then(() => {
-        return this.setExpiryDate(payload)
-          .then((payloadWithExpiryDate) => {
-            let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
-            let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
-            return this.testResultsDAO.createSingle(payloadWithVehicleId)
-              .catch(() => {
-                throw new HTTPError(500, 'Internal server error')
+        return this.setTestNumber(payload)
+          .then((payloadWithTestNumber) => {
+            return this.setExpiryDate(payloadWithTestNumber)
+              .then((payloadWithExpiryDate) => {
+                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
+                return this.testResultsDAO.createSingle(payloadWithVehicleId)
               })
           })
-      }).catch((error) => {
-        if (!(error instanceof HTTPError)) {
-          console.error(error)
-          error = new HTTPError(500, 'Internal server error')
-        }
-        return Promise.reject(error)
+      }).catch(() => {
+        return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
   lecTestTypeWithoutCertificateNumber (payload) {
@@ -304,9 +300,6 @@ class TestResultsService {
       const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration)
         .then((currentTestCodesAndClassification) => {
           allTestCodesAndClassifications.push(currentTestCodesAndClassification)
-        }).catch(error => {
-          console.error(error)
-          throw error
         })
       promiseArray.push(promise)
     }
@@ -325,9 +318,6 @@ class TestResultsService {
         }
       }
       return testTypes
-    }).catch((err) => {
-      console.error(err)
-      throw err
     })
   }
 

@@ -3,7 +3,7 @@ const Configuration = require('../utils/Configuration')
 const dbConfig = Configuration.getInstance().getDynamoDBConfig()
 const dbClient = new AWS.DynamoDB.DocumentClient(dbConfig.params)
 const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints()
-const HTTPError = require('../models/HTTPError')
+const lambdaService = require('../services/LambdaService')
 
 class TestResultsDAO {
   constructor () {
@@ -81,10 +81,9 @@ class TestResultsDAO {
       }
     }
   }
+
   getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
     const fields = 'defaultTestCode,linkedTestCode,testTypeClassification'
-    
-    let testTypesLambda = new AWS.Lambda(lambdaInvokeEndpoints.params)
 
     var event = {
       path: '/test-types/' + testTypeId,
@@ -100,17 +99,19 @@ class TestResultsDAO {
       httpMethod: 'GET',
       resource: '/test-types/{id}'
     }
-    return testTypesLambda.invoke({
-      FunctionName: lambdaInvokeEndpoints.functions.getTestTypesById.name,
-      InvocationType: 'RequestResponse',
-      Payload: JSON.stringify(event)
-    }).promise().then((data) => {
-      return data.Payload
-    }).catch((error) => {
-      return new HTTPError(error.StatusCode, error.body)
-    })
+
+    return lambdaService.invoke(lambdaInvokeEndpoints.functions.getTestTypesById.name, event)
   }
 
+  getTestNumber () {
+    var event = {
+      path: '/test-number/',
+      httpMethod: 'POST',
+      resource: '/test-number/'
+    }
+
+    return lambdaService.invoke(lambdaInvokeEndpoints.functions.getTestNumber.name, event)
+  }
 }
 
 module.exports = TestResultsDAO
