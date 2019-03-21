@@ -3,6 +3,7 @@ const HTTPError = require('../../src/models/HTTPError')
 class TestResultsDaoMock {
   constructor () {
     this.testResultsResponseMock = null
+    this.unprocessedItems = null
     this.numberOfrecords = null
     this.numberOfScannedRecords = null
     this.isDatabaseOn = true
@@ -28,10 +29,26 @@ class TestResultsDaoMock {
     let testCodeAndClassificationResponse = {
       linkedTestCode: 'wde',
       defaultTestCode: 'bde',
-      testTypeClassification: 'Anual With Certificate'
+      testTypeClassification: 'Annual With Certificate'
     }
 
     return Promise.resolve(testCodeAndClassificationResponse)
+  }
+
+  createMultiple () {
+    const responseObject = { UnprocessedItems: this.unprocessedItems }
+
+    if (!this.isDatabaseOn) return Promise.reject(responseObject)
+
+    return Promise.resolve(responseObject)
+  }
+
+  deleteMultiple () {
+    const responseObject = { UnprocessedItems: this.unprocessedItems }
+
+    if (!this.isDatabaseOn) return Promise.reject(responseObject)
+
+    return Promise.resolve(responseObject)
   }
 }
 

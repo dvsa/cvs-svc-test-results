@@ -48,18 +48,21 @@ class TestResultsService {
         throw error
       })
   }
+
   removeTestResultId (testResults) {
     if (testResults) {
       for (let i = 0; i < testResults.length; i++) { delete testResults[i].testResultId }
     }
     return testResults
   }
+
   filterTestResultsByStatus (testResults, status) {
     var filteredTestResults = testResults.filter(
       function (testResult) { return testResult.testStatus === status }
     )
     return filteredTestResults
   }
+
   filterTestResultByDate (testResults, fromDateTime, toDateTime) {
     for (let i = 0; i < testResults.length; i++) {
       testResults[i].testTypes = testResults[i].testTypes.filter(
@@ -73,6 +76,7 @@ class TestResultsService {
       })
     return testResults
   }
+
   insertTestResult (payload) {
     Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
@@ -127,6 +131,7 @@ class TestResultsService {
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
+
   lecTestTypeWithoutCertificateNumber (payload) {
     let bool = false
     if (payload.testTypes) {
@@ -138,6 +143,7 @@ class TestResultsService {
     }
     return bool
   }
+
   fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory (payload) {
     let missingFields = []
     let bool = false
@@ -187,6 +193,7 @@ class TestResultsService {
       return Promise.resolve(payload)
     }
   }
+
   reasonForAbandoningPresentOnAllAbandonedTests (payload) {
     let bool = true
     if (payload.testTypes) {
@@ -200,6 +207,7 @@ class TestResultsService {
     }
     return bool
   }
+
   setCreatedAtAndLastUpdatedAtDates (payload) {
     if (payload.testTypes.length > 0) {
       payload.testTypes.forEach(testType => {
@@ -253,6 +261,7 @@ class TestResultsService {
         return payload
       }).catch(error => console.error(error))
   }
+
   getMostRecentExpiryDateOnAllTestTypesByVin (vin) {
     let maxDate = new Date(1970, 1, 1)
     return this.getTestResultsByVinAndStatus(vin, 'submitted', new Date(1970, 1, 1), new Date())
@@ -280,6 +289,7 @@ class TestResultsService {
         return maxDate
       })
   }
+
   atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate (testTypes) {
     let bool = false
     testTypes.forEach((testType) => {
@@ -344,7 +354,7 @@ class TestResultsService {
       .catch((error) => {
         if (error) {
           console.error(error)
-          throw new HTTPError(500, 'Internal ServerError')
+          throw new HTTPError(500, 'Internal Server Error')
         }
       })
   }
