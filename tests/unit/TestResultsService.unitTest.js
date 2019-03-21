@@ -3,8 +3,6 @@ const expect = require('chai').expect
 const TestResultsDAOMock = require('../models/TestResultsDAOMock')
 const TestResultsService = require('../../src/services/TestResultsService')
 const HTTPError = require('../../src/models/HTTPError')
-const fs = require('fs')
-const path = require('path')
 
 describe('getTestResultsByVinAndStatus', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
@@ -31,7 +29,7 @@ describe('getTestResultsByVinAndStatus', () => {
     it('should return 400-Bad request', () => {
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('nonExistentVin', 'nonExistentStatus')
+      return testResultsService.getTestResults('nonExistentVin', 'nonExistentStatus')
         .then(() => {
           expect.fail()
         }).catch((errorResponse) => {
@@ -48,30 +46,13 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 0
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus()
+      return testResultsService.getTestResults({})
         .then(() => {
           expect.fail()
         }).catch((errorResponse) => {
           expect(errorResponse).to.be.instanceOf(HTTPError)
-          expect(errorResponse.statusCode).to.equal(404)
-          expect(errorResponse.body).to.equal('No resources match the search criteria')
-        })
-    })
-  })
-
-  context('when db does not return response', () => {
-    it('should return 500-Internal Server Error', () => {
-      testResultsDAOMock.isDatabaseOn = false
-      var testResultsService = new TestResultsService(testResultsDAOMock)
-
-      return testResultsService.getTestResultsByVinAndStatus()
-        .then(() => {
-          expect.fail()
-        })
-        .catch((errorResponse) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError)
-          expect(errorResponse.statusCode).to.be.equal(500)
-          expect(errorResponse.body).to.equal('Internal Server Error')
+          expect(errorResponse.statusCode).to.equal(400)
+          expect(errorResponse.body).to.equal('Bad request')
         })
     })
   })

@@ -239,7 +239,7 @@ class TestResultsService {
 
   getMostRecentExpiryDateOnAllTestTypesByVin (vin) {
     let maxDate = new Date(1970, 1, 1)
-    return this.getTestResultsByVinAndStatus(vin, 'submitted', new Date(1970, 1, 1), new Date())
+    return this.getTestResults({vin: vin, testStatus: 'submitted', fromDateTime: new Date(1970, 1, 1), toDateTime: new Date()})
       .then((testResults) => {
         var testTypes = []
 

@@ -84,6 +84,8 @@ resources:
                 - numberOfSeats
                 - testStationPNumber
                 - vehicleType
+                - vin
+                - preparerId
               ProjectionType: INCLUDE
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
