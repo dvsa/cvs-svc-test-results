@@ -63,6 +63,7 @@ const testResultsSchema = Joi.object().keys({
   }).required(),
   vehicleType: Joi.any().only(['psv', 'hgv', 'trl']).required(),
   numberOfSeats: Joi.number().required(),
+  noOfAxles: Joi.number().max(99).required(),
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
   odometerReading: Joi.number().required(),
   odometerReadingUnits: Joi.any().only(['kilometres', 'miles']).required(),

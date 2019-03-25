@@ -113,7 +113,7 @@ class TestResultsService {
       }))
     }
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload)
-    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration)
+    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration, payload.noOfAxles)
       .then((testTypesWithTestCodesAndClassification) => {
         payload.testTypes = testTypesWithTestCodesAndClassification
       })
@@ -269,7 +269,7 @@ class TestResultsService {
         var testTypes = []
 
         testResults.forEach((testResult) => {
-          this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration)
+          this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
             .then((testTypes) => {
               if (testTypes.testTypeClassification) {
                 testTypes.filter(testTypes.testTypeClassification === 'Annual With Certificate')
@@ -300,14 +300,14 @@ class TestResultsService {
     return bool
   }
 
-  getTestTypesWithTestCodesAndClassification (testTypes, vehicleType, vehicleSize, vehicleConfiguration) {
+  getTestTypesWithTestCodesAndClassification (testTypes, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles) {
     let promiseArray = []
     let allTestCodesAndClassifications = []
     if (testTypes === undefined) {
       testTypes = []
     }
     for (let i = 0; i < testTypes.length; i++) {
-      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration)
+      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
         .then((currentTestCodesAndClassification) => {
           allTestCodesAndClassifications.push(currentTestCodesAndClassification)
         })
