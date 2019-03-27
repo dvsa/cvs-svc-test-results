@@ -181,14 +181,20 @@ class TestResultsService {
   }
 
   setTestNumber (payload) {
+    let promiseArray = []
+
     if (payload.testTypes) {
-      return this.testResultsDAO.getTestNumber()
-        .then((testNumberResponse) => {
-          payload.testTypes.forEach(testType => {
+      payload.testTypes.forEach(testType => {
+        let promise = this.testResultsDAO.getTestNumber()
+          .then((testNumberResponse) => {
             testType.testNumber = testNumberResponse.testNumber
           })
-          return payload
-        })
+
+        promiseArray.push(promise)
+      })
+      return Promise.all(promiseArray).then(() => {
+        return payload
+      })
     } else {
       return Promise.resolve(payload)
     }
