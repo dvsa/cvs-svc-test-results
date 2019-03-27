@@ -7,7 +7,7 @@ const HTTPResponse = require('../models/HTTPResponse')
 const postTestResults = (event) => {
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
-  
+
   let payload = event.body
 
   if (!payload) {
