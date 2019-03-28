@@ -82,7 +82,7 @@ class TestResultsDAO {
     }
   }
 
-  getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
+  getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles) {
     const fields = 'defaultTestCode,linkedTestCode,testTypeClassification'
 
     var event = {
@@ -91,6 +91,7 @@ class TestResultsDAO {
         vehicleType: vehicleType,
         vehicleSize: vehicleSize,
         vehicleConfiguration: vehicleConfiguration,
+        vehicleAxles: noOfAxles,
         fields: fields
       },
       pathParameters: {

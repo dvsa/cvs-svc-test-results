@@ -78,6 +78,7 @@
     "vrm": "JY58FPP",
     "testStationPNumber": "87-1369569",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1"
   },
@@ -158,6 +159,7 @@
     "vrm": "BQ91YHQ",
     "testStationPNumber": "84-926821",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "gica.petrescuf@dvsagov.uk",
     "euVehicleCategory": "m1"
   },
@@ -238,6 +240,7 @@
     "vrm": "AA12BCD",
     "testStationPNumber": "84-926821",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
     "euVehicleCategory": "m1"
   },
@@ -268,6 +271,7 @@
     "vrm": "AA12BCD",
     "testStationPNumber": "84-926821",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
     "euVehicleCategory": "m1",
     "testTypes": []
@@ -341,6 +345,7 @@
     "vrm": "AA12BCD",
     "testStationPNumber": "84-926821",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
     "euVehicleCategory": "m1"
   },
@@ -413,6 +418,7 @@
     "vrm": "AA12BCD",
     "testStationPNumber": "84-926821",
     "numberOfSeats": 45,
+    "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
     "euVehicleCategory": "m1"
   }
