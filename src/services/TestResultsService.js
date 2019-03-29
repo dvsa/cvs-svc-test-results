@@ -127,7 +127,8 @@ class TestResultsService {
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
               })
           })
-      }).catch(() => {
+      }).catch((error) => {
+        console.error(error)
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
