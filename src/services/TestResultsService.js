@@ -18,7 +18,6 @@ class TestResultsService {
   }
 
   getTestResults (filters) {
-    console.log('filters ->', filters)
     if (Object.keys(filters).length !== 0) {
       if (filters.fromDateTime && filters.toDateTime) {
         if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
@@ -76,7 +75,6 @@ class TestResultsService {
     }
     testResults = GetTestResults.removeTestResultId(testResults)
     testResults = testResults.map((testResult) => this.removeVehicleClassification(testResult))
-    console.log('testResults ->', testResults)
     return testResults
   }
 

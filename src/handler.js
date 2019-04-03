@@ -25,7 +25,6 @@ const handler = async (event, context, callback) => {
   const config = Configuration.getInstance()
   const functions = config.getFunctions()
   const serverlessConfig = config.getConfig().serverless
-
   const matchingLambdaEvents = functions.filter((fn) => {
     // Find λ with matching httpMethod
     return event.httpMethod === fn.method
@@ -35,7 +34,11 @@ const handler = async (event, context, callback) => {
       const localPath = new Path(fn.path)
       const remotePath = new Path(`${serverlessConfig.basePath}${fn.path}`) // Remote paths also have environment
 
-      return (localPath.test(event.path) || remotePath.test(event.path))
+      if (localPath.params.length) {
+        return ((localPath.test(event.path) && event.pathParameters && localPath.params.length === Object.keys(event.pathParameters).length) || (remotePath.test(event.path) && event.pathParameters && localPath.params.length === Object.keys(event.pathParameters).length))
+      } else {
+        return (localPath.test(event.path) || remotePath.test(event.path))
+      }
     })
 
   // Exactly one λ should match the above filtering.
