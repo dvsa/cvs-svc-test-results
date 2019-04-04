@@ -18,32 +18,36 @@ class TestResultsService {
   }
 
   getTestResults (filters) {
-    if (Object.keys(filters).length !== 0) {
-      if (filters.fromDateTime && filters.toDateTime) {
-        if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+    if (filters) {
+      if (Object.keys(filters).length !== 0) {
+        if (filters.fromDateTime && filters.toDateTime) {
+          if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+            return Promise.reject(new HTTPError(400, 'Bad request'))
+          }
+        }
+        if (filters.vin) {
+          return this.testResultsDAO.getByVin(filters.vin).then(response => {
+            return this.checkDAOResponse(response, filters)
+          }).catch(error => {
+            if (!(error instanceof HTTPError)) {
+              console.error(error)
+              error = new HTTPError(500, 'Internal Server Error')
+            }
+            throw error
+          })
+        } else if (filters.testerStaffId) {
+          return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
+            return this.checkDAOResponse(data, filters)
+          }).catch(error => {
+            if (!(error instanceof HTTPError)) {
+              console.error(error)
+              error = new HTTPError(500, 'Internal Server Error')
+            }
+            throw error
+          })
+        } else {
           return Promise.reject(new HTTPError(400, 'Bad request'))
         }
-      }
-      if (filters.vin) {
-        return this.testResultsDAO.getByVin(filters.vin).then(response => {
-          return this.checkDAOResponse(response, filters)
-        }).catch(error => {
-          if (!(error instanceof HTTPError)) {
-            console.error(error)
-            error = new HTTPError(500, 'Internal Server Error')
-          }
-          throw error
-        })
-      } else if (filters.testerStaffId) {
-        return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-          return this.checkDAOResponse(data, filters)
-        }).catch(error => {
-          if (!(error instanceof HTTPError)) {
-            console.error(error)
-            error = new HTTPError(500, 'Internal Server Error')
-          }
-          throw error
-        })
       } else {
         return Promise.reject(new HTTPError(400, 'Bad request'))
       }
@@ -239,7 +243,7 @@ class TestResultsService {
 
   getMostRecentExpiryDateOnAllTestTypesByVin (vin) {
     let maxDate = new Date(1970, 1, 1)
-    return this.getTestResults({vin: vin, testStatus: 'submitted', fromDateTime: new Date(1970, 1, 1), toDateTime: new Date()})
+    return this.getTestResults({ vin: vin, testStatus: 'submitted', fromDateTime: new Date(1970, 1, 1), toDateTime: new Date() })
       .then((testResults) => {
         var testTypes = []
 
