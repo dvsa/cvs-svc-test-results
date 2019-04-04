@@ -27,7 +27,7 @@ class TestResultsService {
         }
         if (filters.vin) {
           return this.testResultsDAO.getByVin(filters.vin).then(response => {
-            return this.checkDAOResponse(response, filters)
+            return this.applyTestResultsFilters(response, filters)
           }).catch(error => {
             if (!(error instanceof HTTPError)) {
               console.error(error)
@@ -37,7 +37,7 @@ class TestResultsService {
           })
         } else if (filters.testerStaffId) {
           return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-            return this.checkDAOResponse(data, filters)
+            return this.applyTestResultsFilters(data, filters)
           }).catch(error => {
             if (!(error instanceof HTTPError)) {
               console.error(error)
@@ -64,7 +64,7 @@ class TestResultsService {
     return data.Items
   }
 
-  checkDAOResponse (data, filters) {
+  applyTestResultsFilters (data, filters) {
     let testResults
     testResults = this.checkTestResults(data)
     testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime)
@@ -75,7 +75,7 @@ class TestResultsService {
       testResults = GetTestResults.filterTestResultsByParam(testResults, 'testStationPNumber', filters.testStationPNumber)
     }
     if (testResults.length === 0) {
-      return new HTTPError(404, 'No resources match the search criteria')
+      throw new HTTPError(404, 'No resources match the search criteria')
     }
     testResults = GetTestResults.removeTestResultId(testResults)
     testResults = testResults.map((testResult) => this.removeVehicleClassification(testResult))

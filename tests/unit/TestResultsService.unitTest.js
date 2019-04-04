@@ -43,6 +43,22 @@ describe('getTestResults', () => {
           expect(errorResponse.body).to.equal('Bad request')
         })
     })
+
+    it('should return 404-No resources match the search criteria if testResults length is 0', () => {
+      testResultsDAOMock.testResultsResponseMock = []
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
+        .then(() => {
+          expect.fail()
+        }).catch((errorResponse) => {
+          expect(errorResponse).to.be.instanceOf(HTTPError)
+          expect(errorResponse.statusCode).to.equal(404)
+          expect(errorResponse.body).to.equal('No resources match the search criteria')
+        })
+    })
   })
 
   context('when db returns empty data due to invalid toDateTime', () => {
