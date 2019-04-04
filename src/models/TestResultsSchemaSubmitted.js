@@ -38,7 +38,7 @@ const testTypesSchema = Joi.object().keys({
   testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
   prohibitionIssued: Joi.boolean().required().allow(null),
   certificateNumber: Joi.string().required().allow('', null),
-  reasonForAbandoning: Joi.string().max(500).required().allow('', null),
+  reasonForAbandoning: Joi.string().required().allow('', null),
   additionalNotesRecorded: Joi.string().max(500).required().allow('', null),
   additionalCommentsForAbandon: Joi.string().max(500).required().allow('', null),
   defects: Joi.array().items(defectsSchema).required()
