@@ -6,7 +6,7 @@ const HTTPError = require('../../src/models/HTTPError')
 const fs = require('fs')
 const path = require('path')
 
-describe('getTestResultsByVinAndStatus', () => {
+describe('getTestResults', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
   const testResultsMockDB = require('../resources/test-results.json')
 
@@ -17,7 +17,7 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', '2017-01-01', new Date().toString())
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
         .then((returnedRecords) => {
           expect(returnedRecords).to.not.equal(undefined)
           expect(returnedRecords).to.not.equal({})
@@ -34,13 +34,13 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 0
       const testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus()
+      return testResultsService.getTestResults()
         .then(() => {
           expect.fail()
         }).catch((errorResponse) => {
           expect(errorResponse).to.be.instanceOf(HTTPError)
-          expect(errorResponse.statusCode).to.equal(404)
-          expect(errorResponse.body).to.equal('No resources match the search criteria')
+          expect(errorResponse.statusCode).to.equal(400)
+          expect(errorResponse.body).to.equal('Bad request')
         })
     })
 
@@ -50,7 +50,7 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       const testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', '2017-01-01', new Date().toString())
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
         .then(() => {
           expect.fail()
         }).catch((errorResponse) => {
@@ -68,7 +68,7 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', '2017-01-01', 'qwerty')
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: 'qwerty' })
         .then(() => {
           expect.fail()
         })
@@ -87,7 +87,7 @@ describe('getTestResultsByVinAndStatus', () => {
       testResultsDAOMock.numberOfScannedRecords = 1
       var testResultsService = new TestResultsService(testResultsDAOMock)
 
-      return testResultsService.getTestResultsByVinAndStatus('XMGDE02FS0H012345', 'submitted', 'qwerty', new Date().toString())
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: 'qwerty', toDateTime: new Date().toString() })
         .then(() => {
           expect.fail()
         })
@@ -95,23 +95,6 @@ describe('getTestResultsByVinAndStatus', () => {
           expect(errorResponse).to.be.instanceOf(HTTPError)
           expect(errorResponse.statusCode).to.equal(400)
           expect(errorResponse.body).to.equal('Bad request')
-        })
-    })
-  })
-
-  context('when db does not return response', () => {
-    it('should return 500-Internal Server Error', () => {
-      testResultsDAOMock.isDatabaseOn = false
-      var testResultsService = new TestResultsService(testResultsDAOMock)
-
-      return testResultsService.getTestResultsByVinAndStatus()
-        .then(() => {
-          expect.fail()
-        })
-        .catch((errorResponse) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError)
-          expect(errorResponse.statusCode).to.be.equal(500)
-          expect(errorResponse.body).to.equal('Internal Server Error')
         })
     })
   })

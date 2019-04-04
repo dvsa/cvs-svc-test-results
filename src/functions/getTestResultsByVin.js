@@ -25,8 +25,7 @@ const getTestResultsByVin = (event) => {
       if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime) }
     }
   }
-
-  return testResultsService.getTestResultsByVinAndStatus(vin, testStatus, fromDateTime, toDateTime)
+  return testResultsService.getTestResults({ vin: vin, testStatus: testStatus, fromDateTime: fromDateTime, toDateTime: toDateTime })
     .then((data) => {
       return new HTTPResponse(200, data)
     })
