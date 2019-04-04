@@ -20,8 +20,8 @@ const defectsSchema = Joi.object().keys({
   deficiencyRef: Joi.string().required().allow(''),
   deficiencyId: Joi.string().regex(/^[a-z]+$/).max(1).required().allow(null),
   deficiencySubId: Joi.string().regex(/^[mdclxvi]+$/).required().allow(null),
-  deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor', 'prs']).required().allow(''),
   deficiencyText: Joi.string().required().allow('', null),
+  deficiencyCategory: Joi.any().only(['advisory', 'dangerous', 'major', 'minor']).required(),
   stdForProhibition: Joi.boolean().required().allow(null),
   prs: Joi.boolean().required().allow(null)
 })
@@ -73,7 +73,7 @@ const testResultsSchema = Joi.object().keys({
   countryOfRegistration: Joi.string().required().allow(''),
   testTypes: Joi.array().items(testTypesSchema).required(),
   vehicleSize: Joi.any().only(['small', 'large']).required(),
-  reasonForCancellation: Joi.string().max(500).required().allow('', null)
+  reasonForCancellation: Joi.string().max(500).required().allow(null)
 })
 
 module.exports = testResultsSchema
