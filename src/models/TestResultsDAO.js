@@ -21,6 +21,21 @@ class TestResultsDAO {
         ':vin': vin
       }
     }
+    return dbClient.query(params).promise()
+  }
+
+  getByTesterStaffId (testerStaffId) {
+    let params = {
+      TableName: this.tableName,
+      IndexName: 'TesterStaffIdIndex',
+      KeyConditionExpression: '#testerStaffId = :testerStaffId',
+      ExpressionAttributeNames: {
+        '#testerStaffId': 'testerStaffId'
+      },
+      ExpressionAttributeValues: {
+        ':testerStaffId': testerStaffId
+      }
+    }
 
     return dbClient.query(params).promise()
   }

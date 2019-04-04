@@ -9,6 +9,11 @@ functions:
     path: /test-results/{+proxy}
     proxy: :vin
     function: getTestResultsByVin
+- getTestResultsByTesterStaffId:
+    method: GET
+    path: /test-results/getTestResultsByTesterStaffId
+    proxy: null
+    function: getTestResultsByTesterStaffId
 dynamodb:
   local:
     params:

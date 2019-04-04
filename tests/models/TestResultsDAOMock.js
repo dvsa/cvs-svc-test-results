@@ -20,6 +20,16 @@ class TestResultsDaoMock {
     return Promise.resolve(responseObject)
   }
 
+  getByTesterStaffId (testerStaffId) {
+    const responseObject = {
+      Items: this.testResultsResponseMock,
+      Count: this.numberOfScannedRecords,
+      ScannedCount: this.numberOfScannedRecords
+    }
+    if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
+    return Promise.resolve(responseObject)
+  }
+
   createSingle (payload) {
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
     return Promise.resolve(payload)
