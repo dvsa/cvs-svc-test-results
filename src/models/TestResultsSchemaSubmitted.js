@@ -73,7 +73,7 @@ const testResultsSchema = Joi.object().keys({
   countryOfRegistration: Joi.string().required().allow(''),
   testTypes: Joi.array().items(testTypesSchema).required(),
   vehicleSize: Joi.any().only(['small', 'large']).required(),
-  reasonForCancellation: Joi.string().max(500).required().allow(null)
+  reasonForCancellation: Joi.string().max(500).required().allow('', null)
 })
 
 module.exports = testResultsSchema
