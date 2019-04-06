@@ -225,8 +225,8 @@ class TestResultsService {
       .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
         if (this.atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate(payload.testTypes)) {
           payload.testTypes.forEach((testType) => {
+            testType.certificateNumber = testType.testNumber
             if ((testType.testResult === 'pass' || testType.testResult === 'prs')) {
-              testType.certificateNumber = testType.testNumber
               if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                 testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
               } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
