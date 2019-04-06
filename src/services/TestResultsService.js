@@ -125,7 +125,7 @@ class TestResultsService {
       .then(() => {
         return this.setTestNumber(payload)
           .then((payloadWithTestNumber) => {
-            return this.setExpiryDateAndCertificateNumberNumber(payloadWithTestNumber)
+            return this.setExpiryDateAndCertificateNumber(payloadWithTestNumber)
               .then((payloadWithExpiryDate) => {
                 let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
                 let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
@@ -220,7 +220,7 @@ class TestResultsService {
     return payload
   }
 
-  setExpiryDateAndCertificateNumberNumber (payload) {
+  setExpiryDateAndCertificateNumber (payload) {
     return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
       .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
         if (this.atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate(payload.testTypes)) {
