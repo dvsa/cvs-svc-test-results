@@ -249,7 +249,7 @@ describe('reasonForAbandoningPresentOnAllAbandonedTests', () => {
   })
 })
 
-describe('setExpiryDate', () => {
+describe('setExpiryDateAndCertificateNumber', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
   const testResultsMockDB = require('../resources/test-results.json')
 
@@ -259,7 +259,7 @@ describe('setExpiryDate', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[0]
 
-      return testResultsService.setExpiryDate(mockData)
+      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(response => {
           expect(response).to.not.equal(undefined)
         })
@@ -271,7 +271,7 @@ describe('setExpiryDate', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = {}
 
-      return testResultsService.setExpiryDate(mockData)
+      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(() => {})
         .catch(error => {
           expect(error).to.not.equal(undefined)
