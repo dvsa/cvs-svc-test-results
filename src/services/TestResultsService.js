@@ -283,31 +283,28 @@ class TestResultsService {
 
   getTestTypesWithTestCodesAndClassification (testTypes, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles) {
     let promiseArray = []
-    let allTestCodesAndClassifications = []
+
     if (testTypes === undefined) {
       testTypes = []
     }
     for (let i = 0; i < testTypes.length; i++) {
       const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
         .then((currentTestCodesAndClassification) => {
-          allTestCodesAndClassifications.push(currentTestCodesAndClassification)
+          if (testTypes.length === 1) {
+            testTypes[i].testCode = currentTestCodesAndClassification.defaultTestCode
+            testTypes[i].testTypeClassification = currentTestCodesAndClassification.testTypeClassification
+          } else {
+            if (currentTestCodesAndClassification.linkedTestCode) {
+              testTypes[i].testCode = currentTestCodesAndClassification.linkedTestCode
+            } else {
+              testTypes[i].testCode = currentTestCodesAndClassification.defaultTestCode
+            }
+            testTypes[i].testTypeClassification = currentTestCodesAndClassification.testTypeClassification
+          }
         })
       promiseArray.push(promise)
     }
     return Promise.all(promiseArray).then(() => {
-      if (testTypes.length === 1) {
-        testTypes[0].testCode = allTestCodesAndClassifications[0].defaultTestCode
-        testTypes[0].testTypeClassification = allTestCodesAndClassifications[0].testTypeClassification
-      } else {
-        for (let i = 0; i < testTypes.length; i++) {
-          if (allTestCodesAndClassifications[i].linkedTestCode) {
-            testTypes[i].testCode = allTestCodesAndClassifications[i].linkedTestCode
-          } else {
-            testTypes[i].testCode = allTestCodesAndClassifications[i].defaultTestCode
-          }
-          testTypes[i].testTypeClassification = allTestCodesAndClassifications[i].testTypeClassification
-        }
-      }
       return testTypes
     })
   }
