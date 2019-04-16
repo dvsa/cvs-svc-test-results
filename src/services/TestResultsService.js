@@ -247,17 +247,25 @@ class TestResultsService {
     let maxDate = new Date(1970, 1, 1)
     return this.getTestResults({ vin: vin, testStatus: 'submitted', fromDateTime: new Date(1970, 1, 1), toDateTime: new Date() })
       .then((testResults) => {
-        var testTypes = []
-
+        let promiseArray = []
+        let filterTestTypes = []
         testResults.forEach((testResult) => {
-          this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
+          let promise = this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
             .then((testTypes) => {
-              if (testTypes.testTypeClassification) {
-                testTypes.filter(testTypes.testTypeClassification === 'Annual With Certificate')
-              }
+              testTypes.forEach((testType) => {
+                if (testType.testTypeClassification === 'Annual With Certificate') {
+                  filterTestTypes.push(testType)
+                }
+              })
             })
+            .catch(error => {
+              console.log(error)
+            })
+          promiseArray.push(promise)
         })
-        return testTypes
+        return Promise.all(promiseArray).then(() => {
+          return filterTestTypes
+        })
       })
       .then((testTypes) => {
         testTypes.forEach((testType) => {
