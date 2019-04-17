@@ -161,7 +161,7 @@ describe('insertTestResult', () => {
         .then(() => {})
         .catch(error => {
           expect(error.statusCode).to.equal(400)
-          expect(error.body).to.equal('/location/deficiencyText/stdForProhibition/prs are null for a defect with deficiency category other than advisory')
+          expect(error.body).to.equal('/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory')
         })
     })
 

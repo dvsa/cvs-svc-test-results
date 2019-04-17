@@ -158,10 +158,6 @@ class TestResultsService {
                 missingFields.push('stdForProhibition')
                 bool = true
               }
-              if (defect.prs === null) {
-                missingFields.push('prs')
-                bool = true
-              }
             }
           })
         }
