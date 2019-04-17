@@ -221,26 +221,28 @@ class TestResultsService {
   }
 
   setExpiryDateAndCertificateNumber (payload) {
-    return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
+    if (payload.testStatus !== 'submitted') {
+      return Promise.resolve(payload)
+    } else {
+      return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
       .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
-        if (this.atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate(payload.testTypes)) {
-          payload.testTypes.forEach((testType) => {
-            if (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail') {
-              testType.certificateNumber = testType.testNumber
-              if (testType.testResult !== 'fail') {
-                if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                  testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
-                } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                  testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
-                } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                  testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
-                }
+        payload.testTypes.forEach((testType) => {
+          if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
+            testType.certificateNumber = testType.testNumber
+            if (testType.testResult !== 'fail') {
+              if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
+              } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
+              } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
               }
             }
-          })
-        }
+          }
+        })
         return payload
       }).catch(error => console.error(error))
+    }
   }
 
   getMostRecentExpiryDateOnAllTestTypesByVin (vin) {
@@ -277,16 +279,6 @@ class TestResultsService {
       }).catch(() => {
         return maxDate
       })
-  }
-
-  atLeastOneTestTypeWithTestTypeClassificationAnnualWithCertificate (testTypes) {
-    let bool = false
-    testTypes.forEach((testType) => {
-      if (testType.testTypeClassification === 'Annual With Certificate') {
-        bool = true
-      }
-    })
-    return bool
   }
 
   getTestTypesWithTestCodesAndClassification (testTypes, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles) {

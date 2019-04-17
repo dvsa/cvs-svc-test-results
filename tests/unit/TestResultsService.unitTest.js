@@ -251,17 +251,36 @@ describe('reasonForAbandoningPresentOnAllAbandonedTests', () => {
 
 describe('setExpiryDateAndCertificateNumber', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
-  const testResultsMockDB = require('../resources/test-results.json')
+  const testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json'), 'utf8'))
 
-  context('testType without expiry date', () => {
-    it('should set expiry date', () => {
-      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
+  context('cancelled test', () => {
+    it('should return the payload', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[2])
       const testResultsService = new TestResultsService(testResultsDAOMock)
-      let mockData = testResultsMockDB[0]
+      let mockData = testResultsMockDB[2]
 
       return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(response => {
-          expect(response).to.not.equal(undefined)
+          expect(response).to.deep.equal(mockData)
+        })
+    })
+  })
+
+  context('submitted test', () => {
+    it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      let mockData = testResultsMockDB[0]
+      mockData.testTypes[2].testResult = ""
+      
+      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+        .then(response => {
+          expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal((new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).toISOString().split('T')[0])
+          expect(response.testTypes[0].certificateNumber).to.equal(response.testTypes[0].testNumber)
+          expect(response.testTypes[1].testExpiryDate).to.equal(undefined)
+          expect(response.testTypes[1].certificateNumber).to.equal(undefined)
+          expect(response.testTypes[2].testExpiryDate).to.equal(undefined)
+          expect(response.testTypes[2].certificateNumber).to.equal(undefined)
         })
     })
   })
