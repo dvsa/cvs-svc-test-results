@@ -101,7 +101,7 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testTypeClassification": "",
+        "testTypeClassification": "Annual NO CERTIFICATE",
         "testResult": "fail"
       },
       {
@@ -116,7 +116,7 @@
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
-        "testTypeId": "1",
+        "testTypeId": "19",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
@@ -150,7 +150,7 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testTypeClassification": "",
+        "testTypeClassification": "Annual NO CERTIFICATE",
         "testResult": "prs"
       }
     ],
