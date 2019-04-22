@@ -1,9 +1,9 @@
 'use strict'
 
 const HTTPError = require('../models/HTTPError')
+const HTTPResponse = require('../models/HTTPResponse')
 const testResultsSchemaSubmitted = require('../models/TestResultsSchemaSubmitted')
 const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled')
-const uuidv4 = require('uuid/v4')
 const Joi = require('joi')
 const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
@@ -83,7 +83,6 @@ class TestResultsService {
   }
 
   insertTestResult (payload) {
-    Object.assign(payload, { testResultId: uuidv4() })
     let validation = null
 
     if (payload.testStatus === 'submitted') {
@@ -134,6 +133,9 @@ class TestResultsService {
           })
       }).catch((error) => {
         console.error(error)
+        if (error.statusCode === 400 && error.message === 'The conditional request failed') {
+          return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
+        }
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
@@ -221,23 +223,23 @@ class TestResultsService {
       return Promise.resolve(payload)
     } else {
       return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
-      .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
-        payload.testTypes.forEach((testType) => {
-          if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
-            testType.certificateNumber = testType.testNumber
-            if (testType.testResult !== 'fail') {
-              if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
-              } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
-              } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
+        .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
+          payload.testTypes.forEach((testType) => {
+            if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
+              testType.certificateNumber = testType.testNumber
+              if (testType.testResult !== 'fail') {
+                if (mostRecentExpiryDateOnAllTestTypesByVin === new Date(1970, 1, 1) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                  testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
+                } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                  testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
+                } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                  testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
+                }
               }
             }
-          }
-        })
-        return payload
-      }).catch(error => console.error(error))
+          })
+          return payload
+        }).catch(error => console.error(error))
     }
   }
 

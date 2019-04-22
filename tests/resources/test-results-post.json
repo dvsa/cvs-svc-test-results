@@ -1,5 +1,6 @@
 [
   {
+    "testResultId": "1",
     "vrm": "JY58FPP",
     "vin": "XMGDE02FS0H012345",
     "testStationName": "Rowe, Wunsch and Wisoky",
@@ -73,6 +74,7 @@
     ]
   },
   {
+    "testResultId": "2",
     "vrm": "BQ91YHQ",
     "vin": "1B7GG36N12S678410",
     "testStationName": "Larson, Nader and Okuneva",
@@ -146,6 +148,7 @@
     ]
   },
   {
+    "testResultId": "3",
     "vrm": "AA12BCD",
     "vin": "XMGDE02FS0H012461",
     "testStationName": "Larson, Nader and Okuneva",

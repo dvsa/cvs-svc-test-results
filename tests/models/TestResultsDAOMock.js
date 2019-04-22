@@ -1,4 +1,5 @@
 const HTTPError = require('../../src/models/HTTPError')
+const HTTPErrorMessageMock = require('../models/HTTPErrorMessageMock')
 
 class TestResultsDaoMock {
   constructor () {
@@ -8,6 +9,7 @@ class TestResultsDaoMock {
     this.numberOfScannedRecords = null
     this.isDatabaseOn = true
     this.tableName = 'cvs-local-test-results'
+    this.testNumber = null
   }
 
   getByVin (vin) {
@@ -31,6 +33,7 @@ class TestResultsDaoMock {
   }
 
   createSingle (payload) {
+    if (payload.testResultId === '1111') { return Promise.reject(new HTTPErrorMessageMock(400, 'The conditional request failed')) }
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
     return Promise.resolve(payload)
   }
@@ -59,6 +62,10 @@ class TestResultsDaoMock {
     if (!this.isDatabaseOn) return Promise.reject(responseObject)
 
     return Promise.resolve(responseObject)
+  }
+
+  getTestNumber () {
+    return Promise.resolve(this.testNumber)
   }
 }
 
