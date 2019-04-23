@@ -3,6 +3,7 @@ const expect = require('chai').expect
 const TestResultsDAOMock = require('../models/TestResultsDAOMock')
 const TestResultsService = require('../../src/services/TestResultsService')
 const HTTPError = require('../../src/models/HTTPError')
+const HTTPResponse = require('../../src/models/HTTPResponse')
 const fs = require('fs')
 const path = require('path')
 
@@ -167,6 +168,7 @@ describe('insertTestResult', () => {
 
     it('should throw an internal server error', () => {
       testResultsDAOMock.isDatabaseOn = false
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[0]
 
@@ -182,13 +184,40 @@ describe('insertTestResult', () => {
         delete testType.testTypeClassification
       }
       delete mockData.vehicleId
-
+      mockData.testResultId = '1'
       return testResultsService.insertTestResult(mockData)
         .then(() => {})
         .catch(error => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.be.equal(500)
           expect(error.body).to.equal('Internal server error')
+        })
+    })
+
+    it('should return 201 - Test Result id already exists\'', () => {
+      testResultsDAOMock.isDatabaseOn = false
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      let mockData = testResultsMockDB[0]
+
+      for (let testType of mockData.testTypes) {
+        testType.certificateNumber = '1234'
+        delete testType.testCode
+        delete testType.testNumber
+        delete testType.lastUpdatedAt
+        delete testType.testAnniversaryDate
+        delete testType.createdAt
+        delete testType.testExpiryDate
+        delete testType.certificateLink
+        delete testType.testTypeClassification
+      }
+      delete mockData.vehicleId
+      mockData.testResultId = '1111'
+      return testResultsService.insertTestResult(mockData)
+        .then().catch(error => {
+          expect(error).to.be.instanceOf(HTTPResponse)
+          expect(error.statusCode).to.be.equal(201)
+          expect(error.body).to.be.equal('"Test Result id already exists"')
         })
     })
   })
@@ -271,8 +300,8 @@ describe('setExpiryDateAndCertificateNumber', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[0]
-      mockData.testTypes[2].testResult = ""
-      
+      mockData.testTypes[2].testResult = ''
+
       return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(response => {
           expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal((new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).toISOString().split('T')[0])

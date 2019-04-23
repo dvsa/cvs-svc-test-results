@@ -43,7 +43,11 @@ class TestResultsDAO {
   createSingle (payload) {
     const query = {
       TableName: this.tableName,
-      Item: payload
+      Item: payload,
+      ConditionExpression: 'testResultId <> :testResultIdVal',
+      ExpressionAttributeValues: {
+        ':testResultIdVal': payload.testResultId
+      }
     }
     return dbClient.put(query).promise()
   }
