@@ -301,10 +301,12 @@ describe('setExpiryDateAndCertificateNumber', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[0]
       mockData.testTypes[2].testResult = ''
-
       return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(response => {
-          expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal((new Date(new Date().getFullYear() + 1, new Date().getMonth(), new Date().getDate())).toISOString().split('T')[0])
+          const expectedExpiryDate = new Date()
+          expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
+          expectedExpiryDate.setDate(new Date().getDate() - 1)
+          expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
           expect(response.testTypes[0].certificateNumber).to.equal(response.testTypes[0].testNumber)
           expect(response.testTypes[1].testExpiryDate).to.equal(undefined)
           expect(response.testTypes[1].certificateNumber).to.equal(undefined)
