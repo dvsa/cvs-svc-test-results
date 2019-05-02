@@ -1,6 +1,7 @@
 'use strict'
 
-const AWS = require('aws-sdk')
+const AWSXRay = require('aws-xray-sdk')
+const AWS = AWSXRay.captureAWS(require('aws-sdk'))
 const Configuration = require('../utils/Configuration')
 const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints()
 const validateInvocationResponse = require('../utils/validateInvocationResponse')
