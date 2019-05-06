@@ -6,6 +6,7 @@ const HTTPError = require('../../src/models/HTTPError')
 const HTTPResponse = require('../../src/models/HTTPResponse')
 const fs = require('fs')
 const path = require('path')
+const dateFns = require('date-fns')
 
 describe('getTestResults', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
@@ -293,6 +294,22 @@ describe('setExpiryDateAndCertificateNumber', () => {
           expect(response).to.deep.equal(mockData)
         })
     })
+    it('should return the payload with expiry date prolonged by 1 year', () => {
+      const testResultsMockPostPayload = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[6])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      testResultsDAOMock.testResultsResponseMock[0].testTypes[0].testExpiryDate = '2019-05-06'
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      let mockData = testResultsMockPostPayload[3]
+      mockData.testTypes[0].testTypeClassification = 'Annual With Certificate'
+      const expectedExpiryDate = new Date()
+      expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
+      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+        .then(response => {
+          expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(dateFns.addYears(new Date(), 1).toISOString().split('T')[0])
+        })
+    })
   })
 
   context('submitted test', () => {
@@ -300,6 +317,8 @@ describe('setExpiryDateAndCertificateNumber', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[0]
+      testResultsDAOMock.numberOfrecords = ''
+      testResultsDAOMock.numberOfScannedRecords = ''
       mockData.testTypes[2].testResult = ''
       return testResultsService.setExpiryDateAndCertificateNumber(mockData)
         .then(response => {
@@ -350,7 +369,7 @@ describe('insertTestResultsList', () => {
 
       return testResultsService.insertTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(6)
+          expect(data.length).to.equal(7)
         })
     })
   })
@@ -392,7 +411,7 @@ describe('deleteTestResultsList', () => {
 
       return testResultsService.deleteTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(6)
+          expect(data.length).to.equal(7)
         })
     })
   })
