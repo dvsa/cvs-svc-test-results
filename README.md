@@ -56,3 +56,17 @@ In order to test, you need to run the following:
 ### Environmental variables
 
 - The `BRANCH` environment variable indicates in which environment is this application running. Use `BRANCH=local` for local deployment. This variable is required when starting the application or running tests.
+
+### Local Running
+
+To run this locally, add the following environment variables to your run configuration(s):
+* AWS_XRAY_CONTEXT_MISSING = LOG_ERROR
+* SLS_DEBUG = *
+* BRANCH = LOCAL
+
+and change the serverless.yml so that Custom > DynamoDB >
+*      migrate: true
+       seed: true
+       noStart: false
+
+**NB: Do not push these changes. They are for local running only**
