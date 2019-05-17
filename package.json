@@ -16,7 +16,8 @@
     "security-checks": "git secrets --scan && git log -p | scanrepo",
     "eslint": "eslint . --config=.eslintrc.json --fix  -f json -o report.json",
     "sonar-scanner": "npm run eslint && npm run coverage && sonar-scanner",
-    "coverage": "nyc mocha tests/unit/*.unitTest.js && nyc report --reporter=lcov"
+    "coverage": "nyc mocha tests/unit/*.unitTest.js && nyc report --reporter=lcov",
+    "audit-dep": "npm audit --json | audit-filter --nsp-config=.nsprc --audit=-"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   },
   "homepage": "https://github.com/dvsa/cvs-svc-test-results#readme",
   "devDependencies": {
+    "audit-filter": "^0.4.3",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
