@@ -1,4 +1,5 @@
 'use strict'
+const AWSXray = require('aws-xray-sdk')
 
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
@@ -14,7 +15,8 @@ const postTestResults = (event) => {
     return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
   }
 
-  return testResultsService.insertTestResult(payload)
+  let insertTestResult = AWSXray.captureAsyncFunction('insertTestResults -- Kevin',testResultsService.insertTestResult(payload))
+  return insertTestResult
     .then(() => {
       return new HTTPResponse(201, 'Test records created')
     })
