@@ -7,6 +7,7 @@ const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled
 const Joi = require('joi')
 const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
+const AWSXray = require('aws-xray-sdk')
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -15,13 +16,15 @@ const GetTestResults = require('../utils/GetTestResults')
 class TestResultsService {
   constructor (testResultsDAO) {
     this.testResultsDAO = testResultsDAO
+    AWSXray.capturePromise();
   }
 
-  getTestResults (filters) {
+  async getTestResults (filters) {
     if (filters) {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
           if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+            console.error('Invalid Filter Dates')
             return Promise.reject(new HTTPError(400, 'Bad request'))
           }
         }
@@ -36,25 +39,39 @@ class TestResultsService {
             throw error
           })
         } else if (filters.testerStaffId) {
-          return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-            return this.applyTestResultsFilters(data, filters)
-          }).catch(error => {
-            if (!(error instanceof HTTPError)) {
-              console.error(error)
-              error = new HTTPError(500, 'Internal Server Error')
-            }
-            throw error
-          })
+          let results = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
+            .catch(error => {
+              if (!(error instanceof HTTPError)) {
+                console.error(error)
+                error = new HTTPError(500, 'Internal Server Error')
+              }
+              throw error
+            })
+          return this.applyTestResultsFilters(results, filters)
+
+          // return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
+          //   return this.applyTestResultsFilters(data, filters)
+          // }).catch(error => {
+          //   if (!(error instanceof HTTPError)) {
+          //     console.error(error)
+          //     error = new HTTPError(500, 'Internal Server Error')
+          //   }
+          //   throw error
+          // })
         } else {
+          console.error('Filters object invalid')
           return Promise.reject(new HTTPError(400, 'Bad request'))
         }
       } else {
+        console.error('Filters object empty')
         return Promise.reject(new HTTPError(400, 'Bad request'))
       }
     } else {
+      console.error('Missing filters object')
       return Promise.reject(new HTTPError(400, 'Bad request'))
     }
   }
+
   checkTestResults (data) {
     if (data) {
       if (!data.Count) {
