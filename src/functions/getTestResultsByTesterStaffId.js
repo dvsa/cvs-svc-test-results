@@ -3,8 +3,9 @@
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
+const AWSXray = require('aws-xray-sdk')
 
-const getTestResultsByTesterStaffId = (event) => {
+const getTestResultsByTesterStaffId = async (event) => {
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 
@@ -19,7 +20,8 @@ const getTestResultsByTesterStaffId = (event) => {
     }
   }
 
-  return testResultsService.getTestResults({ testerStaffId: testerStaffId, testStationPNumber: testStationPNumber, fromDateTime: fromDateTime, toDateTime: toDateTime })
+  let testResults = AWSXray.captureAsyncFunction('getTestResultsXXXXX', testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime }))
+  return testResults
     .then((data) => {
       return new HTTPResponse(200, data)
     })
@@ -27,5 +29,7 @@ const getTestResultsByTesterStaffId = (event) => {
       return new HTTPResponse(error.statusCode, error.body)
     })
 }
+
+// const getTestResultsByTesterStaffIdWrapped = () => {}
 
 module.exports.getTestResultsByTesterStaffId = getTestResultsByTesterStaffId

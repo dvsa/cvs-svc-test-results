@@ -16,7 +16,7 @@ const AWSXray = require('aws-xray-sdk')
 class TestResultsService {
   constructor (testResultsDAO) {
     this.testResultsDAO = testResultsDAO
-    AWSXray.capturePromise();
+    // AWSXray.capturePromise();
   }
 
   async getTestResults (filters) {
