@@ -7,6 +7,7 @@ const HTTPResponse = require('../models/HTTPResponse')
 
 const postTestResults = (event) => {
   let segment = AWSXray.getSegment()
+  AWSXray.capturePromise();
   let subseg;
   if (segment) {
     subseg = segment.addNewSubsegment('postTestResults');
@@ -21,17 +22,20 @@ const postTestResults = (event) => {
     return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
   }
 
-  let results =  testResultsService.insertTestResult(payload)
-    .then(() => {
-      return new HTTPResponse(201, 'Test records created')
-    })
-    .catch((error) => {
-      return new HTTPResponse(error.statusCode, error.body)
-    })
-  if (subseg) {
-    subseg.close();
+  try {
+    return testResultsService.insertTestResult(payload)
+      .then(() => {
+        return new HTTPResponse(201, 'Test records created')
+      })
+      .catch((error) => {
+        subseg.addError(error);
+        return new HTTPResponse(error.statusCode, error.body)
+      })
+  } finally {
+    if (subseg) {
+      subseg.close();
+    }
   }
-  return results
 }
 
 module.exports.postTestResults = postTestResults
