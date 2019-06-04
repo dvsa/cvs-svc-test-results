@@ -6,8 +6,12 @@ const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
 
 const postTestResults = (event) => {
-  let subseg = AWSXray.getSegment().addNewSubsegment('postTestResults')
-  console.log('XXXXX', subseg)
+  let segment = AWSXray.getSegment()
+  let subseg;
+  if (segment) {
+    subseg = segment.addNewSubsegment('postTestResults');
+    console.log('XXXXX', subseg)
+  }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 
@@ -17,15 +21,17 @@ const postTestResults = (event) => {
     return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
   }
 
-  let insertTestResult = testResultsService.insertTestResult(payload).then(() => {
+  let results =  testResultsService.insertTestResult(payload)
+    .then(() => {
       return new HTTPResponse(201, 'Test records created')
     })
     .catch((error) => {
       return new HTTPResponse(error.statusCode, error.body)
     })
-  subseg.close()
-  return insertTestResult
-
+  if (subseg) {
+    subseg.close();
+  }
+  return results
 }
 
 module.exports.postTestResults = postTestResults
