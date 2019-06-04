@@ -19,6 +19,7 @@ const postTestResults = (event) => {
   let payload = event.body
 
   if (!payload) {
+    subseg.addError(new Error('Body is not valid JSON'));
     return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
   }
 
