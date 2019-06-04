@@ -27,6 +27,10 @@ const postTestResults = async (event) => {
       subseg.addError(error);
       console.log('DDDDDDDD Came to error catch', error)
       return new HTTPResponse(error.statusCode, error.body)
+    }).finally(() => {
+      if (subseg) {
+        subseg.close();
+      }
     })
 
     return new HTTPResponse(201, 'Test records created')
