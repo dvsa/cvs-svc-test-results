@@ -48,7 +48,8 @@
             "imDescription": "Registration Plate",
             "deficiencyId": "a",
             "itemDescription": "A registration plate:",
-            "imNumber": 1
+            "imNumber": 1,
+            "prohibitionIssued": false
           }
         ],
         "name": "Annual test",
@@ -96,7 +97,8 @@
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "deficiencyId": "a",
             "itemDescription": "Obligatory Seat Belt:",
-            "imNumber": 3
+            "imNumber": 3,
+            "prohibitionIssued": true
           }
         ],
         "name": "Annual test",
@@ -145,7 +147,8 @@
             "imDescription": "Registration Plate",
             "deficiencyId": "a",
             "itemDescription": "A registration plate:",
-            "imNumber": 1
+            "imNumber": 1,
+            "prohibitionIssued": true
           }
         ],
         "name": "Annual test",
@@ -227,7 +230,8 @@
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "deficiencyId": "a",
             "itemDescription": "Obligatory Seat Belt:",
-            "imNumber": 3
+            "imNumber": 3,
+            "prohibitionIssued": true
           }
         ],
         "name": "Annual test",
@@ -308,7 +312,8 @@
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "deficiencyId": "a",
             "itemDescription": "Obligatory Seat Belt:",
-            "imNumber": 3
+            "imNumber": 3,
+            "prohibitionIssued": false
           }
         ],
         "name": "Annual test",
@@ -413,7 +418,8 @@
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "deficiencyId": "a",
             "itemDescription": "Obligatory Seat Belt:",
-            "imNumber": 3
+            "imNumber": 3,
+            "prohibitionIssued": false
           }
         ],
         "name": "Annual test",
@@ -486,7 +492,8 @@
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "deficiencyId": "a",
             "itemDescription": "Obligatory Seat Belt:",
-            "imNumber": 3
+            "imNumber": 3,
+            "prohibitionIssued": true
           }
         ],
         "name": "Annual test",
@@ -569,7 +576,8 @@
             "imDescription": "Registration Plate",
             "deficiencyId": "a",
             "itemDescription": "A registration plate:",
-            "imNumber": 1
+            "imNumber": 1,
+            "prohibitionIssued": false
           }
         ],
         "name": "Annual test",
