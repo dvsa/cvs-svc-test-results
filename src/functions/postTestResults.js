@@ -5,13 +5,12 @@ const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
 
-const postTestResults = (event) => {
+const postTestResults = async (event) => {
   let segment = AWSXray.getSegment()
   AWSXray.capturePromise();
   let subseg;
   if (segment) {
     subseg = segment.addNewSubsegment('postTestResults');
-    console.log('XXXXX', subseg)
   }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
@@ -24,14 +23,13 @@ const postTestResults = (event) => {
   }
 
   try {
-    return testResultsService.insertTestResult(payload)
-      .then(() => {
-        return new HTTPResponse(201, 'Test records created')
-      })
-      .catch((error) => {
-        subseg.addError(error.body);
-        return new HTTPResponse(error.statusCode, error.body)
-      })
+    await testResultsService.insertTestResult(payload).catch((error) => {
+      subseg.addError(error);
+      console.log('DDDDDDDD Came to error catch', error)
+      return new HTTPResponse(error.statusCode, error.body)
+    })
+
+    return new HTTPResponse(201, 'Test records created')
   } finally {
     if (subseg) {
       subseg.close();
