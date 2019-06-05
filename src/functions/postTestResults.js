@@ -4,6 +4,7 @@ const AWSXray = require('aws-xray-sdk')
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
+const MESSAGES = require('../utils/enum')
 
 const postTestResults = async (event) => {
   let segment = AWSXray.getSegment()
@@ -18,22 +19,23 @@ const postTestResults = async (event) => {
   let payload = event.body
 
   if (!payload) {
-    if (subseg) { subseg.addError('Body is not valid JSON'); }
-    return Promise.resolve(new HTTPResponse(400, 'Body is not a valid JSON.'))
+    if (subseg) { subseg.addError(MESSAGES.INVALID_JSON); }
+    return Promise.resolve(new HTTPResponse(400, MESSAGES.INVALID_JSON))
   }
 
   try {
-    await testResultsService.insertTestResult(payload).catch((error) => {
-      subseg.addError(error);
-      console.log('DDDDDDDD Came to error catch', error)
-      return new HTTPResponse(error.statusCode, error.body)
-    }).finally(() => {
-      if (subseg) {
-        subseg.close();
-      }
+    let result = new Promise.reject(new HTTPError(500,MESSAGES.INTERNAL_SERVER_ERROR)); //Default to failure
+    AWSXray.captureAsyncFunction('insertTestResult', () => {
+      result = testResultsService.insertTestResult(payload);
     })
-
-    return new HTTPResponse(201, 'Test records created')
+    return result.then(() => {
+        return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
+      })
+      .catch((error) => {
+        subseg.addError(error.body);
+        subseg.close();
+        return new HTTPResponse(error.statusCode, error.body)
+      })
   } finally {
     if (subseg) {
       subseg.close();
