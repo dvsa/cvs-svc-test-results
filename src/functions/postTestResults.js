@@ -4,6 +4,7 @@ const AWSXray = require('aws-xray-sdk')
 const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
+const HTTPError = require('../models/HTTPError')
 const MESSAGES = require('../utils/enum')
 
 const postTestResults = async (event) => {
