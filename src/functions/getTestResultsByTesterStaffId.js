@@ -6,6 +6,12 @@ const HTTPResponse = require('../models/HTTPResponse')
 const AWSXray = require('aws-xray-sdk')
 
 const getTestResultsByTesterStaffId = async (event) => {
+  let segment = AWSXray.getSegment()
+  AWSXray.capturePromise();
+  let subseg;
+  if (segment) {
+    subseg = segment.addNewSubsegment('getTestResultsByTesterStaffId');
+  }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 
@@ -16,20 +22,25 @@ const getTestResultsByTesterStaffId = async (event) => {
 
   if (!event.queryStringParameters) {
     if (event.queryStringParameters.testerStaffId && event.queryStringParameters.testStationPNumber && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime) {
+      console.log('Bad request in getTestResultsByTesterStaffId - missing required parameters');
+      if (subseg) subseg.addError('Bad request in getTestResultsByTesterStaffId - missing required parameters');
       return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
     }
   }
 
-  let testResults = AWSXray.captureAsyncFunction('getTestResultsXXXXX', testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime }))
-  return testResults
-    .then((data) => {
-      return new HTTPResponse(200, data)
-    })
-    .catch((error) => {
-      return new HTTPResponse(error.statusCode, error.body)
-    })
+  try {
+    return testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime })
+      .then((data) => {
+        return new HTTPResponse(200, data)
+      })
+      .catch((error) => {
+        if (subseg) subseg.addError(error);
+        console.log('Error in getTestResultsByTesterStaffId > getTestResults: ', error)
+        return new HTTPResponse(error.statusCode, error.body)
+      })
+  } finally {
+    if (subseg) subseg.close();
+  }
 }
-
-// const getTestResultsByTesterStaffIdWrapped = () => {}
 
 module.exports.getTestResultsByTesterStaffId = getTestResultsByTesterStaffId

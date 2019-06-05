@@ -5,7 +5,7 @@ const TestResultsDAO = require('../models/TestResultsDAO')
 const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
 const HTTPError = require('../models/HTTPError')
-const MESSAGES = require('../utils/enum')
+const MESSAGES = require('../utils/Enum')
 
 const postTestResults = async (event) => {
   let segment = AWSXray.getSegment()
@@ -25,23 +25,15 @@ const postTestResults = async (event) => {
   }
 
   try {
-    let result = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR); //Default to failure
-    AWSXray.captureAsyncFunc('insertTestResult', (segment) => {
-        result = testResultsService.insertTestResult(payload)
-        .then(() => {
-          console.log('in THEN')
-          return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
-        })
-        .catch((error) => {
-          console.log('in ERROR', error)
-          if (segment) segment.addError(error.body);
-          return new HTTPResponse(error.statusCode, error.body)
-        })
-      if (segment) segment.close()
-    })
-    let thing = await result;
-    console.log('XXXXXX', thing);
-    return thing
+    return testResultsService.insertTestResult(payload)
+      .then(() => {
+        return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
+      })
+      .catch((error) => {
+        console.log('Error in postTestResults > insertTestResults: ', error)
+        if (subseg) { subseg.addError(error.body); }
+        return new HTTPResponse(error.statusCode, error.body)
+      })
   } finally {
     if (subseg) {
       subseg.close();
