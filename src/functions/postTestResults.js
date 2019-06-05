@@ -39,8 +39,9 @@ const postTestResults = async (event) => {
         })
       if (segment) segment.close()
     })
-    console.log(result);
-    return result
+    let thing = await result;
+    console.log('XXXXXX', thing);
+    return thing
   } finally {
     if (subseg) {
       subseg.close();
