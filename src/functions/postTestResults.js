@@ -25,18 +25,22 @@ const postTestResults = async (event) => {
   }
 
   try {
-    let result = new Promise.reject(new HTTPError(500,MESSAGES.INTERNAL_SERVER_ERROR)); //Default to failure
-    AWSXray.captureAsyncFunction('insertTestResult', () => {
-      result = testResultsService.insertTestResult(payload);
+    let result = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR); //Default to failure
+    AWSXray.captureAsyncFunc('insertTestResult', (segment) => {
+        result = testResultsService.insertTestResult(payload)
+        .then(() => {
+          console.log('in THEN')
+          return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
+        })
+        .catch((error) => {
+          console.log('in ERROR', error)
+          if (segment) segment.addError(error.body);
+          return new HTTPResponse(error.statusCode, error.body)
+        })
+      if (segment) segment.close()
     })
-    return result.then(() => {
-        return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
-      })
-      .catch((error) => {
-        subseg.addError(error.body);
-        subseg.close();
-        return new HTTPResponse(error.statusCode, error.body)
-      })
+    console.log(result);
+    return result
   } finally {
     if (subseg) {
       subseg.close();
