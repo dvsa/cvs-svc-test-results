@@ -23,7 +23,7 @@ class TestResultsService {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
           if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
-            console.error('Invalid Filter Dates')
+            console.log('Invalid Filter Dates')
             return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
           }
         }
@@ -32,7 +32,7 @@ class TestResultsService {
             return this.applyTestResultsFilters(response, filters)
           }).catch(error => {
             if (!(error instanceof HTTPError)) {
-              console.error(error)
+              console.log(error)
               error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
             }
             throw error
@@ -41,32 +41,22 @@ class TestResultsService {
           let results = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
             .catch(error => {
               if (!(error instanceof HTTPError)) {
-                console.error(error)
+                console.log(error)
                 error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
               }
               throw error
             })
           return this.applyTestResultsFilters(results, filters)
-
-          // return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-          //   return this.applyTestResultsFilters(data, filters)
-          // }).catch(error => {
-          //   if (!(error instanceof HTTPError)) {
-          //     console.error(error)
-          //     error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
-          //   }
-          //   throw error
-          // })
         } else {
-          console.error('Filters object invalid')
+          console.log('Filters object invalid')
           return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
         }
       } else {
-        console.error('Filters object empty')
+        console.log('Filters object empty')
         return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
       }
     } else {
-      console.error('Missing filters object')
+      console.log('Missing filters object')
       return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
     }
   }
@@ -149,10 +139,10 @@ class TestResultsService {
           })
       }).catch((error) => {
         if (error.statusCode === 400 && error.message === 'The conditional request failed') {
-          console.error('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists',error);
+          console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists',error);
           return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
         }
-        console.error('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error);
+        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error);
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
@@ -350,7 +340,7 @@ class TestResultsService {
       })
       .catch((error) => {
         if (error) {
-          console.error(error)
+          console.log(error)
           throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
         }
       })
