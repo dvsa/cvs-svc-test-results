@@ -5,6 +5,7 @@ const TestResultsService = require('../services/TestResultsService')
 const HTTPResponse = require('../models/HTTPResponse')
 const dateFns = require('date-fns')
 const AWSXray = require('aws-xray-sdk')
+const MESSAGES = require('../utils/Enum')
 
 const getTestResultsByVin = async (event) => {
   let segment = AWSXray.getSegment()
@@ -26,11 +27,11 @@ const getTestResultsByVin = async (event) => {
       if (event.queryStringParameters.toDateTime === '') {
         if (subseg) {subseg.addError('Bad Request - toDate empty');}
         console.log('Bad Request in getTestResultsByVin - toDate empty');
-        return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
+        return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST))
       } else if (event.queryStringParameters.fromDateTime === '') {
         if (subseg) {subseg.addError('Bad Request - fromDate empty');}
         console.log('Bad request in getTestResultsByVin - fromDate empty');
-        return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
+        return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST))
       } else {
         if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status }
         if (event.queryStringParameters.toDateTime) { toDateTime = new Date(event.queryStringParameters.toDateTime) }
