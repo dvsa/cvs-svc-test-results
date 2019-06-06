@@ -56,6 +56,19 @@ describe('getTestResultsByVin', () => {
                 })
             })
           })
+          context('but there are no test results in the date range specified', () => {
+            it('should return 404', (done) => {
+              request.get('test-results/1B7GG36N12S678425?status=submitted&fromDateTime=2021-01-01&toDateTime=2022-02-23')
+                .end((err, res) => {
+                  if (err) { expect.fail(err) }
+                  expect(res.statusCode).to.equal(404)
+                  expect(res.headers['access-control-allow-origin']).to.equal('*')
+                  expect(res.headers['access-control-allow-credentials']).to.equal('true')
+                  expect(res.body).to.equal('No resources match the search criteria')
+                  done()
+                })
+            })
+          })
         })
       })
 
