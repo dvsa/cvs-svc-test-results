@@ -20,11 +20,13 @@ const getTestResultsByTesterStaffId = async (event) => {
   const toDateTime = new Date(event.queryStringParameters.toDateTime)
   const fromDateTime = new Date(event.queryStringParameters.fromDateTime)
 
+  const BAD_REQUEST_MISSING_FIELDS = 'Bad request in getTestResultsByTesterStaffId - missing required parameters';
+
   try {
     if (!event.queryStringParameters) {
       if (event.queryStringParameters.testerStaffId && event.queryStringParameters.testStationPNumber && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime) {
-        console.log('Bad request in getTestResultsByTesterStaffId - missing required parameters');
-        if (subseg) subseg.addError('Bad request in getTestResultsByTesterStaffId - missing required parameters');
+        console.log(BAD_REQUEST_MISSING_FIELDS);
+        if (subseg) subseg.addError(BAD_REQUEST_MISSING_FIELDS);
         return Promise.resolve(new HTTPResponse(400, 'Bad Request'))
       }
     }
