@@ -18,12 +18,12 @@ const postTestResults = async (event) => {
 
   let payload = event.body
 
-  if (!payload) {
-    if (subseg) { subseg.addError(MESSAGES.INVALID_JSON); }
-    return Promise.resolve(new HTTPResponse(400, MESSAGES.INVALID_JSON))
-  }
-
   try {
+    if (!payload) {
+      if (subseg) { subseg.addError(MESSAGES.INVALID_JSON); }
+      return Promise.resolve(new HTTPResponse(400, MESSAGES.INVALID_JSON))
+    }
+
     return testResultsService.insertTestResult(payload)
       .then(() => {
         return new HTTPResponse(201, MESSAGES.RECORD_CREATED)
