@@ -28,6 +28,22 @@ class GetTestResults {
       return dateFns.isAfter(testResult.testStartTimestamp, fromDateTime) && dateFns.isBefore(testResult.testEndTimestamp, toDateTime)
     })
   }
+
+  static filterTestResultsByDeleteFlag (testResults) {
+    return testResults.filter((testResult) => {
+      return !testResult.deleteFlag === true
+    })
+  }
+
+  static filterTestTypesByDeleteFlag (testResults) {
+    testResults.forEach(testResult => {
+      let filteredTestTypes = testResult.testTypes.filter(testType => {
+        return !testType.deleteFlag === true
+      })
+      testResult.testTypes = filteredTestTypes
+    })
+    return testResults
+  }
 }
 
 module.exports = GetTestResults

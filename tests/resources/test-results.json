@@ -599,5 +599,533 @@
     "numberOfSeats": 45,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1"
+  },
+  {
+    "testResultId": "7",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual With Certificate",
+        "testResult": "pass"
+      },
+      {
+        "prohibitionIssued": false,
+        "testCode": "pms",
+        "testNumber": "2",
+        "lastUpdatedAt": "2019-02-22T08:50:16.706Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:50:16.706Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": "upper",
+                "longitudinal": null,
+                "rowNumber": 1,
+                "lateral": "centre",
+                "seatNumber": 2
+              },
+              "notes": "seatbelt missing"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "3.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Seat Belts & Supplementary Restraint Systems",
+            "deficiencyId": "a",
+            "itemDescription": "Obligatory Seat Belt:",
+            "imNumber": 3
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual NO CERTIFICATE",
+        "testResult": "fail"
+      },
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual NO CERTIFICATE",
+        "testResult": "prs"
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012301",
+    "vehicleSize": "small",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "vehicleId": "JY58FPP",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "testStationPNumber": "87-1369569",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
+    "deleteFlag": true
+  },
+  {
+    "testResultId": "8",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual With Certificate",
+        "testResult": "pass"
+      },
+      {
+        "prohibitionIssued": false,
+        "testCode": "pms",
+        "testNumber": "2",
+        "lastUpdatedAt": "2019-02-22T08:50:16.706Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:50:16.706Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": "upper",
+                "longitudinal": null,
+                "rowNumber": 1,
+                "lateral": "centre",
+                "seatNumber": 2
+              },
+              "notes": "seatbelt missing"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "3.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Seat Belts & Supplementary Restraint Systems",
+            "deficiencyId": "a",
+            "itemDescription": "Obligatory Seat Belt:",
+            "imNumber": 3
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual NO CERTIFICATE",
+        "testResult": "fail"
+      },
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual NO CERTIFICATE",
+        "testResult": "prs"
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012302",
+    "vehicleSize": "small",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "vehicleId": "JY58FPP",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "testStationPNumber": "87-1369569",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
+    "deleteFlag": false
+  },
+  {
+    "testResultId": "9",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual With Certificate",
+        "testResult": "pass",
+        "deleteFlag": true
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012303",
+    "vehicleSize": "small",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "vehicleId": "JY58FPP",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "testStationPNumber": "87-1369569",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
+    "deleteFlag": false
+  },
+  {
+    "testResultId": "10",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "aas",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testTypeClassification": "Annual With Certificate",
+        "testResult": "pass",
+        "deleteFlag": false
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012304",
+    "vehicleSize": "small",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "vehicleId": "JY58FPP",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "testStationPNumber": "87-1369569",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
+    "deleteFlag": false
   }
 ]
