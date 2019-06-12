@@ -139,10 +139,10 @@ class TestResultsService {
           })
       }).catch((error) => {
         if (error.statusCode === 400 && error.message === 'The conditional request failed') {
-          console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists',error);
+          console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists', error)
           return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
         }
-        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error);
+        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error)
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
