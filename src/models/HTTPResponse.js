@@ -9,11 +9,11 @@ class HTTPResponse {
        */
   constructor (statusCode, body, headers = {}) {
     if (headers) this.headers = headers
-    headers['Access-Control-Allow-Origin'] = '*'
-    headers['Access-Control-Allow-Credentials'] = true
-    headers['X-Content-Type-Options'] = 'nosniff'
-    headers['Vary'] = 'Origin'
-    headers['X-XSS-Protection'] = '1; mode=block'
+    this.headers['Access-Control-Allow-Origin'] = '*'
+    this.headers['Access-Control-Allow-Credentials'] = true
+    this.headers['X-Content-Type-Options'] = 'nosniff'
+    this.headers['Vary'] = 'Origin'
+    this.headers['X-XSS-Protection'] = '1; mode=block'
     this.statusCode = statusCode
     this.body = JSON.stringify(body)
   }

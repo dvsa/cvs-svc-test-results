@@ -7,6 +7,7 @@ const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled
 const Joi = require('joi')
 const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
+const MESSAGES = require('../utils/Enum')
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -17,12 +18,13 @@ class TestResultsService {
     this.testResultsDAO = testResultsDAO
   }
 
-  getTestResults (filters) {
+  async getTestResults (filters) {
     if (filters) {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
           if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
-            return Promise.reject(new HTTPError(400, 'Bad request'))
+            console.log('Invalid Filter Dates')
+            return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
           }
         }
         if (filters.vin) {
@@ -30,31 +32,35 @@ class TestResultsService {
             return this.applyTestResultsFilters(response, filters)
           }).catch(error => {
             if (!(error instanceof HTTPError)) {
-              console.error(error)
-              error = new HTTPError(500, 'Internal Server Error')
+              console.log(error)
+              error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
             }
             throw error
           })
         } else if (filters.testerStaffId) {
-          return this.testResultsDAO.getByTesterStaffId(filters.testerStaffId).then(data => {
-            return this.applyTestResultsFilters(data, filters)
-          }).catch(error => {
-            if (!(error instanceof HTTPError)) {
-              console.error(error)
-              error = new HTTPError(500, 'Internal Server Error')
-            }
-            throw error
-          })
+          let results = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
+            .catch(error => {
+              if (!(error instanceof HTTPError)) {
+                console.log(error)
+                error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
+              }
+              throw error
+            })
+          return this.applyTestResultsFilters(results, filters)
         } else {
-          return Promise.reject(new HTTPError(400, 'Bad request'))
+          console.log('Filters object invalid')
+          return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
         }
       } else {
-        return Promise.reject(new HTTPError(400, 'Bad request'))
+        console.log('Filters object empty')
+        return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
       }
     } else {
-      return Promise.reject(new HTTPError(400, 'Bad request'))
+      console.log('Missing filters object')
+      return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST))
     }
   }
+
   checkTestResults (data) {
     if (data) {
       if (!data.Count) {
@@ -132,10 +138,11 @@ class TestResultsService {
               })
           })
       }).catch((error) => {
-        console.error(error)
         if (error.statusCode === 400 && error.message === 'The conditional request failed') {
+          console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists',error);
           return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
         }
+        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error);
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
@@ -239,7 +246,10 @@ class TestResultsService {
             }
           })
           return payload
-        }).catch(error => console.error(error))
+        }).catch(error => {
+          console.log('Error in error setExpiryDateAndCertificateNumber > getMostRecentExpiryDateOnAllTestTypesByVin', error)
+          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
+        })
     }
   }
 
@@ -259,7 +269,7 @@ class TestResultsService {
               })
             })
             .catch(error => {
-              console.log(error)
+              console.log('Error in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults > getTestTypesWithTestCodesAndClassification: ', error)
             })
           promiseArray.push(promise)
         })
@@ -275,6 +285,7 @@ class TestResultsService {
         })
         return maxDate
       }).catch(() => {
+        console.log('Something went wrong in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults. Returning default test date.')
         return maxDate
       })
   }
@@ -314,8 +325,8 @@ class TestResultsService {
       })
       .catch((error) => {
         if (error) {
-          console.error(error)
-          throw new HTTPError(500, 'Internal Server Error')
+          console.log('Error in insertTestResultsList: ', error)
+          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
         }
       })
   }
@@ -329,8 +340,8 @@ class TestResultsService {
       })
       .catch((error) => {
         if (error) {
-          console.error(error)
-          throw new HTTPError(500, 'Internal Server Error')
+          console.log(error)
+          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
         }
       })
   }
