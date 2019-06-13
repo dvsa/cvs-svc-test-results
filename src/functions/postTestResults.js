@@ -8,10 +8,10 @@ const MESSAGES = require('../utils/Enum')
 
 const postTestResults = async (event) => {
   let segment = AWSXray.getSegment()
-  AWSXray.capturePromise();
-  let subseg;
+  AWSXray.capturePromise()
+  let subseg
   if (segment) {
-    subseg = segment.addNewSubsegment('postTestResults');
+    subseg = segment.addNewSubsegment('postTestResults')
   }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
@@ -20,7 +20,7 @@ const postTestResults = async (event) => {
 
   try {
     if (!payload) {
-      if (subseg) { subseg.addError(MESSAGES.INVALID_JSON); }
+      if (subseg) { subseg.addError(MESSAGES.INVALID_JSON) }
       return Promise.resolve(new HTTPResponse(400, MESSAGES.INVALID_JSON))
     }
 
@@ -30,12 +30,12 @@ const postTestResults = async (event) => {
       })
       .catch((error) => {
         console.log('Error in postTestResults > insertTestResults: ', error)
-        if (subseg) { subseg.addError(error.body); }
+        if (subseg) { subseg.addError(error.body) }
         return new HTTPResponse(error.statusCode, error.body)
       })
   } finally {
     if (subseg) {
-      subseg.close();
+      subseg.close()
     }
   }
 }

@@ -7,7 +7,6 @@ const TestResultsService = require('../../src/services/TestResultsService')
 const TestResultsDAO = require('../../src/models/TestResultsDAO')
 const fs = require('fs')
 const path = require('path')
-const _ = require('lodash/core')
 
 describe('getTestResultsByVin', () => {
   context('when database is populated', () => {
