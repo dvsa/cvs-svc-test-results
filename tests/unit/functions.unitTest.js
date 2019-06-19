@@ -23,9 +23,7 @@ describe('getTestResultsByTesterStaffId', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
 
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
@@ -35,17 +33,39 @@ describe('getTestResultsByTesterStaffId', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
+    })
 
-      // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal('getTestResultsByTesterStaffId')
+    it('should return 200 + data on successful submission - No Xray', async () => {
+      const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
+
+      let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
+      sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
+
+      let res = await getTestResultsByTesterStaffId(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(SUCCESS))
+      expect(res.statusCode).to.equal(200)
     })
 
     it('should return the thrown error if service fails', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
+
+      let error = new HTTPError(418, FAIL)
+      let fake = sinon.fake.returns(Promise.reject(error))
+      sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
+
+      let res = await getTestResultsByTesterStaffId(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(error.body))
+      expect(res.statusCode).to.equal(error.statusCode)
+    })
+
+    it('should return the thrown error if service fails - no Xray', async () => {
+      const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
       let error = new HTTPError(418, FAIL)
       let fake = sinon.fake.returns(Promise.reject(error))
@@ -63,9 +83,17 @@ describe('getTestResultsByTesterStaffId', () => {
     it('should return a 400 bad request', async () => {
       let event = {}
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
+
+      let res = await getTestResultsByTesterStaffId(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(Enum.BAD_REQUEST))
+      expect(res.statusCode).to.equal(400)
+    })
+
+    it('should return a 400 bad request - no Xray', async () => {
+      let event = {}
 
       let res = await getTestResultsByTesterStaffId(event)
       // eslint-disable-next-line no-unused-expressions
@@ -85,9 +113,7 @@ describe('getTestResultsByVin', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
 
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
@@ -97,17 +123,39 @@ describe('getTestResultsByVin', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
+    })
 
-      // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal('getTestResultsByVin')
+    it('should return 200 + data on successful submission - no Xray', async () => {
+      const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
+
+      let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
+      sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
+
+      let res = await getTestResultsByVin(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(SUCCESS))
+      expect(res.statusCode).to.equal(200)
     })
 
     it('should return the thrown error if service fails', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
+
+      let error = new HTTPError(418, FAIL)
+      let fake = sinon.fake.returns(Promise.reject(error))
+      sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
+
+      let res = await getTestResultsByVin(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(error.body))
+      expect(res.statusCode).to.equal(error.statusCode)
+    })
+
+    it('should return the thrown error if service fails - no Xray', async () => {
+      const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
       let error = new HTTPError(418, FAIL)
       let fake = sinon.fake.returns(Promise.reject(error))
@@ -142,9 +190,18 @@ describe('getTestResultsByVin', () => {
         const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
         event.queryStringParameters.toDateTime = ''
 
-        let fakeSubsegment = sinon.fake()
-        let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-        sinon.replace(AWSXray, 'getSegment', fakeSegment)
+        addXrayMocks()
+
+        let res = await getTestResultsByVin(event)
+        // eslint-disable-next-line no-unused-expressions
+        expect(res instanceof HTTPResponse).to.be.true
+        expect(res.body).to.equal(JSON.stringify(Enum.BAD_REQUEST))
+        expect(res.statusCode).to.equal(400)
+      })
+
+      it('should return a 400 bad request - no Xray', async () => {
+        const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
+        event.queryStringParameters.toDateTime = ''
 
         let res = await getTestResultsByVin(event)
         // eslint-disable-next-line no-unused-expressions
@@ -159,9 +216,18 @@ describe('getTestResultsByVin', () => {
         const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
         event.queryStringParameters.fromDateTime = ''
 
-        let fakeSubsegment = sinon.fake()
-        let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-        sinon.replace(AWSXray, 'getSegment', fakeSegment)
+        addXrayMocks()
+
+        let res = await getTestResultsByVin(event)
+        // eslint-disable-next-line no-unused-expressions
+        expect(res instanceof HTTPResponse).to.be.true
+        expect(res.body).to.equal(JSON.stringify(Enum.BAD_REQUEST))
+        expect(res.statusCode).to.equal(400)
+      })
+
+      it('should also return a 400 bad request - no Xray', async () => {
+        const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
+        event.queryStringParameters.fromDateTime = ''
 
         let res = await getTestResultsByVin(event)
         // eslint-disable-next-line no-unused-expressions
@@ -182,9 +248,7 @@ describe('postTestResults', () => {
     it('should return 201 + message on successful submission', async () => {
       let event = require('../resources/post-event-pass')
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
 
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'insertTestResult', fake)
@@ -194,17 +258,39 @@ describe('postTestResults', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(Enum.RECORD_CREATED))
       expect(res.statusCode).to.equal(201)
+    })
 
-      // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal('postTestResults')
+    it('should return 201 + message on successful submission - no Xray', async () => {
+      let event = require('../resources/post-event-pass')
+
+      let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
+      sinon.replace(TestResultsService.prototype, 'insertTestResult', fake)
+
+      let res = await postTestResults(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(Enum.RECORD_CREATED))
+      expect(res.statusCode).to.equal(201)
     })
 
     it('should return the thrown error if service fails', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/post-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake()
-      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+      addXrayMocks()
+
+      let error = new HTTPError(418, FAIL)
+      let fake = sinon.fake.returns(Promise.reject(error))
+      sinon.replace(TestResultsService.prototype, 'insertTestResult', fake)
+
+      let res = await postTestResults(event)
+      // eslint-disable-next-line no-unused-expressions
+      expect(res instanceof HTTPResponse).to.be.true
+      expect(res.body).to.equal(JSON.stringify(error.body))
+      expect(res.statusCode).to.equal(error.statusCode)
+    })
+
+    it('should return the thrown error if service fails', async () => {
+      const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/post-event-pass.json'), 'utf8'))
 
       let error = new HTTPError(418, FAIL)
       let fake = sinon.fake.returns(Promise.reject(error))
@@ -223,9 +309,17 @@ describe('postTestResults', () => {
       it('should return a 400 bad request', async () => {
         let event = {}
 
-        let fakeSubsegment = sinon.fake()
-        let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
-        sinon.replace(AWSXray, 'getSegment', fakeSegment)
+        addXrayMocks()
+
+        let res = await postTestResults(event)
+        // eslint-disable-next-line no-unused-expressions
+        expect(res instanceof HTTPResponse).to.be.true
+        expect(res.body).to.equal(JSON.stringify(Enum.INVALID_JSON))
+        expect(res.statusCode).to.equal(400)
+      })
+
+      it('should return a 400 bad request - no Xray', async () => {
+        let event = {}
 
         let res = await postTestResults(event)
         // eslint-disable-next-line no-unused-expressions
@@ -236,3 +330,14 @@ describe('postTestResults', () => {
     })
   })
 })
+
+addXrayMocks = () => {
+  let fakeSubsegment = {
+    close: () => {},
+    addError: () => {}
+  }
+  let fakeSegment = sinon.fake.returns({ addNewSubsegment: () => fakeSubsegment })
+  sinon.replace(AWSXray, 'getSegment', fakeSegment)
+
+  return fakeSubsegment
+}
