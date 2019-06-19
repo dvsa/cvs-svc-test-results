@@ -9,6 +9,7 @@ const HTTPError = require('../../src/models/HTTPError')
 const Enum = require('../../src/utils/Enum')
 const path = require('path')
 const fs = require('fs')
+const AWSXray = require('aws-xray-sdk')
 
 const SUCCESS = 'It Works'
 const FAIL = 'It Broke'
@@ -22,6 +23,10 @@ describe('getTestResultsByTesterStaffId', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
+      let fakeSubsegment = sinon.fake();
+      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
+      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
 
@@ -30,6 +35,9 @@ describe('getTestResultsByTesterStaffId', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
+
+      // Expect subsegment to have been initialised with function name
+      expect(fakeSubsegment.firstCall.args[0]).to.equal("getTestResultsByTesterStaffId")
     })
 
     it('should return the thrown error if service fails', async () => {
@@ -69,6 +77,10 @@ describe('getTestResultsByVin', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
+      let fakeSubsegment = sinon.fake();
+      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
+      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
 
@@ -96,7 +108,7 @@ describe('getTestResultsByVin', () => {
 
   context('with correct input, and no filters', () => {
     it('should be fine, and return 200 + data on successful submission', async () => {
-      const event = {pathParameters: {vin: "mr magoo"}}
+      const event = { pathParameters: { vin: 'mr magoo' } }
 
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'getTestResults', fake)
@@ -106,6 +118,9 @@ describe('getTestResultsByVin', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
+
+      // Expect subsegment to have been initialised with function name
+      expect(fakeSubsegment.firstCall.args[0]).to.equal("getTestResultsByVin")
     })
   })
 
@@ -147,6 +162,10 @@ describe('postTestResults', () => {
     it('should return 201 + message on successful submission', async () => {
       let event = require('../resources/post-event-pass')
 
+      let fakeSubsegment = sinon.fake();
+      let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
+      sinon.replace(AWSXray, 'getSegment', fakeSegment)
+
       let fake = sinon.fake.returns(Promise.resolve(SUCCESS))
       sinon.replace(TestResultsService.prototype, 'insertTestResult', fake)
 
@@ -155,6 +174,9 @@ describe('postTestResults', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(Enum.RECORD_CREATED))
       expect(res.statusCode).to.equal(201)
+
+      // Expect subsegment to have been initialised with function name
+      expect(fakeSubsegment.firstCall.args[0]).to.equal("postTestResults")
     })
 
     it('should return the thrown error if service fails', async () => {
