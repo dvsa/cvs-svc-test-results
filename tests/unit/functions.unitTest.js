@@ -23,7 +23,7 @@ describe('getTestResultsByTesterStaffId', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake();
+      let fakeSubsegment = sinon.fake()
       let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
       sinon.replace(AWSXray, 'getSegment', fakeSegment)
 
@@ -37,7 +37,7 @@ describe('getTestResultsByTesterStaffId', () => {
       expect(res.statusCode).to.equal(200)
 
       // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal("getTestResultsByTesterStaffId")
+      expect(fakeSubsegment.firstCall.args[0]).to.equal('getTestResultsByTesterStaffId')
     })
 
     it('should return the thrown error if service fails', async () => {
@@ -77,7 +77,7 @@ describe('getTestResultsByVin', () => {
     it('should return 200 + data on successful submission', async () => {
       const event = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/get-event-pass.json'), 'utf8'))
 
-      let fakeSubsegment = sinon.fake();
+      let fakeSubsegment = sinon.fake()
       let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
       sinon.replace(AWSXray, 'getSegment', fakeSegment)
 
@@ -89,6 +89,9 @@ describe('getTestResultsByVin', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
+
+      // Expect subsegment to have been initialised with function name
+      expect(fakeSubsegment.firstCall.args[0]).to.equal('getTestResultsByVin')
     })
 
     it('should return the thrown error if service fails', async () => {
@@ -118,9 +121,6 @@ describe('getTestResultsByVin', () => {
       expect(res instanceof HTTPResponse).to.be.true
       expect(res.body).to.equal(JSON.stringify(SUCCESS))
       expect(res.statusCode).to.equal(200)
-
-      // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal("getTestResultsByVin")
     })
   })
 
@@ -162,7 +162,7 @@ describe('postTestResults', () => {
     it('should return 201 + message on successful submission', async () => {
       let event = require('../resources/post-event-pass')
 
-      let fakeSubsegment = sinon.fake();
+      let fakeSubsegment = sinon.fake()
       let fakeSegment = sinon.fake.returns({ addNewSubsegment: fakeSubsegment })
       sinon.replace(AWSXray, 'getSegment', fakeSegment)
 
@@ -176,7 +176,7 @@ describe('postTestResults', () => {
       expect(res.statusCode).to.equal(201)
 
       // Expect subsegment to have been initialised with function name
-      expect(fakeSubsegment.firstCall.args[0]).to.equal("postTestResults")
+      expect(fakeSubsegment.firstCall.args[0]).to.equal('postTestResults')
     })
 
     it('should return the thrown error if service fails', async () => {
