@@ -10,9 +10,7 @@ const postTestResults = async (event) => {
   let segment = AWSXray.getSegment()
   AWSXray.capturePromise()
   let subseg
-  if (segment) {
-    subseg = segment.addNewSubsegment('postTestResults')
-  }
+  if (segment) { subseg = segment.addNewSubsegment('postTestResults') }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 
@@ -34,9 +32,7 @@ const postTestResults = async (event) => {
         return new HTTPResponse(error.statusCode, error.body)
       })
   } finally {
-    if (subseg) {
-      subseg.close()
-    }
+    if (subseg) { subseg.close() }
   }
 }
 

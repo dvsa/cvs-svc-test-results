@@ -11,9 +11,7 @@ const getTestResultsByVin = async (event) => {
   let segment = AWSXray.getSegment()
   AWSXray.capturePromise()
   let subseg
-  if (segment) {
-    subseg = segment.addNewSubsegment('getTestResultsByVin')
-  }
+  if (segment) { subseg = segment.addNewSubsegment('getTestResultsByVin') }
   const testResultsDAO = new TestResultsDAO()
   const testResultsService = new TestResultsService(testResultsDAO)
 

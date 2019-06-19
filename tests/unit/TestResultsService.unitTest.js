@@ -2,11 +2,13 @@
 const expect = require('chai').expect
 const TestResultsDAOMock = require('../models/TestResultsDAOMock')
 const TestResultsService = require('../../src/services/TestResultsService')
+const TestResultsDao = require('../../src/models/TestResultsDAO')
 const HTTPError = require('../../src/models/HTTPError')
 const HTTPResponse = require('../../src/models/HTTPResponse')
 const fs = require('fs')
 const path = require('path')
 const dateFns = require('date-fns')
+const sinon = require('sinon').createSandbox()
 
 describe('getTestResults', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
@@ -160,6 +162,37 @@ describe('getTestResults', () => {
         })
     })
   })
+
+  context('when DAO function calls throws errors', () => {
+    it('should return a 500 error', () => {
+      let daoMock = sinon.stub(TestResultsDao.prototype)
+
+      daoMock.getByVin.returns(Promise.reject(new Error('Rejected by mock')))
+      daoMock.getByTesterStaffId.returns(Promise.reject(new Error('Rejected by mock')))
+      let testResultsService = new TestResultsService(daoMock)
+      let testData = { vin: 'XMGDE02FS0H012345', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() }
+      testResultsService.getTestResults({ ...testData })
+        .then(() => {
+          expect.fail()
+        })
+        .catch((e) => {
+          expect(e.statusCode).to.equal(500)
+          expect(e.body).to.equal('Internal Server Error')
+        })
+
+      delete testData.vin
+      testResultsService.getTestResults({ ...testData, testerStaffId: 1 })
+        .then(() => {
+          expect.fail()
+        })
+        .catch((e) => {
+          expect(e.statusCode).to.equal(500)
+          expect(e.body).to.equal('Internal Server Error')
+        })
+
+      sinon.restore()
+    })
+  })
 })
 
 describe('insertTestResult', () => {
@@ -304,6 +337,25 @@ describe('insertTestResult', () => {
         .catch(error => {
           expect(error.statusCode).to.equal(400)
           expect(error.body).to.equal('Reason for Abandoning not present on all abandoned tests')
+        })
+    })
+  })
+
+  context('when inserting an LEC test without a certificate number', () => {
+    it('should throw a 400 error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      let mockData = Object.assign({}, testResultsMockDB[1])
+
+      for (let testType of mockData.testTypes) {
+        testType.testTypeId = '39'
+        delete testType.certificateNumber
+      }
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch(error => {
+          expect(error.statusCode).to.equal(400)
+          expect(error.body).to.equal('Certificate number not present on LEC test type')
         })
     })
   })
@@ -490,5 +542,59 @@ describe('deleteTestResultsList', () => {
           expect(errorResponse.body).to.equal('Internal Server Error')
         })
     })
+  })
+})
+
+describe('setTestNumber', () => {
+  it('returns the original payload if no testTypes', async () => {
+    let testResultsService = new TestResultsService()
+    let testData = { will: 'fail' }
+    let res = await testResultsService.setTestNumber(testData)
+    expect(res).to.equal(testData)
+  })
+})
+
+describe('setExpiryDateAndCertificateNumber', () => {
+  context('receives a payload with the mostRecentExpiryDateOnAllTestTypesByVin between now and 2 months time', () => {
+    it('adjusts the expiry by a year', async () => {
+      let getMostRecentExpiryDateOnAllTestTypesByVinMock = sinon.stub(TestResultsService.prototype, 'getMostRecentExpiryDateOnAllTestTypesByVin')
+      let oneMonthFutureDate = new Date().setMonth(new Date().getMonth() + 1)
+      let oneYearOneMonthFutureDate = new Date(oneMonthFutureDate).setFullYear(new Date(oneMonthFutureDate).getFullYear() + 1)
+      let testData = {
+        testStatus: 'submitted',
+        testTypes: [
+          {
+            testTypeClassification: 'Annual With Certificate',
+            testResult: 'pass',
+            testNumber: 1
+          }
+        ]
+      }
+
+      getMostRecentExpiryDateOnAllTestTypesByVinMock.returns(Promise.resolve(oneMonthFutureDate))
+
+      let testResultsService = new TestResultsService()
+      let res = await testResultsService.setExpiryDateAndCertificateNumber(testData)
+      expect(res.testTypes[0].testExpiryDate).to.equal(new Date(oneYearOneMonthFutureDate).toISOString())
+
+      sinon.restore()
+    })
+  })
+
+  it('throws an error if getMostRecentExpiryDateOnAllTestTypesByVin errors', () => {
+    let mockServ = sinon.stub(TestResultsService.prototype, 'getMostRecentExpiryDateOnAllTestTypesByVin')
+    mockServ.returns(Promise.reject(new Error('Rejected by mock')))
+
+    let testResultsService = new TestResultsService()
+    testResultsService.setExpiryDateAndCertificateNumber({ testStatus: 'submitted' })
+      .then(() => {
+        expect.fail()
+      })
+      .catch((e) => {
+        expect(e.statusCode).to.equal(500)
+        expect(e.body).to.equal('Internal Server Error')
+      })
+
+    sinon.restore()
   })
 })

@@ -48,6 +48,7 @@
     "serverless-dynamodb-local": "^0.2.37",
     "serverless-offline": "^3.33.0",
     "serverless-plugin-tracing": "^2.0.0",
+    "sinon": "^7.3.2",
     "standard": "^12.0.1",
     "supertest": "^3.4.2"
   },

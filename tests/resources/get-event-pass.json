@@ -1,0 +1,12 @@
+{
+  "queryStringParameters": {
+    "testerStaffId": 1,
+    "testStationPNumber": 2,
+    "toDateTime": 1560936654,
+    "fromDateTime": 1560936655,
+    "status": "probably fine?"
+  },
+  "pathParameters": {
+    "vin": "ABC123"
+  }
+}

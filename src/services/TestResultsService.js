@@ -354,7 +354,7 @@ class TestResultsService {
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
         if (testType.testTypeId === '39' && !testType.certificateNumber) {
-          return true
+          bool = true
         }
       })
     }
