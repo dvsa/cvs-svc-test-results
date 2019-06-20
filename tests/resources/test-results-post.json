@@ -9,6 +9,7 @@
     "testerName": "Dorel",
     "testerStaffId": "1",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "noOfAxles": "2",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
@@ -37,7 +38,6 @@
         "numberOfSeatbeltsFitted": 2,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "seatbeltInstallationCheckDate": true,
-        "testTypeClassification": "Annual With Certificate",
         "testResult": "fail",
         "prohibitionIssued": false,
         "reasonForAbandoning": "none",
@@ -46,6 +46,7 @@
         "additionalCommentsForAbandon": "none",
         "defects": [
           {
+            "prohibitionIssued": false,
             "imNumber": 1,
             "imDescription": "Registration Plate",
             "additionalInformation": {
@@ -88,6 +89,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
     "reasonForCancellation": "none",
+    "noOfAxles": "2",
     "vehicleClass": {
       "code": "2",
       "description": "motorbikes over 200cc or with a sidecar"
@@ -120,6 +122,7 @@
         "certificateNumber": null,
         "defects": [
           {
+            "prohibitionIssued": false,
             "imNumber": 3,
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "additionalInformation": {
@@ -170,6 +173,7 @@
     "numberOfSeats": 45,
     "vehicleConfiguration": "rigid",
     "odometerReading": 350000,
+    "noOfAxles": "2",
     "odometerReadingUnits": "kilometres",
     "preparerId": "bl5545",
     "preparerName": "Durrell Vehicles Limited",
@@ -194,6 +198,7 @@
         "certificateNumber": null,
         "defects": [
           {
+            "prohibitionIssued": false,
             "imNumber": 3,
             "imDescription": "Seat Belts & Supplementary Restraint Systems",
             "additionalInformation": {
@@ -229,6 +234,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "noOfAxles": "2",
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -250,6 +256,7 @@
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
         "defects": [
           {
+            "prohibitionIssued": false,
             "deficiencyCategory": "major",
             "deficiencyText": "missing.",
             "prs": false,

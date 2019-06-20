@@ -1,5 +1,6 @@
 /* global describe context it */
 const expect = require('chai').expect
+const assert = require('chai').assert
 const TestResultsDAOMock = require('../models/TestResultsDAOMock')
 const TestResultsService = require('../../src/services/TestResultsService')
 const HTTPError = require('../../src/models/HTTPError')
@@ -105,6 +106,7 @@ describe('getTestResults', () => {
 describe('insertTestResult', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
   const testResultsMockDB = require('../resources/test-results.json')
+  const testResultsPostMock = require('../resources/test-results-post.json')
 
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {
@@ -244,6 +246,49 @@ describe('insertTestResult', () => {
         .catch(error => {
           expect(error.statusCode).to.equal(400)
           expect(error.body).to.equal('Reason for Abandoning not present on all abandoned tests')
+        })
+    })
+  })
+
+  context('when inserting a testResult with prohibitionIssued valid and null', () => {
+    it('should not throw error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[0]
+      mockData.testTypes[0].defects[0].prohibitionIssued = null
+
+      return testResultsService.insertTestResult(mockData)
+        .then((data) => {
+          expect(data).to.not.be.eql(undefined)
+        }).catch(() => {})
+    })
+  })
+
+  context('when inserting a testResult with prohibitionIssued valid and not null', () => {
+    it('should not throw error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[0]
+
+      return testResultsService.insertTestResult(mockData)
+        .then((data) => {
+          expect(data).to.not.be.eql(undefined)
+        }).catch(() => {})
+    })
+  })
+
+  context('when inserting a testResult with prohibitionIssued not present on defects', () => {
+    it('should throw validation error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[0]
+      delete mockData.testTypes[0].defects[0].prohibitionIssued
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error.statusCode).to.be.eql(400)
+          expect(error.body).to.be.eql({ errors: [ '"prohibitionIssued" is required' ] })
         })
     })
   })
