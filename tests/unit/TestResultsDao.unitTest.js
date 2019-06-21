@@ -19,14 +19,17 @@ describe('TestResultsDAO', () => {
           '#vin': 'vin'
         },
         'ExpressionAttributeValues': {
-          ':vin': { 'S': 'XMGDE02FS0H012345' }
+          ':vin': 'XMGDE02FS0H012345'
         }
       }
 
-      let dao = new TestResultsDAO()
-      let req = await dao.getByVin('XMGDE02FS0H012345')
+      let fake = sinon.fake.returns({ promise: () => {} })
+      sinon.replace(AWS.DynamoDB.DocumentClient.prototype, 'query', fake)
 
-      expect(getRequestBody(req)).to.deep.equal(JSON.stringify(expectedCall))
+      let dao = new TestResultsDAO()
+      dao.getByVin('XMGDE02FS0H012345')
+
+      expect(fake.getCall(0).args[0]).to.deep.equal(expectedCall)
     })
   })
 
@@ -40,14 +43,17 @@ describe('TestResultsDAO', () => {
           '#testerStaffId': 'testerStaffId'
         },
         'ExpressionAttributeValues': {
-          ':testerStaffId': { 'S': '1' }
+          ':testerStaffId': '1'
         }
       }
 
-      let dao = new TestResultsDAO()
-      let req = await dao.getByTesterStaffId('1')
+      let fake = sinon.fake.returns({ promise: () => {} })
+      sinon.replace(AWS.DynamoDB.DocumentClient.prototype, 'query', fake)
 
-      expect(getRequestBody(req)).to.deep.equal(JSON.stringify(expectedCall))
+      let dao = new TestResultsDAO()
+      dao.getByTesterStaffId('1')
+
+      expect(fake.getCall(0).args[0]).to.deep.equal(expectedCall)
     })
   })
 
