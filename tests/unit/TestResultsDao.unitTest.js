@@ -56,9 +56,9 @@ describe('TestResultsDAO', () => {
       let testPayload = {
         'testResultId': '1111'
       }
-
+      let expectedTable = config.getDynamoDBConfig().table
       let expectedCall = {
-        'TableName': 'cvs-local-test-results',
+        'TableName': expectedTable,
         'Item': testPayload,
         'ConditionExpression': 'testResultId <> :testResultIdVal',
         'ExpressionAttributeValues': {
@@ -81,10 +81,10 @@ describe('TestResultsDAO', () => {
       let testPayload = [{
         'testResultId': '1111'
       }]
-
+      let expectedTable = config.getDynamoDBConfig().table
       let expectedCall = {
         'RequestItems': {
-          'cvs-local-test-results': [
+          [expectedTable]: [
             {
               'PutRequest': {
                 'Item': {
@@ -111,10 +111,10 @@ describe('TestResultsDAO', () => {
       let testPayload = [{
         'ABC123': '1111'
       }]
-
+      let expectedTable = config.getDynamoDBConfig().table
       let expectedCall = {
         'RequestItems': {
-          'cvs-local-test-results': [
+          [expectedTable]: [
             {
               'DeleteRequest': {
                 'Key': {
