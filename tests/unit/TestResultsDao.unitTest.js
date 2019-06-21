@@ -188,7 +188,3 @@ describe('TestResultsDAO', () => {
     })
   })
 })
-
-let getRequestBody = (dao) => {
-  return dao.$response.request.httpRequest.body
-}
