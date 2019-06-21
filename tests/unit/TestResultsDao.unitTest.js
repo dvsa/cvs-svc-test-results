@@ -12,8 +12,9 @@ describe('TestResultsDAO', () => {
 
   context('getByVin', () => {
     it('should construct valid query', async () => {
+      let expectedTable = config.getDynamoDBConfig().table
       let expectedCall = {
-        'TableName': 'cvs-local-test-results',
+        'TableName': expectedTable,
         'KeyConditionExpression': '#vin = :vin',
         'ExpressionAttributeNames': {
           '#vin': 'vin'
@@ -35,8 +36,9 @@ describe('TestResultsDAO', () => {
 
   context('getByTesterStaffId', () => {
     it('should construct valid query', async () => {
+      let expectedTable = config.getDynamoDBConfig().table
       let expectedCall = {
-        'TableName': 'cvs-local-test-results',
+        'TableName': expectedTable,
         'IndexName': 'TesterStaffIdIndex',
         'KeyConditionExpression': '#testerStaffId = :testerStaffId',
         'ExpressionAttributeNames': {
