@@ -331,7 +331,7 @@ describe('postTestResults', () => {
   })
 })
 
-addXrayMocks = () => {
+let addXrayMocks = () => {
   let fakeSubsegment = {
     close: () => {},
     addError: () => {}
