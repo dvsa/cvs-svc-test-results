@@ -1,6 +1,5 @@
 /* global describe context it */
 const expect = require('chai').expect
-const assert = require('chai').assert
 const TestResultsDAOMock = require('../models/TestResultsDAOMock')
 const TestResultsService = require('../../src/services/TestResultsService')
 const HTTPError = require('../../src/models/HTTPError')
