@@ -5,4 +5,4 @@ const MESSAGES = {
   BAD_REQUEST: 'Bad request'
 }
 
-module.exports = MESSAGES;
+module.exports = MESSAGES
