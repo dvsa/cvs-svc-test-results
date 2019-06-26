@@ -29,16 +29,16 @@ class GetTestResults {
     })
   }
 
-  static filterTestResultsByDeleteFlag (testResults) {
+  static filterTestResultsByDeletionFlag (testResults) {
     return testResults.filter((testResult) => {
-      return !testResult.deleteFlag === true
+      return !testResult.deletionFlag === true
     })
   }
 
-  static filterTestTypesByDeleteFlag (testResults) {
+  static filterTestTypesByDeletionFlag (testResults) {
     testResults.forEach(testResult => {
       let filteredTestTypes = testResult.testTypes.filter(testType => {
-        return !testType.deleteFlag === true
+        return !testType.deletionFlag === true
       })
       testResult.testTypes = filteredTestTypes
     })

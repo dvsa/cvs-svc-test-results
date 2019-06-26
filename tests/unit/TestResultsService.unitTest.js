@@ -29,7 +29,7 @@ describe('getTestResults', () => {
     })
   })
 
-  context('when a record is found with deleteFlag false', () => {
+  context('when a record is found with deletionFlag false', () => {
     it('should return a populated response', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[8])
       testResultsDAOMock.numberOfrecords = 1
@@ -38,12 +38,12 @@ describe('getTestResults', () => {
 
       return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012302', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
         .then((returnedRecords) => {
-          expect(returnedRecords[0].deleteFlag).to.equal(false)
+          expect(returnedRecords[0].deletionFlag).to.equal(false)
         })
     })
   })
 
-  context('when only one record is found with deleteFlag true', () => {
+  context('when only one record is found with deletionFlag true', () => {
     it('should return a 404 error', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[7])
       testResultsDAOMock.numberOfrecords = 1
@@ -61,7 +61,7 @@ describe('getTestResults', () => {
     })
   })
 
-  context('when a record with one test type is found and the test type has deleteFlag false', () => {
+  context('when a record with one test type is found and the test type has deletionFlag false', () => {
     it('should return a populated response', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[10])
       testResultsDAOMock.numberOfrecords = 1
@@ -70,12 +70,12 @@ describe('getTestResults', () => {
 
       return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012304', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
         .then((returnedRecords) => {
-          expect(returnedRecords[0].testTypes[0].deleteFlag).to.equal(false)
+          expect(returnedRecords[0].testTypes[0].deletionFlag).to.equal(false)
         })
     })
   })
 
-  context('when a record with one test type is found and the test type has deleteFlag true', () => {
+  context('when a record with one test type is found and the test type has deletionFlag true', () => {
     it('should not return that test type', () => {
       testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[9])
       testResultsDAOMock.numberOfrecords = 1

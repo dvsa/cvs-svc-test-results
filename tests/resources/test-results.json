@@ -778,7 +778,7 @@
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "deleteFlag": true
+    "deletionFlag": true
   },
   {
     "testResultId": "8",
@@ -958,7 +958,7 @@
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "deleteFlag": false
+    "deletionFlag": false
   },
   {
     "testResultId": "9",
@@ -1016,7 +1016,7 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deleteFlag": true
+        "deletionFlag": true
       }
     ],
     "vehicleClass": {
@@ -1042,7 +1042,7 @@
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "deleteFlag": false
+    "deletionFlag": false
   },
   {
     "testResultId": "10",
@@ -1100,7 +1100,7 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deleteFlag": false
+        "deletionFlag": false
       }
     ],
     "vehicleClass": {
@@ -1126,6 +1126,6 @@
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "deleteFlag": false
+    "deletionFlag": false
   }
 ]

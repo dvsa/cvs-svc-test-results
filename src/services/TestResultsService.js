@@ -80,8 +80,8 @@ class TestResultsService {
     if (filters.testStationPNumber) {
       testResults = GetTestResults.filterTestResultsByParam(testResults, 'testStationPNumber', filters.testStationPNumber)
     }
-    testResults = GetTestResults.filterTestResultsByDeleteFlag(testResults)
-    testResults = GetTestResults.filterTestTypesByDeleteFlag(testResults)
+    testResults = GetTestResults.filterTestResultsByDeletionFlag(testResults)
+    testResults = GetTestResults.filterTestTypesByDeletionFlag(testResults)
 
     if (testResults.length === 0) {
       throw new HTTPError(404, 'No resources match the search criteria')
