@@ -11,6 +11,7 @@ provider:
       Action:
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
+        - "lambda:InvokeFunction"
       Resource:
         - "*"
 
@@ -39,26 +40,33 @@ functions:
   getTestResults:
     handler: src/handler.handler
     events:
-    - http:
-        path: test-results
-        method: post
-    - http:
-        path: test-results/{vin}
-        method: get
-        request:
-          parameters:
-            paths:
-              vin: true
-            query:
-              status: false
-              fromDateTime: false
-              toDateTime: false
+      - http:
+          path: test-results
+          method: post
+      - http:
+          path: test-results/{vin}
+          method: get
+          request:
+            parameters:
+              paths:
+                vin: true
+              query:
+                status: false
+                fromDateTime: false
+                toDateTime: false
+      - schedule:
+          name: warmer-schedule
+          rate: rate(10 minutes)
+          enabled: true
+          input:
+            warmer: true
+            concurrency: 2
   getTestResultsByTesterStaffId:
     handler: src/functions/getTestResultsByTesterStaffId.getTestResultsByTesterStaffId
     events:
-    - http:
-        path: test-results/getTestResultsByTesterStaffId
-        method: get
+      - http:
+          path: test-results/getTestResultsByTesterStaffId
+          method: get
 
 
 resources:

@@ -3,12 +3,16 @@
 const Path = require('path-parser').default
 const Configuration = require('./utils/Configuration')
 const HTTPResponse = require('./models/HTTPResponse')
+const warmer = require('lambda-warmer')
 
 const handler = async (event, context, callback) => {
   // Request integrity checks
   if (!event) {
     return new HTTPResponse(400, 'AWS event is empty. Check your test event.')
   }
+  // Support warming events via lambda-warmer
+  if (await warmer(event)) return 'warmed'
+
   if (event.body) {
     let payload = {}
 
