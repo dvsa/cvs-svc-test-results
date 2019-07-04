@@ -19,7 +19,7 @@ describe('test-results handler', () => {
     it('carries on past the warmer check', async () => {
       // Next step checks for body, and returns 400 if not present.
       stub.returns(false)
-      let event = {}
+      let event = { body: 'fail' }
       let res = await handler.handler(event)
       expect(res.statusCode).to.equal(400)
     })

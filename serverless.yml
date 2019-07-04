@@ -54,13 +54,6 @@ functions:
                 status: false
                 fromDateTime: false
                 toDateTime: false
-      - schedule:
-          name: warmer-schedule
-          rate: rate(10 minutes)
-          enabled: true
-          input:
-            warmer: true
-            concurrency: 2
   getTestResultsByTesterStaffId:
     handler: src/functions/getTestResultsByTesterStaffId.getTestResultsByTesterStaffId
     events:
