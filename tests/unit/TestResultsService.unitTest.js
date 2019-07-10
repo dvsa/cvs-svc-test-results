@@ -29,6 +29,66 @@ describe('getTestResults', () => {
     })
   })
 
+  context('when a record is found with deletionFlag false', () => {
+    it('should return a populated response', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[8])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      var testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012302', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
+        .then((returnedRecords) => {
+          expect(returnedRecords[0].deletionFlag).to.equal(false)
+        })
+    })
+  })
+
+  context('when only one record is found with deletionFlag true', () => {
+    it('should return a 404 error', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[7])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      var testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012301', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
+        .then((returnedRecords) => {
+          expect.fail()
+        }).catch((errorResponse) => {
+          expect(errorResponse).to.be.instanceOf(HTTPError)
+          expect(errorResponse.statusCode).to.equal(404)
+          expect(errorResponse.body).to.equal('No resources match the search criteria')
+        })
+    })
+  })
+
+  context('when a record with one test type is found and the test type has deletionFlag false', () => {
+    it('should return a populated response', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[10])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      var testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012304', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
+        .then((returnedRecords) => {
+          expect(returnedRecords[0].testTypes[0].deletionFlag).to.equal(false)
+        })
+    })
+  })
+
+  context('when a record with one test type is found and the test type has deletionFlag true', () => {
+    it('should not return that test type', () => {
+      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[9])
+      testResultsDAOMock.numberOfrecords = 1
+      testResultsDAOMock.numberOfScannedRecords = 1
+      var testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.getTestResults({ vin: 'XMGDE02FS0H012303', status: 'submitted', fromDateTime: '2017-01-01', toDateTime: new Date().toString() })
+        .then((returnedRecords) => {
+          expect(returnedRecords[0].testTypes.length).to.equal(0)
+        })
+    })
+  })
+
   context('when db returns undefined data', () => {
     it('should return 404-No resources match the search criteria if db return null data', () => {
       testResultsDAOMock.testResultsResponseMock = null
@@ -369,7 +429,7 @@ describe('insertTestResultsList', () => {
 
       return testResultsService.insertTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(7)
+          expect(data.length).to.equal(11)
         })
     })
   })
@@ -411,7 +471,7 @@ describe('deleteTestResultsList', () => {
 
       return testResultsService.deleteTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(7)
+          expect(data.length).to.equal(11)
         })
     })
   })
