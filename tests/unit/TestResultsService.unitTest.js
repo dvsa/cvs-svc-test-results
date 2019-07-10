@@ -429,7 +429,7 @@ describe('insertTestResultsList', () => {
 
       return testResultsService.insertTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(11)
+          expect(data.length).to.equal(15)
         })
     })
   })
@@ -471,7 +471,7 @@ describe('deleteTestResultsList', () => {
 
       return testResultsService.deleteTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(11)
+          expect(data.length).to.equal(15)
         })
     })
   })
