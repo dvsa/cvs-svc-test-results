@@ -141,8 +141,8 @@ class TestResultsService {
               })
           })
       }).catch((error) => {
-        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists', error)
         if (error.statusCode === 400 && error.message === 'The conditional request failed') {
+          console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists', error)
           return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
         } else if (error.statusCode === 404 && error.body === 'No resources match the search criteria.') {
           return Promise.reject(new HTTPResponse(404, 'Test types not found'))
