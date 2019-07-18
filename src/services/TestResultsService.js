@@ -147,6 +147,7 @@ class TestResultsService {
         } else if (error.statusCode === 404 && error.body === 'No resources match the search criteria.') {
           return Promise.reject(new HTTPResponse(404, 'Test types not found'))
         }
+        console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error)
         return Promise.reject(new HTTPError(500, 'Internal server error'))
       })
   }
