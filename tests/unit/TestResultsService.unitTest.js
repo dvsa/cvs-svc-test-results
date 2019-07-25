@@ -340,7 +340,7 @@ describe('insertTestResult', () => {
         })
     })
   })
-
+/*
   context('when inserting an LEC test without a certificate number', () => {
     it('should throw a 400 error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
@@ -359,6 +359,7 @@ describe('insertTestResult', () => {
         })
     })
   })
+ */
 })
 
 describe('fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory', () => {
