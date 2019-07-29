@@ -340,26 +340,6 @@ describe('insertTestResult', () => {
         })
     })
   })
-/*
-  context('when inserting an LEC test without a certificate number', () => {
-    it('should throw a 400 error', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      let mockData = Object.assign({}, testResultsMockDB[1])
-
-      for (let testType of mockData.testTypes) {
-        testType.testTypeId = '39'
-        delete testType.certificateNumber
-      }
-
-      return testResultsService.insertTestResult(mockData)
-        .then(() => {})
-        .catch(error => {
-          expect(error.statusCode).to.equal(400)
-          expect(error.body).to.equal('Certificate number not present on LEC test type')
-        })
-    })
-  })
- */
 })
 
 describe('fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory', () => {
