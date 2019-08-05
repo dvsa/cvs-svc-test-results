@@ -2,8 +2,13 @@
 
 const HTTPError = require('../models/HTTPError')
 const HTTPResponse = require('../models/HTTPResponse')
-const testResultsSchemaSubmitted = require('../models/TestResultsSchemaSubmitted')
-const testResultsSchemaCancelled = require('../models/TestResultsSchemaCancelled')
+const testResultsSchemaPSVSubmitted = require('../models/TestResultsSchemaPSVSubmitted')
+const testResultsSchemaPSVCancelled = require('../models/TestResultsSchemaPSVCancelled')
+const testResultsSchemaHGVSubmitted = require('../models/TestResultsSchemaHGVSubmitted')
+const testResultsSchemaTRLSubmitted = require('../models/TestResultsSchemaTRLSubmitted')
+const testResultsSchemaHGVCancelled = require('../models/TestResultsSchemaHGVCancelled')
+const testResultsSchemaTRLCancelled = require('../models/TestResultsSchemaTRLCancelled')
+
 const Joi = require('joi')
 const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
@@ -92,21 +97,32 @@ class TestResultsService {
   }
 
   insertTestResult (payload) {
-    let validation = null
+    let validationSchema = null
 
-    if (payload.testStatus === 'submitted') {
-      validation = Joi.validate(payload, testResultsSchemaSubmitted)
-    } else if (payload.testStatus === 'cancelled') {
-      validation = Joi.validate(payload, testResultsSchemaCancelled)
-    } else {
-      validation = {
-        error: {
-          details: [
-            { message: '"testStatus" should be one of ["submitted", "cancelled"]' }
-          ]
-        }
-      }
+    switch (payload.vehicleType + payload.testStatus) {
+      case 'psvsubmitted':
+        validationSchema = testResultsSchemaPSVSubmitted
+        break
+      case 'psvcancelled':
+        validationSchema = testResultsSchemaPSVCancelled
+        break
+      case 'hgvsubmitted':
+        validationSchema = testResultsSchemaHGVSubmitted
+        break
+      case 'hgvcancelled':
+        validationSchema = testResultsSchemaHGVCancelled
+        break
+      case 'trlsubmitted':
+        validationSchema = testResultsSchemaTRLSubmitted
+        break
+      case 'trlcancelled':
+        validationSchema = testResultsSchemaTRLCancelled
+        break
+      default:
+        validationSchema = null
     }
+    const validation = Joi.validate(payload, validationSchema)
+
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, 'Reason for Abandoning not present on all abandoned tests'))
     }
