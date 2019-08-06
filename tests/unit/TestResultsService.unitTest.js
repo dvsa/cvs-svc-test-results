@@ -177,7 +177,73 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.equal(400)
-          expect(error.body.errors[0]).to.equal('"testStatus" should be one of ["submitted", "cancelled"]')
+          expect(error.body).to.equal('Payload cannot be empty')
+        })
+    })
+  })
+
+  context('when inserting an HGV test result with fields applicable to this vehicleType', () => {
+    it('should not throw error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[4]
+
+      return testResultsService.insertTestResult(mockData)
+        .then((insertedTestResult) => {
+          expect(insertedTestResult).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting an HGV with fields corresponding to a PSV', () => {
+    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[2]
+      mockData.vehicleType = 'hgv'
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+          expect(error.body.errors).to.be.eql(['"numberOfSeatbeltsFitted" is not allowed', '"lastSeatbeltInstallationCheckDate" is not allowed', '"seatbeltInstallationCheckDate" is not allowed'])
+        })
+    })
+  })
+
+  context('when inserting an TRL test result with fields applicable to this vehicleType', () => {
+    it('should not throw error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[5]
+
+      return testResultsService.insertTestResult(mockData)
+        .then((insertedTestResult) => {
+          expect(insertedTestResult).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting an HGV with fields corresponding to a PSV', () => {
+    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[2]
+      mockData.vehicleType = 'trl'
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+          expect(error.body.errors).to.be.eql(['"numberOfSeatbeltsFitted" is not allowed', '"lastSeatbeltInstallationCheckDate" is not allowed', '"seatbeltInstallationCheckDate" is not allowed'])
         })
     })
   })
@@ -197,7 +263,6 @@ describe('insertTestResult', () => {
         delete testType.certificateLink
       }
       delete mockData.vehicleId
-
       return testResultsService.insertTestResult(mockData)
         .then(() => {})
         .catch(error => {
