@@ -238,16 +238,11 @@
     "testTypes": [
       {
         "prohibitionIssued": false,
-        "testCode": "aas",
-        "lastUpdatedAt": "2019-05-06T10:57:58.100Z",
-        "testNumber": "W01A00209",
-        "testAnniversaryDate": "2020-03-06T11:57:58.232Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
-        "createdAt": "2019-05-06T10:57:58.100Z",
         "testTypeId": "1",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "W01A00209",
@@ -294,7 +289,6 @@
     "vehicleSize": "small",
     "testStationName": "Rowe, Wunsch and Wisoky",
     "noOfAxles": 2,
-    "vehicleId": "JY58FPP",
     "vehicleType": "psv",
     "countryOfRegistration": "united kingdom",
     "preparerId": "ak4434",
@@ -309,5 +303,147 @@
     "numberOfSeats": 45,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1"
+  },
+  {
+    "testerStaffId": "1",
+    "testResultId": "1113",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "noOfAxles": "2",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "additionalCommentsForAbandon": "none",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "certificateNumber": "W01A00209",
+        "testTypeName": "Annual test",
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "prohibitionIssued": false,
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "testResult": "pass"
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012999",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "noOfAxles": 2,
+    "vehicleType": "hgv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "testStationPNumber": "87-1369569",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1"
+  },
+  {
+    "testerStaffId": "1",
+    "testResultId": "1115",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "noOfAxles": "2",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "additionalCommentsForAbandon": "none",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "testTypeId": "1",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "certificateNumber": "W01A00209",
+        "testTypeName": "Annual test",
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "defects": [
+          {
+            "prohibitionIssued": false,
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "Annual test",
+        "testResult": "pass"
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012999",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "noOfAxles": 2,
+    "vehicleType": "trl",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "testStationPNumber": "87-1369569",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "m1",
+    "trailerId": "abcd"
   }
 ]
