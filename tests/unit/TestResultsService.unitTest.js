@@ -231,7 +231,7 @@ describe('insertTestResult', () => {
     })
   })
 
-  context('when inserting an HGV with fields corresponding to a PSV', () => {
+  context('when inserting a TRL with fields corresponding to a PSV', () => {
     it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
