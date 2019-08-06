@@ -98,6 +98,9 @@ class TestResultsService {
 
   insertTestResult (payload) {
     let validationSchema = null
+    if (Object.keys(payload).length === 0) { // if empty object
+      return Promise.reject(new HTTPError(400, 'Payload cannot be empty'))
+    }
 
     switch (payload.vehicleType + payload.testStatus) {
       case 'psvsubmitted':
