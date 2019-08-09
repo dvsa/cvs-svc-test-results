@@ -199,7 +199,7 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting an HGV with fields corresponding to a PSV', () => {
-    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+    it('should throw 400', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       let mockData = testResultsPostMock[2]
@@ -210,7 +210,6 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.be.eql(400)
-          expect(error.body.errors).to.be.eql(['"numberOfSeatbeltsFitted" is not allowed', '"lastSeatbeltInstallationCheckDate" is not allowed', '"seatbeltInstallationCheckDate" is not allowed'])
         })
     })
   })
@@ -232,7 +231,7 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting a TRL with fields corresponding to a PSV', () => {
-    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+    it('should throw 400', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       let mockData = testResultsPostMock[2]
@@ -243,17 +242,101 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.be.eql(400)
-          expect(error.body.errors).to.be.eql(['"trailerId" is required'])
         })
     })
   })
 
-  context('when inserting a cancelled HGV with fields corresponding to a submitted HGV', () => {
-    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+  context('when inserting a cancelled HGV that has null values on the fields that are allowing them to be null', () => {
+    it('should not throw error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       let mockData = testResultsPostMock[4]
       mockData.testStatus = 'cancelled'
+      mockData.odometerReading = null
+      mockData.odometerReadingUnits = null
+      mockData.countryOfRegistration = null
+      mockData.euVehicleCategory = null
+
+      return testResultsService.insertTestResult(mockData)
+        .then((data) => {
+          expect(data).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
+    it('should throw 400', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[4]
+      mockData.odometerReading = null
+      mockData.odometerReadingUnits = null
+      mockData.countryOfRegistration = null
+      mockData.euVehicleCategory = null
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {
+          expect.fail()
+        })
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+        })
+    })
+  })
+
+  context('when inserting a cancelled TRL that has null values on the fields that are allowing them to be null', () => {
+    it('should not throw error', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[5]
+      mockData.testStatus = 'cancelled'
+      mockData.countryOfRegistration = null
+      mockData.euVehicleCategory = null
+
+      return testResultsService.insertTestResult(mockData)
+        .then((data) => {
+          expect(data).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting a submitted TRL that has null values on the fields that should be allowed null only when cancelled', () => {
+    it('should throw 400', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[5]
+      mockData.odometerReading = null
+      mockData.odometerReadingUnits = null
+      mockData.countryOfRegistration = null
+      mockData.euVehicleCategory = null
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {
+          expect.fail()
+        })
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+        })
+    })
+  })
+
+  context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
+    it('should throw 400', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[4]
+      mockData.odometerReading = null
+      mockData.odometerReadingUnits = null
+      mockData.countryOfRegistration = null
+      mockData.euVehicleCategory = null
 
       return testResultsService.insertTestResult(mockData)
         .then(() => {})
@@ -263,9 +346,8 @@ describe('insertTestResult', () => {
         })
     })
   })
-
   context('when inserting a cancelled TRL with fields corresponding to a submitted TRL', () => {
-    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+    it('should throw 400', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       let mockData = testResultsPostMock[5]
@@ -278,8 +360,6 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.be.eql(400)
-          console.error(error.body)
-          // expect(error.body.errors).to.be.eql(['"odometerReadingUnits" is not allowed', '"odometerReading" is not allowed' ])
         })
     })
   })

@@ -28,9 +28,9 @@ const testTypesSchema = Joi.object().keys({
 
 const testResultsSchema = Joi.object().keys({
   ...testResultsCommonSchema,
+  reasonForCancellation: Joi.string().max(500).required().allow('', null),
   euVehicleCategory: Joi.any().only(['m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4']).required(),
   countryOfRegistration: Joi.string().required().allow(''),
-  reasonForCancellation: Joi.string().max(500).required().allow('', null),
   trailerId: Joi.string().required(),
   testTypes: Joi.array().items(testTypesSchema).required()
 })
