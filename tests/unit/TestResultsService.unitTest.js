@@ -7,6 +7,7 @@ const HTTPResponse = require('../../src/models/HTTPResponse')
 const fs = require('fs')
 const path = require('path')
 const dateFns = require('date-fns')
+const postObject = require('../resources/test-results-post.json')
 
 describe('getTestResults', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
@@ -163,94 +164,15 @@ describe('getTestResults', () => {
 })
 
 describe('insertTestResult', () => {
-  const testResultsDAOMock = new TestResultsDAOMock()
   const testResultsMockDB = require('../resources/test-results.json')
-  const testResultsPostMock = require('../resources/test-results-post.json')
-
-  context('when inserting an empty test result', () => {
-    it('should throw a validation error', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      const mockData = {}
-
-      return testResultsService.insertTestResult(mockData)
-        .then(() => {})
-        .catch((error) => {
-          expect(error).to.be.instanceOf(HTTPError)
-          expect(error.statusCode).to.equal(400)
-          expect(error.body).to.equal('Payload cannot be empty')
-        })
-    })
-  })
-
-  context('when inserting an HGV test result with fields applicable to this vehicleType', () => {
-    it('should not throw error', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[4]
-
-      return testResultsService.insertTestResult(mockData)
-        .then((insertedTestResult) => {
-          expect(insertedTestResult).to.not.be.eql(undefined)
-        })
-        .catch(() => {
-          expect.fail()
-        })
-    })
-  })
-
-  context('when inserting an HGV with fields corresponding to a PSV', () => {
-    it('should throw 400', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[2]
-      mockData.vehicleType = 'hgv'
-
-      return testResultsService.insertTestResult(mockData)
-        .then(() => {})
-        .catch((error) => {
-          expect(error).to.be.instanceOf(HTTPError)
-          expect(error.statusCode).to.be.eql(400)
-        })
-    })
-  })
-
-  context('when inserting an TRL test result with fields applicable to this vehicleType', () => {
-    it('should not throw error', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[5]
-
-      return testResultsService.insertTestResult(mockData)
-        .then((insertedTestResult) => {
-          expect(insertedTestResult).to.not.be.eql(undefined)
-        })
-        .catch(() => {
-          expect.fail()
-        })
-    })
-  })
-
-  context('when inserting a TRL with fields corresponding to a PSV', () => {
-    it('should throw 400', () => {
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[2]
-      mockData.vehicleType = 'trl'
-
-      return testResultsService.insertTestResult(mockData)
-        .then(() => {})
-        .catch((error) => {
-          expect(error).to.be.instanceOf(HTTPError)
-          expect(error.statusCode).to.be.eql(400)
-        })
-    })
-  })
 
   context('when inserting a cancelled HGV that has null values on the fields that are allowing them to be null', () => {
     it('should not throw error', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[4]
+      let mockData = [...postObject][4]
       mockData.testStatus = 'cancelled'
       mockData.odometerReading = null
       mockData.odometerReadingUnits = null
@@ -267,11 +189,103 @@ describe('insertTestResult', () => {
     })
   })
 
-  context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
-    it('should throw 400', () => {
+  context('when inserting an empty test result', () => {
+    it('should throw a validation error', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      const mockData = {}
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.equal(400)
+          expect(error.body).to.equal('Payload cannot be empty')
+        })
+    })
+  })
+
+  context('when inserting an HGV test result with fields applicable to this vehicleType', () => {
+    it('should not throw error', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[4]
+      let mockData = [...postObject][4]
+
+      return testResultsService.insertTestResult(mockData)
+        .then((insertedTestResult) => {
+          expect(insertedTestResult).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting an HGV with fields corresponding to a PSV', () => {
+    it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = [...postObject][2]
+      mockData.vehicleType = 'hgv'
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {
+        })
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+        })
+    })
+  })
+
+  context('when inserting an TRL test result with fields applicable to this vehicleType', () => {
+    it('should not throw error', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = [...postObject][5]
+
+      return testResultsService.insertTestResult(mockData)
+        .then((insertedTestResult) => {
+          expect(insertedTestResult).to.not.be.eql(undefined)
+        })
+        .catch(() => {
+          expect.fail()
+        })
+    })
+  })
+
+  context('when inserting a TRL with fields corresponding to a PSV', () => {
+    it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = [...postObject][2]
+      mockData.vehicleType = 'trl'
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+        })
+    })
+  })
+
+  context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
+    it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = [...postObject][4]
       mockData.odometerReading = null
       mockData.odometerReadingUnits = null
       mockData.countryOfRegistration = null
@@ -290,9 +304,11 @@ describe('insertTestResult', () => {
 
   context('when inserting a cancelled TRL that has null values on the fields that are allowing them to be null', () => {
     it('should not throw error', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[5]
+      let mockData = [...postObject][5]
       mockData.testStatus = 'cancelled'
       mockData.countryOfRegistration = null
       mockData.euVehicleCategory = null
@@ -309,9 +325,11 @@ describe('insertTestResult', () => {
 
   context('when inserting a submitted TRL that has null values on the fields that should be allowed null only when cancelled', () => {
     it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[5]
+      let mockData = [...postObject][5]
       mockData.odometerReading = null
       mockData.odometerReadingUnits = null
       mockData.countryOfRegistration = null
@@ -330,9 +348,11 @@ describe('insertTestResult', () => {
 
   context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
     it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[4]
+      let mockData = [...postObject][4]
       mockData.odometerReading = null
       mockData.odometerReadingUnits = null
       mockData.countryOfRegistration = null
@@ -346,11 +366,14 @@ describe('insertTestResult', () => {
         })
     })
   })
+
   context('when inserting a cancelled TRL with fields corresponding to a submitted TRL', () => {
     it('should throw 400', () => {
+      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[5]
+      let mockData = [...postObject][5]
       mockData.testStatus = 'cancelled'
 
       return testResultsService.insertTestResult(mockData)
@@ -366,6 +389,7 @@ describe('insertTestResult', () => {
 
   context('when inserting a submitted testResult', () => {
     it('should return a 400 error when certificateNumber not present on lec', () => {
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[2]
 
@@ -387,6 +411,7 @@ describe('insertTestResult', () => {
     })
 
     it('should return a 400 error when fields null for advisory deficiency category', () => {
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[4]
 
@@ -410,6 +435,7 @@ describe('insertTestResult', () => {
     })
 
     it('should throw an internal server error', () => {
+      const testResultsDAOMock = new TestResultsDAOMock()
       testResultsDAOMock.isDatabaseOn = false
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       const testResultsService = new TestResultsService(testResultsDAOMock)
@@ -438,6 +464,7 @@ describe('insertTestResult', () => {
     })
 
     it('should return 201 - Test Result id already exists\'', () => {
+      const testResultsDAOMock = new TestResultsDAOMock()
       testResultsDAOMock.isDatabaseOn = false
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
       const testResultsService = new TestResultsService(testResultsDAOMock)
@@ -467,6 +494,7 @@ describe('insertTestResult', () => {
 
   context('when inserting a cancelled testResult', () => {
     it('should throw error 404 when reasonForAbandoning not present on all abandoned tests', () => {
+      const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[5]
 
@@ -491,10 +519,11 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting a testResult with prohibitionIssued valid and null', () => {
+    const testResultsDAOMock = new TestResultsDAOMock()
     it('should not throw error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[0]
+      let mockData = [...postObject][0]
       mockData.testTypes[0].defects[0].prohibitionIssued = null
 
       return testResultsService.insertTestResult(mockData)
@@ -505,10 +534,11 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting a testResult with prohibitionIssued valid and not null', () => {
+    const testResultsDAOMock = new TestResultsDAOMock()
     it('should not throw error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[0]
+      let mockData = [...postObject][0]
 
       return testResultsService.insertTestResult(mockData)
         .then((data) => {
@@ -518,10 +548,11 @@ describe('insertTestResult', () => {
   })
 
   context('when inserting a testResult with prohibitionIssued not present on defects', () => {
+    const testResultsDAOMock = new TestResultsDAOMock()
     it('should throw validation error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
-      let mockData = testResultsPostMock[0]
+      let mockData = [...postObject][0]
       delete mockData.testTypes[0].defects[0].prohibitionIssued
 
       return testResultsService.insertTestResult(mockData)
