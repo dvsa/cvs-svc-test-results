@@ -243,7 +243,7 @@ describe('insertTestResult', () => {
         .catch((error) => {
           expect(error).to.be.instanceOf(HTTPError)
           expect(error.statusCode).to.be.eql(400)
-          expect(error.body.errors).to.be.eql(['"numberOfSeatbeltsFitted" is not allowed', '"lastSeatbeltInstallationCheckDate" is not allowed', '"seatbeltInstallationCheckDate" is not allowed'])
+          expect(error.body.errors).to.be.eql(['"trailerId" is required'])
         })
     })
   })
