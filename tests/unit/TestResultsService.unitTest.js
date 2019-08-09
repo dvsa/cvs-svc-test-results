@@ -248,6 +248,42 @@ describe('insertTestResult', () => {
     })
   })
 
+  context('when inserting a cancelled HGV with fields corresponding to a submitted HGV', () => {
+    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[4]
+      mockData.testStatus = 'cancelled'
+
+      return testResultsService.insertTestResult(mockData)
+        .then(() => {})
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+        })
+    })
+  })
+
+  context('when inserting a cancelled TRL with fields corresponding to a submitted TRL', () => {
+    it('should throw 400 - and a message specifying the fields that should not be in the request payload', () => {
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+      testResultsDAOMock.testNumber = { testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' }
+      let mockData = testResultsPostMock[5]
+      mockData.testStatus = 'cancelled'
+
+      return testResultsService.insertTestResult(mockData)
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((error) => {
+          expect(error).to.be.instanceOf(HTTPError)
+          expect(error.statusCode).to.be.eql(400)
+          console.error(error.body)
+          // expect(error.body.errors).to.be.eql(['"odometerReadingUnits" is not allowed', '"odometerReading" is not allowed' ])
+        })
+    })
+  })
+
   context('when inserting a submitted testResult', () => {
     it('should return a 400 error when certificateNumber not present on lec', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
