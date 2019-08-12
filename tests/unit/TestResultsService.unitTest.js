@@ -191,7 +191,6 @@ describe('insertTestResult', () => {
 
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {
-      const postObject = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
       const testResultsDAOMock = new TestResultsDAOMock()
       const testResultsService = new TestResultsService(testResultsDAOMock)
       const mockData = {}
