@@ -10,6 +10,8 @@ class TestResultsDaoMock {
     this.isDatabaseOn = true
     this.tableName = 'cvs-local-test-results'
     this.testNumber = null
+    this.errorResponse = null
+    this.failFlag = false
   }
 
   getByVin (vin) {
@@ -19,7 +21,11 @@ class TestResultsDaoMock {
       ScannedCount: this.numberOfScannedRecords
     }
     if (!this.isDatabaseOn) { return Promise.reject(new HTTPError(500, 'Internal Server Error')) }
-    return Promise.resolve(responseObject)
+    if (!this.failFlag) {
+      return Promise.resolve(responseObject)
+    } else {
+      return Promise.reject(this.errorResponse)
+    }
   }
 
   getByTesterStaffId (testerStaffId) {

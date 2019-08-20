@@ -257,12 +257,20 @@ class TestResultsService {
             if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
               testType.certificateNumber = testType.testNumber
               if (testType.testResult !== 'fail') {
-                if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                  testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
-                } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
-                  testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
-                } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                  testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
+                if (payload.vehicleType === 'psv') {
+                  if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                    testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
+                  } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
+                    testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
+                  } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                    testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
+                  }
+                } else if (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') {
+                  if (dateFns.isBefore(new Date(), mostRecentExpiryDateOnAllTestTypesByVin) || dateFns.isAfter(dateFns.addMonths(new Date(), 2), mostRecentExpiryDateOnAllTestTypesByVin) || dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
+                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
+                  } else {
+                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1)
+                  }
                 }
               }
             }
