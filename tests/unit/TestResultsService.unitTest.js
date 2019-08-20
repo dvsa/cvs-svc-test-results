@@ -309,6 +309,22 @@ describe('insertTestResult', () => {
     })
   })
 
+  context('when inserting a testResult for which the testType is not found', () => {
+    it('should throw error 404 with description Test types not found', () => {
+      const testResultsMockPostPayload = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results-post.json'), 'utf8'))
+      testResultsDAOMock.getTestCodesAndClassificationResponseFailFlag = true
+      testResultsDAOMock.testCodeAndClassificationResponse = new HTTPError(404, 'No resources match the search criteria.')
+      const testResultsService = new TestResultsService(testResultsDAOMock)
+
+      return testResultsService.insertTestResult(testResultsMockPostPayload[0])
+        .then(() => {})
+        .catch(error => {
+          expect(error.statusCode).to.equal(404)
+          expect(error.body).to.equal('"Test types not found"')
+        })
+    })
+  })
+
   context('when inserting a testResult with prohibitionIssued valid and null', () => {
     it('should not throw error', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)

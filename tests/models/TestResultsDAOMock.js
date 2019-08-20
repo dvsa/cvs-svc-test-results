@@ -10,6 +10,12 @@ class TestResultsDaoMock {
     this.isDatabaseOn = true
     this.tableName = 'cvs-local-test-results'
     this.testNumber = null
+    this.testCodeAndClassificationResponse = {
+      linkedTestCode: 'wde',
+      defaultTestCode: 'bde',
+      testTypeClassification: 'Annual With Certificate'
+    }
+    this.getTestCodesAndClassificationResponseFailFlag = false;
   }
 
   getByVin (vin) {
@@ -39,13 +45,11 @@ class TestResultsDaoMock {
   }
 
   getTestCodesAndClassificationFromTestTypes (testTypeId, vehicleType, vehicleSize, vehicleConfiguration) {
-    let testCodeAndClassificationResponse = {
-      linkedTestCode: 'wde',
-      defaultTestCode: 'bde',
-      testTypeClassification: 'Annual With Certificate'
+    if (!this.getTestCodesAndClassificationResponseFailFlag) {
+      return Promise.resolve(this.testCodeAndClassificationResponse)
+    } else {
+      return Promise.reject(this.testCodeAndClassificationResponse)
     }
-
-    return Promise.resolve(testCodeAndClassificationResponse)
   }
 
   createMultiple () {

@@ -18,6 +18,7 @@
       "code": "2",
       "description": "motorbikes over 200cc or with a sidecar"
     },
+    "noOfAxles": 2,
     "vehicleType": "psv",
     "numberOfSeats": 45,
     "vehicleConfiguration": "rigid",
@@ -95,6 +96,7 @@
       "description": "motorbikes over 200cc or with a sidecar"
     },
     "vehicleType": "psv",
+    "noOfAxles": 2,
     "numberOfSeats": 45,
     "vehicleConfiguration": "rigid",
     "odometerReading": 350000,
@@ -170,6 +172,7 @@
       "description": "motorbikes over 200cc or with a sidecar"
     },
     "vehicleType": "psv",
+    "noOfAxles": 2,
     "numberOfSeats": 45,
     "vehicleConfiguration": "rigid",
     "odometerReading": 350000,
