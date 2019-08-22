@@ -697,6 +697,8 @@ describe('setExpiryDateAndCertificateNumber', () => {
             })
         })
       })
+    })
+  })
 
   context('no testTypes', () => {
     it('should throw an error', () => {
