@@ -145,6 +145,7 @@ class TestResultsService {
           console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists', error)
           return Promise.reject(new HTTPResponse(201, 'Test Result id already exists'))
         } else if (error.statusCode === 404 && error.body === 'No resources match the search criteria.') {
+          console.log('ERROR CHECK HERE', error)
           return Promise.reject(new HTTPResponse(404, 'Test types not found'))
         }
         console.log('Error in insertTestResult > getTestTypesWithTestCodesAndClassification', error)
