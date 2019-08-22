@@ -266,10 +266,10 @@ class TestResultsService {
                     testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
                   }
                 } else if (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') {
-                  if (dateFns.isBefore(new Date(), mostRecentExpiryDateOnAllTestTypesByVin) || dateFns.isAfter(dateFns.addMonths(new Date(), 2), mostRecentExpiryDateOnAllTestTypesByVin) || dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
-                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
-                  } else {
+                  if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                     testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
+                  } else {
+                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
                   }
                 }
               }
