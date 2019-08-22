@@ -661,7 +661,8 @@ describe('setExpiryDateAndCertificateNumber', () => {
           return testResultsService.setExpiryDateAndCertificateNumber(mockData)
             .then(response => {
               const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              expect((response.testTypes[0].testExpiryDate.toISOString()).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+              console.log()
+              expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
         })
       })
@@ -677,7 +678,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           return testResultsService.setExpiryDateAndCertificateNumber(mockData)
             .then(response => {
               const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              expect((response.testTypes[0].testExpiryDate.toISOString()).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+              expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
         })
       })
@@ -693,7 +694,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           return testResultsService.setExpiryDateAndCertificateNumber(mockData)
             .then(response => {
               const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              expect((response.testTypes[0].testExpiryDate.toISOString()).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+              expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
         })
       })
@@ -709,7 +710,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           return testResultsService.setExpiryDateAndCertificateNumber(mockData)
             .then(response => {
               const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              expect((response.testTypes[0].testExpiryDate.toISOString()).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+              expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
         })
       })
