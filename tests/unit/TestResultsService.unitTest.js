@@ -661,7 +661,6 @@ describe('setExpiryDateAndCertificateNumber', () => {
           return testResultsService.setExpiryDateAndCertificateNumber(mockData)
             .then(response => {
               const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              console.log()
               expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
         })
@@ -698,24 +697,6 @@ describe('setExpiryDateAndCertificateNumber', () => {
             })
         })
       })
-      context('when there is a certificate issued for this vehicle that is expiring between today and two months from now in the future', () => {
-        it('should set the expiry date to last day of current month + 1 year', () => {
-          testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[15])
-          testResultsDAOMock.numberOfrecords = 1
-          testResultsDAOMock.numberOfScannedRecords = 1
-          const futureExpiryDateWithin2Months = dateFns.addMonths(new Date(), 1)
-          testResultsDAOMock.testResultsResponseMock[0].testTypes[0].testExpiryDate = futureExpiryDateWithin2Months
-          const testResultsService = new TestResultsService(testResultsDAOMock)
-          let mockData = testResultsMockDB[15]
-          return testResultsService.setExpiryDateAndCertificateNumber(mockData)
-            .then(response => {
-              const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-              expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
-            })
-        })
-      })
-    })
-  })
 
   context('no testTypes', () => {
     it('should throw an error', () => {
