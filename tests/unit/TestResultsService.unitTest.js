@@ -628,25 +628,80 @@ describe('setExpiryDateAndCertificateNumber', () => {
   })
 
   context('submitted test', () => {
-    it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
-      testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[0])
-      const testResultsService = new TestResultsService(testResultsDAOMock)
-      let mockData = testResultsMockDB[0]
-      testResultsDAOMock.numberOfrecords = ''
-      testResultsDAOMock.numberOfScannedRecords = ''
-      mockData.testTypes[2].testResult = ''
-      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
-        .then(response => {
-          const expectedExpiryDate = new Date()
-          expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
-          expectedExpiryDate.setDate(new Date().getDate() - 1)
-          expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
-          expect(response.testTypes[0].certificateNumber).to.equal(response.testTypes[0].testNumber)
-          expect(response.testTypes[1].testExpiryDate).to.equal(undefined)
-          expect(response.testTypes[1].certificateNumber).to.equal(undefined)
-          expect(response.testTypes[2].testExpiryDate).to.equal(undefined)
-          expect(response.testTypes[2].certificateNumber).to.equal(undefined)
+    let testResultsList
+    let testResultsDAOMock
+    let testResultsService
+    beforeEach(() => {
+      testResultsList = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json'), 'utf8'))
+      testResultsDAOMock = new TestResultsDAOMock()
+      testResultsService = new TestResultsService(testResultsDAOMock)
+    })
+    afterEach(() => {
+      testResultsList = null
+      testResultsDAOMock = null
+      testResultsService = null
+    })
+    context('for psv vehicle type', () => {
+      it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
+        testResultsDAOMock.testResultsResponseMock = Array.of(testResultsList[0])
+        testResultsDAOMock.numberOfrecords = 1
+        testResultsDAOMock.numberOfScannedRecords = 1
+        let psvTestResult = testResultsList[0]
+        const expectedExpiryDate = new Date()
+        expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
+        expectedExpiryDate.setDate(new Date().getDate() - 1)
+        return testResultsService.setExpiryDateAndCertificateNumber(psvTestResult)
+          .then(psvTestResultWithExpiryDateAndTestNumber => {
+            expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+            expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber)
+          })
+      })
+    })
+    context('for hgv and trl vehicle types', () => {
+      context('when there is no certificate issued for this vehicle', () => {
+        it('should set the expiry date to last day of current month + 1 year', () => {
+          testResultsDAOMock.testResultsResponseMock = []
+          testResultsDAOMock.numberOfrecords = 0
+          testResultsDAOMock.numberOfScannedRecords = 0
+          let hgvTestResult = testResultsList[15]
+          const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
+          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+            .then(hgvTestResultWithExpiryDate => {
+              expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+            })
         })
+      })
+      context('when there is a certificate issued for this vehicle that expired', () => {
+        it('should set the expiry date to last day of current month + 1 year', () => {
+          testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[15])
+          testResultsDAOMock.numberOfrecords = 1
+          testResultsDAOMock.numberOfScannedRecords = 1
+          const pastExpiryDate = dateFns.subMonths(new Date(), 1)
+          testResultsDAOMock.testResultsResponseMock[0].testTypes[0].testExpiryDate = pastExpiryDate
+          let hgvTestResult = testResultsList[15]
+          const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
+          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+            .then(hgvTestResultWithExpiryDate => {
+              expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+            })
+        })
+      })
+      context('when there is a certificate issued for this vehicle that is expiring more than two months in the future', () => {
+        it('should set the expiry date to last day of current month + 1 year', () => {
+          testResultsDAOMock.testResultsResponseMock = Array.of(testResultsMockDB[15])
+          testResultsDAOMock.numberOfrecords = 1
+          testResultsDAOMock.numberOfScannedRecords = 1
+          const futureExpiryDate = dateFns.addMonths(new Date(), 3)
+          testResultsDAOMock.testResultsResponseMock[0].testTypes[0].testExpiryDate = futureExpiryDate
+          const testResultsService = new TestResultsService(testResultsDAOMock)
+          let hgvTestResult = testResultsList[15]
+          const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
+          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+            .then(hgvTestResultWithExpiryDate => {
+              expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
+            })
+        })
+      })
     })
   })
 
@@ -684,7 +739,7 @@ describe('insertTestResultsList', () => {
 
       return testResultsService.insertTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(15)
+          expect(data.length).to.equal(16)
         })
     })
   })
@@ -726,7 +781,7 @@ describe('deleteTestResultsList', () => {
 
       return testResultsService.deleteTestResultsList(testResultsDAOMock.testResultsResponseMock)
         .then(data => {
-          expect(data.length).to.equal(15)
+          expect(data.length).to.equal(16)
         })
     })
   })
