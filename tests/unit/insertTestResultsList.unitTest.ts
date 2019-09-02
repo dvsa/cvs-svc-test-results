@@ -3,11 +3,6 @@ import { TestResultsService } from "../../src/services/TestResultsService";
 import fs, { promises } from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
-import { MESSAGES, ERRORS } from "../../src/assets/Enums";
-import { ITestResultPayload } from "../../src/models/ITestResultPayload";
-import { HTTPResponse } from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
-
 describe("TestResultsService calling insertTestResultsList", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;

@@ -1,12 +1,11 @@
 import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
-import * as Joi from "joi";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
 import { MESSAGES, ERRORS } from "../assets/Enums";
 import * as testResultsSchemaSubmitted from "../models/TestResultsSchemaSubmitted";
 import * as testResultsSchemaCancelled from "../models/TestResultsSchemaCancelled";
-import { ValidationError, ValidationResult } from "joi";
+import { ValidationResult } from "joi";
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
