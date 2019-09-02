@@ -1,0 +1,29 @@
+export interface ITestResult   {
+    testResultId: string;
+    testerStaffId: string;
+    testStartTimestamp: string;
+    odometerReadingUnits: string;
+    testEndTimestamp: string;
+    testStatus: string;
+    testTypes: any[];
+    vehicleClass: any;
+    vin: string;
+    vehicleSize: string;
+    testStationName: string;
+    vehicleId: string;
+    vehicleType: string;
+    countryOfRegistration: string;
+    preparerId: string;
+    preparerName: string;
+    odometerReading: string;
+    vehicleConfiguration: string;
+    testStationType: string;
+    reasonForCancellation: string;
+    testerName: string;
+    vrm: string;
+    testStationPNumber: string;
+    numberOfSeats: string;
+    noOfAxles: string;
+    testerEmailAddress: string;
+    euVehicleCategory: string;
+  }

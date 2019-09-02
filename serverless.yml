@@ -18,6 +18,7 @@ plugins:
   - serverless-dynamodb-local
   - serverless-offline
   - serverless-plugin-tracing
+  - serverless-plugin-typescript
 
 custom:
   serverless-offline:
