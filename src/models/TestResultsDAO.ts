@@ -82,7 +82,7 @@ export class TestResultsDAO {
   }
 
   public deleteMultiple(vinIdPairsToBeDeleted: any[]): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWS.AWSError>>  {
-    let params = this.generateBatchWritePartialParams();
+    const params = this.generateBatchWritePartialParams();
 
     vinIdPairsToBeDeleted.forEach((vinIdPairToBeDeleted: any) => {
       const vinToBeDeleted: string = Object.keys(vinIdPairToBeDeleted)[0];
