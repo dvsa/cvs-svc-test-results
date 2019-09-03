@@ -3,6 +3,7 @@ import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
 import * as dateFns from "date-fns";
 import { MESSAGES } from "../assets/Enums";
+import { ISubSeg } from "./ISubSeg";
 /* workaround AWSXRay.captureAWS(...) call obscures types provided by the AWS sdk.
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */
@@ -15,7 +16,7 @@ const AWSXRay = require('aws-xray-sdk');
 export const getTestResultsByVin = async (event: { pathParameters: { vin: any; }; queryStringParameters: { toDateTime: string | number | Date; fromDateTime: string | number | Date; status: string; }; }) => {
   const segment = AWSXRay.getSegment();
   AWSXRay.capturePromise();
-  let subseg: { addError: { (arg0: string): void; (arg0: string): void; (arg0: any): void; }; close: { (): void; (): void; }; } | null = null;
+  let subseg: ISubSeg | null = null;
   if (segment) {
     subseg = segment.addNewSubsegment("getTestResultsByVin");
   }

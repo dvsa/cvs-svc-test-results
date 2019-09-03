@@ -32,9 +32,9 @@ class Configuration {
   }
 
   /**
-     * Retrieves the singleton instance of Configuration
-     * @returns Configuration
-  */
+   * Retrieves the singleton instance of Configuration
+   * @returns Configuration
+   */
   public static getInstance(): Configuration {
     if (!this.instance) {
       this.instance = new Configuration("../config/config.yml");
@@ -44,17 +44,17 @@ class Configuration {
   }
 
   /**
-     * Retrieves the entire config as an object
-     * @returns any
-  */
+   * Retrieves the entire config as an object
+   * @returns any
+   */
   public getConfig(): any {
     return this.config;
   }
 
   /**
-     * Retrieves the lambda functions declared in the config
-     * @returns IFunctionEvent[]
-  */
+   * Retrieves the lambda functions declared in the config
+   * @returns IFunctionEvent[]
+   */
   public getFunctions(): IFunctionEvent[] {
     if (!this.config.functions) {
       throw new Error("Functions were not defined in the config file.");
@@ -75,9 +75,9 @@ class Configuration {
   }
 
   /**
-     * Retrieves the DynamoDB config
-     * @returns any
-     */
+   * Retrieves the DynamoDB config
+   * @returns any
+   */
   public getDynamoDBConfig(): any {
     if (!this.config.dynamodb) {
       throw new Error("DynamoDB config is not defined in the config file.");
