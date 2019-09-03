@@ -246,7 +246,9 @@ export class TestResultsService {
               testType.certificateNumber = testType.testNumber;
               payload.testTypes[index] = testType;
               if (testType.testResult !== "fail") {
-                if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
+                  || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
+                  || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                   testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
                   payload.testTypes[index] = testType;
                 } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
@@ -306,30 +308,31 @@ export class TestResultsService {
   }
 
   public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any) {
-    const promiseArray = [];
-
+    const promiseArray: any = [];
     if (testTypes === undefined) {
       testTypes = [];
     }
-    for (let i = 0; i < testTypes.length; i++) {
-      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
+    // for (let i = 0; i < testTypes.length; i++) {
+    testTypes.forEach((testType, index) => {
+      // const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
+      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
         .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
           if (testTypes.length === 1) {
-            testTypes[i].testCode = currentTestCodesAndClassification.defaultTestCode;
-            testTypes[i].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
+            testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
+            testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
           } else {
             if (currentTestCodesAndClassification.linkedTestCode) {
-              testTypes[i].testCode = currentTestCodesAndClassification.linkedTestCode;
+              testTypes[index].testCode = currentTestCodesAndClassification.linkedTestCode;
             } else {
-              testTypes[i].testCode = currentTestCodesAndClassification.defaultTestCode;
+              testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
             }
-            testTypes[i].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
+            testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
           }
         });
       promiseArray.push(promise);
-    }
+    });
     return Promise.all(promiseArray).then(() => {
-      return testTypes;
+      return Promise.resolve(testTypes);
     });
   }
 

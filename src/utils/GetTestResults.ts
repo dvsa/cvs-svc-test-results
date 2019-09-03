@@ -8,9 +8,10 @@ export class GetTestResults {
   }
 
   public static removeTestResultId(testResults: Array<{ testResultId: string | number; }>) {
-    if (testResults) {
-      for (let i = 0; i < testResults.length; i++) { delete testResults[i].testResultId; }
-    }
+    if (testResults.length > 0) {
+      for (let i = 0; i < testResults.length; i++) 
+      { delete testResults[i].testResultId; }
+    };
     return testResults;
   }
 
