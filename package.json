@@ -16,7 +16,7 @@
     "prepush": "BRANCH=local npm test && npm run eslint",
     "predeploy": "npm install && npm run prepush",
     "security-checks": "git secrets --scan && git log -p | scanrepo",
-    "tslint": "./node_modules/tslint/bin/tslint src/**/*.ts tests/**/*.ts --out .reports/lint_issues.json",
+    "tslint": "tslint src/**/*.ts tests/**/*.ts --out .reports/lint_issues.json",
     "sonar-scanner": "npm run tslint && npm run test && sonar-scanner",
     "eslint": "eslint . --config=.eslintrc.json --fix  -f json -o report.json",
     "coverage": "nyc mocha tests/unit/*.unitTest.js && nyc report --reporter=lcov",
