@@ -27,9 +27,9 @@ custom:
     start:
       port: 8004
       inMemory: true
-      migrate: true
-      seed: true
-      noStart: false
+      migrate: false
+      seed: false
+      noStart: true
     seed:
       test-results:
         sources:
