@@ -135,14 +135,14 @@ describe("insertTestResult", () => {
                         });
                     },
                     getTestNumber: () => {
-                        return Promise.resolve({ testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' });
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     }
                 };
             });
 
             mockData.testTypes.forEach((t: any) => { t.certificateNumber = "abc"; });
-            for (let testType of mockData.testTypes) {
-                testType.certificateNumber = '1234';
+            for (const testType of mockData.testTypes) {
+                testType.certificateNumber = "1234";
                 delete testType.testCode;
                 delete testType.testNumber;
                 delete testType.lastUpdatedAt;
@@ -153,7 +153,7 @@ describe("insertTestResult", () => {
                 delete testType.testTypeClassification;
             }
             delete mockData.vehicleId;
-            mockData.testResultId = '1';
+            mockData.testResultId = "1";
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             return testResultsService.insertTestResult(mockData)
                 .then(() => {
@@ -192,8 +192,8 @@ describe("insertTestResult", () => {
                 };
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            for (let testType of mockData.testTypes) {
-                testType.certificateNumber = '1234';
+            for (const testType of mockData.testTypes) {
+                testType.certificateNumber = "1234";
                 delete testType.testCode;
                 delete testType.testNumber;
                 delete testType.lastUpdatedAt;
@@ -203,8 +203,8 @@ describe("insertTestResult", () => {
                 delete testType.certificateLink;
                 delete testType.testTypeClassification;
               }
-              delete mockData.vehicleId;
-              mockData.testResultId = '1111';
+            delete mockData.vehicleId;
+            mockData.testResultId = "1111";
 
             return testResultsService.insertTestResult(mockData)
                 .then(() => { expect.fail(); })

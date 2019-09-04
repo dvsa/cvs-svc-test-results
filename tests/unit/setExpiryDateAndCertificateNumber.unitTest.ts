@@ -111,7 +111,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             const mockData = {};
 
             return testResultsService.setExpiryDateAndCertificateNumber(mockData)
-                .then(() => { })
+                .then(() => { expect.fail(); })
                 .catch((error: any) => {
                     expect(error).to.not.equal(undefined);
                 });

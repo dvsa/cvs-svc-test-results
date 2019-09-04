@@ -68,24 +68,24 @@ describe("TestResultsService calling insertTestResultsList", () => {
     });
 
     context("database call fails inserting items", () => {
-      it("should return error 500", () => {
-        const mockData = testResultsMockDB[6];
-        MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-                createMultiple: () => {
-                    return Promise.reject({});
-                }
-            };
-        });
-        testResultsService = new TestResultsService(new MockTestResultsDAO());
+        it("should return error 500", () => {
+            const mockData = testResultsMockDB[6];
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createMultiple: () => {
+                        return Promise.reject({});
+                    }
+                };
+            });
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-        return testResultsService.insertTestResultsList(mockData)
-          .then(() => {})
-          .catch((errorResponse: { statusCode: any; body: any; }) => {
-            expect(errorResponse).to.be.instanceOf(HTTPError);
-            expect(errorResponse.statusCode).to.be.equal(500);
-            expect(errorResponse.body).to.equal("Internal Server Error");
-          });
-      });
+            return testResultsService.insertTestResultsList(mockData)
+                .then(() => { expect.fail(); })
+                .catch((errorResponse: { statusCode: any; body: any; }) => {
+                    expect(errorResponse).to.be.instanceOf(HTTPError);
+                    expect(errorResponse.statusCode).to.be.equal(500);
+                    expect(errorResponse.body).to.equal("Internal Server Error");
+                });
+        });
     });
 });
