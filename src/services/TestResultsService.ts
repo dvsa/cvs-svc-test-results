@@ -6,7 +6,7 @@ import { GetTestResults } from "../utils/GetTestResults";
 import { MESSAGES, ERRORS } from "../assets/Enums";
 import * as testResultsSchemaSubmitted from "../models/TestResultsSchemaSubmitted";
 import * as testResultsSchemaCancelled from "../models/TestResultsSchemaCancelled";
-import { ValidationResult } from "joi";
+import { ValidationError, ValidationResult } from "joi";
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
@@ -97,12 +97,12 @@ export class TestResultsService {
   }
 
   public insertTestResult(payload: ITestResultPayload) {
-    let validation: any;
+    let validation: ValidationResult<any> | any | null = null;
 
     if (payload.testStatus === "submitted") {
-      validation = Joi.validate(payload, testResultsSchemaSubmitted).value;
+      validation = testResultsSchemaSubmitted.testResultsSchema.validate(payload);
     } else if (payload.testStatus === "cancelled") {
-      validation = Joi.validate(payload, testResultsSchemaCancelled).value;
+      validation = testResultsSchemaCancelled.testResultsSchema.validate(payload);
     } else {
       validation = {
         error: {
