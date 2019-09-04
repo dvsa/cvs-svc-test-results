@@ -34,7 +34,7 @@ describe("insertTestResult", () => {
             const mockData: ITestResultPayload | any = {};
 
             return testResultsService.insertTestResult(mockData)
-                .then(() => { })
+                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
                     expect(error).to.be.instanceOf(HTTPError);
                     expect(error.statusCode).to.equal(400);
@@ -76,7 +76,7 @@ describe("insertTestResult", () => {
             }
             delete mockData.vehicleId;
             return testResultsService.insertTestResult(mockData)
-                .then(() => { })
+                .then(() => { expect.fail(); })
                 .catch((error: any) => {
                     expect(error).to.not.equal(undefined);
                 });
@@ -111,7 +111,7 @@ describe("insertTestResult", () => {
             delete mockData.vehicleId;
 
             return testResultsService.insertTestResult(mockData)
-                .then(() => { })
+                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).to.equal(400);
                     expect(error.body).to.equal(ERRORS.NoDeficiencyCategory);
@@ -133,11 +133,27 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: 'W01A00209', id: 'W01', certLetter: 'A', sequenceNumber: '002' });
                     }
                 };
             });
 
-            mockData.testNumber = { testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" };
+            mockData.testTypes.forEach((t: any) => { t.certificateNumber = "abc"; });
+            for (let testType of mockData.testTypes) {
+                testType.certificateNumber = '1234';
+                delete testType.testCode;
+                delete testType.testNumber;
+                delete testType.lastUpdatedAt;
+                delete testType.testAnniversaryDate;
+                delete testType.createdAt;
+                delete testType.testExpiryDate;
+                delete testType.certificateLink;
+                delete testType.testTypeClassification;
+            }
+            delete mockData.vehicleId;
+            mockData.testResultId = '1';
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             return testResultsService.insertTestResult(mockData)
                 .then(() => {
@@ -154,14 +170,10 @@ describe("insertTestResult", () => {
     context("when inserting duplicate test result", () => {
         it("should return 201 - Test Result id already exists'", () => {
             const mockData = testResultsMockDB[0];
-            mockData.testNumber = { testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" };
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createMultiple: () => {
-                        return Promise.reject({});
-                    },
                     getTestNumber: () => {
-                        return Promise.resolve(mockData.testNumber);
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
                     getTestCodesAndClassificationFromTestTypes: () => {
                         return Promise.resolve({
@@ -180,9 +192,22 @@ describe("insertTestResult", () => {
                 };
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
+            for (let testType of mockData.testTypes) {
+                testType.certificateNumber = '1234';
+                delete testType.testCode;
+                delete testType.testNumber;
+                delete testType.lastUpdatedAt;
+                delete testType.testAnniversaryDate;
+                delete testType.createdAt;
+                delete testType.testExpiryDate;
+                delete testType.certificateLink;
+                delete testType.testTypeClassification;
+              }
+              delete mockData.vehicleId;
+              mockData.testResultId = '1111';
 
             return testResultsService.insertTestResult(mockData)
-                .then()
+                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPResponse);
                     expect(error.statusCode).to.be.equal(201);
@@ -222,7 +247,7 @@ describe("insertTestResult", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             return testResultsService.insertTestResult(mockData)
-                .then(() => { })
+                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).to.equal(400);
                     expect(error.body).to.equal("Reason for Abandoning not present on all abandoned tests");
@@ -233,12 +258,11 @@ describe("insertTestResult", () => {
     context("when inserting a testResult with prohibitionIssued valid and null", () => {
         it("should not throw error", () => {
             const mockData = testResultsPostMock[0];
-            mockData.testNumber = { testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" };
             mockData.testTypes[0].defects[0].prohibitionIssued = null;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getTestNumber: () => {
-                        return Promise.resolve(mockData.testNumber);
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
                     getTestCodesAndClassificationFromTestTypes: () => {
                         return Promise.resolve({
@@ -246,6 +270,9 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
+                    },
+                    createSingle: () => {
+                        return Promise.resolve("It worked");
                     }
                 };
             });
@@ -254,7 +281,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(mockData)
                 .then((data: any) => {
                     expect(data).to.not.be.eql(undefined);
-                }).catch(() => { });
+                });
         });
     });
 
@@ -283,7 +310,9 @@ describe("insertTestResult", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             return testResultsService.insertTestResult(mockData)
-                .then(() => { })
+                .then((data: any) => {
+                    expect.fail();
+                })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).to.be.eql(400);
                     expect(error.body).to.be.eql({ errors: ['"prohibitionIssued" is required'] });

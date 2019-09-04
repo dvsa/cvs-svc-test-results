@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/handler.js",
   "scripts": {
-    "start": "npm run eslint && BRANCH=local ./node_modules/serverless/bin/serverless offline start",
+    "start": "BRANCH=local ./node_modules/serverless/bin/serverless offline start",
     "start:test": "npm run eslint && SLS_DEBUG=* BRANCH=local node_modules/gulp/bin/gulp.js start-serverless",
     "end:test": "node_modules/gulp/bin/gulp.js kill-serverless",
     "debug": "export SLS_DEBUG=* && BRANCH=local node --inspect ./node_modules/serverless/bin/serverless offline start",
@@ -19,7 +19,7 @@
     "tslint": "tslint src/**/*.ts tests/**/*.ts --out .reports/lint_issues.json",
     "sonar-scanner": "npm run tslint && npm run test && sonar-scanner",
     "eslint": "eslint . --config=.eslintrc.json --fix  -f json -o report.json",
-    "coverage": "nyc mocha tests/unit/*.unitTest.js && nyc report --reporter=lcov",
+    "coverage": "BRANCH=local SLS_DEBUG=* jest --testMatch=\"**/*.*Test.ts\" --coverage",
     "audit-dep": "npm audit --json | audit-filter --nsp-config=.nsprc --audit=-"
   },
   "repository": {

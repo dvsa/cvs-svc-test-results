@@ -83,7 +83,6 @@ describe("TestResultsService calling deleteTestResultsList", () => {
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
         return testResultsService.deleteTestResultsList(mockData)
-          .then(() => { })
           .catch((errorResponse: { statusCode: any; body: any; }) => {
             expect(errorResponse).to.be.instanceOf(HTTPError);
             expect(errorResponse.statusCode).to.be.equal(500);

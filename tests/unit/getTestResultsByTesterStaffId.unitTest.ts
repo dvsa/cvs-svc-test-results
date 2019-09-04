@@ -37,8 +37,6 @@ describe("getTestResultsByTesterStaffId", () => {
   });
 
   context("when a record is found", () => {
-
-
     it("should return a populated response and status code 200", () => {
       MockTestResultsDAO = jest.fn().mockImplementation((testerStaffId) => {
         return {
@@ -71,12 +69,12 @@ describe("getTestResultsByTesterStaffId", () => {
       };
     });
 
-    const testResultsService = new TestResultsService(new MockTestResultsDAO());
+    const testResultsServiceMock = new TestResultsService(new MockTestResultsDAO());
     it("should throw an error 500-Internal Error", () => {
-      return testResultsService.getTestResults({ testerStaffId: "5", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
+      return testResultsServiceMock.getTestResults({ testerStaffId: "5", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
         .then(() => {
           expect.fail();
-        }).catch((errorResponse) => {
+        }).catch((errorResponse: { statusCode: any; body: any; }) => {
           expect(errorResponse).to.be.instanceOf(HTTPError);
           expect(errorResponse.statusCode).to.equal(500);
           expect(errorResponse.body).to.equal(MESSAGES.INTERNAL_SERVER_ERROR);
