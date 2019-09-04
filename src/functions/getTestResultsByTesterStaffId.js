@@ -19,7 +19,6 @@ const getTestResultsByTesterStaffId = async (event) => {
   const testStationPNumber = event.queryStringParameters.testStationPNumber
   const toDateTime = new Date(event.queryStringParameters.toDateTime)
   const fromDateTime = new Date(event.queryStringParameters.fromDateTime)
-  const testStatus = event.queryStringParameters.testStatus;
 
   const BAD_REQUEST_MISSING_FIELDS = 'Bad request in getTestResultsByTesterStaffId - missing required parameters'
 
@@ -32,7 +31,11 @@ const getTestResultsByTesterStaffId = async (event) => {
       }
     }
 
-    return testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime, testStatus })
+    let filters = { testerStaffId, testStationPNumber, fromDateTime, toDateTime }
+    if (event.queryStringParameters.testStatus) {
+      filters.testStatus = event.queryStringParameters.testStatus
+    }
+    return testResultsService.getTestResults(filters)
       .then((data) => {
         return new HTTPResponse(200, data)
       })
