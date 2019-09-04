@@ -95,6 +95,7 @@ resources:
                 - vehicleType
                 - vin
                 - preparerId
+                - testStatus
               ProjectionType: INCLUDE
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
