@@ -642,7 +642,7 @@ describe('generateExpiryDate', () => {
       testResultsService = null
     })
     context('for psv vehicle type', () => {
-      it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
+      it('should set the expiryDate for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
         testResultsDAOMock.testResultsResponseMock = Array.of(testResultsList[0])
         testResultsDAOMock.numberOfrecords = 1
         testResultsDAOMock.numberOfScannedRecords = 1
@@ -653,7 +653,6 @@ describe('generateExpiryDate', () => {
         return testResultsService.generateExpiryDate(psvTestResult)
           .then(psvTestResultWithExpiryDateAndTestNumber => {
             expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
-            expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber)
           })
       })
     })
