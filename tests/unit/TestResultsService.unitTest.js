@@ -594,7 +594,7 @@ describe('reasonForAbandoningPresentOnAllAbandonedTests', () => {
   })
 })
 
-describe('setExpiryDateAndCertificateNumber', () => {
+describe('generateExpiryDate', () => {
   const testResultsDAOMock = new TestResultsDAOMock()
   const testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../resources/test-results.json'), 'utf8'))
 
@@ -604,7 +604,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = testResultsMockDB[2]
 
-      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+      return testResultsService.generateExpiryDate(mockData)
         .then(response => {
           expect(response).to.deep.equal(mockData)
         })
@@ -620,7 +620,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
       mockData.testTypes[0].testTypeClassification = 'Annual With Certificate'
       const expectedExpiryDate = new Date()
       expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
-      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+      return testResultsService.generateExpiryDate(mockData)
         .then(response => {
           expect((response.testTypes[0].testExpiryDate).split('T')[0]).to.equal(dateFns.addYears(new Date(), 1).toISOString().split('T')[0])
         })
@@ -650,7 +650,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
         const expectedExpiryDate = new Date()
         expectedExpiryDate.setFullYear(new Date().getFullYear() + 1)
         expectedExpiryDate.setDate(new Date().getDate() - 1)
-        return testResultsService.setExpiryDateAndCertificateNumber(psvTestResult)
+        return testResultsService.generateExpiryDate(psvTestResult)
           .then(psvTestResultWithExpiryDateAndTestNumber => {
             expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber)
@@ -665,7 +665,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           testResultsDAOMock.numberOfScannedRecords = 0
           let hgvTestResult = testResultsList[15]
           const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+          return testResultsService.generateExpiryDate(hgvTestResult)
             .then(hgvTestResultWithExpiryDate => {
               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
@@ -680,7 +680,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           testResultsDAOMock.testResultsResponseMock[0].testTypes[0].testExpiryDate = pastExpiryDate
           let hgvTestResult = testResultsList[15]
           const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+          return testResultsService.generateExpiryDate(hgvTestResult)
             .then(hgvTestResultWithExpiryDate => {
               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
@@ -696,7 +696,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
           const testResultsService = new TestResultsService(testResultsDAOMock)
           let hgvTestResult = testResultsList[15]
           const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-          return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+          return testResultsService.generateExpiryDate(hgvTestResult)
             .then(hgvTestResultWithExpiryDate => {
               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0])
             })
@@ -710,7 +710,7 @@ describe('setExpiryDateAndCertificateNumber', () => {
       const testResultsService = new TestResultsService(testResultsDAOMock)
       let mockData = {}
 
-      return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+      return testResultsService.generateExpiryDate(mockData)
         .then(() => {})
         .catch(error => {
           expect(error).to.not.equal(undefined)

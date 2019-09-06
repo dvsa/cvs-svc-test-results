@@ -134,8 +134,11 @@ class TestResultsService {
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + ' are null for a defect with deficiency category other than advisory'))
     }
-    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
-      return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC test type'))
+    if (this.shouldContainCertificateNumber(payload)) {
+      return Promise.reject(new HTTPError(400, 'Certificate number not present on LEC or ADR test type'))
+    }
+    if (this.adrTestTypeWithoutExpiryDate(payload)) {
+      return Promise.reject(new HTTPError(400, 'Expiry date not present on ADR test type'))
     }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400, {
@@ -152,9 +155,10 @@ class TestResultsService {
       .then(() => {
         return this.setTestNumber(payload)
           .then((payloadWithTestNumber) => {
-            return this.setExpiryDateAndCertificateNumber(payloadWithTestNumber)
+            return this.generateExpiryDate(payloadWithTestNumber)
               .then((payloadWithExpiryDate) => {
-                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate)
+                let payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate)
+                let payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithCertificateNumber)
                 let payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate)
                 return this.testResultsDAO.createSingle(payloadWithVehicleId)
               })
@@ -247,40 +251,48 @@ class TestResultsService {
     return payload
   }
 
-  setExpiryDateAndCertificateNumber (payload) {
+  generateExpiryDate (payload) {
     if (payload.testStatus !== 'submitted') {
       return Promise.resolve(payload)
     } else {
       return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
         .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
           payload.testTypes.forEach((testType) => {
-            if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
-              testType.certificateNumber = testType.testNumber
-              if (testType.testResult !== 'fail') {
-                if (payload.vehicleType === 'psv') {
-                  if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                    testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
-                  } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
-                    testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
-                  } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                    testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
-                  }
-                } else if (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') {
-                  if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
-                  } else {
-                    testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
-                  }
+            if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs')) {
+              if (payload.vehicleType === 'psv') {
+                if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                  testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
+                } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
+                  testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString()
+                } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                  testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
+                }
+              } else if ((payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') && !this.isTestTypeAdr(testType)) {
+                if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                  testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
+                } else {
+                  testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
                 }
               }
             }
           })
           return payload
         }).catch(error => {
-          console.log('Error in error setExpiryDateAndCertificateNumber > getMostRecentExpiryDateOnAllTestTypesByVin', error)
+          console.log('Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin', error)
           throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
         })
     }
+  }
+
+  generateCertificateNumber (payload) {
+    if (payload.testStatus === 'submitted' && (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl')) {
+      payload.testTypes.forEach((testType) => {
+        if (testType.testTypeClassification === 'Annual With Certificate' && testType.testResult !== 'abandoned' && !this.isTestTypeAdr(testType)) {
+          testType.certificateNumber = testType.testNumber
+        }
+      })
+    }
+    return payload
   }
 
   getMostRecentExpiryDateOnAllTestTypesByVin (vin) {
@@ -376,11 +388,23 @@ class TestResultsService {
       })
   }
 
-  lecTestTypeWithoutCertificateNumber (payload) {
+  shouldContainCertificateNumber (payload) {
     let bool = false
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
-        if (testType.testTypeId === '39' && !testType.certificateNumber) {
+        if ((testType.testTypeId === '39' || this.isTestTypeAdr(testType)) && !testType.certificateNumber) {
+          return true
+        }
+      })
+    }
+    return bool
+  }
+
+  adrTestTypeWithoutExpiryDate (payload) {
+    let bool = false
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (this.isTestTypeAdr(testType) && !testType.expiryDate) {
           return true
         }
       })
@@ -407,6 +431,15 @@ class TestResultsService {
       }
     })
     return payload
+  }
+
+  isTestTypeAdr (testType) {
+    const adrTestTypeIds = [ 50, 59, 60 ]
+    adrTestTypeIds.forEach((id) => {
+      if (id === testType.testTypeId) {
+        return true
+      }
+    })
   }
 }
 

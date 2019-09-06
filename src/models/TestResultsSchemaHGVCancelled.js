@@ -23,6 +23,7 @@ const testTypesSchema = Joi.object().keys({
   ...testTypesCommonSchema,
   testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required().allow(null),
   testTypeEndTimestamp: Joi.date().iso().required().allow(null),
+  expiryDate: Joi.string().allow(null),
   defects: Joi.array().items(defectsSchema).required()
 })
 
