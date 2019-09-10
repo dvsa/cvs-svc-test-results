@@ -393,7 +393,7 @@ class TestResultsService {
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
         if ((testType.testTypeId === '39' || this.isTestTypeAdr(testType)) && !testType.certificateNumber) {
-          return true
+          bool = true
         }
       })
     }
@@ -404,8 +404,8 @@ class TestResultsService {
     let bool = false
     if (payload.testTypes) {
       payload.testTypes.forEach(testType => {
-        if (this.isTestTypeAdr(testType) && !testType.expiryDate) {
-          return true
+        if (this.isTestTypeAdr(testType) && !testType.testExpiryDate) {
+          bool = true
         }
       })
     }
@@ -434,12 +434,14 @@ class TestResultsService {
   }
 
   isTestTypeAdr (testType) {
-    const adrTestTypeIds = [ 50, 59, 60 ]
+    let bool = false
+    const adrTestTypeIds = [ '50', '59', '60' ]
     adrTestTypeIds.forEach((id) => {
       if (id === testType.testTypeId) {
-        return true
+        bool = true
       }
     })
+    return bool
   }
 }
 
