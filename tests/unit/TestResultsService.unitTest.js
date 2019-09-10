@@ -397,8 +397,7 @@ describe('insertTestResult', () => {
         .then((data) => {
           expect(data).not.be.eql(undefined)
         })
-        .catch((error) => {
-          console.error('READ HERE ERROR ->', error)
+        .catch(() => {
           expect.fail()
         })
     })
