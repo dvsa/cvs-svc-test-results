@@ -120,6 +120,7 @@ class TestResultsDAO {
       httpMethod: 'GET',
       resource: '/test-types/{id}'
     }
+    console.log('THIS IS THE EVENT ->', event)
     return lambdaService.invoke(lambdaInvokeEndpoints.functions.getTestTypesById.name, event)
   }
 
