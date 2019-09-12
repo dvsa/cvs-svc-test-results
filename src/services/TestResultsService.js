@@ -266,12 +266,9 @@ class TestResultsService {
                     testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
                   }
                 } else if (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') {
-                  console.log('mostRecentExpiryDateOnAllTestTypesByVin ->', mostRecentExpiryDateOnAllTestTypesByVin)
                   if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                    console.log('FIRST IF')
                     testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
                   } else {
-                    console.log('SECOND IF')
                     testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
                   }
                 }
