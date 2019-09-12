@@ -406,7 +406,11 @@ class TestResultsService {
   setAnniversaryDate (payload) {
     payload.testTypes.forEach(testType => {
       if (testType.testExpiryDate) {
-        testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString()
+        if (payload.vehicleType === 'psv') {
+          testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString()
+        } else {
+          testType.testAnniversaryDate = testType.testExpiryDate
+        }
       }
     })
     return payload
