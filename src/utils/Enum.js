@@ -5,4 +5,10 @@ const MESSAGES = {
   BAD_REQUEST: 'Bad request'
 }
 
-module.exports = MESSAGES
+const VEHICLE_TYPES = {
+  PSV: 'psv',
+  HGV: 'hgv',
+  TRL: 'trl'
+}
+
+module.exports = { MESSAGES, VEHICLE_TYPES }

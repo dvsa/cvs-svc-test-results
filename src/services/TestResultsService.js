@@ -12,8 +12,8 @@ const testResultsSchemaTRLCancelled = require('../models/TestResultsSchemaTRLCan
 const Joi = require('joi')
 const dateFns = require('date-fns')
 const GetTestResults = require('../utils/GetTestResults')
-const MESSAGES = require('../utils/Enum')
-
+const MESSAGES = require('../utils/Enum').MESSAGES
+const VEHICLE_TYPES = require('../utils/Enum').VEHICLE_TYPES
 /**
  * Service for retrieving and creating Test Results from/into the db
  * @returns Promise
@@ -257,7 +257,7 @@ class TestResultsService {
             if (testType.testTypeClassification === 'Annual With Certificate' && (testType.testResult === 'pass' || testType.testResult === 'prs' || testType.testResult === 'fail')) {
               testType.certificateNumber = testType.testNumber
               if (testType.testResult !== 'fail') {
-                if (payload.vehicleType === 'psv') {
+                if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                   if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1)) || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date())) || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                     testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString()
                   } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
@@ -265,7 +265,7 @@ class TestResultsService {
                   } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
                     testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString()
                   }
-                } else if (payload.vehicleType === 'hgv' || payload.vehicleType === 'trl') {
+                } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
                   if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                     testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
                   } else {
@@ -403,7 +403,7 @@ class TestResultsService {
   setAnniversaryDate (payload) {
     payload.testTypes.forEach(testType => {
       if (testType.testExpiryDate) {
-        if (payload.vehicleType === 'psv') {
+        if (payload.vehicleType === VEHICLE_TYPES.PSV) {
           testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString()
         } else {
           testType.testAnniversaryDate = testType.testExpiryDate
