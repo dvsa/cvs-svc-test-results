@@ -82,11 +82,11 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
         });
     });
 
-    context('submitted test', () => {
-        context('for psv vehicle type', () => {
-            it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
-                let psvTestResult = testResultsMockDB[0]
-                let getByVinResponse = testResultsMockDB[0]
+    context("submitted test", () => {
+        context("for psv vehicle type", () => {
+            it("should set the expiryDate and the certificateNumber for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
+                const psvTestResult = testResultsMockDB[0];
+                const getByVinResponse = testResultsMockDB[0];
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
@@ -113,16 +113,16 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                 expectedExpiryDate.setDate(new Date().getDate() - 1);
                 return testResultsService.setExpiryDateAndCertificateNumber(psvTestResult)
                     .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
-                        expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split('T')[0]).to.equal(expectedExpiryDate.toISOString().split('T')[0]);
+                        expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber);
                     });
-            })
-        })
+            });
+        });
 
-        context('for hgv and trl vehicle types', () => {
-            context('when there is no certificate issued for this vehicle', () => {
-                it('should set the expiry date to last day of current month + 1 year', () => {
-                    let hgvTestResult = testResultsMockDB[15]
+        context("for hgv and trl vehicle types", () => {
+            context("when there is no certificate issued for this vehicle", () => {
+                it("should set the expiry date to last day of current month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[15];
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: () => {
@@ -146,17 +146,17 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
                     return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0])
-                        })
-                })
-            })
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
 
-            context('when there is a certificate issued for this vehicle that expired', () => {
-                it('should set the expiry date to last day of current month + 1 year', () => {
-                    let hgvTestResult = testResultsMockDB[15]
+            context("when there is a certificate issued for this vehicle that expired", () => {
+                it("should set the expiry date to last day of current month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[15];
                     const pastExpiryDate = dateFns.subMonths(new Date(), 1);
                     const testResultExpiredCertificateWithSameVin = testResultsMockDB[15];
-                    testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate
+                    testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate;
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -176,16 +176,16 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                             }
                         };
                     });
-                testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1)
-                return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
-                    .then((hgvTestResultWithExpiryDate: any) => {
-                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0])
-                    })
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
                 });
-            })
-        })
+            });
+        });
     });
 
     context("no testTypes", () => {

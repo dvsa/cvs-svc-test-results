@@ -6,7 +6,6 @@ import { HTTPError } from "../../src/models/HTTPError";
 import { MESSAGES, ERRORS } from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
@@ -162,7 +161,6 @@ describe("insertTestResult", () => {
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPError);
-                    console.log(error.body)
                     expect(error.statusCode).to.be.equal(500);
                     expect(error.body).to.equal("Internal server error");
                 });
@@ -170,7 +168,7 @@ describe("insertTestResult", () => {
     });
 
     context("when inserting duplicate test result", () => {
-        it("should return 201 - Test Result id already exists'", () => {
+        it("should return 201 - Test Result id already exists", () => {
             const mockData = testResultsMockDB[0];
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -213,7 +211,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPResponse);
                     expect(error.statusCode).to.be.equal(201);
-                    expect(error.body).to.be.equal('"Test Result id already exists"');
+                    expect(error.body).to.be.equal("\"Test Result id already exists\"");
                 });
         });
     });
@@ -317,19 +315,19 @@ describe("insertTestResult", () => {
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).to.be.eql(400);
-                    expect(error.body).to.be.eql({ errors: ['"prohibitionIssued" is required'] });
+                    expect(error.body).to.be.eql({ errors: ["\"prohibitionIssued\" is required"] });
                 });
         });
     });
 
-    context('when inserting a cancelled HGV that has null values on the fields that are allowing them to be null', () => {
-        it('should not throw error', () => {
-            let testResult = testResultsPostMock[4]
-            testResult.testStatus = 'cancelled'
-            testResult.odometerReading = null
-            testResult.odometerReadingUnits = null
-            testResult.countryOfRegistration = null
-            testResult.euVehicleCategory = null
+    context("when inserting a cancelled HGV that has null values on the fields that are allowing them to be null", () => {
+        it("should not throw error", () => {
+            const testResult = testResultsPostMock[4];
+            testResult.testStatus = "cancelled";
+            testResult.odometerReading = null;
+            testResult.odometerReadingUnits = null;
+            testResult.countryOfRegistration = null;
+            testResult.euVehicleCategory = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -353,17 +351,17 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined)
+                    expect(data).to.not.be.eql(undefined);
                 })
                 .catch(() => {
-                    expect.fail()
-                })
-        })
-    })
+                    expect.fail();
+                });
+        });
+    });
 
-    context('when inserting an HGV test result with fields applicable to this vehicleType', () => {
-        it('should not throw error', () => {
-            let testResult = testResultsPostMock[4]
+    context("when inserting an HGV test result with fields applicable to this vehicleType", () => {
+        it("should not throw error", () => {
+            const testResult = testResultsPostMock[4];
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -387,18 +385,18 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined)
+                    expect(insertedTestResult).to.not.be.eql(undefined);
                 })
                 .catch(() => {
-                    expect.fail()
-                })
-        })
-    })
+                    expect.fail();
+                });
+        });
+    });
 
-    context('when inserting an HGV with fields corresponding to a PSV', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[2]
-            testResult.vehicleType = 'hgv'
+    context("when inserting an HGV with fields corresponding to a PSV", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[2];
+            testResult.vehicleType = "hgv";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -422,17 +420,18 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then(() => {
+                    expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
-    })
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
 
-    context('when inserting an TRL test result with fields applicable to this vehicleType', () => {
-        it('should not throw error', () => {
-            let testResult = testResultsPostMock[5]
+    context("when inserting an TRL test result with fields applicable to this vehicleType", () => {
+        it("should not throw error", () => {
+            const testResult = testResultsPostMock[5];
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -456,55 +455,18 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined)
+                    expect(insertedTestResult).to.not.be.eql(undefined);
                 })
                 .catch(() => {
-                    expect.fail()
-                })
-        })
-    })
+                    expect.fail();
+                });
+        });
+    });
 
-    context('when inserting a TRL with fields corresponding to a PSV', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[2]
-            testResult.vehicleType = 'trl'
-
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "wde",
-                            defaultTestCode: "bde",
-                            testTypeClassification: "Annual With Certificate"
-                        });
-                    }
-                };
-            });
-
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-            return testResultsService.insertTestResult(testResult)
-                .then(() => {})
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
-    })
-
-    context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[4]
-            testResult.odometerReading = null
-            testResult.odometerReadingUnits = null
-            testResult.countryOfRegistration = null
-            testResult.euVehicleCategory = null
+    context("when inserting a TRL with fields corresponding to a PSV", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[2];
+            testResult.vehicleType = "trl";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -528,21 +490,60 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then(() => {
-                    expect.fail()
+                    expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
-    })
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
 
-    context('when inserting a cancelled TRL that has null values on the fields that are allowing them to be null', () => {
-        it('should not throw error', () => {
-            let testResult = testResultsPostMock[5]
-            testResult.testStatus = 'cancelled'
-            testResult.countryOfRegistration = null
-            testResult.euVehicleCategory = null
+    context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[4];
+            testResult.odometerReading = null;
+            testResult.odometerReadingUnits = null;
+            testResult.countryOfRegistration = null;
+            testResult.euVehicleCategory = null;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then(() => {
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
+
+    context("when inserting a cancelled TRL that has null values on the fields that are allowing them to be null", () => {
+        it("should not throw error", () => {
+            const testResult = testResultsPostMock[5];
+            testResult.testStatus = "cancelled";
+            testResult.countryOfRegistration = null;
+            testResult.euVehicleCategory = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -566,21 +567,21 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined)
+                    expect(data).to.not.be.eql(undefined);
                 })
                 .catch(() => {
-                    expect.fail()
-                })
-        })
-    })
+                    expect.fail();
+                });
+        });
+    });
 
-    context('when inserting a submitted TRL that has null values on the fields that should be allowed null only when cancelled', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[5]
-            testResult.odometerReading = null
-            testResult.odometerReadingUnits = null
-            testResult.countryOfRegistration = null
-            testResult.euVehicleCategory = null
+    context("when inserting a submitted TRL that has null values on the fields that should be allowed null only when cancelled", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[5];
+            testResult.odometerReading = null;
+            testResult.odometerReadingUnits = null;
+            testResult.countryOfRegistration = null;
+            testResult.euVehicleCategory = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -604,22 +605,22 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then(() => {
-                    expect.fail()
+                    expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
-    })
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
 
-    context('when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[4]
-            testResult.odometerReading = null
-            testResult.odometerReadingUnits = null
-            testResult.countryOfRegistration = null
-            testResult.euVehicleCategory = null
+    context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[4];
+            testResult.odometerReading = null;
+            testResult.odometerReadingUnits = null;
+            testResult.countryOfRegistration = null;
+            testResult.euVehicleCategory = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -648,19 +649,21 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then(() => {
+                    expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
 
-    })
+    });
 
-    context('when inserting a cancelled TRL with fields corresponding to a submitted TRL', () => {
-        it('should throw 400', () => {
-            let testResult = testResultsPostMock[5]
-            testResult.testStatus = 'cancelled'
+    context("when inserting a cancelled TRL with fields corresponding to a submitted TRL", () => {
+        it("should throw 400", () => {
+            const testResult = testResultsPostMock[5];
+            testResult.testStatus = "cancelled";
+            testResult.reasonForCancellation = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -689,12 +692,13 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    console.log(data)
+                    console.log("CHECK HERE ->", data);
+                    expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError)
-                    expect(error.statusCode).to.be.eql(400)
-                })
-        })
-    })
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
 });

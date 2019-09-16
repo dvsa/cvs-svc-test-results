@@ -264,7 +264,7 @@ export class TestResultsService {
               testType.certificateNumber = testType.testNumber;
               payload.testTypes[index] = testType;
               if (testType.testResult !== "fail") {
-                if(payload.vehicleType === "psv"){
+                if (payload.vehicleType === "psv" ) {
                   if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
                     || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
                     || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
@@ -277,11 +277,11 @@ export class TestResultsService {
                     testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
                     payload.testTypes[index] = testType;
                   }
-                } else if(payload.vehicleType === "hgv" || payload.vehicleType === "trl"){
+                } else if (payload.vehicleType === "hgv" || payload.vehicleType === "trl" ) {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString()
+                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
                     } else {
-                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString()
+                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
                     }
                 }
               }
