@@ -31,7 +31,11 @@ const getTestResultsByTesterStaffId = async (event) => {
       }
     }
 
-    return testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime })
+    let filters = { testerStaffId, testStationPNumber, fromDateTime, toDateTime }
+    if (event.queryStringParameters.testStatus) {
+      filters.testStatus = event.queryStringParameters.testStatus
+    }
+    return testResultsService.getTestResults(filters)
       .then((data) => {
         return new HTTPResponse(200, data)
       })
