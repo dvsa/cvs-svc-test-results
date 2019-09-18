@@ -35,6 +35,7 @@ const testResultsSchema = Joi.object().keys({
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4"]).required().allow(null),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated"]).required(),
     countryOfRegistration: Joi.string().required().allow("", null),
     vehicleSize: Joi.any().only(["small", "large"]).required(),
     testTypes: Joi.array().items(testTypesSchema).required()

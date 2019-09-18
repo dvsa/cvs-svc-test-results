@@ -694,7 +694,87 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    console.log("CHECK HERE ->", data);
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
+
+    context("when inserting a TRL with vehicleConfiguration centre axle drawbar", () => {
+        it("should not throw error", () => {
+            const testResult = testResultsPostMock[5];
+            testResult.vehicleConfiguration = "centre axle drawbar";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then((data: any) => {
+                    expect(data).to.not.be.eql(undefined);
+                })
+                .catch(() => {
+                    expect.fail();
+                });
+        });
+    });
+
+    context("when inserting a PSV with vehicleConfiguration centre axle drawbar", () => {
+        it("should throw error 400", () => {
+            const testResult = testResultsPostMock[0];
+            testResult.vehicleConfiguration = "centre axle drawbar";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then((data: any) => {
                     expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
