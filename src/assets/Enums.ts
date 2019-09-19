@@ -28,5 +28,11 @@ export enum MESSAGES {
     INTERNAL_SERVER_ERROR = "Internal Server Error",
     RECORD_CREATED = "Test records created",
     BAD_REQUEST = "Bad request"
-  }
+}
+
+export const VEHICLE_TYPES = {
+    PSV: "psv",
+    HGV: "hgv",
+    TRL: "trl"
+};
 

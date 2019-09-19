@@ -2,7 +2,7 @@ import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS } from "../assets/Enums";
+import { MESSAGES, ERRORS, VEHICLE_TYPES } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
 import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
@@ -264,7 +264,7 @@ export class TestResultsService {
               testType.certificateNumber = testType.testNumber;
               payload.testTypes[index] = testType;
               if (testType.testResult !== "fail") {
-                if (payload.vehicleType === "psv" ) {
+                if (payload.vehicleType === VEHICLE_TYPES.PSV ) {
                   if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
                     || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
                     || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
@@ -277,7 +277,7 @@ export class TestResultsService {
                     testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
                     payload.testTypes[index] = testType;
                   }
-                } else if (payload.vehicleType === "hgv" || payload.vehicleType === "trl" ) {
+                } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
                     } else {
@@ -417,7 +417,11 @@ export class TestResultsService {
   public setAnniversaryDate(payload: ITestResultPayload) {
     payload.testTypes.forEach((testType) => {
       if (testType.testExpiryDate) {
-        testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString();
+        if (payload.vehicleType === VEHICLE_TYPES.PSV) {
+          testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString();
+        } else {
+          testType.testAnniversaryDate = testType.testExpiryDate;
+        }
       }
     });
     return payload;
