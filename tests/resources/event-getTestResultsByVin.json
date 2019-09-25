@@ -1,0 +1,30 @@
+{
+  "headers": {
+    "User-Agent": "PostmanRuntime/7.13.0",
+    "Accept": "*/*",
+    "Cache-Control": "no-cache",
+    "Postman-Token": "0a489f7f-7e7d-4870-84d8-a138b88f9f14",
+    "Host": "localhost:3005",
+    "accept-encoding": "gzip, deflate",
+    "Connection": "keep-alive"
+  },
+  "multiValueHeaders": {
+    "User-Agent": [ "PostmanRuntime/7.13.0" ],
+    "Accept": [ "*/*" ],
+    "Cache-Control": [ "no-cache" ],
+    "Postman-Token": [ "0a489f7f-7e7d-4870-84d8-a138b88f9f14" ],
+    "Host": [ "localhost:3005" ],
+    "accept-encoding": [ "gzip, deflate" ],
+    "Connection": [ "keep-alive" ]
+  },
+  "httpMethod": "GET",
+  "path": "/test-results/ABC12345",
+  "pathParameters": {
+    "vin": "ABC12345"
+  },
+  "resource": "/test-results/{vin}",
+  "multiValueQueryStringParameters": null,
+  "stageVariables": null,
+  "body": "",
+  "isOffline": true
+}

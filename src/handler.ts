@@ -29,7 +29,7 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
   const functions: IFunctionEvent[] = config.getFunctions();
   const serverlessConfig: any = config.getConfig().serverless;
 
-  const matchingLambdaEvents: IFunctionEvent[] = functions.filter((fn) => {
+  let matchingLambdaEvents: IFunctionEvent[] = functions.filter((fn) => {
     // Find λ with matching httpMethod
     return event.httpMethod === fn.method;
   })
@@ -40,6 +40,14 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
 
       return (localPath.test(event.path) || remotePath.test(event.path));
     });
+
+  //* handle case of variable overloading e.g. "getTestResultByTesterStaffId" potentially being a vin
+  if(matchingLambdaEvents.length > 1) {
+    const exactMatch = matchingLambdaEvents.filter(fn => fn.path === event.path);
+    if (exactMatch.length  === 1) {
+      matchingLambdaEvents = exactMatch
+    }
+  }
 
   // Exactly one λ should match the above filtering.
   if (matchingLambdaEvents.length === 1) {
@@ -58,13 +66,23 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
     // Explicit conversion because typescript can't figure it out
     return lambdaFn(event, context, callback) as Promise<APIGatewayProxyResult>;
   }
-
-  // If filtering results in less or more λ functions than expected, we return an error.
-  console.error(`Error: Route ${event.httpMethod} ${event.path} was not found.
+  if (matchingLambdaEvents.length > 1) {
+    console.error(`Error: More than one function identified for route ${event.httpMethod} ${event.path} 
+    matched ${matchingLambdaEvents.map(lambda => lambda.name)}
+    Dumping event:
+    ${JSON.stringify(event)}
+    Dumping context:
+    ${JSON.stringify(context)}`)
+  } else {
+    // If filtering results in less or more λ functions than expected, we return an error.
+    console.error(`Error: Route ${event.httpMethod} ${event.path} was not found.
     Dumping event:
     ${JSON.stringify(event)}
     Dumping context:
     ${JSON.stringify(context)}`);
+  }
+
+
 
   return new HTTPResponse(400, { error: `Route ${event.httpMethod} ${event.path} was not found.` });
 };

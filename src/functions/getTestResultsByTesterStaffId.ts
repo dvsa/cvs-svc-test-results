@@ -1,3 +1,4 @@
+import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
 import {TestResultsDAO} from "../models/TestResultsDAO";
 import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
@@ -7,9 +8,16 @@ https://github.com/aws/aws-xray-sdk-node/issues/14
 */
 /* tslint:disable */
 const AWSXRay = require('aws-xray-sdk');
+let AWS: { DynamoDB: { DocumentClient: new (arg0: any) => DocumentClient; }; };
+if (process.env._X_AMZN_TRACE_ID) {
+  AWS = AWSXRay.captureAWS(require("aws-sdk"));
+} else {
+  console.log("Serverless Offline detected; skipping AWS X-Ray setup")
+  AWS = require("aws-sdk");
+}
 /* tslint:enable */
 
-const getTestResultsByTesterStaffId = async (event: any) => {
+export const getTestResultsByTesterStaffId = async (event: any) => {
   const segment = AWSXRay.getSegment();
   AWSXRay.capturePromise();
   let subseg: ISubSeg | null = null;
