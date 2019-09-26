@@ -33,3 +33,9 @@ coverage/**
 #sonarqube
 .scannerwork/**
 report.json
+
+#build
+.build/**
+
+#reports
+.reports/**

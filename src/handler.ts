@@ -41,8 +41,8 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
       return (localPath.test(event.path) || remotePath.test(event.path));
     });
 
-  //* handle case of variable overloading e.g. "getTestResultByTesterStaffId" potentially being a vin
-  if(matchingLambdaEvents.length > 1) {
+  // handle case of variable overloading e.g. "getTestResultByTesterStaffId" potentially being a vin
+  if (matchingLambdaEvents.length > 1) {
     const exactMatch = matchingLambdaEvents.filter(fn => fn.path === event.path);
     if (exactMatch.length  === 1) {
       matchingLambdaEvents = exactMatch
@@ -67,12 +67,11 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
     return lambdaFn(event, context, callback) as Promise<APIGatewayProxyResult>;
   }
   if (matchingLambdaEvents.length > 1) {
-    console.error(`Error: More than one function identified for route ${event.httpMethod} ${event.path} 
-    matched ${matchingLambdaEvents.map(lambda => lambda.name)}
+    console.error(`Error: More than one function identified for route ${event.httpMethod} ${event.path} matched ${matchingLambdaEvents.map((lambda) => lambda.name)}
     Dumping event:
     ${JSON.stringify(event)}
     Dumping context:
-    ${JSON.stringify(context)}`)
+    ${JSON.stringify(context)}`);
   } else {
     // If filtering results in less or more λ functions than expected, we return an error.
     console.error(`Error: Route ${event.httpMethod} ${event.path} was not found.
