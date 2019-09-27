@@ -1,0 +1,33 @@
+{
+  "headers": {
+    "User-Agent": "PostmanRuntime/7.13.0",
+    "Accept": "*/*",
+    "Cache-Control": "no-cache",
+    "Postman-Token": "0a489f7f-7e7d-4870-84d8-a138b88f9f14",
+    "Host": "localhost:3005",
+    "accept-encoding": "gzip, deflate",
+    "Connection": "keep-alive"
+  },
+  "multiValueHeaders": {
+    "User-Agent": [ "PostmanRuntime/7.13.0" ],
+    "Accept": [ "*/*" ],
+    "Cache-Control": [ "no-cache" ],
+    "Postman-Token": [ "0a489f7f-7e7d-4870-84d8-a138b88f9f14" ],
+    "Host": [ "localhost:3005" ],
+    "accept-encoding": [ "gzip, deflate" ],
+    "Connection": [ "keep-alive" ]
+  },
+  "httpMethod": "GET",
+  "path": "/test-results/getTestResultsByTesterStaffId",
+  "queryStringParameters": {
+    "testerStaffId": "40286663-e09d-4348-a875-fa91cdd3f3b4",
+    "fromDateTime": "2019-09-25T15:12:31.441Z",
+    "toDateTime": "2019-09-25T15:14:16.163Z",
+    "testStationPNumber": "78-7521984"
+  },
+  "resource": "/test-results/getTestResultsByTesterStaffId",
+  "multiValueQueryStringParameters": null,
+  "stageVariables": null,
+  "body": "",
+  "isOffline": true
+}
