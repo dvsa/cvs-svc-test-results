@@ -1125,7 +1125,6 @@ describe("insertTestResult", () => {
     context("when inserting a cancelled TRL with fields corresponding to a submitted TRL(reasonForCancelletion = null)", () => {
         it("should throw 400", () => {
             const testResult = {...testResultsPostMock[5]};
-            // const testResult = JSON.parse(JSON.stringify(testResultsPostMock[5]));
             testResult.testStatus = "cancelled";
             testResult.reasonForCancellation = null;
 
