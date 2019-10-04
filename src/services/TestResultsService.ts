@@ -1,7 +1,7 @@
 import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
-import { GetTestResults } from "../utils/GetTestResults";
+import { GetTestResultsUtils } from "../utils/GetTestResultsUtils";
 import { MESSAGES, ERRORS, VEHICLE_TYPES } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -32,7 +32,7 @@ export class TestResultsService {
     if (filters) {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
-          if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
+          if (!GetTestResultsUtils.validateDates(filters.fromDateTime, filters.toDateTime)) {
             console.log("Invalid Filter Dates");
             return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
           }
@@ -82,20 +82,20 @@ export class TestResultsService {
 
   public applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
     let testResults = this.checkTestResults(data);
-    testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
+    testResults = GetTestResultsUtils.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
     if (filters.testStatus) {
-      testResults = GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
+      testResults = GetTestResultsUtils.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
     }
     if (filters.testStationPNumber) {
-      testResults = GetTestResults.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
+      testResults = GetTestResultsUtils.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
     }
-    testResults = GetTestResults.filterTestResultsByDeletionFlag(testResults);
-    testResults = GetTestResults.filterTestTypesByDeletionFlag(testResults);
+    testResults = GetTestResultsUtils.filterTestResultsByDeletionFlag(testResults);
+    testResults = GetTestResultsUtils.filterTestTypesByDeletionFlag(testResults);
 
     if (testResults.length === 0) {
       throw new HTTPError(404, ERRORS.NoResourceMatch);
     }
-    testResults = GetTestResults.removeTestResultId(testResults);
+    testResults = GetTestResultsUtils.removeTestResultId(testResults);
     testResults = testResults.map((testResult: any) => this.removeVehicleClassification(testResult));
     return testResults;
   }

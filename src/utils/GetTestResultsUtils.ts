@@ -2,7 +2,7 @@ import * as dateFns from "date-fns";
 import * as _ from "lodash";
 
 
-export class GetTestResults {
+export class GetTestResultsUtils {
   public static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
     return _.isDate(new Date(fromDateTime)) && _.isDate( new Date(toDateTime)) && _.isFinite((new Date(fromDateTime)).getTime()) && _.isFinite((new Date(toDateTime)).getTime());
   }
@@ -43,5 +43,24 @@ export class GetTestResults {
       testResult.testTypes = filteredTestTypes;
     });
     return testResults;
+  }
+
+  public static parseMissingQueryParams(queryStringParameters: any) {
+    const queryParams = Object.assign({}, queryStringParameters);
+
+    if (queryParams.vehicleAxles === "null") {
+      queryParams.vehicleAxles = null;
+    } else if ( queryParams.vehicleAxles !== undefined ) {
+      queryParams.vehicleAxles = parseInt(queryParams.vehicleAxles, 10);
+    }
+
+    if (queryParams.vehicleSize === undefined) {
+      queryParams.vehicleSize = null;
+    }
+
+    if (queryParams.vehicleConfiguration === "null") {
+      queryParams.vehicleConfiguration = null;
+    }
+    return queryParams;
   }
 }
