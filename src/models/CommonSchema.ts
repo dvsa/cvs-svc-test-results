@@ -45,7 +45,6 @@ export const testResultsCommonSchema = {
     }).required(),
     vehicleType: Joi.any().only(["psv", "hgv", "trl"]).required(),
     noOfAxles: Joi.number().max(99).required(),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated"]).required(),
     preparerId: Joi.string().required().allow(""),
     preparerName: Joi.string().required().allow("")
 };
