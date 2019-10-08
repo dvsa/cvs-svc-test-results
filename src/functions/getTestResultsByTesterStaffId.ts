@@ -43,7 +43,11 @@ export const getTestResultsByTesterStaffId = async (event: any) => {
       }
     }
 
-    return testResultsService.getTestResults({ testerStaffId, testStationPNumber, fromDateTime, toDateTime })
+    const filters: any = { testerStaffId, testStationPNumber, fromDateTime, toDateTime };
+    if (event.queryStringParameters.testStatus) {
+      filters.testStatus = event.queryStringParameters.testStatus;
+    }
+    return testResultsService.getTestResults(filters)
       .then((data: any) => {
         return new HTTPResponse(200, data);
       })

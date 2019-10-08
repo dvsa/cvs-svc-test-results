@@ -4,4 +4,5 @@ export interface ITestResultFilters {
     toDateTime?: any;
     testerStaffId?: any;
     testStationPNumber?: any;
+    status?: string;
 }
