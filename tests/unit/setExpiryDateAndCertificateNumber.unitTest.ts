@@ -1,11 +1,8 @@
 import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs, { promises } from "fs";
+import fs from "fs";
 import path from "path";
-import { HTTPError } from "../../src/models/HTTPError";
-import { MESSAGES, ERRORS } from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
-import { HTTPResponse } from "../../src/models/HTTPResponse";
 import * as dateFns from "date-fns";
 
 describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
@@ -86,22 +83,108 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
     });
 
     context("submitted test", () => {
-        it('should set the expiryDate and the certificateNumber for "Annual With Certificate" testTypes with testResult "pass", "fail" or "prs"', () => {
-            const mockData = testResultsMockDB[0];
-            mockData.testTypes[2].testResult = "";
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-            return testResultsService.setExpiryDateAndCertificateNumber(mockData)
-                .then((response: ITestResultPayload) => {
-                    const expectedExpiryDate = new Date();
-                    expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
-                    expectedExpiryDate.setDate(new Date().getDate() - 1);
-                    expect((response.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
-                    expect(response.testTypes[0].certificateNumber).to.equal(response.testTypes[0].testNumber);
-                    expect(response.testTypes[1].testExpiryDate).to.equal(undefined);
-                    expect(response.testTypes[1].certificateNumber).to.equal(undefined);
-                    expect(response.testTypes[2].testExpiryDate).to.equal(undefined);
-                    expect(response.testTypes[2].certificateNumber).to.equal(undefined);
+        context("for psv vehicle type", () => {
+            it("should set the expiryDate and the certificateNumber for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
+                const psvTestResult = testResultsMockDB[0];
+                const getByVinResponse = testResultsMockDB[0];
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: () => {
+                            return Promise.resolve({
+                                Items: Array.of(getByVinResponse),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "wde",
+                                defaultTestCode: "bde",
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
                 });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = new Date();
+                expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
+                expectedExpiryDate.setDate(new Date().getDate() - 1);
+                return testResultsService.setExpiryDateAndCertificateNumber(psvTestResult)
+                    .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
+                        expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber);
+                    });
+            });
+        });
+
+        context("for hgv and trl vehicle types", () => {
+            context("when there is no certificate issued for this vehicle", () => {
+                it("should set the expiry date to last day of current month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[15];
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: () => {
+                                return Promise.resolve({
+                                    Items: [],
+                                    Count: 0,
+                                    ScannedCount: 0
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "wde",
+                                    defaultTestCode: "bde",
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+
+            context("when there is a certificate issued for this vehicle that expired", () => {
+                it("should set the expiry date to last day of current month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[15];
+                    const pastExpiryDate = dateFns.subMonths(new Date(), 1);
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[15];
+                    testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate;
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "wde",
+                                    defaultTestCode: "bde",
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
         });
     });
 

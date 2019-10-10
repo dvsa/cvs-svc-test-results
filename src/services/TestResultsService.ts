@@ -1,17 +1,21 @@
 import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
-import * as Joi from "joi";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS } from "../assets/Enums";
-import * as testResultsSchemaSubmitted from "../models/TestResultsSchemaSubmitted";
-import * as testResultsSchemaCancelled from "../models/TestResultsSchemaCancelled";
-import { ValidationError, ValidationResult } from "joi";
+import { MESSAGES, ERRORS, VEHICLE_TYPES } from "../assets/Enums";
+import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
+import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
+import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
+import testResultsSchemaPSVSubmitted from "../models/TestResultsSchemaPSVSubmitted";
+import testResultsSchemaTRLCancelled from "../models/TestResultsSchemaTRLCancelled";
+import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitted";
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
 import { ITestResult } from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
+import {ValidationResult} from "joi";
+import * as Joi from "joi";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -97,21 +101,35 @@ export class TestResultsService {
   }
 
   public insertTestResult(payload: ITestResultPayload) {
-    let validation: ValidationResult<any> | any | null = null;
-
-    if (payload.testStatus === "submitted") {
-      validation = testResultsSchemaSubmitted.testResultsSchema.validate(payload);
-    } else if (payload.testStatus === "cancelled") {
-      validation = testResultsSchemaCancelled.testResultsSchema.validate(payload);
-    } else {
-      validation = {
-        error: {
-          details: [
-            { message: '"testStatus" should be one of ["submitted", "cancelled"]' }
-          ]
-        }
-      };
+    let validationSchema = null;
+    if (Object.keys(payload).length === 0) { // if empty object
+      return Promise.reject(new HTTPError(400, "Payload cannot be empty"));
     }
+
+    switch (payload.vehicleType + payload.testStatus) {
+      case "psvsubmitted":
+        validationSchema = testResultsSchemaPSVSubmitted;
+        break;
+      case "psvcancelled":
+        validationSchema = testResultsSchemaPSVCancelled;
+        break;
+      case "hgvsubmitted":
+        validationSchema = testResultsSchemaHGVSubmitted;
+        break;
+      case "hgvcancelled":
+        validationSchema = testResultsSchemaHGVCancelled;
+        break;
+      case "trlsubmitted":
+        validationSchema = testResultsSchemaTRLSubmitted;
+        break;
+      case "trlcancelled":
+        validationSchema = testResultsSchemaTRLCancelled;
+        break;
+      default:
+        validationSchema = null;
+    }
+    const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
+
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, "Reason for Abandoning not present on all abandoned tests"));
     }
@@ -246,17 +264,25 @@ export class TestResultsService {
               testType.certificateNumber = testType.testNumber;
               payload.testTypes[index] = testType;
               if (testType.testResult !== "fail") {
-                if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
-                  || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
-                  || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                  testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
-                  payload.testTypes[index] = testType;
-                } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
-                  testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
-                  payload.testTypes[index] = testType;
-                } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                  testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
-                  payload.testTypes[index] = testType;
+                if (payload.vehicleType === VEHICLE_TYPES.PSV ) {
+                  if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
+                    || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
+                    || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                    testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
+                    payload.testTypes[index] = testType;
+                  } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
+                    testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
+                    payload.testTypes[index] = testType;
+                  } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                    testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
+                    payload.testTypes[index] = testType;
+                  }
+                } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
+                    if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
+                    } else {
+                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                    }
                 }
               }
             }
@@ -391,7 +417,11 @@ export class TestResultsService {
   public setAnniversaryDate(payload: ITestResultPayload) {
     payload.testTypes.forEach((testType) => {
       if (testType.testExpiryDate) {
-        testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString();
+        if (payload.vehicleType === VEHICLE_TYPES.PSV) {
+          testType.testAnniversaryDate = dateFns.addDays(dateFns.subMonths(testType.testExpiryDate, 2), 1).toISOString();
+        } else {
+          testType.testAnniversaryDate = testType.testExpiryDate;
+        }
       }
     });
     return payload;

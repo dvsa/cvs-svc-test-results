@@ -7,7 +7,8 @@ export enum ERRORS {
     NoResourceMatch = "No resources match the search criteria",
     NoCertificateNumber = "Certificate number not present on LEC test type",
     IncorrectTestStatus = '"testStatus" should be one of ["submitted", "cancelled"]',
-    NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory"
+    NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory",
+    PayloadCannotBeEmpty = "Payload cannot be empty"
 }
 
 export enum HTTPRESPONSE {
@@ -27,5 +28,11 @@ export enum MESSAGES {
     INTERNAL_SERVER_ERROR = "Internal Server Error",
     RECORD_CREATED = "Test records created",
     BAD_REQUEST = "Bad request"
-  }
+}
+
+export const VEHICLE_TYPES = {
+    PSV: "psv",
+    HGV: "hgv",
+    TRL: "trl"
+};
 

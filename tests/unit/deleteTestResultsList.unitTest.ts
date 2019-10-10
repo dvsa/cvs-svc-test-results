@@ -1,12 +1,8 @@
 import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs, { promises } from "fs";
+import fs from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
-import { MESSAGES, ERRORS } from "../../src/assets/Enums";
-import { ITestResultPayload } from "../../src/models/ITestResultPayload";
-import { HTTPResponse } from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
 
 describe("TestResultsService calling deleteTestResultsList", () => {
     let testResultsService: TestResultsService | any;
