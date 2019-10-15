@@ -9,4 +9,6 @@ export interface ITestResultPayload {
     testResultId?: string;
     vehicleId?: string;
     vrm?: string;
+    regnDate: string;
+    firstUseDate: string;
 }
