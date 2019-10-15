@@ -186,6 +186,234 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                 });
             });
         });
+
+        context("expiryDate for hgv vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.", () => {
+                it("should set the expiry date to last day of test date month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // Setting regnDate to a year older + 2 months
+                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(),2), 1);
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
+
+        context("expiryDate for hgv vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and regnDate also not populated", () => {
+                it("should set the expiry date to last day of test date month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // not setting regnDate with any value
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
+
+        context("expiryDate for hgv vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before Registration Anniversary date.", () => {
+                it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // not regnDate to a year older + 1 month
+                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(),1), 1);
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.regnDate), 1).toISOString()
+                    const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
+
+        context("expiryDate for trl vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before First Use Anniversary date.", () => {
+                it("should set the expiry date to last day of test date month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // Setting vehicleType to trl
+                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+                    // Setting firstUseDate to a year older + 2 months
+                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(),2), 1);
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
+
+        context("expiryDate for trl vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and firstUseDate also not populated", () => {
+                it("should set the expiry date to last day of test date month + 1 year", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // not setting firstUseDate with any value
+                    // Setting vehicleType to trl
+                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
+
+        context("expiryDate for trl vehicle type", () => {
+            context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before First Use Anniversary date.", () => {
+                it("should set the expiry date to 1 year after the First Use Anniversary day", () => {
+                    const hgvTestResult = testResultsMockDB[16];
+                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    // Setting vehicleType to trl
+                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+                    // not regnDate to a year older + 1 month
+                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(),1), 1);
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "ffv2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.firstUseDate), 1).toISOString()
+                    const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
+                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+        });
     });
 
     context("no testTypes", () => {
