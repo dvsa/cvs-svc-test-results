@@ -193,7 +193,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     const hgvTestResult = testResultsMockDB[16];
                     const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
                     // Setting regnDate to a year older + 2 months
-                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(),2), 1);
+                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -266,7 +266,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     const hgvTestResult = testResultsMockDB[16];
                     const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
                     // not regnDate to a year older + 1 month
-                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(),1), 1);
+                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -288,7 +288,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.regnDate), 1).toISOString()
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.regnDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
                     return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
@@ -306,7 +306,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     // Setting vehicleType to trl
                     testResultExpiredCertificateWithSameVin.vehicleType = "trl";
                     // Setting firstUseDate to a year older + 2 months
-                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(),2), 1);
+                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -383,7 +383,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     // Setting vehicleType to trl
                     testResultExpiredCertificateWithSameVin.vehicleType = "trl";
                     // not regnDate to a year older + 1 month
-                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(),1), 1);
+                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -405,7 +405,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.firstUseDate), 1).toISOString()
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.firstUseDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
                     return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {

@@ -26,6 +26,6 @@ export interface ITestResult   {
     noOfAxles: string;
     testerEmailAddress: string;
     euVehicleCategory: string;
-    regnDate: string
-    firstUseDate: string
+    regnDate: string;
+    firstUseDate: string;
   }
