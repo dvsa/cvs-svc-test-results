@@ -1163,4 +1163,154 @@ describe("insertTestResult", () => {
                 });
         });
     });
+
+    context("when inserting an TRL test result with firstUseDate field", () => {
+        it("should not throw error", () => {
+            const testResult = {...testResultsPostMock[6]};
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult).to.not.be.eql(undefined);
+                })
+                .catch(() => {
+                    expect.fail();
+                });
+        });
+    });
+
+    context("when inserting a TRL test result with regnDate field)", () => {
+        it("should throw 400", () => {
+            const testResult = {...testResultsPostMock[5]};
+            testResult.regnDate = "2019-10-11";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then(() => {
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
+
+    context("when inserting an HGV test result with regnDate field", () => {
+        it("should not throw error", () => {
+            const testResult = {...testResultsPostMock[4]};
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult).to.not.be.eql(undefined);
+                })
+                .catch(() => {
+                    expect.fail();
+                });
+        });
+    });
+
+    context("when inserting a HGV test result with firstUseDate field)", () => {
+        it("should throw 400", () => {
+            const testResult = {...testResultsPostMock[4]};
+            testResult.firstUseDate = "2019-10-11";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResult)
+                .then(() => {
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
 });
