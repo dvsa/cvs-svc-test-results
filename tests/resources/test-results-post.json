@@ -445,8 +445,7 @@
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "trailerId": "abcd",
-    "firstUseDate": ""
+    "trailerId": "abcd"
   },
   {
     "testerStaffId": "1",
@@ -516,8 +515,7 @@
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "euVehicleCategory": "m1",
-    "trailerId": "abcd",
-    "firstUseDate": null
+    "trailerId": "abcd"
   },
   {
     "testerStaffId": "1",

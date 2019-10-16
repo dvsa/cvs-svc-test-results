@@ -34,7 +34,7 @@ const testResultsSchema = Joi.object().keys({
     countryOfRegistration: Joi.string().required().allow("", null),
     vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
     testTypes: Joi.array().items(testTypesSchema).required(),
-    regnDate: Joi.string().required().allow("", null)
+    regnDate: Joi.string().allow("", null)
 });
 
 export default testResultsSchema;
