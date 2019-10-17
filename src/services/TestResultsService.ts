@@ -2,7 +2,7 @@ import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS, VEHICLE_TYPES } from "../assets/Enums";
+import {MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS} from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
 import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
@@ -38,9 +38,10 @@ export class TestResultsService {
           }
         }
         if (filters.vin) {
-          return this.testResultsDAO.getByVin(filters.vin).then((response: { Count: any; Items: any; }) => {
-            return this.applyTestResultsFilters(response, filters);
-          }).catch((error: HTTPError) => {
+          return this.testResultsDAO.getByVin(filters.vin)
+              .then((response: { Count: any; Items: any; }) => {
+                return this.applyTestResultsFilters(response, filters);
+              }).catch((error: HTTPError) => {
             if (!(error instanceof HTTPError)) {
               console.log(error);
               error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
@@ -49,13 +50,13 @@ export class TestResultsService {
           });
         } else if (filters.testerStaffId) {
           const results = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
-            .catch((error: HTTPError) => {
-              if (!(error instanceof HTTPError)) {
-                console.log(error);
-                error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-              }
-              throw error;
-            });
+              .catch((error: HTTPError) => {
+                if (!(error instanceof HTTPError)) {
+                  console.log(error);
+                  error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+                }
+                throw error;
+              });
           return this.applyTestResultsFilters(results, filters);
         } else {
           console.log("Filters object invalid");
@@ -103,7 +104,7 @@ export class TestResultsService {
   public insertTestResult(payload: ITestResultPayload) {
     let validationSchema = null;
     if (Object.keys(payload).length === 0) { // if empty object
-      return Promise.reject(new HTTPError(400, "Payload cannot be empty"));
+      return Promise.reject(new HTTPError(400, ERRORS.PayloadCannotBeEmpty));
     }
 
     switch (payload.vehicleType + payload.testStatus) {
@@ -131,48 +132,52 @@ export class TestResultsService {
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
-      return Promise.reject(new HTTPError(400, "Reason for Abandoning not present on all abandoned tests"));
+      return Promise.reject(new HTTPError(400, MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT));
     }
 
     const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload);
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + " are null for a defect with deficiency category other than advisory"));
     }
-    if (this.lecTestTypeWithoutCertificateNumber(payload)) {
+    if (this.isMissingRequiredCertificateNumber(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumber));
+    }
+    if (this.isAdrTestTypeWithoutExpiryDate(payload)) {
+      return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
     }
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
-        {
-          errors: validation.error.details.map((detail: { message: string; }) => {
-            return detail.message;
-          })
-        }));
+          {
+            errors: validation.error.details.map((detail: { message: string; }) => {
+              return detail.message;
+            })
+          }));
     }
 
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload);
     return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration, payload.noOfAxles)
-      .then((testTypesWithTestCodesAndClassification) => {
-        payload.testTypes = testTypesWithTestCodesAndClassification;
-      })
-      .then(() => {
-        return this.setTestNumber(payload)
-          .then((payloadWithTestNumber) => {
-            return this.setExpiryDateAndCertificateNumber(payloadWithTestNumber)
-              .then((payloadWithExpiryDate: any) => {
-                const payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithExpiryDate);
-                const payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate);
-                return this.testResultsDAO.createSingle(payloadWithVehicleId);
+        .then((testTypesWithTestCodesAndClassification) => {
+          payload.testTypes = testTypesWithTestCodesAndClassification;
+        })
+        .then(() => {
+          return this.setTestNumber(payload)
+              .then((payloadWithTestNumber) => {
+                return this.generateExpiryDate(payloadWithTestNumber)
+                    .then((payloadWithExpiryDate: any) => {
+                      let payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate)
+                      const payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithCertificateNumber);
+                      const payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate);
+                      return this.testResultsDAO.createSingle(payloadWithVehicleId);
+                    });
               });
-          });
-      }).catch((error) => {
-        if (error.statusCode === 400 && error.message === "The conditional request failed") {
-          console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists", error);
-          return Promise.reject(new HTTPResponse(201, "Test Result id already exists"));
-        }
-        console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification", error);
-        return Promise.reject(new HTTPError(500, "Internal server error"));
-      });
+        }).catch((error) => {
+          if (error.statusCode === 400 && error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED) {
+            console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists", error);
+            return Promise.reject(new HTTPResponse(201, MESSAGES.ID_ALREADY_EXISTS));
+          }
+          console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification", error);
+          return Promise.reject(new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR));
+        });
   }
 
   public fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload: ITestResultPayload) {
@@ -204,7 +209,7 @@ export class TestResultsService {
     missingFields.forEach((missingField) => {
       missingFieldsString = missingFieldsString + "/" + missingField;
     });
-    return { result: bool, missingFields: missingFieldsString };
+    return {result: bool, missingFields: missingFieldsString};
   }
 
   public setTestNumber(payload: ITestResultPayload) {
@@ -212,9 +217,9 @@ export class TestResultsService {
     if (payload.testTypes) {
       payload.testTypes.forEach((testType: { testNumber: any; }) => {
         const promise = this.testResultsDAO.getTestNumber()
-          .then((testNumberResponse: { testNumber: any; }) => {
-            testType.testNumber = testNumberResponse.testNumber;
-          });
+            .then((testNumberResponse: { testNumber: any; }) => {
+              testType.testNumber = testNumberResponse.testNumber;
+            });
 
         promiseArray.push(promise);
       });
@@ -231,7 +236,7 @@ export class TestResultsService {
     if (payload.testTypes) {
       if (payload.testTypes.length > 0) {
         payload.testTypes.forEach((testType: { testResult: string; reasonForAbandoning: any; }) => {
-          if (testType.testResult === "abandoned" && !testType.reasonForAbandoning) {
+          if (testType.testResult === TEST_RESULT.ABANDONED && !testType.reasonForAbandoning) {
             bool = false;
           }
         });
@@ -244,93 +249,95 @@ export class TestResultsService {
     if (payload.testTypes.length > 0) {
       payload.testTypes.forEach((testType: any) => {
         Object.assign(testType,
-          {
-            createdAt: new Date().toISOString(), lastUpdatedAt: new Date().toISOString()
-          });
+            {
+              createdAt: new Date().toISOString(), lastUpdatedAt: new Date().toISOString()
+            });
       });
     }
     return payload;
   }
 
-  public setExpiryDateAndCertificateNumber(payload: ITestResultPayload) {
-    if (payload.testStatus !== "submitted") {
+  public generateExpiryDate(payload: ITestResultPayload) {
+    if (payload.testStatus !== TEST_STATUS.SUBMITTED) {
       return Promise.resolve(payload);
     } else {
       return this.getMostRecentExpiryDateOnAllTestTypesByVin(payload.vin)
-        .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
-          payload.testTypes.forEach((testType: any, index: number) => {
-            if (testType.testTypeClassification === "Annual With Certificate" &&
-              (testType.testResult === "pass" || testType.testResult === "prs" || testType.testResult === "fail")) {
-              testType.certificateNumber = testType.testNumber;
-              payload.testTypes[index] = testType;
-              if (testType.testResult !== "fail") {
-                if (payload.vehicleType === VEHICLE_TYPES.PSV ) {
-                  if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
-                    || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
-                    || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                    testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
-                    payload.testTypes[index] = testType;
-                  } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
-                    testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
-                    payload.testTypes[index] = testType;
-                  } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
-                    testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
-                    payload.testTypes[index] = testType;
-                  }
-                } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
+          .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
+            payload.testTypes.forEach((testType: any, index: number) => {
+              if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+                  (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
+                payload.testTypes[index] = testType;
+                  if (payload.vehicleType === VEHICLE_TYPES.PSV) {
+                    if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
+                        || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
+                        || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                      testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
+                      payload.testTypes[index] = testType;
+                    } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
+                      testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
+                      payload.testTypes[index] = testType;
+                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date())) {
+                      testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1).toISOString();
+                      payload.testTypes[index] = testType;
+                    }
+                  } else if ((payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) && !this.isTestTypeAdr(testType)) {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
                     } else {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
                     }
-                }
+                  }
               }
-            }
+            });
+            console.log("generateExpiryDate payload", payload.testTypes);
+            return Promise.resolve(payload);
+          }).catch((error) => {
+            console.log("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin", error);
+            throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
           });
-          console.log("setExpiryDateAndCertificateNumber payload", payload.testTypes);
-          return Promise.resolve(payload);
-        }).catch((error) => {
-          console.log("Error in error setExpiryDateAndCertificateNumber > getMostRecentExpiryDateOnAllTestTypesByVin", error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        });
     }
   }
 
   public getMostRecentExpiryDateOnAllTestTypesByVin(vin: any) {
     let maxDate = new Date(1970, 1, 1);
-    return this.getTestResults({ vin, testStatus: "submitted", fromDateTime: new Date(1970, 1, 1), toDateTime: new Date() })
-      .then((testResults) => {
-        const promiseArray: Array<Promise<void>> = [];
-        const filterTestTypes: any[] = [];
-        testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-          const promise = this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
-            .then((testTypes) => {
-              testTypes.forEach((testType: { testTypeClassification: string; }) => {
-                if (testType.testTypeClassification === "Annual With Certificate") {
-                  filterTestTypes.push(testType);
-                }
-              });
-            })
-            .catch((error) => {
-              console.log("Error in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults > getTestTypesWithTestCodesAndClassification: ", error);
-            });
-          promiseArray.push(promise);
+    return this.getTestResults({
+      vin,
+      testStatus: TEST_STATUS.SUBMITTED,
+      fromDateTime: new Date(1970, 1, 1),
+      toDateTime: new Date()
+    })
+        .then((testResults) => {
+          const promiseArray: Array<Promise<void>> = [];
+          const filterTestTypes: any[] = [];
+          testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
+            const promise = this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
+                .then((testTypes) => {
+                  testTypes.forEach((testType: { testTypeClassification: string; }) => {
+                    if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
+                      filterTestTypes.push(testType);
+                    }
+                  });
+                })
+                .catch((error) => {
+                  console.log("Error in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults > getTestTypesWithTestCodesAndClassification: ", error);
+                });
+            promiseArray.push(promise);
+          });
+          return Promise.all(promiseArray).then(() => {
+            return filterTestTypes;
+          });
+        })
+        .then((testTypes) => {
+          testTypes.forEach((testType) => {
+            if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testTypeClassification === "Annual With Certificate") {
+              maxDate = testType.testExpiryDate;
+            }
+          });
+          return maxDate;
+        }).catch(() => {
+          console.log("Something went wrong in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults. Returning default test date.");
+          return maxDate;
         });
-        return Promise.all(promiseArray).then(() => {
-          return filterTestTypes;
-        });
-      })
-      .then((testTypes) => {
-        testTypes.forEach((testType) => {
-          if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testTypeClassification === "Annual With Certificate") {
-            maxDate = testType.testExpiryDate;
-          }
-        });
-        return maxDate;
-      }).catch(() => {
-        console.log("Something went wrong in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults. Returning default test date.");
-        return maxDate;
-      });
   }
 
   public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any) {
@@ -338,23 +345,21 @@ export class TestResultsService {
     if (testTypes === undefined) {
       testTypes = [];
     }
-    // for (let i = 0; i < testTypes.length; i++) {
     testTypes.forEach((testType, index) => {
-      // const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testTypes[i].testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
       const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
-        .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
-          if (testTypes.length === 1) {
-            testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
-            testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
-          } else {
-            if (currentTestCodesAndClassification.linkedTestCode) {
-              testTypes[index].testCode = currentTestCodesAndClassification.linkedTestCode;
-            } else {
+          .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
+            if (testTypes.length === 1) {
               testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
+              testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
+            } else {
+              if (currentTestCodesAndClassification.linkedTestCode) {
+                testTypes[index].testCode = currentTestCodesAndClassification.linkedTestCode;
+              } else {
+                testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
+              }
+              testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
             }
-            testTypes[index].testTypeClassification = currentTestCodesAndClassification.testTypeClassification;
-          }
-        });
+          });
       promiseArray.push(promise);
     });
     return Promise.all(promiseArray).then(() => {
@@ -364,38 +369,40 @@ export class TestResultsService {
 
   public insertTestResultsList(testResultsItems: ITestResult[]) {
     return this.testResultsDAO.createMultiple(testResultsItems)
-      .then((data: any) => {
-        if (data.UnprocessedItems) { return data.UnprocessedItems; }
-      })
-      .catch((error: any) => {
-        if (error) {
-          console.log("Error in insertTestResultsList: ", error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        }
-      });
+        .then((data: any) => {
+          if (data.UnprocessedItems) {
+            return data.UnprocessedItems;
+          }
+        })
+        .catch((error: any) => {
+          if (error) {
+            console.log("Error in insertTestResultsList: ", error);
+            throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+          }
+        });
   }
 
   public deleteTestResultsList(testResultsVinIdPairs: any[]) {
     return this.testResultsDAO.deleteMultiple(testResultsVinIdPairs)
-      .then((data: any) => {
-        if (data.UnprocessedItems) {
-          return data.UnprocessedItems;
-        }
-      })
-      .catch((error: any) => {
-        if (error) {
-          console.log(error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        }
-      });
+        .then((data: any) => {
+          if (data.UnprocessedItems) {
+            return data.UnprocessedItems;
+          }
+        })
+        .catch((error: any) => {
+          if (error) {
+            console.log(error);
+            throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+          }
+        });
   }
 
-  public lecTestTypeWithoutCertificateNumber(payload: { testStatus?: string; testTypes: any; vehicleType?: any; vehicleSize?: any; vehicleConfiguration?: any; noOfAxles?: any; }) {
-    const bool = false;
+  public isMissingRequiredCertificateNumber (payload: ITestResultPayload): boolean {
+    let bool = false;
     if (payload.testTypes) {
-      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: any; }) => {
-        if (testType.testTypeId === "39" && !testType.certificateNumber) {
-          return true;
+      payload.testTypes.forEach(testType => {
+        if ((testType.testTypeId === "39" || this.isTestTypeAdr(testType)) && !testType.certificateNumber) {
+            bool = true;
         }
       });
     }
@@ -424,6 +431,35 @@ export class TestResultsService {
         }
       }
     });
+    return payload;
+  }
+
+  public isTestTypeAdr(testType: any): boolean {
+    const adrTestTypeIds = ["50", "59", "60"];
+
+    return adrTestTypeIds.includes(testType.testTypeId)
+  }
+
+  public isAdrTestTypeWithoutExpiryDate(payload: ITestResultPayload): boolean {
+    let bool = false;
+    if (payload.testTypes) {
+      payload.testTypes.forEach(testType => {
+        if (this.isTestTypeAdr(testType) && !testType.testExpiryDate) {
+          bool = true;
+        }
+      });
+    }
+    return bool;
+  }
+
+  public generateCertificateNumber (payload: ITestResultPayload) {
+    if (payload.testStatus === TEST_STATUS.SUBMITTED && (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL)) {
+      payload.testTypes.forEach((testType) => {
+        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType)) {
+          testType.certificateNumber = testType.testNumber;
+        }
+      });
+    }
     return payload;
   }
 }

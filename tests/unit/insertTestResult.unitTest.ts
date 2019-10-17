@@ -163,7 +163,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPError);
                     expect(error.statusCode).to.be.equal(500);
-                    expect(error.body).to.equal("Internal server error");
+                    expect(error.body).to.equal(MESSAGES.INTERNAL_SERVER_ERROR);
                 });
         });
     });
@@ -187,7 +187,7 @@ describe("insertTestResult", () => {
                         return Promise.reject(
                             {
                                 statusCode: 400,
-                                message: "The conditional request failed"
+                                message: MESSAGES.CONDITIONAL_REQUEST_FAILED
                             });
                     }
                 };
@@ -212,7 +212,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPResponse);
                     expect(error.statusCode).to.be.equal(201);
-                    expect(error.body).to.be.equal("\"Test Result id already exists\"");
+                    expect(error.body).to.be.equal("\"" + MESSAGES.ID_ALREADY_EXISTS + "\"");
                 });
         });
     });
@@ -240,7 +240,7 @@ describe("insertTestResult", () => {
                         return Promise.reject(
                             {
                                 statusCode: 400,
-                                message: "The conditional request failed"
+                                message: MESSAGES.CONDITIONAL_REQUEST_FAILED
                             });
                     }
                 };
@@ -251,7 +251,7 @@ describe("insertTestResult", () => {
                 .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).to.equal(400);
-                    expect(error.body).to.equal("Reason for Abandoning not present on all abandoned tests");
+                    expect(error.body).to.equal(MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT);
                 });
         });
     });
@@ -1160,6 +1160,131 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error).to.be.instanceOf(HTTPError);
                     expect(error.statusCode).to.be.eql(400);
+                });
+        });
+    });
+
+    context("when inserting a testResult that has an ADR testType with expiryDate and certificateNumber", () => {
+        it("should not throw error", () => {
+            const testResultWithAdrTestType = testResultsPostMock[6];
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithAdrTestType)
+                .then((data: any) => {
+                    expect(data).not.be.eql(undefined);
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect.fail();
+                });
+        });
+    });
+
+    context("when inserting a testResult that has an ADR testType without expiryDate", () => {
+        it("should throw 400 and descriptive error message", () => {
+            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
+                .then((data: any) => {
+                    console.log("THIS IS THE DATA", data);
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    console.log("THIS IS THE ERROR", error);
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                    expect(error.body).to.be.eql("Expiry date not present on ADR test type");
+                });
+        });
+    });
+
+    context("when inserting a testResult that has an ADR testType without a certificateNumber", () => {
+        it("should throw 400 and descriptive error message", () => {
+            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].certificateNumber;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
+                .then(() => {
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                    expect(error.body).to.be.eql(ERRORS.NoCertificateNumber);
                 });
         });
     });
