@@ -1166,12 +1166,12 @@ describe("insertTestResult", () => {
 
     context("when inserting an TRL test result with firstUseDate field", () => {
         it("should not throw error", () => {
-            const testResult = {...testResultsPostMock[6]};
+            const testResult = {...testResultsPostMock[7]};
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                        return Promise.resolve(Array.of(testResultsPostMock[7]));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
@@ -1190,7 +1190,9 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult[0].vehicleType).to.be.eql("trl");
+                    expect(insertedTestResult[0].testResultId).to.be.eql("195");
+                    expect(insertedTestResult[0].firstUseDate).to.be.eql("2018-11-11");
                 })
                 .catch(() => {
                     expect.fail();
@@ -1265,7 +1267,9 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult[0].vehicleType).to.be.eql("hgv");
+                    expect(insertedTestResult[0].testResultId).to.be.eql("1113");
+                    expect(insertedTestResult[0].regnDate).to.be.eql("2018-10-10");
                 })
                 .catch(() => {
                     expect.fail();
