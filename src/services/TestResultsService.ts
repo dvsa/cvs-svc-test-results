@@ -164,7 +164,7 @@ export class TestResultsService {
               .then((payloadWithTestNumber) => {
                 return this.generateExpiryDate(payloadWithTestNumber)
                     .then((payloadWithExpiryDate: any) => {
-                      let payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate)
+                      const payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate);
                       const payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithCertificateNumber);
                       const payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate);
                       return this.testResultsDAO.createSingle(payloadWithVehicleId);
@@ -266,7 +266,7 @@ export class TestResultsService {
             payload.testTypes.forEach((testType: any, index: number) => {
               if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
                   (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
-                payload.testTypes[index] = testType;
+                  payload.testTypes[index] = testType;
                   if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                     if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
                         || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
@@ -397,10 +397,10 @@ export class TestResultsService {
         });
   }
 
-  public isMissingRequiredCertificateNumber (payload: ITestResultPayload): boolean {
+  public isMissingRequiredCertificateNumber(payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
-      payload.testTypes.forEach(testType => {
+      payload.testTypes.forEach((testType) => {
         if ((testType.testTypeId === "39" || this.isTestTypeAdr(testType)) && !testType.certificateNumber) {
             bool = true;
         }
@@ -437,13 +437,13 @@ export class TestResultsService {
   public isTestTypeAdr(testType: any): boolean {
     const adrTestTypeIds = ["50", "59", "60"];
 
-    return adrTestTypeIds.includes(testType.testTypeId)
+    return adrTestTypeIds.includes(testType.testTypeId);
   }
 
   public isAdrTestTypeWithoutExpiryDate(payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
-      payload.testTypes.forEach(testType => {
+      payload.testTypes.forEach((testType) => {
         if (this.isTestTypeAdr(testType) && !testType.testExpiryDate) {
           bool = true;
         }
@@ -452,7 +452,7 @@ export class TestResultsService {
     return bool;
   }
 
-  public generateCertificateNumber (payload: ITestResultPayload) {
+  public generateCertificateNumber(payload: ITestResultPayload) {
     if (payload.testStatus === TEST_STATUS.SUBMITTED && (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL)) {
       payload.testTypes.forEach((testType) => {
         if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType)) {

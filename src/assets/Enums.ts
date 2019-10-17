@@ -54,4 +54,4 @@ export const TEST_RESULT = {
 export const TEST_STATUS = {
     SUBMITTED: "submitted",
     CANCELLED: "cancelled"
-}
+};
