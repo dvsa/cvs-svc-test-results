@@ -187,6 +187,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /*
+         * AC-1 of CVSB-8658
+         */
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
@@ -224,6 +227,8 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /* AC-4 of CVSB-8658
+         */
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and regnDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
@@ -260,6 +265,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /*
+         * AC-2 of CVSB-8658
+         */
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before Registration Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
@@ -298,6 +306,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /*
+         * AC-1 for TRL vehicle type of CVSB-8658
+         */
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before First Use Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
@@ -337,6 +348,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /*
+         * AC-5 of CVSB-8658
+         */
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and firstUseDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
@@ -375,6 +389,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             });
         });
 
+        /*
+         * AC-3 of CVSB-8658
+         */
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before First Use Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the First Use Anniversary day", () => {
