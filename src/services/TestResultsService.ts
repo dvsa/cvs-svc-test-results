@@ -283,15 +283,12 @@ export class TestResultsService {
                     // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
                     const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
                     const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate), 1).toISOString() : undefined;
-                    console.log(`Test Date: ${new Date()}, Anv Date: ${anvDateForCompare}`);
                     // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                     if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
-                      console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
                     } else {
                       // less than 2 months then set expiryDate 1 year after the Registration/First Use Anniversary date
                       testType.testExpiryDate = dateFns.addYears(anvDateForCompare, 1).toISOString();
-                      console.log(`Setting expiryDate 1yr after AnvDate: ${testType.testExpiryDate}`);
                     }
                   } else {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
