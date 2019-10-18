@@ -1277,7 +1277,7 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a HGV test result with firstUseDate field)", () => {
+    context("when inserting a HGV test result with firstUseDate field", () => {
         it("should throw 400", () => {
             const testResult = {...testResultsPostMock[4]};
             testResult.firstUseDate = "2019-10-11";
