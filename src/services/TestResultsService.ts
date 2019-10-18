@@ -284,11 +284,14 @@ export class TestResultsService {
                     const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
                     const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate), 1).toISOString() : undefined;
                     // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
+                    console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
                     if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                      console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
                     } else {
                       // less than 2 months then set expiryDate 1 year after the Registration/First Use Anniversary date
                       testType.testExpiryDate = dateFns.addYears(anvDateForCompare, 1).toISOString();
+                      console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                     }
                   } else {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
@@ -312,7 +315,7 @@ export class TestResultsService {
   }
 
   public isFirstTestRetestTestType(testType: any): boolean {
-    const adrTestTypeIds = ["95", "41", "64", "102"];
+    const adrTestTypeIds = ["41", "64", "65", "66", "67", "95", "102", "103", "104"];
     return adrTestTypeIds.includes(testType.testTypeId);
   }
   public getMostRecentExpiryDateOnAllTestTypesByVin(vin: any) {
