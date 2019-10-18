@@ -194,15 +194,14 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
                     const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
                     // Setting regnDate to a year older + 2 months
-                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
+                    hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(hgvTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -233,14 +232,13 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             context("when there is a First Test Type with no existing expiryDate and regnDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
                     const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
                     // not setting regnDate with any value
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(hgvTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -272,15 +270,14 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before Registration Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
                     const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
-                    // not regnDate to a year older + 1 month
-                    testResultExpiredCertificateWithSameVin.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
+                    // Setting regnDate to a year older + 1 month
+                    hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(hgvTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -296,7 +293,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.regnDate), 1).toISOString();
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(hgvTestResult.regnDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
                     return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
@@ -312,18 +309,17 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before First Use Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    const trlTestResult = testResultsMockDB[16];
                     // Setting vehicleType to trl
-                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+                    trlTestResult.vehicleType = "trl";
                     // Setting firstUseDate to a year older + 2 months
-                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
+                    trlTestResult.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(trlTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -340,7 +336,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -354,17 +350,16 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and firstUseDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    const trlTestResult = testResultsMockDB[16];
                     // not setting firstUseDate with any value
                     // Setting vehicleType to trl
-                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+                    trlTestResult.vehicleType = "trl";
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(trlTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -381,7 +376,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -395,18 +390,17 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before First Use Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the First Use Anniversary day", () => {
-                    const hgvTestResult = testResultsMockDB[16];
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[16];
+                    const trlTestResult = testResultsMockDB[16];
                     // Setting vehicleType to trl
-                    testResultExpiredCertificateWithSameVin.vehicleType = "trl";
+                    trlTestResult.vehicleType = "trl";
                     // not regnDate to a year older + 1 month
-                    testResultExpiredCertificateWithSameVin.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
+                    trlTestResult.firstUseDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: (vin: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(trlTestResult),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -422,9 +416,9 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(testResultExpiredCertificateWithSameVin.firstUseDate), 1).toISOString();
+                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(trlTestResult.firstUseDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         });
