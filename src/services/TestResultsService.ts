@@ -401,7 +401,7 @@ export class TestResultsService {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if ((testType.testTypeId === "39" || (this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS)) && !testType.certificateNumber) {
+        if ((testType.testTypeId === "39" || (this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) || this.isTestTypeLec(testType)) && !testType.certificateNumber) {
             bool = true;
         }
       });
@@ -440,6 +440,12 @@ export class TestResultsService {
     return adrTestTypeIds.includes(testType.testTypeId);
   }
 
+  public isTestTypeLec(testType: any): boolean {
+    const lecTestTypeIds = ["43", "44", "45"];
+
+    return lecTestTypeIds.includes(testType.testTypeId);
+  }
+
   public isPassAdrTestTypeWithoutExpiryDate(payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
@@ -455,7 +461,7 @@ export class TestResultsService {
   public generateCertificateNumber(payload: ITestResultPayload) {
     if (payload.testStatus === TEST_STATUS.SUBMITTED && (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL)) {
       payload.testTypes.forEach((testType) => {
-        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType)) {
+        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType)) {
           testType.certificateNumber = testType.testNumber;
         }
       });

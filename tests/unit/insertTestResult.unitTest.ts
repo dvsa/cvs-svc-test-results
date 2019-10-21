@@ -1288,4 +1288,132 @@ describe("insertTestResult", () => {
                 });
         });
     });
+
+    context("when inserting a testResult that has an LEC testType without a certificateNumber", () => {
+        it("should throw 400 and descriptive error message", () => {
+            const testResultWithLecTestTypeWithoutCertNum = testResultsPostMock[6];
+            // Setting testTypeId as 44 which is a LEC TestType
+            testResultWithLecTestTypeWithoutCertNum.testTypeId = "44";
+            delete testResultWithLecTestTypeWithoutCertNum.testTypes[0].certificateNumber;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithLecTestTypeWithoutCertNum)
+                .then(() => {
+                    expect.fail();
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect(error).to.be.instanceOf(HTTPError);
+                    expect(error.statusCode).to.be.eql(400);
+                    expect(error.body).to.be.eql(ERRORS.NoCertificateNumber);
+                });
+        });
+    });
+
+    context("when inserting a testResult that has an LEC testType with a certificateNumber", () => {
+        it("then the inserted test result should use the certificateNumber provided in post", () => {
+            const testResultWithLecTestTypeWithCertNum = testResultsPostMock[6];
+            // Setting testTypeId as 44 which is a LEC TestType
+            testResultWithLecTestTypeWithCertNum.testTypes[0].testTypeId = "44";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultWithLecTestTypeWithCertNum));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithLecTestTypeWithCertNum)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).to.be.eql("44");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).to.be.eql("12512ds");
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect.fail();
+                });
+        });
+    });
+
+    context("when inserting a testResult that has an testType other than LEC or ADR type with a certificateNumber", () => {
+        it("then the inserted test result should set the testNumber as the certificateNumber.", () => {
+            const testResultWithOtherTestTypeWithCertNum = testResultsPostMock[6];
+            // Setting the testType to any other than LEC or ADR
+            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "1";
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).to.be.eql("1");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).to.be.eql("W01A00209");
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect.fail();
+                });
+        });
+    });
 });
