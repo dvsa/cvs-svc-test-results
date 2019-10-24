@@ -260,14 +260,14 @@ export class TestResultsService {
         .then((mostRecentExpiryDateOnAllTestTypesByVin) => {
           payload.testTypes.forEach((testType: any, index: number) => {
             if (testType.testTypeClassification === "Annual With Certificate" &&
-              (testType.testResult === "pass" || testType.testResult === "prs" || testType.testResult === "fail")) {
+                (testType.testResult === "pass" || testType.testResult === "prs" || testType.testResult === "fail")) {
               testType.certificateNumber = testType.testNumber;
               payload.testTypes[index] = testType;
               if (testType.testResult !== "fail") {
-                if (payload.vehicleType === VEHICLE_TYPES.PSV ) {
+                if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                   if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))
-                    || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
-                    || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
+                      || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.startOfDay(new Date()))
+                      || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                     testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
                     payload.testTypes[index] = testType;
                   } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesByVin)) {
@@ -278,11 +278,29 @@ export class TestResultsService {
                     payload.testTypes[index] = testType;
                   }
                 } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
+                  // Checks for testType = First test or First test Retest AND if vehicle doesn't currently have an existing expiry date, i.e set to default
+                  if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
+                    // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
+                    const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+                    const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate), 1).toISOString() : undefined;
+                    // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
+                    console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
+                    if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
+                      testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                      console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
+                    } else {
+                      // less than 2 months then set expiryDate 1 year after the Registration/First Use Anniversary date
+                      testType.testExpiryDate = dateFns.addYears(anvDateForCompare, 1).toISOString();
+                      console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
+                    }
+                  } else {
                     if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
                     } else {
                       testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
                     }
+                  }
+                  payload.testTypes[index] = testType;
                 }
               }
             }
@@ -296,6 +314,10 @@ export class TestResultsService {
     }
   }
 
+  public isFirstTestRetestTestType(testType: any): boolean {
+    const adrTestTypeIds = ["41", "64", "65", "66", "67", "95", "102", "103", "104"];
+    return adrTestTypeIds.includes(testType.testTypeId);
+  }
   public getMostRecentExpiryDateOnAllTestTypesByVin(vin: any) {
     let maxDate = new Date(1970, 1, 1);
     return this.getTestResults({ vin, testStatus: "submitted", fromDateTime: new Date(1970, 1, 1), toDateTime: new Date() })
