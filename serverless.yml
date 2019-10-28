@@ -35,6 +35,9 @@ custom:
         sources:
           - table: cvs-local-test-results
             sources: [./tests/resources/test-results.json]
+    stages:
+      - dev
+      - test
 
 functions:
   getTestResults:
