@@ -5,7 +5,7 @@ import path from "path";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import * as dateFns from "date-fns";
 
-describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
+describe("TestResultsService calling generateExpiryDate", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
     let testResultsMockDB: any;
@@ -31,7 +31,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const mockData = testResultsMockDB[2];
 
-            return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+            return testResultsService.generateExpiryDate(mockData)
                 .then((response: any) => {
                     expect(response).to.deep.equal(mockData);
                 });
@@ -74,7 +74,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
 
             const expectedExpiryDate = new Date();
             expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
-            return testResultsService.setExpiryDateAndCertificateNumber(mockPayload)
+            return testResultsService.generateExpiryDate(mockPayload)
                 .then((response: any) => {
                     console.log("response", response.testTypes);
                     expect((response.testTypes[0].testExpiryDate).split("T")[0]).to.equal(dateFns.addYears(new Date(), 1).toISOString().split("T")[0]);
@@ -111,7 +111,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                 const expectedExpiryDate = new Date();
                 expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
                 expectedExpiryDate.setDate(new Date().getDate() - 1);
-                return testResultsService.setExpiryDateAndCertificateNumber(psvTestResult)
+                return testResultsService.generateExpiryDate(psvTestResult)
                     .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                         expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber);
@@ -144,7 +144,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -179,7 +179,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -432,7 +432,7 @@ describe("TestResultsService calling setExpiryDateAndCertificateNumber", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const mockData = {};
 
-            return testResultsService.setExpiryDateAndCertificateNumber(mockData)
+            return testResultsService.generateExpiryDate(mockData)
                 .then(() => { expect.fail(); })
                 .catch((error: any) => {
                     expect(error).to.not.equal(undefined);
