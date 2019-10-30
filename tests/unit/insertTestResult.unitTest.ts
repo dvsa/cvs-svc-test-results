@@ -3,7 +3,7 @@ import { TestResultsService } from "../../src/services/TestResultsService";
 import fs, { promises } from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
-import { MESSAGES, ERRORS } from "../../src/assets/Enums";
+import {MESSAGES, ERRORS, TEST_RESULT} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import * as dateFns from "date-fns";
@@ -1357,10 +1357,10 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a testResult that has an ADR testType without expiryDate", () => {
+    context("when inserting a testResult that has a pass ADR testType without expiryDate", () => {
         it("should throw 400 and descriptive error message", () => {
             const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
-            delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate;
+            testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1389,14 +1389,54 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
                 .then((data: any) => {
-                    console.log("THIS IS THE DATA", data);
                     expect.fail();
                 })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    console.log("THIS IS THE ERROR", error);
                     expect(error).to.be.instanceOf(HTTPError);
                     expect(error.statusCode).to.be.eql(400);
                     expect(error.body).to.be.eql("Expiry date not present on ADR test type");
+                });
+        });
+    });
+
+    context("when inserting a testResult that has a fail ADR testType without expiryDate", () => {
+        it("should not throw error", () => {
+            let testResultWithAdrTestTypeWithoutExpiryDate = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate = null;
+            testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testResult = TEST_RESULT.FAIL;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
+                .then((data: any) => {
+                    expect(data).not.be.eql(undefined);
+
+                })
+                .catch((error: { statusCode: any; body: any; }) => {
+                    expect.fail();
                 });
         });
     });
