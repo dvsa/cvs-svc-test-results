@@ -3,7 +3,7 @@ import testResults from "../resources/test-results.json";
 import * as _ from "lodash";
 
 export const populateDatabase = async () => {
-    const mockBuffer = _.cloneDeep(testResults);//.filter(record => record.testResultId !== "1111");
+    const mockBuffer = _.cloneDeep(testResults); // .filter(record => record.testResultId !== "1111");
     const DAO = new TestResultsDAO();
     const batches = [];
     while (mockBuffer.length > 0) {
@@ -18,7 +18,7 @@ export const populateDatabase = async () => {
 
 export const emptyDatabase = async () => {
     const DAO = new TestResultsDAO();
-    const mockBuffer = _.cloneDeep(testResults).map((record) => {return {[record.vin]: record.testResultId}});
+    const mockBuffer = _.cloneDeep(testResults).map((record) => ({[record.vin]: record.testResultId}));
     const batches = [];
     while (mockBuffer.length > 0) {
         batches.push(mockBuffer.splice(0, 25));
