@@ -2,7 +2,8 @@ import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
 import {TestResultsDAO} from "../models/TestResultsDAO";
 import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
-import { ISubSeg } from "./ISubSeg";
+import { ISubSeg } from "../models/ISubSeg";
+import {MESSAGES} from "../assets/Enums";
 /* workaround AWSXRay.captureAWS(...) call obscures types provided by the AWS sdk.
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */
@@ -35,12 +36,10 @@ export const getTestResultsByTesterStaffId = async (event: any) => {
   const BAD_REQUEST_MISSING_FIELDS = "Bad request in getTestResultsByTesterStaffId - missing required parameters";
 
   try {
-    if (!event.queryStringParameters) {
-      if (event.queryStringParameters.testerStaffId && event.queryStringParameters.testStationPNumber && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime) {
-        console.log(BAD_REQUEST_MISSING_FIELDS);
-        if (subseg) { subseg.addError(BAD_REQUEST_MISSING_FIELDS); }
-        return Promise.resolve(new HTTPResponse(400, "Bad Request"));
-      }
+    if (!event.queryStringParameters || !(event.queryStringParameters.testerStaffId && event.queryStringParameters.testStationPNumber && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime)) {
+      console.log(BAD_REQUEST_MISSING_FIELDS);
+      if (subseg) { subseg.addError(BAD_REQUEST_MISSING_FIELDS); }
+      return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST));
     }
 
     const filters: any = { testerStaffId, testStationPNumber, fromDateTime, toDateTime };

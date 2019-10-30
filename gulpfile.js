@@ -8,7 +8,7 @@ gulp.task('start-serverless', function (done) {
   instance.stdout.on('data', function (output) {
     process.stdout.write(output)
 
-    if (output.search('Offline listening') !== -1) {
+    if (output.search('replay the last request') !== -1) {
       done()
       process.exit(0)
     }
