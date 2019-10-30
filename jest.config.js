@@ -1,4 +1,3 @@
-
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -12,7 +11,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'ts'],
   testResultsProcessor: 'jest-sonar-reporter',
   transform: {
-    '^.+\\.ts$': '<rootDir>/node_modules/ts-jest/preprocessor.js'
+    '^.+\\.tsx?$': 'ts-jest'
   },
-  testMatch: ['<rootDir>/tests/**/*.Test.ts']
+  testMatch: ['**/*.*Test.ts']
 }

@@ -3,7 +3,7 @@ import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
 import * as dateFns from "date-fns";
 import { MESSAGES } from "../assets/Enums";
-import { ISubSeg } from "./ISubSeg";
+import { ISubSeg } from "../models/ISubSeg";
 /* workaround AWSXRay.captureAWS(...) call obscures types provided by the AWS sdk.
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */

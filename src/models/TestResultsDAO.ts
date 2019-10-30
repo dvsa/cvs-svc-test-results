@@ -20,7 +20,7 @@ export class TestResultsDAO {
   private readonly tableName: string;
   constructor() {
     const config: IDBConfig = Configuration.getInstance().getDynamoDBConfig();
-    this.tableName = dbConfig.table;
+    this.tableName = config.table;
   }
 
   public getByVin(vin: any) {
@@ -68,7 +68,7 @@ export class TestResultsDAO {
   public createMultiple(testResultsItems: ITestResult[] ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWS.AWSError>>  {
     const params = this.generateBatchWritePartialParams();
 
-    testResultsItems.map((testResultItem: ITestResult) => {
+    testResultsItems.forEach((testResultItem: ITestResult) => {
       params.RequestItems[this.tableName].push(
         {
           PutRequest:
