@@ -3,7 +3,7 @@ import { TestResultsService } from "../../src/services/TestResultsService";
 import fs, { promises } from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
-import {MESSAGES, ERRORS, TEST_RESULT} from "../../src/assets/Enums";
+import {MESSAGES, ERRORS, TEST_RESULT, TEST_STATUS} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import * as dateFns from "date-fns";
@@ -1441,10 +1441,10 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a testResult that has an ADR testType without a certificateNumber", () => {
+    context("when inserting a submitted testResult that has an ADR testType without a certificateNumber", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
-            delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].certificateNumber;
+            const testResultWithAdrTestTypeWithoutCertificateNumber = testResultsPostMock[6];
+            testResultWithAdrTestTypeWithoutCertificateNumber.testTypes[0].certificateNumber = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1471,7 +1471,7 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
+            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutCertificateNumber)
                 .then(() => {
                     expect.fail();
                 })
@@ -1479,6 +1479,47 @@ describe("insertTestResult", () => {
                     expect(error).to.be.instanceOf(HTTPError);
                     expect(error.statusCode).to.be.eql(400);
                     expect(error.body).to.be.eql(ERRORS.NoCertificateNumberOnAdr);
+                });
+        });
+    });
+
+    context("when inserting a cancelled testResult that has an ADR testType without a certificateNumber", () => {
+        it("should not throw error", () => {
+            const testResultWithAdrTestTypeWithoutCertificateNumber = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            testResultWithAdrTestTypeWithoutCertificateNumber.testStatus = TEST_STATUS.CANCELLED;
+            testResultWithAdrTestTypeWithoutCertificateNumber.testTypes[0].certificateNumber = null;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[6]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutCertificateNumber)
+                .then((data: any) => {
+                    expect(data).to.not.be.eql(undefined)
+                })
+                .catch(() => {
+                    expect.fail();
                 });
         });
     });

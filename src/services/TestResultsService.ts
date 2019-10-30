@@ -434,7 +434,7 @@ export class TestResultsService {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if ((this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) && !testType.certificateNumber) {
+        if ((this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) && payload.testStatus !== TEST_STATUS.CANCELLED && !testType.certificateNumber) {
           bool = true;
         }
       });
