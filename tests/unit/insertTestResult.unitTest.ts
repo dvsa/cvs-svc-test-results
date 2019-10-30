@@ -1401,7 +1401,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has a fail ADR testType without expiryDate", () => {
         it("should not throw error", () => {
-            let testResultWithAdrTestTypeWithoutExpiryDate = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            const testResultWithAdrTestTypeWithoutExpiryDate = JSON.parse(JSON.stringify(testResultsPostMock[6]));
             testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate = null;
             testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testResult = TEST_RESULT.FAIL;
 
@@ -1516,7 +1516,7 @@ describe("insertTestResult", () => {
 
             return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutCertificateNumber)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined)
+                    expect(data).to.not.be.eql(undefined);
                 })
                 .catch(() => {
                     expect.fail();
