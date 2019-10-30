@@ -3,7 +3,7 @@ import supertest from "supertest";
 
 const url = "http://localhost:3006/";
 const request = supertest(url);
-import testResultsMockDB from "../resources/test-results.json"
+import testResultsMockDB from "../resources/test-results.json";
 import {emptyDatabase, populateDatabase} from "../util/dbOperations";
 
 describe("getTestResultsByVin", () => {
