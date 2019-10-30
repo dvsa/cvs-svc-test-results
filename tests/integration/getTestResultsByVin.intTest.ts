@@ -3,42 +3,10 @@ import supertest from "supertest";
 
 const url = "http://localhost:3006/";
 const request = supertest(url);
-import {TestResultsService} from "../../src/services/TestResultsService";
-import {TestResultsDAO} from "../../src/models/TestResultsDAO";
-import fs from "fs";
-import path from "path";
+import testResultsMockDB from "../resources/test-results.json"
+import {emptyDatabase, populateDatabase} from "../util/dbOperations";
 
 describe("getTestResultsByVin", () => {
-    let testResultsService: TestResultsService | any;
-    let testResultsMockDB: any;
-    let testResultsPostMock: any;
-
-    beforeAll(async () => {
-        testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
-        testResultsPostMock = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results-post.json"), "utf8"));
-        testResultsService = new TestResultsService(new TestResultsDAO());
-        await testResultsService.insertTestResultsList(testResultsMockDB);
-    });
-
-    afterAll(async () => {
-        testResultsMockDB = null;
-        testResultsService.deleteTestResultsList([{"1B7GG36N12S678410": "1"}, {"1B7GG36N12S678410": "2"}, {"1B7GG36N12S678425": "3"}]);
-        testResultsService = null;
-    });
-
-    beforeEach(async () => {
-        testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
-        testResultsPostMock = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results-post.json"), "utf8"));
-        testResultsService = new TestResultsService(new TestResultsDAO());
-        await testResultsService.insertTestResultsList(testResultsMockDB);
-    });
-
-    afterEach(async () => {
-        testResultsMockDB = null;
-        await testResultsService.deleteTestResultsList([{"1B7GG36N12S678410": "1"}, {"1B7GG36N12S678410": "2"}, {"1B7GG36N12S678425": "3"}]);
-        testResultsService = null;
-    });
-
     context("when database is populated", () => {
         context("and when a search by VIN is done", () => {
             context("and no status is provided", () => {
@@ -51,6 +19,7 @@ describe("getTestResultsByVin", () => {
                             expect(res.status).toEqual(200);
                             expect(res.header["access-control-allow-origin"]).toEqual("*");
                             expect(res.header["access-control-allow-credentials"]).toEqual("true");
+                            expect(res.body).toEqual(expectedResponse);
                         });
                     });
                 });

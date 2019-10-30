@@ -2,49 +2,24 @@
 import supertest from "supertest";
 const url = "http://localhost:3006/";
 const request = supertest(url);
-import { TestResultsService } from "../../src/services/TestResultsService";
-import { TestResultsDAO } from "../../src/models/TestResultsDAO";
-import fs from "fs";
-import path from "path";
+
+import {emptyDatabase, populateDatabase} from "../util/dbOperations";
 
 describe("insertTestResults", () => {
-  let testResultsService: TestResultsService | any;
-  let testResultsMockDB: any;
-  let testResultsPostMock: any;
-  let testResultsDAO: TestResultsDAO | any;
-
   beforeAll(async () => {
-    testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
-    testResultsPostMock = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results-post.json"), "utf8"));
-    testResultsDAO = new TestResultsDAO();
-    testResultsService = new TestResultsService(testResultsDAO);
-    await testResultsService.insertTestResultsList(testResultsMockDB);
-  });
-
-  afterAll(async () => {
-    const object = await testResultsDAO.getByVin(testResultsPostMock[0].vin);
-    const scheduledForDeletion: any = {};
-    scheduledForDeletion[object.Items[0].vin] = object.Items[0].testResultId;
-    testResultsService.deleteTestResultsList([scheduledForDeletion]);
-    testResultsMockDB = null;
-    testResultsService = null;
+    await emptyDatabase();
   });
 
   beforeEach(async () => {
-    testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
-    testResultsPostMock = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results-post.json"), "utf8"));
-    testResultsDAO = new TestResultsDAO();
-    testResultsService = new TestResultsService(testResultsDAO);
-    await testResultsService.insertTestResultsList(testResultsMockDB);
+    await populateDatabase();
   });
 
   afterEach(async () => {
-    const object = await testResultsDAO.getByVin(testResultsPostMock[0].vin);
-    const scheduledForDeletion: any = {};
-    scheduledForDeletion[object.Items[0].vin] = object.Items[0].testResultId;
-    testResultsService.deleteTestResultsList([scheduledForDeletion]);
-    testResultsMockDB = null;
-    testResultsService = null;
+    await emptyDatabase();
+  });
+
+  afterAll(async () => {
+    await populateDatabase();
   });
 
   /*context("POST /test-results with valid data", () => {
