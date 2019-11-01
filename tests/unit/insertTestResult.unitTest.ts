@@ -6,7 +6,7 @@ import { HTTPError } from "../../src/models/HTTPError";
 import {MESSAGES, ERRORS, TEST_RESULT, TEST_STATUS} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
+import * as lodash from "lodash";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
@@ -1359,7 +1359,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has a pass ADR testType without expiryDate", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutExpiryDate = lodash.clone(testResultsPostMock[6]);
             testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -1401,7 +1401,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has a fail ADR testType without expiryDate", () => {
         it("should not throw error", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            const testResultWithAdrTestTypeWithoutExpiryDate = lodash.clone(testResultsPostMock[6]);
             testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate = null;
             testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testResult = TEST_RESULT.FAIL;
 
@@ -1443,7 +1443,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted testResult that has an ADR testType without a certificateNumber", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutCertificateNumber = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutCertificateNumber = lodash.clone(testResultsPostMock[6]);
             testResultWithAdrTestTypeWithoutCertificateNumber.testTypes[0].certificateNumber = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -1485,7 +1485,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a cancelled testResult that has an ADR testType without a certificateNumber", () => {
         it("should not throw error", () => {
-            const testResultWithAdrTestTypeWithoutCertificateNumber = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            const testResultWithAdrTestTypeWithoutCertificateNumber = lodash.clone(testResultsPostMock[6]);
             testResultWithAdrTestTypeWithoutCertificateNumber.testStatus = TEST_STATUS.CANCELLED;
             testResultWithAdrTestTypeWithoutCertificateNumber.testTypes[0].certificateNumber = null;
 
@@ -1526,7 +1526,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an LEC testType without a certificateNumber", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithLecTestTypeWithoutCertNum = JSON.parse(JSON.stringify(testResultsPostMock[6]));
+            const testResultWithLecTestTypeWithoutCertNum = lodash.clone(testResultsPostMock[6]);
             // Setting testTypeId as 44 which is a LEC TestType
             testResultWithLecTestTypeWithoutCertNum.testTypes[0].testTypeId = "44";
             delete testResultWithLecTestTypeWithoutCertNum.testTypes[0].certificateNumber;
