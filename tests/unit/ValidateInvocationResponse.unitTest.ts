@@ -1,5 +1,4 @@
 /* global describe context it */
-import { expect } from "chai";
 import {validateInvocationResponse} from "../../src/utils/validateInvocationResponse";
 
 describe("validateInvocationResponse", () => {
@@ -12,7 +11,7 @@ describe("validateInvocationResponse", () => {
           StatusCode: 500
         });
       } catch (error) {
-        expect(error.statusCode).to.equal(500);
+        expect(error.statusCode).toEqual(500);
       }
     });
   });
@@ -25,8 +24,8 @@ describe("validateInvocationResponse", () => {
           StatusCode: 500
         });
       } catch (error) {
-        expect(error.statusCode).to.equal(500);
-        expect(error.body).to.equal('Lambda invocation returned bad data: {"headers:123}');
+        expect(error.statusCode).toEqual(500);
+        expect(error.body).toEqual('Lambda invocation returned bad data: {"headers:123}');
       }
     });
   });
@@ -39,8 +38,8 @@ describe("validateInvocationResponse", () => {
           Payload: '{"statusCode":404,"body":"No resources match the search criteria"}'
         });
       } catch (error) {
-        expect(error.statusCode).to.equal(404);
-        expect(error.body).to.equal("Lambda invocation returned error: 404 No resources match the search criteria");
+        expect(error.statusCode).toEqual(404);
+        expect(error.body).toEqual("Lambda invocation returned error: 404 No resources match the search criteria");
       }
     });
   });
@@ -51,7 +50,7 @@ describe("validateInvocationResponse", () => {
         StatusCode: 200,
         Payload: '{"statusCode":200,"body":"{}"}'
       });
-      expect(parsedPayload.statusCode).to.equal(200);
+      expect(parsedPayload.statusCode).toEqual(200);
     });
   });
 });

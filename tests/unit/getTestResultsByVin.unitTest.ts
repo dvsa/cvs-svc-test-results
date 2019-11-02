@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
@@ -39,10 +38,10 @@ describe("getTestResults", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             return testResultsService.getTestResults({ vin: "XMGDE02FS0H012345", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
                 .then((returnedRecords: any) => {
-                    expect(returnedRecords).to.not.equal(undefined);
-                    expect(returnedRecords).to.not.equal({});
-                    expect(JSON.stringify(returnedRecords[0])).to.equal(JSON.stringify(testResultsMockDB[0]));
-                    expect(returnedRecords.length).to.be.equal(1);
+                    expect(returnedRecords).not.toEqual(undefined);
+                    expect(returnedRecords).not.toEqual({});
+                    expect(JSON.stringify(returnedRecords[0])).toEqual(JSON.stringify(testResultsMockDB[0]));
+                    expect(returnedRecords.length).toEqual(1);
                 });
         });
     });
@@ -62,13 +61,12 @@ describe("getTestResults", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.getTestResults()
-                .then(() => {
-                    expect.fail();
-                }).catch((errorResponse: { statusCode: any; body: any; }) => {
-                    expect(errorResponse).to.be.instanceOf(HTTPError);
-                    expect(errorResponse.statusCode).to.equal(400);
-                    expect(errorResponse.body).to.equal(MESSAGES.BAD_REQUEST);
+                .catch((errorResponse: { statusCode: any; body: any; }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(MESSAGES.BAD_REQUEST);
                 });
         });
 
@@ -86,13 +84,12 @@ describe("getTestResults", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.getTestResults({ vin: "XMGDE02FS0H012345", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
-                .then(() => {
-                    expect.fail();
-                }).catch((errorResponse: { statusCode: any; body: any; }) => {
-                    expect(errorResponse).to.be.instanceOf(HTTPError);
-                    expect(errorResponse.statusCode).to.equal(404);
-                    expect(errorResponse.body).to.equal(ERRORS.NoResourceMatch);
+                .catch((errorResponse: { statusCode: any; body: any; }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(404);
+                    expect(errorResponse.body).toEqual(ERRORS.NoResourceMatch);
                 });
         });
     });
@@ -112,14 +109,12 @@ describe("getTestResults", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.getTestResults({ vin: "XMGDE02FS0H012345", status: "submitted", fromDateTime: "2017-01-01", toDateTime: "qwerty" })
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
-                    expect(errorResponse).to.be.instanceOf(HTTPError);
-                    expect(errorResponse.statusCode).to.equal(400);
-                    expect(errorResponse.body).to.equal(MESSAGES.BAD_REQUEST);
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(MESSAGES.BAD_REQUEST);
                 });
         });
     });
@@ -139,15 +134,13 @@ describe("getTestResults", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.getTestResults({ vin: "XMGDE02FS0H012345", status: "submitted", fromDateTime: "qwerty", toDateTime: new Date().toString() })
-            .then(() => {
-              expect.fail();
-            })
-            .catch((errorResponse: { statusCode: any; body: any; }) => {
-              expect(errorResponse).to.be.instanceOf(HTTPError);
-              expect(errorResponse.statusCode).to.equal(400);
-              expect(errorResponse.body).to.equal(MESSAGES.BAD_REQUEST);
-            });
+                .catch((errorResponse: { statusCode: any; body: any; }) => {
+                  expect(errorResponse).toBeInstanceOf(HTTPError);
+                  expect(errorResponse.statusCode).toEqual(400);
+                  expect(errorResponse.body).toEqual(MESSAGES.BAD_REQUEST);
+                });
         });
       });
 });

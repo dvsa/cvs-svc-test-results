@@ -1,7 +1,5 @@
 import sinon from "sinon";
-import {expect} from "chai";
 import {handler} from "../../src/handler";
-import {Configuration} from "../../src/utils/Configuration";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
 import mockContext from "aws-lambda-mock-context";
 import eventWithStaffId from "../resources/event-getTestResultsByTesterStaffId.json";
@@ -25,7 +23,7 @@ describe("The lambda function handler", () => {
                 const result = await handler(eventWithStaffId, ctx, () => {
                     return;
                 });
-                expect(result.statusCode).to.equal(200);
+                expect(result.statusCode).toEqual(200);
                 sandbox.assert.called(getTestResultsByTesterStaffIdStub.getTestResultsByTesterStaffId);
             });
 
@@ -37,7 +35,7 @@ describe("The lambda function handler", () => {
                 const result = await handler(eventWithVin, ctx, () => {
                     return;
                 });
-                expect(result.statusCode).to.equal(200);
+                expect(result.statusCode).toEqual(200);
                 sandbox.assert.called(functionStub.getTestResultsByVin);
             });
 
@@ -46,9 +44,9 @@ describe("The lambda function handler", () => {
                     return;
                 });
 
-                expect(result).to.be.instanceOf(HTTPResponse);
-                expect(result.statusCode).to.equal(400);
-                expect(result.body).to.equal(JSON.stringify("AWS event is empty. Check your test event."));
+                expect(result).toBeInstanceOf(HTTPResponse);
+                expect(result.statusCode).toEqual(400);
+                expect(result.body).toEqual(JSON.stringify("AWS event is empty. Check your test event."));
             });
 
             it("should return error on invalid body json", async () => {
@@ -58,9 +56,9 @@ describe("The lambda function handler", () => {
                 const result = await handler(invalidBodyEvent, ctx, () => {
                     return;
                 });
-                expect(result).to.be.instanceOf(HTTPResponse);
-                expect(result.statusCode).to.equal(400);
-                expect(result.body).to.equal(JSON.stringify("Body is not a valid JSON."));
+                expect(result).toBeInstanceOf(HTTPResponse);
+                expect(result.statusCode).toEqual(400);
+                expect(result.body).toEqual(JSON.stringify("Body is not a valid JSON."));
             });
 
             it("should return a Route Not Found error on invalid path", async () => {
@@ -71,8 +69,8 @@ describe("The lambda function handler", () => {
                 const result = await handler(invalidPathEvent, ctx, () => {
                     return;
                 });
-                expect(result.statusCode).to.equal(400);
-                expect(result.body).to.deep.equals(JSON.stringify({error: `Route ${invalidPathEvent.httpMethod} ${invalidPathEvent.path} was not found.`}));
+                expect(result.statusCode).toEqual(400);
+                expect(result.body).toEqual(JSON.stringify({error: `Route ${invalidPathEvent.httpMethod} ${invalidPathEvent.path} was not found.`}));
             });
         });
     });

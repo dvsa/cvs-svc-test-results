@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs, { promises } from "fs";
 import path from "path";
@@ -34,12 +33,12 @@ describe("insertTestResult", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const mockData: ITestResultPayload | any = {};
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(mockData)
-                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.equal(400);
-                    expect(error.body).to.equal(ERRORS.PayloadCannotBeEmpty);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual(ERRORS.PayloadCannotBeEmpty);
                 });
         });
     });
@@ -76,10 +75,10 @@ describe("insertTestResult", () => {
                 delete testType.certificateLink;
             }
             delete mockData.vehicleId;
+            expect.assertions(1);
             return testResultsService.insertTestResult(mockData)
-                .then(() => { expect.fail(); })
                 .catch((error: any) => {
-                    expect(error).to.not.equal(undefined);
+                    expect(error).not.toEqual(undefined);
                 });
         });
     });
@@ -111,11 +110,11 @@ describe("insertTestResult", () => {
             }
             delete mockData.vehicleId;
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(mockData)
-                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error.statusCode).to.equal(400);
-                    expect(error.body).to.equal(ERRORS.NoDeficiencyCategory);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual(ERRORS.NoDeficiencyCategory);
                 });
         });
     });
@@ -156,14 +155,12 @@ describe("insertTestResult", () => {
             delete mockData.vehicleId;
             mockData.testResultId = "1";
             testResultsService = new TestResultsService(new MockTestResultsDAO());
+            expect.assertions(3);
             return testResultsService.insertTestResult(mockData)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.equal(500);
-                    expect(error.body).to.equal(MESSAGES.INTERNAL_SERVER_ERROR);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(500);
+                    expect(error.body).toEqual(MESSAGES.INTERNAL_SERVER_ERROR);
                 });
         });
     });
@@ -207,12 +204,12 @@ describe("insertTestResult", () => {
             delete mockData.vehicleId;
             mockData.testResultId = "1111";
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(mockData)
-                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPResponse);
-                    expect(error.statusCode).to.be.equal(201);
-                    expect(error.body).to.be.equal("\"" + MESSAGES.ID_ALREADY_EXISTS + "\"");
+                    expect(error).toBeInstanceOf(HTTPResponse);
+                    expect(error.statusCode).toEqual(201);
+                    expect(error.body).toEqual("\"" + MESSAGES.ID_ALREADY_EXISTS + "\"");
                 });
         });
     });
@@ -247,11 +244,11 @@ describe("insertTestResult", () => {
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(mockData)
-                .then(() => { expect.fail(); })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error.statusCode).to.equal(400);
-                    expect(error.body).to.equal(MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual(MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT);
                 });
         });
     });
@@ -279,9 +276,10 @@ describe("insertTestResult", () => {
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(mockData)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 });
         });
     });
@@ -310,13 +308,11 @@ describe("insertTestResult", () => {
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(mockData)
-                .then((data: any) => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error.statusCode).to.be.eql(400);
-                    expect(error.body).to.be.eql({ errors: ["\"prohibitionIssued\" is required"] });
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual({ errors: ["\"prohibitionIssued\" is required"] });
                 });
         });
     });
@@ -350,13 +346,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -384,13 +378,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -419,13 +411,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -454,13 +444,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -489,13 +477,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -528,13 +514,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -566,13 +550,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -604,13 +586,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -648,13 +628,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
 
@@ -691,13 +669,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then((data: any) => {
-                    expect.fail();
-                })
                 .catch((error: any) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -732,13 +708,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -772,13 +746,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then((data: any) => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -812,13 +784,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -846,13 +816,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -881,13 +849,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -916,13 +882,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult).to.not.be.eql(undefined);
+                    expect(insertedTestResult).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -951,13 +915,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -990,13 +952,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -1028,13 +988,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
-                    expect(data).to.not.be.eql(undefined);
+                    expect(data).not.toEqual(undefined);
                 })
-                .catch(() => {
-                    expect.fail();
-                });
         });
     });
 
@@ -1066,13 +1024,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -1110,13 +1066,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
 
@@ -1153,13 +1107,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -1188,14 +1140,12 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].vehicleType).to.be.eql("trl");
-                    expect(insertedTestResult[0].testResultId).to.be.eql("195");
-                    expect(insertedTestResult[0].firstUseDate).to.be.eql("2018-11-11");
-                })
-                .catch(() => {
-                    expect.fail();
+                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
+                    expect(insertedTestResult[0].testResultId).toEqual("195");
+                    expect(insertedTestResult[0].firstUseDate).toEqual("2018-11-11");
                 });
         });
     });
@@ -1230,13 +1180,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -1265,14 +1213,12 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].vehicleType).to.be.eql("hgv");
-                    expect(insertedTestResult[0].testResultId).to.be.eql("1113");
-                    expect(insertedTestResult[0].regnDate).to.be.eql("2018-10-10");
-                })
-                .catch(() => {
-                    expect.fail();
+                    expect(insertedTestResult[0].vehicleType).toEqual("hgv");
+                    expect(insertedTestResult[0].testResultId).toEqual("1113");
+                    expect(insertedTestResult[0].regnDate).toEqual("2018-10-10");
                 });
         });
     });
@@ -1307,13 +1253,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
                 });
         });
     });
@@ -1347,12 +1291,10 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(1);
             return testResultsService.insertTestResult(testResultWithAdrTestType)
                 .then((data: any) => {
-                    expect(data).not.be.eql(undefined);
-                })
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect.fail();
+                    expect(data).not.toEqual(undefined);
                 });
         });
     });
@@ -1387,16 +1329,12 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
-                .then((data: any) => {
-                    console.log("THIS IS THE DATA", data);
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    console.log("THIS IS THE ERROR", error);
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
-                    expect(error.body).to.be.eql("Expiry date not present on ADR test type");
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual("Expiry date not present on ADR test type");
                 });
         });
     });
@@ -1431,14 +1369,12 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(testResultWithAdrTestTypeWithoutExpiryDate)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
-                    expect(error.body).to.be.eql(ERRORS.NoCertificateNumberOnAdr);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual(ERRORS.NoCertificateNumberOnAdr);
                 });
         });
     });
@@ -1475,14 +1411,12 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResult(testResultWithLecTestTypeWithoutCertNum)
-                .then(() => {
-                    expect.fail();
-                })
                 .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).to.be.instanceOf(HTTPError);
-                    expect(error.statusCode).to.be.eql(400);
-                    expect(error.body).to.be.eql(ERRORS.NoCertificateNumberOnLec);
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body).toEqual(ERRORS.NoCertificateNumberOnLec);
                 });
         });
     });
@@ -1518,13 +1452,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResultWithLecTestTypeWithCertNum)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].testTypes[0].testTypeId).to.be.eql("44");
-                    expect(insertedTestResult[0].testTypes[0].certificateNumber).to.be.eql("12512ds");
-                })
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect.fail();
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("44");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("12512ds");
                 });
         });
     });
@@ -1560,13 +1492,11 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].testTypes[0].testTypeId).to.be.eql("1");
-                    expect(insertedTestResult[0].testTypes[0].certificateNumber).to.be.eql("W01A00209");
-                })
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect.fail();
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("1");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
                 });
         });
     });
