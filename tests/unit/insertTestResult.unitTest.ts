@@ -350,7 +350,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
                     expect(data).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -382,7 +382,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -448,7 +448,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -554,7 +554,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
                     expect(data).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -712,7 +712,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
                     expect(data).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -788,7 +788,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
                     expect(data).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -820,7 +820,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -886,7 +886,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult).not.toEqual(undefined);
-                })
+                });
         });
     });
 
@@ -992,7 +992,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResult)
                 .then((data: any) => {
                     expect(data).not.toEqual(undefined);
-                })
+                });
         });
     });
 
