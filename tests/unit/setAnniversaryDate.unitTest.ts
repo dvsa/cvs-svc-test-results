@@ -1,5 +1,4 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
-import { expect } from "chai";
 
 describe("TestResultsService calling setTestAnniversaryDate", () => {
     let testResultsService: TestResultsService | any;
@@ -92,8 +91,8 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
         it("should set anniversary date the same as expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(hgvTestResultWithExpiryDate);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).to.not.be.eql(undefined);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).to.be.eql(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
         });
     });
 
@@ -173,8 +172,8 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
         it("should set anniversary date the same as expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(hgvTestResultWithExpiryDate);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.be.eql(undefined);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).to.be.eql(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
         });
     });
 
@@ -254,8 +253,8 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
         it("should set anniversary date two months before expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(psvTestResultWithExpiryDate);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.be.eql(undefined);
-            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).to.be.eql("2020-07-21T10:36:33.987Z");
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
+            expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual("2020-07-21T10:36:33.987Z");
         });
     });
 });

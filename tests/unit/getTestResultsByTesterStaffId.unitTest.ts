@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPError} from "../../src/models/HTTPError";
 import fs from "fs";
@@ -27,13 +26,12 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
 
   context("no params are passed", () => {
     it("should throw error 400-Bad request", () => {
+      expect.assertions(3);
       return testResultsService.getTestResults({})
-        .then(() => {
-          expect.fail();
-        }).catch((errorResponse: { statusCode: any; body: any; }) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError);
-          expect(errorResponse.statusCode).to.equal(400);
-          expect(errorResponse.body).to.equal(MESSAGES.BAD_REQUEST);
+        .catch((errorResponse: { statusCode: any; body: any; }) => {
+          expect(errorResponse).toBeInstanceOf(HTTPError);
+          expect(errorResponse.statusCode).toEqual(400);
+          expect(errorResponse.body).toEqual(MESSAGES.BAD_REQUEST);
         });
     });
   });
@@ -54,10 +52,10 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       return testResultsService.getTestResults({ testerStaffId: "1", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
         .then((returnedRecords: any) => {
-          expect(returnedRecords).to.not.equal(undefined);
-          expect(returnedRecords).to.not.equal({});
-          expect(returnedRecords[0]).to.deep.equal(testResultsMockDB[0]);
-          expect(returnedRecords.length).to.be.equal(1);
+          expect(returnedRecords).not.toEqual(undefined);
+          expect(returnedRecords).not.toEqual({});
+          expect(returnedRecords[0]).toEqual(testResultsMockDB[0]);
+          expect(returnedRecords.length).toEqual(1);
         });
     });
   });
@@ -73,13 +71,12 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
 
     const testResultsServiceMock = new TestResultsService(new MockTestResultsDAO());
     it("should throw an error 500-Internal Error", () => {
+      expect.assertions(3);
       return testResultsServiceMock.getTestResults({ testerStaffId: "5", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
-        .then(() => {
-          expect.fail();
-        }).catch((errorResponse: { statusCode: any; body: any; }) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError);
-          expect(errorResponse.statusCode).to.equal(500);
-          expect(errorResponse.body).to.equal(MESSAGES.INTERNAL_SERVER_ERROR);
+        .catch((errorResponse: { statusCode: any; body: any; }) => {
+          expect(errorResponse).toBeInstanceOf(HTTPError);
+          expect(errorResponse.statusCode).toEqual(500);
+          expect(errorResponse.body).toEqual(MESSAGES.INTERNAL_SERVER_ERROR);
         });
     });
   });
@@ -98,13 +95,12 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       });
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
+      expect.assertions(3);
       return testResultsService.getTestResults({ testerStaffId: "1", testStationPNumber: "87-13695", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
-        .then(() => {
-          expect.fail();
-        }).catch((errorResponse: { statusCode: any; body: any; }) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError);
-          expect(errorResponse.statusCode).to.equal(404);
-          expect(errorResponse.body).to.equal("No resources match the search criteria");
+        .catch((errorResponse: { statusCode: any; body: any; }) => {
+          expect(errorResponse).toBeInstanceOf(HTTPError);
+          expect(errorResponse.statusCode).toEqual(404);
+          expect(errorResponse.body).toEqual("No resources match the search criteria");
         });
     });
   });
@@ -127,6 +123,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       delete expectedResult.testResultId;
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
+      expect.assertions(4);
       return testResultsService.getTestResults({
         testerStaffId: "1",
         testStationPNumber: "84-926821",
@@ -135,10 +132,10 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
         testStatus: "submitted"
       })
         .then((returnedRecords: ITestResult[]) => {
-          expect(returnedRecords).to.not.equal(undefined);
-          expect(returnedRecords).to.not.equal({});
-          expect(returnedRecords[0]).to.deep.equal(expectedResult);
-          expect(returnedRecords.length).to.be.equal(1);
+          expect(returnedRecords).not.toEqual(undefined);
+          expect(returnedRecords).not.toEqual({});
+          expect(returnedRecords[0]).toEqual(expectedResult);
+          expect(returnedRecords.length).toEqual(1);
         });
     });
   });

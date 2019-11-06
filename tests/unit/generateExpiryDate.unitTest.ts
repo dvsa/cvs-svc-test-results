@@ -1,9 +1,8 @@
-import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
-import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import * as dateFns from "date-fns";
+import {cloneDeep} from "lodash";
 
 describe("TestResultsService calling generateExpiryDate", () => {
     let testResultsService: TestResultsService | any;
@@ -33,7 +32,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
             return testResultsService.generateExpiryDate(mockData)
                 .then((response: any) => {
-                    expect(response).to.deep.equal(mockData);
+                    expect(response).toEqual(mockData);
                 });
         });
 
@@ -77,14 +76,14 @@ describe("TestResultsService calling generateExpiryDate", () => {
             return testResultsService.generateExpiryDate(mockPayload)
                 .then((response: any) => {
                     console.log("response", response.testTypes);
-                    expect((response.testTypes[0].testExpiryDate).split("T")[0]).to.equal(dateFns.addYears(new Date(), 1).toISOString().split("T")[0]);
+                    expect((response.testTypes[0].testExpiryDate).split("T")[0]).toEqual(dateFns.addYears(new Date(), 1).toISOString().split("T")[0]);
                 });
         });
     });
 
     context("submitted test", () => {
         context("for psv vehicle type", () => {
-            it("should set the expiryDate and the certificateNumber for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
+            it("should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
                 const psvTestResult = testResultsMockDB[0];
                 const getByVinResponse = testResultsMockDB[0];
 
@@ -113,8 +112,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 expectedExpiryDate.setDate(new Date().getDate() - 1);
                 return testResultsService.generateExpiryDate(psvTestResult)
                     .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
-                        expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
-                        expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].certificateNumber).to.equal(psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testNumber);
+                        expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                     });
             });
         });
@@ -146,7 +144,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
                     return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -181,7 +179,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
                     return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -218,9 +216,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -231,8 +229,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and regnDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[16];
-                    // not setting regnDate with any value
+                    const hgvTestResult = cloneDeep(testResultsMockDB[16]);
+                    delete hgvTestResult.regnDate;
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
@@ -255,9 +253,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -295,9 +293,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(hgvTestResult.regnDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(hgvTestResult)
+                    return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -336,9 +334,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
+                    return testResultsService.generateExpiryDate(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -376,9 +374,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
+                    return testResultsService.generateExpiryDate(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -418,9 +416,9 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(trlTestResult.firstUseDate), 1).toISOString();
                     const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
-                    return testResultsService.setExpiryDateAndCertificateNumber(trlTestResult)
+                    return testResultsService.generateExpiryDate(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
-                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).to.equal(expectedExpiryDate.toISOString().split("T")[0]);
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
                 });
             });
@@ -428,14 +426,13 @@ describe("TestResultsService calling generateExpiryDate", () => {
     });
 
     context("no testTypes", () => {
-        it("should throw an error", () => {
+        it("should treat like non-submitted test and return original data", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const mockData = {};
-
+            expect.assertions(1);
             return testResultsService.generateExpiryDate(mockData)
-                .then(() => { expect.fail(); })
-                .catch((error: any) => {
-                    expect(error).to.not.equal(undefined);
+                .then((data: any) => {
+                    expect(data).toEqual(mockData);
                 });
         });
     });

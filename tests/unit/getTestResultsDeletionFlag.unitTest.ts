@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
@@ -38,11 +37,11 @@ describe("getTestResults", () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       return testResultsService.getTestResults({ vin: "XMGDE02FS0H012302", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString()})
         .then((returnedRecords: any) => {
-          expect(returnedRecords).to.not.equal(undefined);
-          expect(returnedRecords).to.not.equal({});
-          expect(JSON.stringify(returnedRecords[0])).to.equal(JSON.stringify(testResultsMockDB[8]));
-          expect(returnedRecords.length).to.be.equal(1);
-          expect(returnedRecords[0].deletionFlag).to.equal(false);
+          expect(returnedRecords).not.toEqual(undefined);
+          expect(returnedRecords).not.toEqual({});
+          expect(JSON.stringify(returnedRecords[0])).toEqual(JSON.stringify(testResultsMockDB[8]));
+          expect(returnedRecords.length).toEqual(1);
+          expect(returnedRecords[0].deletionFlag).toEqual(false);
         });
     });
   });
@@ -64,7 +63,7 @@ describe("getTestResults", () => {
 
       return testResultsService.getTestResults({ vin: "XMGDE02FS0H012303", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: { length: any; }; }>) => {
-          expect(returnedRecords[0].testTypes.length).to.equal(0);
+          expect(returnedRecords[0].testTypes.length).toEqual(0);
         });
     });
   });
@@ -84,13 +83,12 @@ describe("getTestResults", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+      expect.assertions(3);
       return testResultsService.getTestResults({ vin: "XMGDE02FS0H012301", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
-        .then(() => {
-          expect.fail();
-        }).catch((errorResponse: { statusCode: any; body: any; }) => {
-          expect(errorResponse).to.be.instanceOf(HTTPError);
-          expect(errorResponse.statusCode).to.equal(404);
-          expect(errorResponse.body).to.equal("No resources match the search criteria");
+        .catch((errorResponse: { statusCode: any; body: any; }) => {
+          expect(errorResponse).toBeInstanceOf(HTTPError);
+          expect(errorResponse.statusCode).toEqual(404);
+          expect(errorResponse.body).toEqual("No resources match the search criteria");
         });
     });
   });
@@ -112,7 +110,7 @@ describe("getTestResults", () => {
 
       return testResultsService.getTestResults({ vin: "XMGDE02FS0H012304", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: Array<{ deletionFlag: any; }>; }>) => {
-          expect(returnedRecords[0].testTypes[0].deletionFlag).to.equal(false);
+          expect(returnedRecords[0].testTypes[0].deletionFlag).toEqual(false);
         });
     });
   });

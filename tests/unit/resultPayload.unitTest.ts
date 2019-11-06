@@ -1,11 +1,6 @@
-import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs, { promises } from "fs";
+import fs from "fs";
 import path from "path";
-import { HTTPError } from "../../src/models/HTTPError";
-import { MESSAGES, ERRORS } from "../../src/assets/Enums";
-import { ITestResultPayload } from "../../src/models/ITestResultPayload";
-import { HTTPResponse } from "../../src/models/HTTPResponse";
 
 describe("TestResultsService", () => {
     let testResultsService: TestResultsService | any;
@@ -34,7 +29,7 @@ describe("TestResultsService", () => {
             const mockData = testResultsMockDB[4];
 
             const result = testResultsService.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(mockData);
-            expect(result.result).to.equal(true);
+            expect(result.result).toEqual(true);
         });
     });
 
@@ -44,7 +39,7 @@ describe("TestResultsService", () => {
             const mockData = testResultsMockDB[5];
 
             const result = testResultsService.reasonForAbandoningPresentOnAllAbandonedTests(mockData);
-            expect(result).to.equal(false);
+            expect(result).toEqual(false);
         });
     });
 });

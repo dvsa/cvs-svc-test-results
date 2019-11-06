@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs, { promises } from "fs";
 import path from "path";
@@ -38,7 +37,7 @@ describe("TestResultsService calling insertTestResultsList", () => {
 
             return testResultsService.insertTestResultsList(testResultsMockDB)
                 .then((data: any) => {
-                    expect(data).to.equal(undefined);
+                    expect(data).toEqual(undefined);
                 });
         });
 
@@ -57,7 +56,7 @@ describe("TestResultsService calling insertTestResultsList", () => {
 
             return testResultsService.insertTestResultsList(mockData)
                 .then((data: { length: any; }) => {
-                    expect(data.length).to.equal(1);
+                    expect(data.length).toEqual(1);
                 });
         });
     });
@@ -74,12 +73,12 @@ describe("TestResultsService calling insertTestResultsList", () => {
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
+            expect.assertions(3);
             return testResultsService.insertTestResultsList(mockData)
-                .then(() => { expect.fail(); })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
-                    expect(errorResponse).to.be.instanceOf(HTTPError);
-                    expect(errorResponse.statusCode).to.be.equal(500);
-                    expect(errorResponse.body).to.equal("Internal Server Error");
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(500);
+                    expect(errorResponse.body).toEqual("Internal Server Error");
                 });
         });
     });
