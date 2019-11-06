@@ -1894,5 +1894,69 @@
     "noOfAxles": 2,
     "testerEmailAddress": "gica.petrescuf@dvsagov.uk",
     "euVehicleCategory": "m1"
+  },
+  {
+    "testResultId": "19",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "testStationType": "gvts",
+    "testStationPNumber": "87-1369569",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "testerStaffId": "1",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "vin": "XMGDE02FS0H012314",
+    "vehicleClass": {
+      "description": "heavy goods vehicle",
+      "code": "v"
+    },
+    "vehicleType": "hgv",
+    "vehicleId": "JY58FPP",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 100000,
+    "vehicleConfiguration": "semi-car transporter",
+    "reasonForCancellation": null,
+    "testerName": "Dorel",
+    "vrm": "JY58FPP",
+    "noOfAxles": 2,
+    "euVehicleCategory": "n1",
+    "deletionFlag": false,
+    "testTypes": [
+      {
+        "testCode": "lev",
+        "testNumber": "1",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "testTypeId": "45",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "name": "Technical test",
+        "testTypeName": "Low Emissions Certificate (LEC)",
+        "certificateLink": "http://dvsagov.co.uk",
+        "modType": {
+          "code": "p",
+          "description": "particulate trap"
+        },
+        "emissionStandard": "0.16 g/kWh Euro 3 PM",
+        "fuelType": "gas",
+        "smokeTestKLimitApplied": "123",
+        "particulateTrapFitted": "Test",
+        "particulateTrapSerialNumber": "123",
+        "modificationTypeUsed": null,
+        "testExpiryDate": "2021-10-04",
+        "testResult": "pass",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": "Test notes",
+        "deletionFlag": false,
+        "certificateNumber": null,
+        "defects": []
+      }
+    ]
   }
 ]

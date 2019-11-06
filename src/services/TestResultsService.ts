@@ -292,7 +292,7 @@ export class TestResultsService {
                     // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
                     const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
                     // preparaing compare date for CVSB-9187 to compare first test/retest conducted after anniversary date
-                    const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate), 1);
+                    const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate!), 1);
                     // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                         testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
@@ -429,18 +429,6 @@ export class TestResultsService {
       });
   }
 
-  public isMissingRequiredCertificateNumberOnLec(payload: ITestResultPayload): boolean {
-    let bool = false;
-    if (payload.testTypes) {
-      payload.testTypes.forEach((testType) => {
-        if (this.isTestTypeLec(testType) && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
-            bool = true;
-        }
-      });
-    }
-    return bool;
-  }
-
   public isMissingRequiredCertificateNumberOnAdr(payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
@@ -516,12 +504,9 @@ export class TestResultsService {
   private validateLecTestTypeFields(payload: ITestResultPayload): string[] {
     const missingFields: string[] = [];
     if (payload.testTypes) {
-      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string; testExpiryDate: any, testResult: string}) => {
+      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string; testExpiryDate: any, testResult: string, smokeTestKLimitApplied: any}) => {
         if (this.isTestTypeLec(testType) ) {
-            if (!testType.certificateNumber) {
-              missingFields.push( ERRORS.NoCertificateNumberOnLec);
-            }
-            if (testType.testResult === TEST_RESULT.PASS) {
+            if (testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED ) {
             if (!testType.testExpiryDate) {
               missingFields.push(ERRORS.NoLECExpiryDate);
             }
@@ -533,6 +518,9 @@ export class TestResultsService {
             }
             if (!testType.fuelType) {
               missingFields.push(ERRORS.NoFuelType);
+            }
+            if (!testType.smokeTestKLimitApplied) {
+              missingFields.push(ERRORS.NoSmokeTestKLimitApplied);
             }
           }
         }
