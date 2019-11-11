@@ -287,7 +287,7 @@ export class TestResultsService {
                     const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
                     // preparaing compare date for CVSB-9187 to compare first test/retest conducted after anniversary date
                     const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate), 1);
-                    // Checks for testType = First test or First test Retest AND if firstUse or registraion date is 1 year from the month of first use.
+                    // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                         testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
                     } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
