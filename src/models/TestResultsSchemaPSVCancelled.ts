@@ -26,8 +26,9 @@ const testTypesSchema = Joi.object().keys({
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required().allow(null),
     testExpiryDate:   Joi.date().when("testResult", {
         is: "pass",
-        then:  Joi.date().iso()
-    }).allow(null),
+        then:  Joi.date().iso(),
+        otherwise: Joi.date().forbidden()
+    }),
     defects: Joi.array().items(defectsSchema).required()
 });
 
