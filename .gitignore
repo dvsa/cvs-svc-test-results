@@ -39,3 +39,6 @@ report.json
 
 #reports
 .reports/**
+
+#vscode
+.vscode/**

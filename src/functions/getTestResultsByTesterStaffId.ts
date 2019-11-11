@@ -8,23 +8,24 @@ import {MESSAGES} from "../assets/Enums";
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */
 /* tslint:disable */
-const AWSXRay = require('aws-xray-sdk');
-let AWS: { DynamoDB: { DocumentClient: new (arg0: any) => DocumentClient; }; };
+let AWS:any;
 if (process.env._X_AMZN_TRACE_ID) {
-  AWS = AWSXRay.captureAWS(require("aws-sdk"));
+  /* tslint:disable */
+   AWS = require("aws-xray-sdk");
 } else {
   console.log("Serverless Offline detected; skipping AWS X-Ray setup")
   AWS = require("aws-sdk");
 }
 /* tslint:enable */
-
 export const getTestResultsByTesterStaffId = async (event: any) => {
-  const segment = AWSXRay.getSegment();
-  AWSXRay.capturePromise();
   let subseg: ISubSeg | null = null;
+  if (process.env._X_AMZN_TRACE_ID) {
+  const segment = AWS.getSegment();
+  AWS.capturePromise();
+
   if (segment) {
     subseg = segment.addNewSubsegment("getTestResultsByTesterStaffId");
-  }
+  }}
   const testResultsDAO = new TestResultsDAO();
   const testResultsService = new TestResultsService(testResultsDAO);
 

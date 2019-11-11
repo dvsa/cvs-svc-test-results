@@ -1,26 +1,36 @@
-import { default as unwrappedAWS } from "aws-sdk";
 import { Configuration } from "../utils/Configuration";
 import { IDBConfig } from "./IDBConfig";
 import {ITestResult} from "./ITestResult";
 import {LambdaService} from "../services/LambdaService";
 import { ITestResultPayload } from "./ITestResultPayload";
 import { PromiseResult } from "aws-sdk/lib/request";
-import { DocumentClient } from "aws-sdk/clients/dynamodb";
+import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
+import {AWSError} from "aws-sdk/lib/error";
 /* tslint:disable */
-const AWSXRay = require('aws-xray-sdk');
-const AWS = AWSXRay.captureAWS(unwrappedAWS);
+let AWS: { DynamoDB: { DocumentClient: new (arg0: any) => DocumentClient; }; };
+if (process.env._X_AMZN_TRACE_ID) {
+  AWS = require("aws-xray-sdk").captureAWS(require("aws-sdk"));
+} else {
+  console.log("Serverless Offline detected; skipping AWS X-Ray setup")
+  AWS = require("aws-sdk");
+}
 /* tslint:enable */
-
-const dbConfig = Configuration.getInstance().getDynamoDBConfig();
-const dbClient = new AWS.DynamoDB.DocumentClient(dbConfig.params);
-const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints();
-
 
 export class TestResultsDAO {
   private readonly tableName: string;
+  private static docClient: DocumentClient;
+  private static lambdaInvokeEndpoints: any;
+
   constructor() {
     const config: IDBConfig = Configuration.getInstance().getDynamoDBConfig();
+
     this.tableName = config.table;
+    if (!TestResultsDAO.docClient) {
+      TestResultsDAO.docClient = new AWS.DynamoDB.DocumentClient(config.params);
+    }
+    if (!TestResultsDAO.lambdaInvokeEndpoints) {
+      TestResultsDAO.lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints();
+    }
   }
 
   public getByVin(vin: any) {
@@ -34,7 +44,7 @@ export class TestResultsDAO {
         ":vin": vin
       }
     };
-    return dbClient.query(params).promise();
+    return TestResultsDAO.docClient.query(params).promise();
   }
 
   public getByTesterStaffId(testerStaffId: any) {
@@ -50,7 +60,7 @@ export class TestResultsDAO {
       }
     };
 
-    return dbClient.query(params).promise();
+    return TestResultsDAO.docClient.query(params).promise();
   }
 
   public createSingle(payload: ITestResultPayload) {
@@ -62,10 +72,10 @@ export class TestResultsDAO {
         ":testResultIdVal": payload.testResultId
       }
     };
-    return dbClient.put(query).promise();
+    return TestResultsDAO.docClient.put(query).promise();
   }
 
-  public createMultiple(testResultsItems: ITestResult[] ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWS.AWSError>>  {
+  public createMultiple(testResultsItems: ITestResult[] ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>>  {
     const params = this.generateBatchWritePartialParams();
 
     testResultsItems.forEach((testResultItem: ITestResult) => {
@@ -78,10 +88,10 @@ export class TestResultsDAO {
         });
     });
 
-    return dbClient.batchWrite(params).promise();
+    return TestResultsDAO.docClient.batchWrite(params).promise();
   }
 
-  public deleteMultiple(vinIdPairsToBeDeleted: any[]): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWS.AWSError>>  {
+  public deleteMultiple(vinIdPairsToBeDeleted: any[]): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>>  {
     const params = this.generateBatchWritePartialParams();
 
     vinIdPairsToBeDeleted.forEach((vinIdPairToBeDeleted: any) => {
@@ -102,7 +112,7 @@ export class TestResultsDAO {
       );
     });
 
-    return dbClient.batchWrite(params).promise();
+    return TestResultsDAO.docClient.batchWrite(params).promise();
   }
 
   public generateBatchWritePartialParams(): any {
@@ -133,7 +143,7 @@ export class TestResultsDAO {
       resource: "/test-types/{id}"
     };
 
-    return LambdaService.invoke(lambdaInvokeEndpoints.functions.getTestTypesById.name, event);
+    return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name, event);
   }
 
   public getTestNumber(): any {
@@ -143,6 +153,6 @@ export class TestResultsDAO {
       resource: "/test-number/"
     };
 
-    return LambdaService.invoke(lambdaInvokeEndpoints.functions.getTestNumber.name, event);
+    return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name, event);
   }
 }

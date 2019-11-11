@@ -28,7 +28,7 @@ export class TestResultsService {
     this.testResultsDAO = testResultsDAO;
   }
 
-  public async getTestResults(filters: ITestResultFilters) {
+  public async getTestResults(filters: ITestResultFilters): Promise<any> {
     if (filters) {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
@@ -38,8 +38,9 @@ export class TestResultsService {
           }
         }
         if (filters.vin) {
-          return this.testResultsDAO.getByVin(filters.vin).then((response: { Count: any; Items: any; }) => {
-            return this.applyTestResultsFilters(response, filters);
+          return this.testResultsDAO.getByVin(filters.vin).then((result) => {
+             const response: ITestResultData = {Count: result.Count, Items: result.Items};
+             return this.applyTestResultsFilters(response, filters);
           }).catch((error: HTTPError) => {
             if (!(error instanceof HTTPError)) {
               console.log(error);
@@ -56,7 +57,8 @@ export class TestResultsService {
               }
               throw error;
             });
-          return this.applyTestResultsFilters(results, filters);
+          const response: ITestResultData = {Count: results.Count, Items: results.Items};
+          return this.applyTestResultsFilters(response, filters);
         } else {
           console.log("Filters object invalid");
           return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
@@ -138,9 +140,13 @@ export class TestResultsService {
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + " are null for a defect with deficiency category other than advisory"));
     }
-    if (this.isMissingRequiredCertificateNumberOnLec(payload)) {
-      return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnLec));
+
+    // CVSB-7964: Fields Validation for LEC Test Types
+    const missingFieldsForLecTestType: string[] = this.validateLecTestTypeFields(payload);
+    if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
+      return Promise.reject(new HTTPError(400,  {errors: missingFieldsForLecTestType} ));
     }
+
     if (this.isMissingRequiredCertificateNumberOnAdr(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnAdr));
     }
@@ -479,7 +485,7 @@ export class TestResultsService {
   }
 
   public isTestTypeLec(testType: any): boolean {
-    const lecTestTypeIds = ["39", "43", "44", "45"];
+    const lecTestTypeIds = ["39", "44", "45"];
 
     return lecTestTypeIds.includes(testType.testTypeId);
   }
@@ -505,5 +511,34 @@ export class TestResultsService {
       });
     }
     return payload;
+  }
+
+  private validateLecTestTypeFields(payload: ITestResultPayload): string[] {
+    const missingFields: string[] = [];
+    if (payload.testTypes) {
+      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string; testExpiryDate: any, testResult: string}) => {
+        if (this.isTestTypeLec(testType) ) {
+            if (!testType.certificateNumber) {
+              missingFields.push( ERRORS.NoCertificateNumberOnLec);
+            }
+            if (testType.testResult === TEST_RESULT.PASS) {
+            if (!testType.testExpiryDate) {
+              missingFields.push(ERRORS.NoLECExpiryDate);
+            }
+            if (!testType.modType) {
+              missingFields.push(ERRORS.NoModificationType);
+            }
+            if (!testType.emissionStandard) {
+              missingFields.push(ERRORS.NoEmissionStandard);
+            }
+            if (!testType.fuelType) {
+              missingFields.push(ERRORS.NoFuelType);
+            }
+          }
+        }
+      });
+
+    }
+    return missingFields;
   }
 }

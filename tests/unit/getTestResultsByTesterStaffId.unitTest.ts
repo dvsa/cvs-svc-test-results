@@ -135,7 +135,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
           expect(returnedRecords).not.toEqual(undefined);
           expect(returnedRecords).not.toEqual({});
           expect(returnedRecords[0]).toEqual(expectedResult);
-          expect(returnedRecords.length).toEqual(1);
+          expect(returnedRecords.length).toEqual(2);
         });
     });
   });
