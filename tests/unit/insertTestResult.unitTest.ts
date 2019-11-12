@@ -1523,55 +1523,167 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a testResult that has an testType other than ADR type with a certificateNumber", () => {
-        it("then the inserted test result should set the testNumber as the certificateNumber.", () => {
-            const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
-            // Setting the testType to any other than ADR
-            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "1";
+  context("when inserting a testResult that has an testType other than ADR type with a certificateNumber", () => {
+    it("then the inserted test result should set the testNumber as the certificateNumber.", () => {
+      const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
+      // Setting the testType to any other than ADR
+      testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "1";
 
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve({
-                            testNumber: "W01A00209",
-                            id: "W01",
-                            certLetter: "A",
-                            sequenceNumber: "002"
-                        });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "wde",
-                            defaultTestCode: "bde",
-                            testTypeClassification: "Annual With Certificate"
-                        });
-                    }
-                };
+      MockTestResultsDAO = jest.fn().mockImplementation(() => {
+        return {
+          createSingle: () => {
+            return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
+          },
+          getTestNumber: () => {
+            return Promise.resolve({
+              testNumber: "W01A00209",
+              id: "W01",
+              certLetter: "A",
+              sequenceNumber: "002"
             });
+          },
+          getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+              linkedTestCode: "wde",
+              defaultTestCode: "bde",
+              testTypeClassification: "Annual With Certificate"
+            });
+          }
+        };
+      });
 
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-            expect.assertions(2);
-            return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
-                .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("1");
-                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
-                });
+      expect.assertions(2);
+      return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
+        .then((insertedTestResult: any) => {
+          expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("1");
+          expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
         });
     });
+  });
+  // CVSB-7964: AC4
+  context("when inserting an PSV test result for LEC test code with mandatory fields: expiryDate, modType, emissionStandard and fuelType populated for Pass tests", () => {
+    it("test record should get created and should not throw error", () => {
+      const testResultWithMandatoryFields = cloneDeep(testResultsPostMock[8]);
+      testResultWithMandatoryFields.vehicleType = VEHICLE_TYPES.PSV;
+      MockTestResultsDAO = jest.fn().mockImplementation(() => {
+        return {
+          createSingle: () => {
+            return Promise.resolve(Array.of(testResultWithMandatoryFields));
+          },
+          getTestNumber: () => {
+            return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+          },
+          getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+              linkedTestCode: "lcp",
+              defaultTestCode: "lbp",
+              testTypeClassification: "NON ANNUAL"
+            });
+          }
+        };
+      });
 
-    // CVSB-7964: AC4
-    context("when inserting an PSV test result for LEC test code with mandatory fields: expiryDate, modType, emissionStandard and fuelType populated for Pass tests", () => {
-        it("test record should get created and should not throw error", () => {
-            const testResultWithMandatoryFields = cloneDeep(testResultsPostMock[8]);
-            testResultWithMandatoryFields.vehicleType = VEHICLE_TYPES.PSV;
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
+      expect.assertions(6);
+      return testResultsService.insertTestResult(testResultWithMandatoryFields)
+        .then((insertedTestResult: any) => {
+          expect(insertedTestResult[0].vehicleType).toEqual("psv");
+          expect(insertedTestResult[0].testTypes[0].fuelType).toEqual("gas");
+          expect(insertedTestResult[0].testTypes[0].emissionStandard).toEqual("0.08 g/kWh Euro 3 PM");
+          expect(insertedTestResult[0].testTypes[0].testExpiryDate).toEqual("2020-01-14");
+          expect(insertedTestResult[0].testTypes[0].modType.code).toEqual("m");
+          expect(insertedTestResult[0].testTypes[0].modType.description).toEqual("modification or change of engine");
+        });
+    });
+  });
+
+  context("when inserting a test result for LEC test code with unacceptable value for fuelType", () => {
+    it("should throw error", () => {
+      const testResultInvalidFuelType = cloneDeep(testResultsPostMock[7]);
+      // Update the fuelType to an unacceptable value
+      testResultInvalidFuelType.testTypes[0].fuelType = "gas1";
+
+      MockTestResultsDAO = jest.fn().mockImplementation(() => {
+        return {
+          createSingle: () => {
+            return Promise.resolve(Array.of(testResultInvalidFuelType));
+          },
+          getTestNumber: () => {
+            return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+          },
+          getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+              linkedTestCode: "lcp",
+              defaultTestCode: "lbp",
+              testTypeClassification: "NON ANNUAL"
+            });
+          }
+        };
+      });
+
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+      expect.assertions(3);
+      return testResultsService.insertTestResult(testResultInvalidFuelType)
+        .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toEqual(400);
+          expect(error.body.errors[0]).toEqual(ERRORS.FuelTypeInvalid);
+        });
+    });
+  });
+
+  context("when inserting a test result for LEC test code with unacceptable value for emissionStandard", () => {
+    it("should throw error", () => {
+      const testResult = testResultsPostMock[9];
+      const clonedTestResult = cloneDeep(testResult);
+      // Update the emissionStandard to an unacceptable value
+      clonedTestResult.testTypes[0].emissionStandard = "testing";
+
+      MockTestResultsDAO = jest.fn().mockImplementation(() => {
+        return {
+          createSingle: () => {
+            return Promise.resolve(Array.of(clonedTestResult));
+          },
+          getTestNumber: () => {
+            return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+          },
+          getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+              linkedTestCode: "lcp",
+              defaultTestCode: "lbp",
+              testTypeClassification: "NON ANNUAL"
+            });
+          }
+        };
+      });
+
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+      expect.assertions(3);
+      return testResultsService.insertTestResult(clonedTestResult)
+      // tslint:disable-next-line: no-empty
+        .then((insertedTestResult: any) => {})
+        .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toEqual(400);
+          expect(error.body.errors[0]).toEqual(ERRORS.EmissionStandardInvalid);
+        });
+    });
+  });
+    // Modified in CVSB-7523
+    context("when inserting a testResult that has an LEC testType with a certificateNumber", () => {
+        it("then the inserted test result should overwrite the certificateNumber provided in post with the testNumber returned from the testNumber service", () => {
+            const testResultWithLecTestTypeWithCertNum = testResultsPostMock[6];
+            // Setting testTypeId as 44 which is a LEC TestType
+            testResultWithLecTestTypeWithCertNum.testTypes[0].testTypeId = "44";
+
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithMandatoryFields));
+                        return Promise.resolve(Array.of(testResultWithLecTestTypeWithCertNum));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
@@ -1587,133 +1699,55 @@ describe("insertTestResult", () => {
             });
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            expect.assertions(6);
-            return testResultsService.insertTestResult(testResultWithMandatoryFields)
-                .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].vehicleType).toEqual("psv");
-                    expect(insertedTestResult[0].testTypes[0].fuelType).toEqual("gas");
-                    expect(insertedTestResult[0].testTypes[0].emissionStandard).toEqual("0.08 g/kWh Euro 3 PM");
-                    expect(insertedTestResult[0].testTypes[0].testExpiryDate).toEqual("2020-01-14");
-                    expect(insertedTestResult[0].testTypes[0].modType.code).toEqual("m");
-                    expect(insertedTestResult[0].testTypes[0].modType.description).toEqual("modification or change of engine");
-                });
+
+          expect.assertions(2);
+          return testResultsService.insertTestResult(testResultWithLecTestTypeWithCertNum)
+            .then((insertedTestResult: any) => {
+              expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("44");
+              expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
             });
-    });
-
-    context("when inserting a test result for LEC test code with unacceptable value for fuelType", () => {
-        it("should throw error", () => {
-            const testResultInvalidFuelType = cloneDeep(testResultsPostMock[7]);
-            // Update the fuelType to an unacceptable value
-            testResultInvalidFuelType.testTypes[0].fuelType = "gas1";
-
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultInvalidFuelType));
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "lcp",
-                            defaultTestCode: "lbp",
-                            testTypeClassification: "NON ANNUAL"
-                        });
-                    }
-                };
-            });
-
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-            expect.assertions(3);
-            return testResultsService.insertTestResult(testResultInvalidFuelType)
-                .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
-                    expect(error).toBeInstanceOf(HTTPError);
-                    expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.FuelTypeInvalid);
-                });
         });
     });
 
-    context("when inserting a test result for LEC test code with unacceptable value for emissionStandard", () => {
-        it("should throw error", () => {
-            const testResult = testResultsPostMock[9];
-            const clonedTestResult = cloneDeep(testResult);
-            // Update the emissionStandard to an unacceptable value
-            clonedTestResult.testTypes[0].emissionStandard = "testing";
+  context("when inserting a test result for LEC test code with unacceptable value for modType description", () => {
+    it("should throw error", () => {
+      const testResult = testResultsPostMock[9];
+      const clonedTestResult = cloneDeep(testResult);
+      // Update the modType description to an unacceptable value
+      clonedTestResult.testTypes[0].modType.description = "engine change";
 
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "lcp",
-                            defaultTestCode: "lbp",
-                            testTypeClassification: "NON ANNUAL"
-                        });
-                    }
-                };
+      MockTestResultsDAO = jest.fn().mockImplementation(() => {
+        return {
+          createSingle: () => {
+            return Promise.resolve(Array.of(clonedTestResult));
+          },
+          getTestNumber: () => {
+            return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+          },
+          getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+              linkedTestCode: "lcp",
+              defaultTestCode: "lbp",
+              testTypeClassification: "NON ANNUAL"
             });
+          }
+        };
+      });
 
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-            expect.assertions(3);
-            return testResultsService.insertTestResult(clonedTestResult)
-                // tslint:disable-next-line: no-empty
-                .then((insertedTestResult: any) => {})
-                .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
-                    expect(error).toBeInstanceOf(HTTPError);
-                    expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.EmissionStandardInvalid);
-                });
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
+      // Update the modType description to an unacceptable value
+      testResult.testTypes[0].modType.description = "engine change";
+      expect.assertions(3);
+      return testResultsService.insertTestResult(clonedTestResult)
+      // tslint:disable-next-line: no-empty
+        .then((insertedTestResult: any) => {})
+        .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toEqual(400);
+          expect(error.body.errors[0]).toEqual(ERRORS.ModTypeDescriptionInvalid);
         });
     });
-
-    context("when inserting a test result for LEC test code with unacceptable value for modType description", () => {
-        it("should throw error", () => {
-            const testResult = testResultsPostMock[9];
-            const clonedTestResult = cloneDeep(testResult);
-            // Update the modType description to an unacceptable value
-            clonedTestResult.testTypes[0].modType.description = "engine change";
-
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "lcp",
-                            defaultTestCode: "lbp",
-                            testTypeClassification: "NON ANNUAL"
-                        });
-                    }
-                };
-            });
-
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-            // Update the modType description to an unacceptable value
-            testResult.testTypes[0].modType.description = "engine change";
-            expect.assertions(3);
-            return testResultsService.insertTestResult(clonedTestResult)
-            // tslint:disable-next-line: no-empty
-            .then((insertedTestResult: any) => {})
-                .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
-                    expect(error).toBeInstanceOf(HTTPError);
-                    expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.ModTypeDescriptionInvalid);
-                });
-        });
-    });
+  });
 
     context("when inserting a test result for LEC test code with unacceptable value for modType code", () => {
         it("should throw error", () => {
