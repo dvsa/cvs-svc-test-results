@@ -2,7 +2,7 @@ import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS } from "../assets/Enums";
+import { MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS, HGV_TRL_ROADWORTHINESS_TEST_TYPES } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
 import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
@@ -500,10 +500,18 @@ export class TestResultsService {
     return bool;
   }
 
+  public isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
+    return Object.values(HGV_TRL_ROADWORTHINESS_TEST_TYPES).includes(testTypeId);
+   }
+
   public generateCertificateNumber(payload: ITestResultPayload) {
     if (payload.testStatus === TEST_STATUS.SUBMITTED) {
       payload.testTypes.forEach((testType) => {
-        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType)) {
+        // CVSB-7675 if vehicle type is HGV/TRL and testTypeId is Roadworthiness test and testResult is pass then testNumber = certificateNumber
+       if ( (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL && this.isHGVTRLRoadworthinessTest(testType.testTypeId) && testType.testResult === TEST_RESULT.PASS)
+                    ||
+            (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType))
+                  ) {
           testType.certificateNumber = testType.testNumber;
         }
       });

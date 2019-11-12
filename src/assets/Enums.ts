@@ -71,3 +71,16 @@ export const TEST_STATUS = {
     SUBMITTED: "submitted",
     CANCELLED: "cancelled"
 };
+
+export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
+    QJT1 : "QJT1",
+    QJT2 : "QJT2",
+    QJT3 : "QJT3",
+    QJT4 : "QJT4",
+    QJT5 : "QJT5",
+    QJV2 : "QJV2",
+    QJV3 : "QJV3",
+    QJV4 : "QJV4",
+    QJV5 : "QJV5"
+};
+
