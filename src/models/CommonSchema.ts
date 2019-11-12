@@ -25,6 +25,11 @@ export const testTypesCommonSchema = {
     reasonForAbandoning: Joi.string().required().allow("", null),
     additionalNotesRecorded: Joi.string().max(500).required().allow("", null),
     additionalCommentsForAbandon: Joi.string().max(500).required().allow("", null),
+    testExpiryDate:   Joi.date().when("testResult", {
+        is: "pass",
+        then:  Joi.date().iso(),
+        otherwise: Joi.date().forbidden()
+    }),
     modType: Joi.object().keys({
         code: Joi.any().only(["p", "m", "g"]),
         description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])

@@ -24,7 +24,6 @@ const testTypesSchema = Joi.object().keys({
     lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
     seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required(),
-    testExpiryDate: Joi.date().iso(),
     defects: Joi.array().items(defectsSchema).required()
 });
 
