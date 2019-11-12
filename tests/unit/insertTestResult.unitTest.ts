@@ -6,7 +6,6 @@ import {MESSAGES, ERRORS, VEHICLE_TYPES, TEST_STATUS, TEST_RESULT} from "../../s
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import {cloneDeep} from "lodash";
-import { ITestResult } from "../../src/models/ITestResult";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
@@ -46,7 +45,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted testResult without certificateNumber on lec", () => {
         it("should return 400-Bad request", () => {
-            const mockData = testResultsMockDB[2];
+            const mockData = cloneDeep(testResultsMockDB[2]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     insertTestResult: () => {
@@ -86,7 +85,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted testResult with fields null for advisory deficiency category", () => {
         it("should return a 400 error", () => {
-            const mockData = testResultsMockDB[4];
+            const mockData = cloneDeep(testResultsMockDB[4]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     insertTestResult: () => {
@@ -122,7 +121,7 @@ describe("insertTestResult", () => {
 
     context("when database is down", () => {
         it("should throw an internal server error", () => {
-            const mockData = testResultsMockDB[0];
+            const mockData = cloneDeep(testResultsMockDB[0]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createMultiple: () => {
@@ -167,7 +166,7 @@ describe("insertTestResult", () => {
 
     context("when inserting duplicate test result", () => {
         it("should return 201 - Test Result id already exists", () => {
-            const mockData = testResultsMockDB[0];
+            const mockData = cloneDeep(testResultsMockDB[0]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getTestNumber: () => {
@@ -216,7 +215,7 @@ describe("insertTestResult", () => {
     context("when inserting a cancelled testResult", () => {
         it("should throw error 404 when reasonForAbandoning not present on all abandoned tests", () => {
 
-            const mockData = testResultsMockDB[5];
+            const mockData = cloneDeep(testResultsMockDB[5]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createMultiple: () => {
@@ -254,7 +253,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult with prohibitionIssued valid and null", () => {
         it("should not throw error", () => {
-            const mockData = testResultsPostMock[0];
+            const mockData = cloneDeep(testResultsPostMock[0]);
             mockData.testTypes[0].defects[0].prohibitionIssued = null;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -285,13 +284,13 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult with prohibitionIssued not present on defects", () => {
         it("should throw validation error", () => {
-            const mockData = testResultsPostMock[0];
+            const mockData = cloneDeep(testResultsPostMock[0]);
             mockData.testNumber = { testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" };
             delete mockData.testTypes[0].defects[0].prohibitionIssued;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[0]));
+                        return Promise.resolve(Array.of(cloneDeep(testResultsPostMock[0])));
                     },
                     getTestNumber: () => {
                         return Promise.resolve(mockData.testNumber);
@@ -318,7 +317,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a cancelled HGV that has null values on the fields that are allowing them to be null", () => {
         it("should not throw error", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.testStatus = "cancelled";
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
@@ -355,7 +354,7 @@ describe("insertTestResult", () => {
 
     context("when inserting an HGV test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -387,7 +386,7 @@ describe("insertTestResult", () => {
 
     context("when inserting an HGV with fields corresponding to a PSV", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[2];
+            const testResult = cloneDeep(testResultsPostMock[2]);
             testResult.vehicleType = "hgv";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -453,7 +452,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a TRL with fields corresponding to a PSV", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[2];
+            const testResult = cloneDeep(testResultsPostMock[2]);
             testResult.vehicleType = "trl";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -487,7 +486,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
             testResult.countryOfRegistration = null;
@@ -596,7 +595,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
             testResult.countryOfRegistration = null;
@@ -756,7 +755,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a cancelled HGV that has null values on the fields that are allowing them to be null", () => {
         it("should not throw error", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.testStatus = "cancelled";
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
@@ -793,7 +792,7 @@ describe("insertTestResult", () => {
 
     context("when inserting an HGV test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -825,7 +824,7 @@ describe("insertTestResult", () => {
 
     context("when inserting an HGV with fields corresponding to a PSV", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[2];
+            const testResult = cloneDeep(testResultsPostMock[2]);
             testResult.vehicleType = "hgv";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -891,7 +890,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a TRL with fields corresponding to a PSV", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[2];
+            const testResult = cloneDeep(testResultsPostMock[2]);
             testResult.vehicleType = "trl";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -925,7 +924,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
             testResult.countryOfRegistration = null;
@@ -1034,7 +1033,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a submitted HGV that has null values on the fields that should be allowed null only when cancelled", () => {
         it("should throw 400", () => {
-            const testResult = testResultsPostMock[4];
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.odometerReading = null;
             testResult.odometerReadingUnits = null;
             testResult.countryOfRegistration = null;
@@ -1408,7 +1407,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType with expiryDate and certificateNumber", () => {
         it("should not throw error", () => {
-            const testResultWithAdrTestType = testResultsPostMock[6];
+            const testResultWithAdrTestType = cloneDeep(testResultsPostMock[6]);
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1445,7 +1444,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType without expiryDate", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutExpiryDate = cloneDeep(testResultsPostMock[6]);
             delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -1485,7 +1484,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType without a certificateNumber", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutExpiryDate = cloneDeep(testResultsPostMock[6]);
             delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].certificateNumber;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -1562,6 +1561,7 @@ describe("insertTestResult", () => {
         });
     });
   });
+
   // CVSB-7964: AC4
   context("when inserting an PSV test result for LEC test code with mandatory fields: expiryDate, modType, emissionStandard and fuelType populated for Pass tests", () => {
     it("test record should get created and should not throw error", () => {
