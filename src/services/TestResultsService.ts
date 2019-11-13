@@ -283,10 +283,14 @@ export class TestResultsService {
                       payload.testTypes[index] = testType;
                     }
                   } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
-                    // Checks for testType = First test or First test Retest AND if vehicle doesn't currently have an existing expiry date, i.e set to default
-                    if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
-                      // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
-                      const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+                    // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
+                    const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+                    // preparaing compare date for CVSB-9187 to compare first test/retest conducted after anniversary date
+                    const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate), 1);
+                    // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
+                    if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
+                        testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                    } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
                       const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate), 1).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
@@ -306,6 +310,7 @@ export class TestResultsService {
                       }
                     }
                   }
+
               }
             });
             console.log("generateExpiryDate payload", payload.testTypes);
