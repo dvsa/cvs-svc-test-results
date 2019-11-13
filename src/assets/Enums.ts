@@ -73,7 +73,6 @@ export const TEST_STATUS = {
 };
 
 export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
-    id_hgv_trl : "122",
-    id_trl: "91"
+    IDS: ["122", "91"]
 };
 
