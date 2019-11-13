@@ -1,8 +1,5 @@
 import * as dateFns from "date-fns";
 import * as _ from "lodash";
-import {ITestResult} from "../models/ITestResult";
-import {ITestResultFilters} from "../models/ITestResultFilter";
-
 
 export class GetTestResults {
   public static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
@@ -18,7 +15,7 @@ export class GetTestResults {
     return testResults;
   }
 
-  public static filterTestResultsByParam(testResults: { filter: (arg0: (testResult: any) => boolean) => any; }, filterName: string | number, filterValue: any) {
+  public static filterTestResultsByParam(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }, filterName: string | number, filterValue: any): any {
     return testResults.filter((testResult) => {
       return testResult[filterName] === filterValue;
     });
@@ -31,16 +28,16 @@ export class GetTestResults {
     });
   }
 
-  public static filterTestResultsByDeletionFlag(testResults: { filter: (arg0: (testResult: any) => boolean) => any; }) {
+  public static filterTestResultsByDeletionFlag(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }): any {
     return testResults.filter((testResult) => {
-      return !testResult.deletionFlag === true;
+      return !testResult.deletionFlag;
     });
   }
 
   public static filterTestTypesByDeletionFlag(testResults: { forEach: (arg0: (testResult: any) => void) => void; }) {
     testResults.forEach((testResult) => {
       const filteredTestTypes = testResult.testTypes.filter((testType: { deletionFlag: any; }) => {
-        return !testType.deletionFlag === true;
+        return !testType.deletionFlag;
       });
       testResult.testTypes = filteredTestTypes;
     });
