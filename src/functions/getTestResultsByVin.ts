@@ -13,8 +13,7 @@ if (process.env._X_AMZN_TRACE_ID) {
   /* tslint:disable */
    AWS = require("aws-xray-sdk");
 } else {
-  console.log("Serverless Offline detected; skipping AWS X-Ray setup")
-  AWS = require("aws-sdk");
+  console.log("Serverless Offline detected; skipping AWS X-Ray setup");
 }
 /* tslint:enable */
 

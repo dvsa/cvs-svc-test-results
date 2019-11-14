@@ -1,4 +1,3 @@
-import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
 import {TestResultsDAO} from "../models/TestResultsDAO";
 import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
@@ -13,8 +12,7 @@ if (process.env._X_AMZN_TRACE_ID) {
   /* tslint:disable */
    AWS = require("aws-xray-sdk");
 } else {
-  console.log("Serverless Offline detected; skipping AWS X-Ray setup")
-  AWS = require("aws-sdk");
+  console.log("Serverless Offline detected; skipping AWS X-Ray setup");
 }
 /* tslint:enable */
 export const getTestResultsByTesterStaffId = async (event: any) => {
