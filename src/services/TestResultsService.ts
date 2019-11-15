@@ -147,6 +147,7 @@ export class TestResultsService {
     if (this.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
     }
+    console.log(validation.error);
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
@@ -439,7 +440,7 @@ export class TestResultsService {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if ((this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) && !testType.certificateNumber) {
+        if ((this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
           bool = true;
         }
       });
@@ -488,7 +489,7 @@ export class TestResultsService {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if (this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS && !testType.testExpiryDate) {
+        if (this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.testExpiryDate) {
           bool = true;
         }
       });
