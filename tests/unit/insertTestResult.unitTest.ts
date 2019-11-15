@@ -1,12 +1,11 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs, { promises } from "fs";
+import fs from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
 import {MESSAGES, ERRORS, TEST_STATUS} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
-import {cloneDeep} from "@babel/types";
+import {cloneDeep} from "lodash";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
