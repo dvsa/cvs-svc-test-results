@@ -1293,9 +1293,9 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a cancelled adr TRL with null expiry Date and null certificateNumber", () => {
+    context("when inserting a cancelled adr HGV with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
-            const testResult = cloneDeep(testResultsPostMock[5]);
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.testTypes[0].testTypeId = "50";
             testResult.testStatus = TEST_STATUS.CANCELLED;
             testResult.testTypes[0].testExpiryDate = null;
@@ -1324,8 +1324,8 @@ describe("insertTestResult", () => {
             expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
-                    expect(insertedTestResult[0].testResultId).toEqual("1115");
+                    expect(insertedTestResult[0].vehicleType).toEqual("hgv");
+                    expect(insertedTestResult[0].testResultId).toEqual("1113");
                 });
         });
     });
