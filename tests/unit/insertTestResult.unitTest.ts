@@ -1258,18 +1258,16 @@ describe("insertTestResult", () => {
         });
     });
 
-    context("when inserting a cancelled adr HGV with null expiry Date and null certificateNumber", () => {
+    context("when inserting a non-adr TRL with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
-            const testResult = cloneDeep(testResultsPostMock[4]);
-            testResult.testTypes[0].testTypeId = "50";
-            testResult.testStatus = TEST_STATUS.CANCELLED;
+            const testResult = cloneDeep(testResultsPostMock[5]);
             testResult.testTypes[0].testExpiryDate = null;
             testResult.testTypes[0].certificateNumber = null;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                        return Promise.resolve(Array.of(testResultsPostMock[5]));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
@@ -1289,8 +1287,82 @@ describe("insertTestResult", () => {
             expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].vehicleType).toEqual("hgv");
-                    expect(insertedTestResult[0].testResultId).toEqual("1113");
+                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
+                    expect(insertedTestResult[0].testResultId).toEqual("1115");
+                });
+        });
+    });
+
+    context("when inserting a cancelled adr TRL with null expiry Date and null certificateNumber", () => {
+        it("should not throw error", () => {
+            const testResult = cloneDeep(testResultsPostMock[5]);
+            testResult.testTypes[0].testTypeId = "50";
+            testResult.testStatus = TEST_STATUS.CANCELLED;
+            testResult.testTypes[0].testExpiryDate = null;
+            testResult.testTypes[0].certificateNumber = null;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
+                    expect(insertedTestResult[0].testResultId).toEqual("1115");
+                });
+        });
+    });
+
+    context("when inserting a cancelled adr TRL with null expiry Date and null certificateNumber", () => {
+        it("should not throw error", () => {
+            const testResult = cloneDeep(testResultsPostMock[5]);
+            testResult.testTypes[0].testTypeId = "50";
+            testResult.testStatus = TEST_STATUS.CANCELLED;
+            testResult.testTypes[0].testExpiryDate = null;
+            testResult.testTypes[0].certificateNumber = null;
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultsPostMock[5]));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
+                    expect(insertedTestResult[0].testResultId).toEqual("1115");
                 });
         });
     });

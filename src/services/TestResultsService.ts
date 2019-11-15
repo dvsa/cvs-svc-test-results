@@ -147,7 +147,6 @@ export class TestResultsService {
     if (this.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
     }
-    console.log(validation.error);
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
