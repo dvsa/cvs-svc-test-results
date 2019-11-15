@@ -6,6 +6,7 @@ import {MESSAGES, ERRORS, TEST_STATUS} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import * as dateFns from "date-fns";
+import {cloneDeep} from "@babel/types";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
@@ -1225,7 +1226,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a non-adr HGV with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
-            const testResult = {...testResultsPostMock[4]};
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.testTypes[0].testExpiryDate = null;
             testResult.testTypes[0].certificateNumber = null;
 
@@ -1249,7 +1250,7 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-            expect.assertions(3);
+            expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult[0].vehicleType).toEqual("hgv");
@@ -1260,7 +1261,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a cancelled adr HGV with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
-            const testResult = {...testResultsPostMock[4]};
+            const testResult = cloneDeep(testResultsPostMock[4]);
             testResult.testTypes[0].testTypeId = "50";
             testResult.testStatus = TEST_STATUS.CANCELLED;
             testResult.testTypes[0].testExpiryDate = null;
