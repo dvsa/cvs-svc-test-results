@@ -427,7 +427,7 @@ export class TestResultsService {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if (this.isTestTypeLec(testType) && !testType.certificateNumber) {
+        if (this.isTestTypeLec(testType) && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
             bool = true;
         }
       });
