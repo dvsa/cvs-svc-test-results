@@ -143,4 +143,29 @@ describe("getTestResults", () => {
                 });
         });
       });
+
+    // CVSB-7964: AC2- API Consumer retrieve the Test results for the input Vin
+    context("when a record is found filtered for vin with LEC test Type", () => {
+        it("should return a populated response with new fields populated with non-null values and status code 200", () => {
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    getByVin: () => {
+                        return Promise.resolve({
+                            Items: Array.of(testResultsMockDB[19]),
+                            Count: 1
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+            return testResultsService.getTestResults({ vin: "1B7GG36N12S678888", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+                .then((returnedRecords: any) => {
+                    expect(returnedRecords.length).toEqual(1);
+                    expect(returnedRecords[0].vin).toEqual("1B7GG36N12S678888");
+                    expect(returnedRecords[0].testTypes[0].testExpiryDate).toEqual("2020-10-24");
+                    expect(returnedRecords[0].testTypes[0].emissionStandard).toEqual("0.08 g/kWh Euro 3 PM");
+                });
+        });
+    });
 });

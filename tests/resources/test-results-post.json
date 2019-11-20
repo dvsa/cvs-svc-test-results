@@ -584,5 +584,88 @@
     "euVehicleCategory": "m1",
     "trailerId": "abcd",
     "firstUseDate": "2018-11-11"
+  },
+  {
+    "testResultId": "5",
+    "vrm": "JY58FPP",
+    "vin": "XMGDE02FS0H012345",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "testStationPNumber": "87-1369569",
+    "testStationType": "gvts",
+    "testerName": "Dorel",
+    "testerStaffId": "1",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "noOfAxles": "2",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": "none",
+    "vehicleClass": {
+      "code": "2",
+      "description": "motorbikes over 200cc or with a sidecar"
+    },
+    "vehicleType": "psv",
+    "numberOfSeats": 45,
+    "vehicleConfiguration": "rigid",
+    "odometerReading": 100000,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "euVehicleCategory": "m1",
+    "countryOfRegistration": "united kingdom",
+    "vehicleSize": "small",
+    "testTypes": [
+      {
+        "name": "LEC",
+        "testTypeName": "Low Emissions Certificate (LEC) with annual test",
+        "testTypeId": "39",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "numberOfSeatbeltsFitted": 2,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "seatbeltInstallationCheckDate": true,
+        "testResult": "pass",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": "none",
+        "certificateNumber": "8972gf",
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "additionalCommentsForAbandon": "none",
+        "modType": {
+          "code": "m",
+          "description": "modification or change of engine"
+        },
+        "emissionStandard": "0.08 g/kWh Euro 3 PM",
+        "fuelType": "gas",
+        "testExpiryDate": "2020-01-14",
+        "defects": [
+          {
+            "prohibitionIssued": false,
+            "imNumber": 1,
+            "imDescription": "Registration Plate",
+            "additionalInformation": {
+              "location": {
+                "vertical": null,
+                "horizontal": null,
+                "lateral": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "seatNumber": null,
+                "axleNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "itemDescription": "A registration plate:",
+            "deficiencyRef": "1.1.a",
+            "deficiencyId": "a",
+            "deficiencySubId": null,
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "stdForProhibition": false,
+            "prs": false
+          }
+        ]
+      }
+    ]
   }
 ]

@@ -24,7 +24,18 @@ export const testTypesCommonSchema = {
     prohibitionIssued: Joi.boolean().required().allow(null),
     reasonForAbandoning: Joi.string().required().allow("", null),
     additionalNotesRecorded: Joi.string().max(500).required().allow("", null),
-    additionalCommentsForAbandon: Joi.string().max(500).required().allow("", null)
+    additionalCommentsForAbandon: Joi.string().max(500).required().allow("", null),
+    testExpiryDate:   Joi.date().when("testResult", {
+        is: "pass",
+        then:  Joi.date().iso().allow(null),
+        otherwise: Joi.date().forbidden()
+    }),
+    modType: Joi.object().keys({
+        code: Joi.any().only(["p", "m", "g"]),
+        description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
+    }),
+    emissionStandard: Joi.any().only(["0.16 g/kWh Euro 3 PM", "0.08 g/kWh Euro 3 PM", "0.03 g/kWh Euro 4 PM"]),
+    fuelType: Joi.any().only(["diesel", "gas", "petrol"])
 };
 
 export const testResultsCommonSchema = {
