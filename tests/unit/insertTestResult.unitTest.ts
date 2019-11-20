@@ -1644,4 +1644,46 @@ describe("insertTestResult", () => {
                 });
         });
     });
+
+    context("when inserting a testResult that has an LEC testType without a certificateNumber", () => {
+        it("should insert the testResult correctly if the testStatus is CANCELLED", () => {
+            const testResultWithCancelledLECTestType = cloneDeep(testResultsPostMock[6]);
+            testResultWithCancelledLECTestType.testTypes[0].testTypeId = "44";
+            testResultWithCancelledLECTestType.testTypes[0].certificateNumber = null;
+            testResultWithCancelledLECTestType.testStatus = TEST_STATUS.CANCELLED;
+
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultWithCancelledLECTestType));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResultWithCancelledLECTestType)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toBe("44");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(null);
+                });
+        });
+    });
 });
