@@ -27,7 +27,7 @@ export const testTypesCommonSchema = {
     additionalCommentsForAbandon: Joi.string().max(500).required().allow("", null),
     testExpiryDate:   Joi.date().when("testResult", {
         is: "pass",
-        then:  Joi.date().iso(),
+        then:  Joi.date().iso().allow(null),
         otherwise: Joi.date().forbidden()
     }),
     modType: Joi.object().keys({
