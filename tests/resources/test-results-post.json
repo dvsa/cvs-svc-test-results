@@ -636,6 +636,10 @@
         },
         "emissionStandard": "0.08 g/kWh Euro 3 PM",
         "fuelType": "gas",
+        "smokeTestKLimitApplied": "123",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "modificationTypeUsed": "123",
         "testExpiryDate": "2020-01-14",
         "defects": [
           {

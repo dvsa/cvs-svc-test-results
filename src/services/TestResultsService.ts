@@ -504,7 +504,8 @@ export class TestResultsService {
   private validateLecTestTypeFields(payload: ITestResultPayload): string[] {
     const missingFields: string[] = [];
     if (payload.testTypes) {
-      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string; testExpiryDate: any, testResult: string, smokeTestKLimitApplied: any}) => {
+      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string;
+        testExpiryDate: any; testResult: string; smokeTestKLimitApplied: any}) => {
         if (this.isTestTypeLec(testType) ) {
             if (testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED ) {
             if (!testType.testExpiryDate) {
