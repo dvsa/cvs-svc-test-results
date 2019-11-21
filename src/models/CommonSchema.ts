@@ -29,7 +29,7 @@ export const testTypesCommonSchema = {
         is: "pass",
         then:  Joi.date().iso().allow(null),
         otherwise: Joi.date().forbidden()
-    }),
+    }).allow(null),
     modType: Joi.object().keys({
         code: Joi.any().only(["p", "m", "g"]),
         description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
