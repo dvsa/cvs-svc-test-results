@@ -5,21 +5,22 @@ export enum ERRORS {
     EventIsEmpty = "Event is empty",
     NoBranch = "Please define BRANCH environment variable",
     NoResourceMatch = "No resources match the search criteria",
-    NoCertificateNumberOnLec = "Certificate number not present on LEC test type",
+    MissingFieldsOnLEC = "Mandatory fields missing on LEC test type",
+    WrongVehicleTypeOnLEC = "Wrong vehicle type for conducting a LEC test",
     NoCertificateNumberOnAdr = "Certificate number not present on ADR test type",
     NoExpiryDate = "Expiry date not present on ADR test type",
     IncorrectTestStatus = '"testStatus" should be one of ["submitted", "cancelled"]',
     NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory",
     PayloadCannotBeEmpty = "Payload cannot be empty",
-    FuelTypeInvalid = "\"fuelType\" must be one of [diesel, gas, petrol]",
+    FuelTypeInvalid = "\"fuelType\" must be one of [diesel, gas, petrol, null]",
     ModTypeDescriptionInvalid = "\"description\" must be one of [particulate trap, modification or change of engine, gas engine]",
-    EmissionStandardInvalid= "\"emissionStandard\" must be one of [0.16 g/kWh Euro 3 PM, 0.08 g/kWh Euro 3 PM, 0.03 g/kWh Euro 4 PM]",
+    EmissionStandardInvalid= "\"emissionStandard\" must be one of [0.16 g/kWh Euro 3 PM, 0.08 g/kWh Euro 3 PM, 0.03 g/kWh Euro 4 PM, null]",
     ModTypeCodeInvalid = "\"code\" must be one of [p, m, g]",
     NoLECExpiryDate = "Expiry Date not present on LEC test type",
-    NoLECCertificateNumber = "Certificate number not present on LEC test type",
     NoModificationType = "Modification type not present on LEC test type",
     NoEmissionStandard = "Emission standard not present on LEC test type",
-    NoFuelType = "Fuel Type not present on LEC test type"
+    NoFuelType = "Fuel Type not present on LEC test type",
+    NoSmokeTestKLimitApplied = "Smoke Test K Limit Applied not present on LEC test type"
 }
 
 export enum HTTPRESPONSE {

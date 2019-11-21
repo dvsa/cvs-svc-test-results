@@ -24,7 +24,17 @@ const testTypesSchema = Joi.object().keys({
     lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
     seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required(),
-    defects: Joi.array().items(defectsSchema).required()
+    defects: Joi.array().items(defectsSchema).required(),
+    modType: Joi.object({
+        code: Joi.string().only(["p", "m", "g"]),
+        description: Joi.string().only(["particulate trap", "modification or change of engine", "gas engine"])
+    }).allow(null),
+    particulateTrapSerialNumber: Joi.string().max(100).allow(null),
+    smokeTestKLimitApplied: Joi.string().max(100).allow(null),
+    emissionStandard: Joi.string().only("0.16 g/kWh Euro 3 PM", "0.08 g/kWh Euro 3 PM", "0.03 g/kWh Euro 4 PM").allow(null),
+    modificationTypeUsed: Joi.string().max(100).allow(null),
+    particulateTrapFitted: Joi.string().max(100).allow(null),
+    fuelType: Joi.string().only(["diesel", "gas", "petrol"]).allow(null)
 });
 
 const testResultsSchema = Joi.object().keys({
