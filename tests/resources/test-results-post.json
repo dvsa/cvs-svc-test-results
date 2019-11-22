@@ -726,5 +726,62 @@
         "defects": []
       }
     ]
+  },
+  {
+    "testResultId": "20",
+    "testerStaffId": "15",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": null,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "testTypeId": "45",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "certificateNumber": "",
+        "testTypeName": "LEC without linked test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "defects": [],
+        "name": "Without linked test",
+        "testResult": "pass",
+        "testExpiryDate": "2020-02-22T08:52:10.255Z",
+        "modType": {
+          "code": "p",
+          "description": "particulate trap"
+        },
+        "emissionStandard": "0.16 g/kWh Euro 3 PM",
+        "fuelType": "diesel",
+        "smokeTestKLimitApplied": "5"
+      }
+    ],
+    "vehicleClass": {
+      "description": "heavy goods vehicle",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012461",
+    "vehicleSize": "small",
+    "testStationName": "Larson, Nader and Okuneva",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "bl5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 350000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "atf",
+    "reasonForCancellation": "mistake",
+    "testerName": "Dorel",
+    "vrm": "AA12BCD",
+    "testStationPNumber": "84-926821",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
+    "euVehicleCategory": "m1"
   }
 ]

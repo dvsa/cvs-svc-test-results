@@ -1522,7 +1522,7 @@ describe("insertTestResult", () => {
         });
     });
 
-  context("when inserting a testResult that has an testType other than ADR type with a certificateNumber", () => {
+    context("when inserting a testResult that has an testType other than ADR type with a certificateNumber", () => {
     it("then the inserted test result should set the testNumber as the certificateNumber.", () => {
       const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
       // Setting the testType to any other than ADR
@@ -1563,7 +1563,7 @@ describe("insertTestResult", () => {
   });
 
   // CVSB-7964: AC4
-  context("when inserting an PSV test result for LEC test code with mandatory fields: expiryDate, modType, emissionStandard and fuelType populated for Pass tests", () => {
+    context("when inserting an PSV test result for LEC test code with mandatory fields: expiryDate, modType, emissionStandard and fuelType populated for Pass tests", () => {
     it("test record should get created and should not throw error", () => {
       const testResultWithMandatoryFields = cloneDeep(testResultsPostMock[8]);
       testResultWithMandatoryFields.vehicleType = VEHICLE_TYPES.PSV;
@@ -1599,7 +1599,7 @@ describe("insertTestResult", () => {
     });
   });
 
-  context("when inserting a test result for LEC test code with unacceptable value for fuelType", () => {
+    context("when inserting a test result for LEC test code with unacceptable value for fuelType", () => {
     it("should throw error", () => {
       const testResultInvalidFuelType = cloneDeep(testResultsPostMock[7]);
       // Update the fuelType to an unacceptable value
@@ -1635,7 +1635,7 @@ describe("insertTestResult", () => {
     });
   });
 
-  context("when inserting a test result for LEC test code with unacceptable value for emissionStandard", () => {
+    context("when inserting a test result for LEC test code with unacceptable value for emissionStandard", () => {
     it("should throw error", () => {
       const testResult = testResultsPostMock[9];
       const clonedTestResult = cloneDeep(testResult);
@@ -1676,9 +1676,8 @@ describe("insertTestResult", () => {
     // Modified in CVSB-7523
     context("when inserting a testResult that has an LEC testType with a certificateNumber", () => {
         it("then the inserted test result should overwrite the certificateNumber provided in post with the testNumber returned from the testNumber service", () => {
-            const testResultWithLecTestTypeWithCertNum = testResultsPostMock[6];
-            // Setting testTypeId as 44 which is a LEC TestType
-            testResultWithLecTestTypeWithCertNum.testTypes[0].testTypeId = "44";
+            // Test with testTypeId as 45 which is a LEC TestType
+            const testResultWithLecTestTypeWithCertNum = testResultsPostMock[10];
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1692,7 +1691,7 @@ describe("insertTestResult", () => {
                         return Promise.resolve({
                             linkedTestCode: "lcp",
                             defaultTestCode: "lbp",
-                            testTypeClassification: "NON ANNUAL"
+                            testTypeClassification: "Annual With Certificate"
                         });
                     }
                 };
@@ -1700,16 +1699,16 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-          expect.assertions(2);
-          return testResultsService.insertTestResult(testResultWithLecTestTypeWithCertNum)
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResultWithLecTestTypeWithCertNum)
             .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("44");
+              expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("45");
               expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
             });
         });
     });
 
-  context("when inserting a test result for LEC test code with unacceptable value for modType description", () => {
+    context("when inserting a test result for LEC test code with unacceptable value for modType description", () => {
     it("should throw error", () => {
       const testResult = testResultsPostMock[9];
       const clonedTestResult = cloneDeep(testResult);
