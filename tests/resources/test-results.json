@@ -2476,7 +2476,7 @@
     "deletionFlag": false
   },
   {
-    "testResultId": "19",
+    "testResultId": "20",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -2560,7 +2560,7 @@
     "firstUseDate": "2018-11-11"
   },
   {
-    "testResultId": "20",
+    "testResultId": "21",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -2644,7 +2644,7 @@
     "firstUseDate": "2018-11-11"
   },
   {
-    "testResultId": "21",
+    "testResultId": "22",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
