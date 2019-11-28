@@ -316,7 +316,6 @@ export class TestResultsService {
                       }
                     }
                   }
-
               }
             });
             console.log("generateExpiryDate payload", payload.testTypes);
@@ -493,7 +492,7 @@ export class TestResultsService {
   public generateCertificateNumber(payload: ITestResultPayload) {
     if (payload.testStatus === TEST_STATUS.SUBMITTED) {
       payload.testTypes.forEach((testType) => {
-        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType)) {
+        if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED && !this.isTestTypeAdr(testType)) {
           testType.certificateNumber = testType.testNumber;
         }
       });
