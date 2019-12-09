@@ -12,7 +12,7 @@ import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitt
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
-import { ITestResult } from "../models/ITestResult";
+import {ITestResult, TestType} from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
 import {ValidationResult} from "joi";
 import * as Joi from "joi";
@@ -431,7 +431,7 @@ export class TestResultsService {
       });
   }
 
-  private isMissingRequiredCertificateNumber(typeFunc: (arg1: any) => boolean, payload: ITestResultPayload) {
+  private isMissingRequiredCertificateNumber(typeFunc: (testType: TestType) => boolean, payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
@@ -476,13 +476,13 @@ export class TestResultsService {
     return payload;
   }
 
-  public isTestTypeAdr(testType: any): boolean {
+  public isTestTypeAdr(testType: TestType): boolean {
     const adrTestTypeIds = ["50", "59", "60"];
 
     return adrTestTypeIds.includes(testType.testTypeId);
   }
 
-  public isTestTypeTir(testType: any): boolean {
+  public isTestTypeTir(testType: TestType): boolean {
     const tirTestTypeIds = ["49", "56", "57"];
 
     return tirTestTypeIds.includes(testType.testTypeId);
