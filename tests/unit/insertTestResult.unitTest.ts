@@ -87,35 +87,8 @@ describe("insertTestResult", () => {
         it("should return 400-Bad request", () => {
             const mockData = cloneDeep(testResultsMockDB[17]);
             mockData.testTypes[0].testTypeId = "49";
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    insertTestResult: () => {
-                        return Promise.resolve({
-                            Items: Array.of(mockData),
-                            Count: 1
-                        });
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "ttt",
-                            defaultTestCode: "tiv",
-                            testTypeClassification: "Annual With Certificate"
-                        });
-                    }
-                };
-            });
-
+            MockTestResultsDAO = jest.fn();
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            for (const testType of mockData.testTypes) {
-                delete testType.testCode;
-                delete testType.testNumber;
-                delete testType.lastUpdatedAt;
-                delete testType.testAnniversaryDate;
-                delete testType.createdAt;
-                delete testType.testExpiryDate;
-                delete testType.certificateLink;
-            }
-            delete mockData.vehicleId;
             expect.assertions(2);
             return testResultsService.insertTestResult(mockData)
                 .catch((error: any) => {
