@@ -28,7 +28,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
     context("cancelled test", () => {
         it("should return the payload", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const mockData = testResultsMockDB[2];
+            const mockData = cloneDeep(testResultsMockDB[2]);
 
             return testResultsService.generateExpiryDate(mockData)
                 .then((response: any) => {
@@ -37,9 +37,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
         });
 
         it("should return the payload with expiry date prolonged by 1 year", () => {
-            const mockData = testResultsMockDB[6];
+            const mockData = cloneDeep(testResultsMockDB[6]);
             mockData.testTypes[0].testExpiryDate = new Date();
-            const mockPayload = testResultsPostMock[3];
+            const mockPayload = cloneDeep(testResultsPostMock[3]);
+            mockPayload.testCode = "bde";
             mockPayload.testTypes[0].testTypeClassification = "Annual With Certificate";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -84,8 +85,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
     context("submitted test", () => {
         context("for psv vehicle type", () => {
             it("should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
-                const psvTestResult = testResultsMockDB[0];
-                const getByVinResponse = testResultsMockDB[0];
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                const getByVinResponse = cloneDeep(testResultsMockDB[0]);
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
@@ -120,7 +121,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("for hgv and trl vehicle types", () => {
             context("when there is no certificate issued for this vehicle", () => {
                 it("should set the expiry date to last day of current month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[15];
+                    const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getByVin: () => {
@@ -151,7 +152,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
             context("when there is a certificate issued for this vehicle that expired", () => {
                 it("should set the expiry date to last day of current month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[15];
+                    const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     const pastExpiryDate = dateFns.subMonths(new Date(), 1);
                     const testResultExpiredCertificateWithSameVin = testResultsMockDB[15];
                     testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate;
@@ -191,7 +192,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const hgvTestResult = testResultsMockDB[16];
+                    const hgvTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting regnDate to a year older + 2 months
                     hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 2), 1);
 
@@ -267,7 +268,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for hgv vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before Registration Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
-                    const hgvTestResult = testResultsMockDB[16];
+                    const hgvTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting regnDate to a year older + 1 month
                     hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
 
@@ -307,7 +308,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before First Use Anniversary date.", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const trlTestResult = testResultsMockDB[16];
+                    const trlTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting vehicleType to trl
                     trlTestResult.vehicleType = "trl";
                     // Setting firstUseDate to a year older + 2 months
@@ -348,7 +349,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and firstUseDate also not populated", () => {
                 it("should set the expiry date to last day of test date month + 1 year", () => {
-                    const trlTestResult = testResultsMockDB[16];
+                    const trlTestResult = cloneDeep(testResultsMockDB[16]);
                     // not setting firstUseDate with any value
                     // Setting vehicleType to trl
                     trlTestResult.vehicleType = "trl";
@@ -388,7 +389,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("expiryDate for trl vehicle type", () => {
             context("when there is a First Test Type with no existing expiryDate and testDate is less than 2 months before First Use Anniversary date.", () => {
                 it("should set the expiry date to 1 year after the First Use Anniversary day", () => {
-                    const trlTestResult = testResultsMockDB[16];
+                    const trlTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting vehicleType to trl
                     trlTestResult.vehicleType = "trl";
                     // not regnDate to a year older + 1 month

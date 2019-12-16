@@ -236,7 +236,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "fail"
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate"
       }
     ],
     "vehicleClass": {
@@ -318,7 +319,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "fail"
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate"
       }
     ],
     "vehicleClass": {
@@ -424,7 +426,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "fail"
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate"
       }
     ],
     "vehicleClass": {
@@ -498,7 +501,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "abandoned"
+        "testResult": "abandoned",
+        "testTypeClassification": "Annual With Certificate"
       }
     ],
     "vehicleClass": {
@@ -581,7 +585,8 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "testTypeClassification": "Annual With Certificate"
       }
     ],
     "vehicleClass": {

@@ -98,7 +98,6 @@ export class TestResultsService {
       throw new HTTPError(404, ERRORS.NoResourceMatch);
     }
     testResults = GetTestResults.removeTestResultId(testResults);
-    testResults = testResults.map((testResult: any) => this.removeVehicleClassification(testResult));
     return testResults;
   }
 
@@ -341,29 +340,18 @@ export class TestResultsService {
       toDateTime: new Date()
     })
         .then((testResults) => {
-          const promiseArray: Array<Promise<void>> = [];
           const filterTestTypes: any[] = [];
           testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-            const promise = this.getTestTypesWithTestCodesAndClassification(testResult.testTypes, testResult.vehicleType, testResult.vehicleSize, testResult.vehicleConfiguration, testResult.noOfAxles)
-                .then((testTypes) => {
-                  testTypes.forEach((testType: { testTypeClassification: string; }) => {
-                    if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
-                      filterTestTypes.push(testType);
-                    }
-                  });
-                })
-                .catch((error) => {
-                  console.log("Error in getMostRecentExpiryDateOnAllTestTypesByVin > getTestResults > getTestTypesWithTestCodesAndClassification: ", error);
-                });
-            promiseArray.push(promise);
+            testResult.testTypes.forEach((testType: { testTypeClassification: string; }) => {
+              if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
+                filterTestTypes.push(testType);
+              }
+            });
           });
-          return Promise.all(promiseArray).then(() => {
-            return filterTestTypes;
-          });
-        })
-        .then((testTypes) => {
+          return filterTestTypes;
+        }).then((testTypes) => {
           testTypes.forEach((testType) => {
-            if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testTypeClassification === "Annual With Certificate") {
+            if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
               maxDate = testType.testExpiryDate;
             }
           });
