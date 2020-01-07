@@ -545,18 +545,18 @@ export class TestResultsService {
     const missingMandatoryFields: string[] = [];
     if (payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED) && payload.testStatus === TEST_STATUS.SUBMITTED) {
       if (!payload.countryOfRegistration) {
-        missingMandatoryFields.push("\"countryOfRegistration\" is mandatory");
+        missingMandatoryFields.push(ERRORS.CountryOfRegistrationMandatory);
       }
       if (!payload.euVehicleCategory) {
-        missingMandatoryFields.push("\"euVehicleCategory\" is mandatory");
+        missingMandatoryFields.push(ERRORS.EuVehicleCategoryMandatory);
       }
 
       if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.PSV) {
         if (!payload.odometerReading) {
-          missingMandatoryFields.push("\"odometerReading\" is mandatory");
+          missingMandatoryFields.push(ERRORS.OdometerReadingMandatory);
         }
         if (!payload.odometerReadingUnits) {
-          missingMandatoryFields.push("\"odometerReadingUnits\" is mandatory");
+          missingMandatoryFields.push(ERRORS.OdometerReadingUnitsMandatory);
         }
       }
     }
