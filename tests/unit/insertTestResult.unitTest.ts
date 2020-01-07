@@ -1927,4 +1927,93 @@ describe("insertTestResult", () => {
                 });
         });
     });
+
+    context("when inserting a testResult containing 'pass' testTypes with missing mandatory fields", () => {
+        it("should return an error containing all the missing fields", () => {
+            const testResult = testResultsPostMock[0];
+            const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+
+            clonedTestResult.countryOfRegistration = null;
+            clonedTestResult.euVehicleCategory = null;
+            clonedTestResult.odometerReading = null;
+            clonedTestResult.odometerReadingUnits = null;
+
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(clonedTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    },
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(3);
+            return testResultsService.insertTestResult(clonedTestResult)
+                .catch((error: { statusCode: any; body: { errors: string[] } }) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.CountryOfRegistrationMandatory,
+                        ERRORS.EuVehicleCategoryMandatory,
+                        ERRORS.OdometerReadingMandatory,
+                        ERRORS.OdometerReadingUnitsMandatory]));
+                });
+        });
+    });
+
+    context("when inserting a test with only abandoned testTypes and missing mandatory fields", () => {
+        it("it should insert the test correctly", () => {
+            const testResult = testResultsPostMock[1];
+            const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+
+            clonedTestResult.countryOfRegistration = null;
+            clonedTestResult.euVehicleCategory = null;
+            clonedTestResult.odometerReading = null;
+            clonedTestResult.odometerReadingUnits = null;
+
+            clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
+
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(clonedTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    },
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(5);
+            return testResultsService.insertTestResult(clonedTestResult)
+                .then((data: any) => {
+                    expect(data).not.toEqual(undefined);
+                    expect(data[0].countryOfRegistration).toBe(null);
+                    expect(data[0].euVehicleCategory).toBe(null);
+                    expect(data[0].odometerReading).toBe(null);
+                    expect(data[0].odometerReadingUnits).toBe(null);
+                });
+        });
+    });
 });
