@@ -83,6 +83,20 @@ describe("insertTestResult", () => {
                 });
         });
     });
+    context("when inserting a submitted, passing testResult without certificateNumber on TIR  type", () => {
+        it("should return 400-Bad request", () => {
+            const mockData = cloneDeep(testResultsMockDB[17]);
+            mockData.testTypes[0].testTypeId = "49";
+            MockTestResultsDAO = jest.fn();
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+            expect.assertions(2);
+            return testResultsService.insertTestResult(mockData)
+                .catch((error: any) => {
+                    expect(error.body).toEqual("Certificate number not present on TIR test type");
+                    expect(error.statusCode).toEqual(400);
+                });
+        });
+    });
 
     context("when inserting a submitted testResult with fields null for advisory deficiency category", () => {
         it("should return a 400 error", () => {

@@ -8,6 +8,7 @@ export enum ERRORS {
     MissingFieldsOnLEC = "Mandatory fields missing on LEC test type",
     WrongVehicleTypeOnLEC = "Wrong vehicle type for conducting a LEC test",
     NoCertificateNumberOnAdr = "Certificate number not present on ADR test type",
+    NoCertificateNumberOnTir = "Certificate number not present on TIR test type",
     NoExpiryDate = "Expiry date not present on ADR test type",
     IncorrectTestStatus = '"testStatus" should be one of ["submitted", "cancelled"]',
     NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory",

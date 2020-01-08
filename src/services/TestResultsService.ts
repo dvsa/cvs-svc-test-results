@@ -12,7 +12,7 @@ import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitt
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
-import { ITestResult } from "../models/ITestResult";
+import {ITestResult, TestType} from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
 import {ValidationResult} from "joi";
 import * as Joi from "joi";
@@ -145,9 +145,11 @@ export class TestResultsService {
     if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
       return Promise.reject(new HTTPError(400,  {errors: missingFieldsForLecTestType} ));
     }
-
     if (this.isMissingRequiredCertificateNumberOnAdr(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnAdr));
+    }
+    if (this.isMissingRequiredCertificateNumberOnTir(payload)) {
+      return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnTir));
     }
     if (this.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
@@ -417,16 +419,24 @@ export class TestResultsService {
       });
   }
 
-  public isMissingRequiredCertificateNumberOnAdr(payload: ITestResultPayload): boolean {
+  private isMissingRequiredCertificateNumber(typeFunc: (testType: TestType) => boolean, payload: ITestResultPayload): boolean {
     let bool = false;
     if (payload.testTypes) {
       payload.testTypes.forEach((testType) => {
-        if ((this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS) && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
+        if (typeFunc(testType) && testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
           bool = true;
         }
       });
     }
     return bool;
+  }
+
+  public isMissingRequiredCertificateNumberOnAdr(payload: ITestResultPayload): boolean {
+    return this.isMissingRequiredCertificateNumber(this.isTestTypeAdr, payload);
+  }
+
+  public isMissingRequiredCertificateNumberOnTir(payload: ITestResultPayload): boolean {
+    return this.isMissingRequiredCertificateNumber(this.isTestTypeTir, payload);
   }
 
   public removeVehicleClassification(payload: { testTypes: { forEach: (arg0: (testType: any) => void) => void; }; }) {
@@ -454,10 +464,16 @@ export class TestResultsService {
     return payload;
   }
 
-  public isTestTypeAdr(testType: any): boolean {
+  public isTestTypeAdr(testType: TestType): boolean {
     const adrTestTypeIds = ["50", "59", "60"];
 
     return adrTestTypeIds.includes(testType.testTypeId);
+  }
+
+  public isTestTypeTir(testType: TestType): boolean {
+    const tirTestTypeIds = ["49", "56", "57"];
+
+    return tirTestTypeIds.includes(testType.testTypeId);
   }
 
   public isTestTypeLec(testType: any): boolean {
