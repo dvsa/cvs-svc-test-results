@@ -3,7 +3,7 @@ import {handler} from "../../src/handler";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
 import mockContext from "aws-lambda-mock-context";
 import eventWithStaffId from "../resources/event-getTestResultsByTesterStaffId.json";
-import eventWithVin from "../resources/event-getTestResultsByVin.json";
+import eventWithVin from "../resources/event-getTestResultsBySystemNumber.json";
 import * as getTestResultsByTesterStaffId from "../../src/functions/getTestResultsByTesterStaffId";
 import * as getTestResultsByVin from "../../src/functions/getTestResultsByVin";
 const sandbox = sinon.createSandbox();

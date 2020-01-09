@@ -44,7 +44,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
             mockPayload.testTypes[0].testTypeClassification = "Annual With Certificate";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    getByVin: () => {
+                    getBySystemNumber: () => {
                         return Promise.resolve({
                             Items: Array.of(mockData),
                             Count: 1,
@@ -86,13 +86,13 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("for psv vehicle type", () => {
             it("should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                const getByVinResponse = cloneDeep(testResultsMockDB[0]);
+                const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]);
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: () => {
+                        getBySystemNumber: () => {
                             return Promise.resolve({
-                                Items: Array.of(getByVinResponse),
+                                Items: Array.of(getBySystemNumberResponse),
                                 Count: 1,
                                 ScannedCount: 1
                             });
@@ -124,7 +124,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: [],
                                     Count: 0,
@@ -154,14 +154,14 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 it("should set the expiry date to last day of current month + 1 year", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     const pastExpiryDate = dateFns.subMonths(new Date(), 1);
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[15];
-                    testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate;
+                    const testResultExpiredCertificateWithSameSystemNumber = testResultsMockDB[15];
+                    testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(testResultExpiredCertificateWithSameSystemNumber),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -198,7 +198,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -235,7 +235,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -274,7 +274,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -316,7 +316,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -356,7 +356,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -397,7 +397,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -436,7 +436,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 hgvTestResult.regnDate = "2018-10-04";
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: (vin: any) => {
+                        getBySystemNumber: (systemNumber: any) => {
                             return Promise.resolve({
                                 Items: Array.of(hgvTestResult),
                                 Count: 1,
@@ -472,7 +472,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 trlTestResult.firstUseDate = "2018-09-04";
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: (vin: any) => {
+                        getBySystemNumber: (systemNumber: any) => {
                             return Promise.resolve({
                                 Items: Array.of(trlTestResult),
                                 Count: 1,

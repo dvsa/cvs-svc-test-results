@@ -18,11 +18,11 @@
     "Connection": [ "keep-alive" ]
   },
   "httpMethod": "GET",
-  "path": "/test-results/ABC12345",
+  "path": "/test-results/12345",
   "pathParameters": {
-    "vin": "ABC12345"
+    "systemNumber": "12345"
   },
-  "resource": "/test-results/{vin}",
+  "resource": "/test-results/{systemNumber}",
   "multiValueQueryStringParameters": null,
   "stageVariables": null,
   "body": "",
