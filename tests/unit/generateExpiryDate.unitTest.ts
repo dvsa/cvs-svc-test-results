@@ -25,63 +25,6 @@ describe("TestResultsService calling generateExpiryDate", () => {
         MockTestResultsDAO.mockReset();
     });
 
-    context("cancelled test", () => {
-        it("should return the payload", () => {
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const mockData = cloneDeep(testResultsMockDB[2]);
-
-            return testResultsService.generateExpiryDate(mockData)
-                .then((response: any) => {
-                    expect(response).toEqual(mockData);
-                });
-        });
-
-        it("should return the payload with expiry date prolonged by 1 year", () => {
-            const mockData = cloneDeep(testResultsMockDB[6]);
-            mockData.testTypes[0].testExpiryDate = new Date();
-            const mockPayload = cloneDeep(testResultsPostMock[3]);
-            mockPayload.testCode = "bde";
-            mockPayload.testTypes[0].testTypeClassification = "Annual With Certificate";
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: Array.of(mockData),
-                            Count: 1,
-                            ScannedCount: 1
-                        });
-                    },
-                    getByTesterStaffId: () => {
-                        return Promise.resolve({
-                            Items: Array.of(mockData),
-                            Count: 1,
-                            ScannedCount: 1
-                        });
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve(mockData.testNumber);
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "wde",
-                            defaultTestCode: "bde",
-                            testTypeClassification: "Annual With Certificate"
-                        });
-                    }
-                };
-            });
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-            const expectedExpiryDate = new Date();
-            expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
-            return testResultsService.generateExpiryDate(mockPayload)
-                .then((response: any) => {
-                    console.log("response", response.testTypes);
-                    expect((response.testTypes[0].testExpiryDate).split("T")[0]).toEqual(dateFns.addYears(new Date(), 1).toISOString().split("T")[0]);
-                });
-        });
-    });
-
     context("submitted test", () => {
         context("for psv vehicle type", () => {
             it("should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs", () => {

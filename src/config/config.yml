@@ -4,11 +4,11 @@ functions:
     path: /test-results
     proxy: null
     function: postTestResults
-- getTestResultsByVin:
+- getTestResultsBySystemNumber:
     method: GET
     path: /test-results/{+proxy}
     proxy: :vin
-    function: getTestResultsByVin
+    function: getTestResultsBySystemNumber
 - getTestResultsByTesterStaffId:
     method: GET
     path: /test-results/getTestResultsByTesterStaffId

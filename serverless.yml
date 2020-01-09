@@ -47,12 +47,12 @@ functions:
         path: test-results
         method: post
     - http:
-        path: test-results/{vin}
+        path: test-results/{systemNumber}
         method: get
         request:
           parameters:
             paths:
-              vin: true
+              systemNumber: true
             query:
               status: false
               fromDateTime: false
@@ -72,14 +72,14 @@ resources:
       Properties:
         TableName: cvs-local-test-results
         AttributeDefinitions:
-        - AttributeName: vin
+        - AttributeName: systemNumber
           AttributeType: S
         - AttributeName: testResultId
           AttributeType: S
         - AttributeName: testerStaffId
           AttributeType: S
         KeySchema:
-        - AttributeName: vin
+        - AttributeName: systemNumber
           KeyType: HASH
         - AttributeName: testResultId
           KeyType: RANGE
