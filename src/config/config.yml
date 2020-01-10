@@ -7,7 +7,7 @@ functions:
 - getTestResultsBySystemNumber:
     method: GET
     path: /test-results/{+proxy}
-    proxy: :vin
+    proxy: :systemNumber
     function: getTestResultsBySystemNumber
 - getTestResultsByTesterStaffId:
     method: GET
