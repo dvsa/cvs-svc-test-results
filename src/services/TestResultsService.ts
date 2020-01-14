@@ -12,7 +12,7 @@ import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitt
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
-import {ITestResult, TestType} from "../models/ITestResult";
+import { ITestResult, TestType } from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
 import {ValidationResult} from "joi";
 import * as Joi from "joi";
@@ -154,6 +154,12 @@ export class TestResultsService {
     if (this.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
     }
+
+    const missingMandatoryTestResultFields: string[] = this.validateMandatoryTestResultFields(payload);
+    if (missingMandatoryTestResultFields.length > 0) {
+      return Promise.reject(new HTTPError(400,  {errors: missingMandatoryTestResultFields} ));
+    }
+
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
@@ -533,5 +539,27 @@ export class TestResultsService {
 
     }
     return missingFields;
+  }
+
+  private validateMandatoryTestResultFields(payload: ITestResultPayload): string[] {
+    const missingMandatoryFields: string[] = [];
+    if (payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED) && payload.testStatus === TEST_STATUS.SUBMITTED) {
+      if (!payload.countryOfRegistration) {
+        missingMandatoryFields.push(ERRORS.CountryOfRegistrationMandatory);
+      }
+      if (!payload.euVehicleCategory) {
+        missingMandatoryFields.push(ERRORS.EuVehicleCategoryMandatory);
+      }
+
+      if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.PSV) {
+        if (!payload.odometerReading) {
+          missingMandatoryFields.push(ERRORS.OdometerReadingMandatory);
+        }
+        if (!payload.odometerReadingUnits) {
+          missingMandatoryFields.push(ERRORS.OdometerReadingUnitsMandatory);
+        }
+      }
+    }
+    return missingMandatoryFields;
   }
 }

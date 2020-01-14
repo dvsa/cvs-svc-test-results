@@ -11,4 +11,8 @@ export interface ITestResultPayload {
     vrm?: string;
     regnDate?: Date;
     firstUseDate?: Date;
+    countryOfRegistration: string | null;
+    euVehicleCategory: string | null;
+    odometerReading: number | null;
+    odometerReadingUnits: string | null;
 }
