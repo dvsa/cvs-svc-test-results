@@ -5,8 +5,7 @@ import { HTTPError } from "../../src/models/HTTPError";
 import {MESSAGES, ERRORS, VEHICLE_TYPES, TEST_STATUS, TEST_RESULT} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
-import {cloneDeep} from "lodash";
-import { ITestResult } from "../../src/models/ITestResult";
+import { cloneDeep } from "lodash";
 
 describe("insertTestResult", () => {
     let testResultsService: TestResultsService | any;
@@ -1422,7 +1421,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType with expiryDate and certificateNumber", () => {
         it("should not throw error", () => {
-            const testResultWithAdrTestType = testResultsPostMock[6];
+            const testResultWithAdrTestType = cloneDeep(testResultsPostMock[6]);
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1459,7 +1458,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType without expiryDate", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutExpiryDate = cloneDeep(testResultsPostMock[6]);
             delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].testExpiryDate;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -1499,7 +1498,7 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that has an ADR testType without a certificateNumber", () => {
         it("should throw 400 and descriptive error message", () => {
-            const testResultWithAdrTestTypeWithoutExpiryDate = testResultsPostMock[6];
+            const testResultWithAdrTestTypeWithoutExpiryDate = cloneDeep(testResultsPostMock[6]);
             delete testResultWithAdrTestTypeWithoutExpiryDate.testTypes[0].certificateNumber;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -2055,6 +2054,82 @@ describe("insertTestResult", () => {
                     expect(error.statusCode).toEqual(400);
                     expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.CountryOfRegistrationMandatory,
                         ERRORS.EuVehicleCategoryMandatory]));
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of hgv or trl and it contains at least one Roadworthiness test type and the test result on the Roadworthiness test type is pass", () => {
+        it("then a testNumber is generated and the inserted test result should set the testNumber as the certificateNumber.", () => {
+            const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
+            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "122";
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "qjv3",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("122");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of trl and it contains at least one Roadworthiness test type and the test result on the Roadworthiness test type is pass", () => {
+        it("then a testNumber is generated and the inserted test result should set the testNumber as the certificateNumber.", () => {
+            const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
+            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "91";
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "qjt1",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(2);
+            return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("91");
+                    expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
                 });
         });
     });

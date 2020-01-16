@@ -71,3 +71,8 @@ export const TEST_STATUS = {
     SUBMITTED: "submitted",
     CANCELLED: "cancelled"
 };
+
+export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
+    IDS: ["122", "91", "101", "62", "63"]
+};
+
