@@ -350,8 +350,8 @@ export class TestResultsService {
         .then((testResults) => {
           const filterTestTypes: any[] = [];
           testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-            testResult.testTypes.forEach((testType: { testTypeClassification: string; }) => {
-              if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
+            testResult.testTypes.forEach((testType: { testExpiryDate: string; }) => {
+              if (testType.testExpiryDate) {
                 filterTestTypes.push(testType);
               }
             });
@@ -359,7 +359,7 @@ export class TestResultsService {
           return filterTestTypes;
         }).then((testTypes) => {
           testTypes.forEach((testType) => {
-            if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE) {
+            if (dateFns.isAfter(testType.testExpiryDate, maxDate) && testType.testExpiryDate) {
               maxDate = testType.testExpiryDate;
             }
           });
