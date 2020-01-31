@@ -304,7 +304,7 @@ export class TestResultsService {
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                         testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
                     } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
-                      const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate), 1).toISOString() : undefined;
+                      const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.endOfDay(dateFns.lastDayOfMonth(regOrFirstUseDate)), 1).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
                       if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
