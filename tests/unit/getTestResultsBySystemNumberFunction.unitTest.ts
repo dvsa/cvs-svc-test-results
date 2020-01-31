@@ -1,14 +1,14 @@
-import {getTestResultsByVin} from "../../src/functions/getTestResultsByVin";
+import {getTestResultsBySystemNumber} from "../../src/functions/getTestResultsBySystemNumber";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
 import * as dateFns from "date-fns";
 import {MESSAGES} from "../../src/assets/Enums";
 import {HTTPError} from "../../src/models/HTTPError";
 
-describe("getTestResultsByVin Function", () => {
+describe("getTestResultsBySystemNumber Function", () => {
   const minimalEvent =  {
     pathParameters: {
-      vin: 1
+      systemNumber: 1
     }
   };
   context("receiving minimal Event, and successful service call", () => {
@@ -17,7 +17,7 @@ describe("getTestResultsByVin Function", () => {
       TestResultsService.prototype.getTestResults = testResultsMock;
 
       const expectedFilters = {
-        vin: 1,
+        systemNumber: 1,
         testStatus: "submitted",
         toDateTime: dateFns.endOfToday(),
         fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
@@ -25,7 +25,7 @@ describe("getTestResultsByVin Function", () => {
 
       expect.assertions(4);
       // @ts-ignore
-      const result = await getTestResultsByVin(minimalEvent);
+      const result = await getTestResultsBySystemNumber(minimalEvent);
       expect(testResultsMock).toHaveBeenCalledWith(expectedFilters);
       expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(200);
@@ -39,7 +39,7 @@ describe("getTestResultsByVin Function", () => {
 
       expect.assertions(3);
       // @ts-ignore
-      const result = await getTestResultsByVin(minimalEvent);
+      const result = await getTestResultsBySystemNumber(minimalEvent);
       expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(418);
       expect(result.body).toEqual(JSON.stringify("It Broke!"));
@@ -56,7 +56,7 @@ describe("getTestResultsByVin Function", () => {
         };
 
         // @ts-ignore
-        const result = await getTestResultsByVin(myEvent);
+        const result = await getTestResultsBySystemNumber(myEvent);
         expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(400);
         expect(result.body).toEqual(JSON.stringify(MESSAGES.BAD_REQUEST));
@@ -72,7 +72,7 @@ describe("getTestResultsByVin Function", () => {
         };
 
         // @ts-ignore
-        const result = await getTestResultsByVin(myEvent);
+        const result = await getTestResultsBySystemNumber(myEvent);
         expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(400);
         expect(result.body).toEqual(JSON.stringify(MESSAGES.BAD_REQUEST));
@@ -91,7 +91,7 @@ describe("getTestResultsByVin Function", () => {
         };
 
         const expectedFilters = {
-          vin: 1,
+          systemNumber: 1,
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
           fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
@@ -99,7 +99,7 @@ describe("getTestResultsByVin Function", () => {
 
         expect.assertions(4);
         // @ts-ignore
-        const result = await getTestResultsByVin(myEvent);
+        const result = await getTestResultsBySystemNumber(myEvent);
         expect(testResultsMock).toHaveBeenCalledWith(expectedFilters);
         expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(200);
@@ -119,7 +119,7 @@ describe("getTestResultsByVin Function", () => {
         };
 
         const expectedFilters = {
-          vin: 1,
+          systemNumber: 1,
           testStatus: "submitted",
           toDateTime: dateFns.endOfToday(),
           fromDateTime: new Date("01-01-2010")
@@ -127,7 +127,7 @@ describe("getTestResultsByVin Function", () => {
 
         expect.assertions(4);
         // @ts-ignore
-        const result = await getTestResultsByVin(myEvent);
+        const result = await getTestResultsBySystemNumber(myEvent);
         expect(testResultsMock).toHaveBeenCalledWith(expectedFilters);
         expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(200);
@@ -147,7 +147,7 @@ describe("getTestResultsByVin Function", () => {
         };
 
         const expectedFilters = {
-          vin: 1,
+          systemNumber: 1,
           testStatus: "cheese",
           toDateTime: dateFns.endOfToday(),
           fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
@@ -155,7 +155,7 @@ describe("getTestResultsByVin Function", () => {
 
         expect.assertions(4);
         // @ts-ignore
-        const result = await getTestResultsByVin(myEvent);
+        const result = await getTestResultsBySystemNumber(myEvent);
         expect(testResultsMock).toHaveBeenCalledWith(expectedFilters);
         expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(200);

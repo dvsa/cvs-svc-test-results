@@ -1,5 +1,5 @@
 export interface ITestResultFilters {
-    vin?: any; testStatus?: string;
+    systemNumber?: any; testStatus?: string;
     fromDateTime?: any;
     toDateTime?: any;
     testerStaffId?: any;
