@@ -33,15 +33,15 @@ export class TestResultsDAO {
     }
   }
 
-  public getByVin(vin: any) {
+  public getBySystemNumber(systemNumber: any) {
     const params = {
       TableName: this.tableName,
-      KeyConditionExpression: "#vin = :vin",
+      KeyConditionExpression: "#systemNumber = :systemNumber",
       ExpressionAttributeNames: {
-        "#vin": "vin"
+        "#systemNumber": "systemNumber"
       },
       ExpressionAttributeValues: {
-        ":vin": vin
+        ":systemNumber": systemNumber
       }
     };
     return TestResultsDAO.docClient.query(params).promise();
@@ -91,12 +91,12 @@ export class TestResultsDAO {
     return TestResultsDAO.docClient.batchWrite(params).promise();
   }
 
-  public deleteMultiple(vinIdPairsToBeDeleted: any[]): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>>  {
+  public deleteMultiple(systemNumberIdPairsToBeDeleted: any[]): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>>  {
     const params = this.generateBatchWritePartialParams();
 
-    vinIdPairsToBeDeleted.forEach((vinIdPairToBeDeleted: any) => {
-      const vinToBeDeleted: string = Object.keys(vinIdPairToBeDeleted)[0];
-      const testResultIdToBeDeleted: string = vinIdPairToBeDeleted[vinToBeDeleted];
+    systemNumberIdPairsToBeDeleted.forEach((systemNumberIdPairToBeDeleted: any) => {
+      const systemNumberToBeDeleted: string = Object.keys(systemNumberIdPairToBeDeleted)[0];
+      const testResultIdToBeDeleted: string = systemNumberIdPairToBeDeleted[systemNumberToBeDeleted];
 
       params.RequestItems[this.tableName].push(
         {
@@ -104,7 +104,7 @@ export class TestResultsDAO {
           {
             Key:
             {
-              vin: vinToBeDeleted,
+              systemNumber: systemNumberToBeDeleted,
               testResultId: testResultIdToBeDeleted
             }
           }

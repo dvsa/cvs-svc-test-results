@@ -1,6 +1,7 @@
 [
   {
     "testResultId": "1",
+    "systemNumber": "1111",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -183,6 +184,7 @@
   },
   {
     "testResultId": "2",
+    "systemNumber": "1112",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -266,6 +268,7 @@
   },
   {
     "testResultId": "3",
+    "systemNumber": "1113",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -349,6 +352,7 @@
   },
   {
     "testResultId": "4",
+    "systemNumber": "1114",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -381,6 +385,7 @@
   },
   {
     "testResultId": "5",
+    "systemNumber": "1115",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -456,6 +461,7 @@
   },
   {
     "testResultId": "6",
+    "systemNumber": "1116",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -531,6 +537,7 @@
   },
   {
     "testerStaffId": "1",
+    "systemNumber": "1117",
     "testResultId": "1111",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -615,6 +622,7 @@
   },
   {
     "testResultId": "7",
+    "systemNumber": "1118",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -795,6 +803,7 @@
   },
   {
     "testResultId": "8",
+    "systemNumber": "1119",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -975,6 +984,7 @@
   },
   {
     "testResultId": "9",
+    "systemNumber": "1120",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1059,6 +1069,7 @@
   },
   {
     "testResultId": "10",
+    "systemNumber": "1121",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1143,6 +1154,7 @@
   },
   {
     "testResultId": "11",
+    "systemNumber": "1122",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1227,6 +1239,7 @@
   },
   {
     "testResultId": "12",
+    "systemNumber": "1123",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1311,6 +1324,7 @@
   },
   {
     "testResultId": "13",
+    "systemNumber": "1124",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1395,6 +1409,7 @@
   },
   {
     "testResultId": "14",
+    "systemNumber": "1125",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1479,6 +1494,7 @@
   },
   {
     "testResultId": "15",
+    "systemNumber": "1126",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1564,6 +1580,7 @@
   },
   {
     "testResultId": "16",
+    "systemNumber": "1127",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1649,6 +1666,7 @@
   },
   {
     "testResultId": "17",
+    "systemNumber": "1128",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1733,6 +1751,7 @@
   },
   {
     "testResultId": "116",
+    "systemNumber": "1129",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1813,6 +1832,7 @@
   },
   {
     "testResultId": "18",
+    "systemNumber": "1130",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -1902,6 +1922,7 @@
   },
   {
     "testResultId": "19",
+    "systemNumber": "1131",
     "testStationName": "Rowe, Wunsch and Wisoky",
     "testStationType": "gvts",
     "testStationPNumber": "87-1369569",
@@ -1966,6 +1987,7 @@
   },
   {
     "testResultId": "Hir1",
+    "systemNumber": "1132",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": "2020-01-24T10:36:33.987Z",
@@ -2052,6 +2074,7 @@
   },
   {
     "testResultId": "Hir2",
+    "systemNumber": "1133",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": " ",
@@ -2138,6 +2161,7 @@
   },
   {
     "testResultId": "Hir3",
+    "systemNumber": "1134",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": "2019-01-17T10:36:33.987Z",
@@ -2224,6 +2248,7 @@
   },
   {
     "testResultId": "Hir4",
+    "systemNumber": "1135",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": null,
@@ -2310,6 +2335,7 @@
   },
   {
     "testResultId": "Hir5",
+    "systemNumber": "1136",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": "2019-01-30T10:36:33.987Z",
@@ -2396,6 +2422,7 @@
   },
   {
     "testResultId": "Hir6",
+    "systemNumber": "1137",
     "testerStaffId": "15",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": "2019-04-14T10:36:33.987Z",
@@ -2482,6 +2509,7 @@
   },
   {
     "testResultId": "20",
+    "systemNumber": "1138",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -2566,6 +2594,7 @@
   },
   {
     "testResultId": "21",
+    "systemNumber": "1139",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -2650,6 +2679,7 @@
   },
   {
     "testResultId": "22",
+    "systemNumber": "1140",
     "testerStaffId": "1",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",

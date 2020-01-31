@@ -44,6 +44,7 @@ export const testTypesCommonSchema = {
 
 export const testResultsCommonSchema = {
     testResultId: Joi.string().required(),
+    systemNumber: Joi.string().required(),
     vin: Joi.string().alphanum().min(1).max(21).required(),
     testStationName: Joi.string().max(999).required().allow(""),
     testStationPNumber: Joi.string().max(20).required().allow(""),

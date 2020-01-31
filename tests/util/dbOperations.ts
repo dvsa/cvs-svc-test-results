@@ -18,7 +18,7 @@ export const populateDatabase = async () => {
 
 export const emptyDatabase = async () => {
     const DAO = new TestResultsDAO();
-    const mockBuffer = cloneDeep(testResults).map((record) => ({[record.vin]: record.testResultId}));
+    const mockBuffer = cloneDeep(testResults).map((record) => ({[record.systemNumber]: record.testResultId}));
     const batches = [];
     while (mockBuffer.length > 0) {
         batches.push(mockBuffer.splice(0, 25));
