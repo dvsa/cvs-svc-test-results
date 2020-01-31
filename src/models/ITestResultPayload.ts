@@ -1,4 +1,5 @@
 export interface ITestResultPayload {
+    systemNumber: string;
     testStatus: string;
     testTypes: any[];
     vehicleType: any;

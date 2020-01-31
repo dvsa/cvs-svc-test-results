@@ -17,18 +17,18 @@ if (process.env._X_AMZN_TRACE_ID) {
 }
 /* tslint:enable */
 
-export const getTestResultsByVin = async (event: { pathParameters: { vin: any; }; queryStringParameters: { toDateTime: string | number | Date; fromDateTime: string | number | Date; status: string; }; }) => {
+export const getTestResultsBySystemNumber = async (event: { pathParameters: { systemNumber: any; }; queryStringParameters: { toDateTime: string | number | Date; fromDateTime: string | number | Date; status: string; }; }) => {
     let subseg: ISubSeg | null = null;
     if (process.env._X_AMZN_TRACE_ID) {
     const segment = AWS.getSegment();
     AWS.capturePromise();
     if (segment) {
-        subseg = segment.addNewSubsegment("getTestResultsByVin");
+        subseg = segment.addNewSubsegment("getTestResultsBySystemNumber");
     }}
     const testResultsDAO = new TestResultsDAO();
     const testResultsService = new TestResultsService(testResultsDAO);
 
-    const vin = event.pathParameters.vin;
+    const systemNumber = event.pathParameters.systemNumber;
     let testStatus = "submitted";
     let toDateTime = dateFns.endOfToday();
     let fromDateTime = dateFns.subYears(toDateTime, 2);
@@ -37,11 +37,11 @@ export const getTestResultsByVin = async (event: { pathParameters: { vin: any; }
         if (event.queryStringParameters) {
             if (event.queryStringParameters.toDateTime === "") {
                 if (subseg) { subseg.addError("Bad Request - toDate empty"); }
-                console.log("Bad Request in getTestResultsByVin - toDate empty");
+                console.log("Bad Request in getTestResultsBySystemNumber - toDate empty");
                 return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST));
             } else if (event.queryStringParameters.fromDateTime === "") {
                 if (subseg) { subseg.addError("Bad Request - fromDate empty"); }
-                console.log("Bad request in getTestResultsByVin - fromDate empty");
+                console.log("Bad request in getTestResultsBySystemNumber - fromDate empty");
                 return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST));
             } else {
                 if (event.queryStringParameters.status) { testStatus = event.queryStringParameters.status; }
@@ -49,13 +49,13 @@ export const getTestResultsByVin = async (event: { pathParameters: { vin: any; }
                 if (event.queryStringParameters.fromDateTime) { fromDateTime = new Date(event.queryStringParameters.fromDateTime); }
             }
         }
-        return testResultsService.getTestResults({ vin, testStatus, fromDateTime, toDateTime })
+        return testResultsService.getTestResults({ systemNumber, testStatus, fromDateTime, toDateTime })
             .then((data) => {
                 return new HTTPResponse(200, data);
             })
             .catch((error) => {
                 if (subseg) { subseg.addError(error.body); subseg.close(); }
-                console.log("Error in getTestResultsByVin > getTestResults: ", error);
+                console.log("Error in getTestResultsBySystemNumber > getTestResults: ", error);
                 return new HTTPResponse(error.statusCode, error.body);
             });
     } finally {
