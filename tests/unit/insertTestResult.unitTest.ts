@@ -2172,11 +2172,11 @@ describe("insertTestResult", () => {
 
     context("when inserting a testResult that is a vehicleType of car and the payload is valid", () => {
         it("then it should not throw error.", () => {
-            const validLgvTestResult = cloneDeep(testResultsPostMock[10]);
+            const validCarTestResult = cloneDeep(testResultsPostMock[10]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(validLgvTestResult));
+                        return Promise.resolve(Array.of(validCarTestResult));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({
@@ -2198,7 +2198,7 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-            return testResultsService.insertTestResult(validLgvTestResult)
+            return testResultsService.insertTestResult(validCarTestResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult[0].vehicleType).toEqual("car");
                     expect(insertedTestResult[0].testResultId).toEqual("500");
@@ -2207,12 +2207,12 @@ describe("insertTestResult", () => {
     });
 
     context("when inserting a testResult that is a vehicleType of motorcycle and the payload is valid", () => {
-        it("then it should not throw error.", () => {
-            const validLgvTestResult = cloneDeep(testResultsPostMock[12]);
+        it("should not throw error", () => {
+            const validMotorcycleTestResult = cloneDeep(testResultsPostMock[12]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(validLgvTestResult));
+                        return Promise.resolve(Array.of(validMotorcycleTestResult));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({
@@ -2234,12 +2234,199 @@ describe("insertTestResult", () => {
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-            return testResultsService.insertTestResult(validLgvTestResult)
+            return testResultsService.insertTestResult(validMotorcycleTestResult)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult[0].vehicleType).toEqual("motorcycle");
                     expect(insertedTestResult[0].testResultId).toEqual("502");
-                }).catch((error: any) => {
-                    console.log("CHECK HERE YOUR ERROR ->", error);
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of motorcycle and the payload contains vehicleSubclass", () => {
+        it("should throw error", () => {
+            const motorCycleWithoutVehicleSubClass = cloneDeep(testResultsPostMock[12]);
+            motorCycleWithoutVehicleSubClass.vehicleSubclass = ["string"];
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(motorCycleWithoutVehicleSubClass));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(motorCycleWithoutVehicleSubClass)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.VehicleSubclassIsNotAllowed]));
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of car and the payload does not contain vehicleSubclass", () => {
+        it("should throw error", () => {
+            const motorCycleWithoutVehicleSubClass = cloneDeep(testResultsPostMock[10]);
+            delete motorCycleWithoutVehicleSubClass.vehicleSubclass;
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(motorCycleWithoutVehicleSubClass));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(motorCycleWithoutVehicleSubClass)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.VehicleSubclassIsRequired]));
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of car and the payload contains an invalid euVehicleCategory", () => {
+        it("should throw error", () => {
+            const motorCycleWithInvalidEuVehicleCategory = cloneDeep(testResultsPostMock[10]);
+            motorCycleWithInvalidEuVehicleCategory.euVehicleCategory = "m2";
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(motorCycleWithInvalidEuVehicleCategory)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.EuVehicleCategoryMustBeOneOf]));
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of car and the payload contains an invalid euVehicleCategory", () => {
+        it("should throw error", () => {
+            const motorCycleWithInvalidEuVehicleCategory = cloneDeep(testResultsPostMock[10]);
+            motorCycleWithInvalidEuVehicleCategory.euVehicleCategory = "m2";
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(motorCycleWithInvalidEuVehicleCategory)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.EuVehicleCategoryMustBeOneOf]));
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of car and the regnDate is not present", () => {
+        it("should not throw error", () => {
+            const motorCycleWithInvalidEuVehicleCategory = cloneDeep(testResultsPostMock[10]);
+            delete motorCycleWithInvalidEuVehicleCategory.regnDate;
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(motorCycleWithInvalidEuVehicleCategory)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("car");
+                    expect(insertedTestResult[0].testResultId).toEqual("500");
                 });
         });
     });
