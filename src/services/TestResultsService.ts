@@ -9,6 +9,12 @@ import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancell
 import testResultsSchemaPSVSubmitted from "../models/TestResultsSchemaPSVSubmitted";
 import testResultsSchemaTRLCancelled from "../models/TestResultsSchemaTRLCancelled";
 import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitted";
+import testResultsSchemaLGVCancelled from "../models/TestResultsSchemaLGVCancelled";
+import testResultsSchemaLGVSubmitted from "../models/TestResultsSchemaLGVSubmitted";
+import testResultsSchemaCarCancelled from "../models/TestResultsSchemaCarCancelled";
+import testResultsSchemaCarSubmitted from "../models/TestResultsSchemaCarSubmitted";
+import testResultsSchemaMotorcycleCancelled from "../models/TestResultsSchemaMotorcycleCancelled";
+import testResultsSchemaMotorcycleSubmitted from "../models/TestResultsSchemaMotorcycleSubmitted";
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
@@ -125,6 +131,24 @@ export class TestResultsService {
         break;
       case "trlcancelled":
         validationSchema = testResultsSchemaTRLCancelled;
+        break;
+      case "lgvsubmitted":
+        validationSchema = testResultsSchemaLGVSubmitted;
+        break;
+      case "lgvcancelled":
+        validationSchema = testResultsSchemaLGVCancelled;
+        break;
+      case "carsubmitted":
+        validationSchema = testResultsSchemaCarSubmitted;
+        break;
+      case "carcancelled":
+        validationSchema = testResultsSchemaCarCancelled;
+        break;
+      case "motorcyclesubmitted":
+        validationSchema = testResultsSchemaMotorcycleSubmitted;
+        break;
+      case "motorcyclecancelled":
+        validationSchema = testResultsSchemaMotorcycleCancelled;
         break;
       default:
         validationSchema = null;

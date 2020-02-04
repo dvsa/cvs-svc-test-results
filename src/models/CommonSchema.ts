@@ -34,6 +34,12 @@ export const testTypesCommonSchema = {
         code: Joi.any().only(["p", "m", "g"]),
         description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
     }).allow(null),
+    customDefects: Joi.array().items(Joi.object().keys({
+        referenceNumber: Joi.string().max(10).required(),
+        defectName: Joi.string().max(200).required(),
+        defectNotes: Joi.string().max(200).required().allow(null)
+    })).required().allow(null),
+    secondaryCertificateNumber: Joi.string().alphanum().max(20).required().allow(null),
     emissionStandard: Joi.any().only(["0.16 g/kWh Euro 3 PM", "0.08 g/kWh Euro 3 PM", "0.03 g/kWh Euro 4 PM"]).allow(null),
     fuelType: Joi.any().only(["diesel", "gas", "petrol"]).allow(null),
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
@@ -58,9 +64,12 @@ export const testResultsCommonSchema = {
         code: Joi.any().only(["1", "2", "3", "n", "t", "l", "s", "v"]).required(),
         description: Joi.any().only(["motorbikes over 200cc or with a sidecar", "not applicable", "small psv (ie: less than or equal to 22 seats)", "motorbikes up to 200cc", "trailer", "large psv(ie: greater than 23 seats)", "3 wheelers", "heavy goods vehicle"]).required()
     }).required(),
-    vehicleType: Joi.any().only(["psv", "hgv", "trl"]).required(),
+    vehicleType: Joi.any().only(["psv", "hgv", "trl", "car", "lgv", "motorcycle"]).required(),
     noOfAxles: Joi.number().max(99).required(),
     preparerId: Joi.string().required().allow(""),
-    preparerName: Joi.string().required().allow("")
+    preparerName: Joi.string().required().allow(""),
+    numberOfWheelsDriven: Joi.number().required().allow(null),
+    regnDate: Joi.string().allow("", null),
+    firstUseDate: Joi.string().allow("", null)
 };
 

@@ -6,6 +6,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -13,6 +14,7 @@
         "testNumber": "1",
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "secondaryCertificateNumber": "1234",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -24,6 +26,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -68,11 +77,19 @@
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:50:16.706Z",
+        "secondaryCertificateNumber": "1234",
         "testTypeId": "19",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -115,6 +132,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
@@ -123,6 +141,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -179,7 +204,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testResultId": "2",
@@ -188,6 +213,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -196,6 +222,7 @@
         "lastUpdatedAt": "2019-02-22T08:50:16.706Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -206,6 +233,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -262,7 +296,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "gica.petrescuf@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m3"
   },
   {
     "testResultId": "3",
@@ -271,11 +305,13 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "cancelled",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "pms",
         "testNumber": "3",
+        "secondaryCertificateNumber": "1234",
         "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
@@ -289,6 +325,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "advisory",
@@ -345,7 +388,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testResultId": "4",
@@ -376,7 +419,8 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
+    "numberOfWheelsDriven": 3,
     "testTypes": []
   },
   {
@@ -386,6 +430,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "cancelled",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -394,6 +439,7 @@
         "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -404,6 +450,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -452,7 +505,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m3"
   },
   {
     "testResultId": "6",
@@ -461,11 +514,13 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "cancelled",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "pms",
         "testNumber": "3",
+        "secondaryCertificateNumber": "1234",
         "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
@@ -479,6 +534,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -527,7 +589,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testerStaffId": "1",
@@ -536,10 +598,12 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aas",
+        "secondaryCertificateNumber": "1234",
         "lastUpdatedAt": "2019-05-06T10:57:58.100Z",
         "testNumber": "W01A00209",
         "testAnniversaryDate": "2020-03-06T11:57:58.232Z",
@@ -556,6 +620,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -611,7 +682,7 @@
     "testStationPNumber": "87-1369569",
     "numberOfSeats": 45,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m3"
   },
   {
     "testResultId": "7",
@@ -620,6 +691,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -628,6 +700,7 @@
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
+        "secondaryCertificateNumber": "1234",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
@@ -638,6 +711,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -678,6 +758,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:50:16.706Z",
@@ -686,6 +767,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -727,6 +815,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
@@ -735,6 +824,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -790,7 +886,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "deletionFlag": true
   },
   {
@@ -800,11 +896,13 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aas",
         "testNumber": "1",
+        "secondaryCertificateNumber": "1234",
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
@@ -818,6 +916,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -858,6 +963,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:50:16.706Z",
@@ -866,6 +972,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -906,6 +1019,7 @@
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -915,6 +1029,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -970,7 +1091,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "deletionFlag": false
   },
   {
@@ -980,12 +1101,14 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aas",
         "testNumber": "1",
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "secondaryCertificateNumber": "1234",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
@@ -998,6 +1121,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1054,7 +1184,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "deletionFlag": false
   },
   {
@@ -1064,6 +1194,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1072,6 +1203,7 @@
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
+        "secondaryCertificateNumber": "1234",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
@@ -1082,6 +1214,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1138,7 +1277,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m3",
     "deletionFlag": false
   },
   {
@@ -1148,6 +1287,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1158,6 +1298,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
@@ -1166,6 +1307,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1232,10 +1380,12 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aas",
+        "secondaryCertificateNumber": "1234",
         "testNumber": "1",
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
@@ -1250,6 +1400,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1306,7 +1463,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m3",
     "deletionFlag": false
   },
   {
@@ -1316,6 +1473,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1332,8 +1490,16 @@
         "testTypeId": "1",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeName": "Annual test",
+        "secondaryCertificateNumber": "1234",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1390,7 +1556,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m3",
     "deletionFlag": true
   },
   {
@@ -1400,6 +1566,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1411,6 +1578,7 @@
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
+        "secondaryCertificateNumber": "1234",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
         "testTypeId": "1",
@@ -1418,6 +1586,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1474,7 +1649,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "deletionFlag": false
   },
   {
@@ -1484,6 +1659,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1499,9 +1675,17 @@
         "createdAt": "2019-02-22T08:47:59.269Z",
         "testTypeId": "1",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1558,7 +1742,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "n2",
     "deletionFlag": false,
     "regnDate": "2018-10-10"
   },
@@ -1569,6 +1753,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1579,6 +1764,7 @@
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:47:59.269Z",
@@ -1587,6 +1773,13 @@
         "testTypeName": "First test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1643,7 +1836,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "n1",
+    "euVehicleCategory": "n3",
     "deletionFlag": false,
     "regnDate": "2018-05-07"
   },
@@ -1654,6 +1847,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1663,6 +1857,7 @@
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -1672,6 +1867,13 @@
         "testTypeName": "First test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1738,6 +1940,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "cancelled",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1745,6 +1948,7 @@
         "testNumber": "3",
         "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
         "additionalCommentsForAbandon": "none",
+        "secondaryCertificateNumber": "1234",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
@@ -1762,6 +1966,13 @@
         },
         "emissionStandard": "0.16 g/kWh Euro 3 PM",
         "fuelType": "diesel",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1809,7 +2020,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testResultId": "18",
@@ -1818,6 +2029,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1830,6 +2042,7 @@
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-02-22T08:50:16.706Z",
+        "secondaryCertificateNumber": "1234",
         "testTypeId": "19",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "12334",
@@ -1843,6 +2056,13 @@
         },
         "emissionStandard": "0.08 g/kWh Euro 3 PM",
         "fuelType": "gas",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -1898,7 +2118,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "gica.petrescuf@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testResultId": "19",
@@ -1927,8 +2147,9 @@
     "testerName": "Dorel",
     "vrm": "JY58FPP",
     "noOfAxles": 2,
-    "euVehicleCategory": "n1",
+    "euVehicleCategory": "n2",
     "deletionFlag": false,
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "testCode": "lev",
@@ -1939,6 +2160,7 @@
         "createdAt": "2019-02-22T08:47:59.269Z",
         "testTypeId": "45",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "name": "Technical test",
         "testTypeName": "Low Emissions Certificate (LEC)",
         "certificateLink": "http://dvsagov.co.uk",
@@ -1960,6 +2182,13 @@
         "additionalNotesRecorded": "Test notes",
         "deletionFlag": false,
         "certificateNumber": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": []
       }
     ]
@@ -1972,6 +2201,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -1979,6 +2209,7 @@
         "testNumber": "W01A34244",
         "lastUpdatedAt": "2019-10-28T14:55:50.878Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "secondaryCertificateNumber": "1234",
         "additionalCommentsForAbandon": null,
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -1991,6 +2222,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2058,11 +2296,13 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-15T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aav2",
         "testNumber": "W01A34245",
+        "secondaryCertificateNumber": "1234",
         "lastUpdatedAt": "2019-10-28T14:55:50.878Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": null,
@@ -2077,6 +2317,13 @@
         "testTypeName": "Retest",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2144,12 +2391,14 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-10-16T14:55:50.878Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aav2",
         "testNumber": "W01A34246",
         "lastUpdatedAt": "2019-10-28T14:55:50.878Z",
+        "secondaryCertificateNumber": "1234",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": null,
         "numberOfSeatbeltsFitted": 2,
@@ -2163,6 +2412,13 @@
         "testTypeName": "Voluntary test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2230,10 +2486,12 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-17T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "testCode": "aav2",
+        "secondaryCertificateNumber": "1234",
         "testNumber": "W01A34247",
         "lastUpdatedAt": "2019-10-28T14:55:50.878Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
@@ -2249,6 +2507,13 @@
         "testTypeName": "Voluntary test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2316,6 +2581,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-10-18T14:55:50.878Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -2326,6 +2592,7 @@
         "additionalCommentsForAbandon": null,
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": null,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "createdAt": "2019-10-28T14:55:50.878Z",
@@ -2335,6 +2602,13 @@
         "testTypeName": "Voluntary test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2402,6 +2676,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-19T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -2410,6 +2685,7 @@
         "lastUpdatedAt": "2019-10-28T14:55:50.878Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": null,
+        "secondaryCertificateNumber": "1234",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": null,
@@ -2421,6 +2697,13 @@
         "testTypeName": "Voluntary test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2487,6 +2770,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": null,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -2495,6 +2779,7 @@
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
+        "secondaryCertificateNumber": "1234",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
@@ -2505,6 +2790,13 @@
         "testTypeName": "First test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2571,6 +2863,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -2580,6 +2873,7 @@
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -2589,6 +2883,7 @@
         "testTypeName": "First test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": null,
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2655,6 +2950,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -2662,6 +2958,7 @@
         "testNumber": "1",
         "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
         "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "secondaryCertificateNumber": "1234",
         "additionalCommentsForAbandon": "none",
         "numberOfSeatbeltsFitted": 2,
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -2673,6 +2970,13 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": null
+          }
+        ],
         "defects": [
           {
             "deficiencyCategory": "major",
@@ -2729,7 +3033,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "n2",
     "deletionFlag": false,
     "regnDate": "2018-10-10"
   }
