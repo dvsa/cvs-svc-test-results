@@ -34,6 +34,12 @@ export const testTypesCommonSchema = {
         code: Joi.any().only(["p", "m", "g"]),
         description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
     }).allow(null),
+    customDefects: Joi.array().items(Joi.object().keys({
+        referenceNumber: Joi.string().max(10).required(),
+        defectName: Joi.string().max(200).required(),
+        defectNotes: Joi.string().max(200).required().allow(null)
+    })).required().allow(null),
+    secondaryCertificateNumber: Joi.string().alphanum().max(20).required().allow(null),
     emissionStandard: Joi.any().only(["0.10 g/kWh Euro 3 PM", "0.03 g/kWh Euro IV PM", "Euro 3", "Euro 4", "Euro 6", "Euro VI", "Full Electric"]).allow(null),
     fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).allow(null),
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
@@ -73,9 +79,12 @@ export const testResultsCommonSchema = {
             "Not Known"])
             .required()
     }).required(),
-    vehicleType: Joi.any().only(["psv", "hgv", "trl"]).required(),
+    vehicleType: Joi.any().only(["psv", "hgv", "trl", "car", "lgv", "motorcycle"]).required(),
     noOfAxles: Joi.number().max(99).required(),
     preparerId: Joi.string().required().allow(""),
-    preparerName: Joi.string().required().allow("")
+    preparerName: Joi.string().required().allow(""),
+    numberOfWheelsDriven: Joi.number().required().allow(null),
+    regnDate: Joi.string().allow("", null),
+    firstUseDate: Joi.string().allow("", null)
 };
 

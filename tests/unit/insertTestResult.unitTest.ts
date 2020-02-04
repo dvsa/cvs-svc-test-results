@@ -1131,7 +1131,7 @@ describe("insertTestResult", () => {
 
     context("when inserting an TRL test result with firstUseDate field", () => {
         it("should not throw error", () => {
-            const testResult = {...testResultsPostMock[7]};
+            const testResult = cloneDeep(testResultsPostMock[7]);
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1164,14 +1164,14 @@ describe("insertTestResult", () => {
     });
 
     context("when inserting a TRL test result with regnDate field)", () => {
-        it("should throw 400", () => {
-            const testResult = {...testResultsPostMock[5]};
+        it("should not throw error", () => {
+            const testResult = cloneDeep(testResultsPostMock[5]);
             testResult.regnDate = "2019-10-11";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
+                        return Promise.resolve(Array.of(testResultsPostMock[5]));
                     },
                     getTestNumber: () => {
                         return Promise.resolve({
@@ -1195,9 +1195,9 @@ describe("insertTestResult", () => {
 
             expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).toBeInstanceOf(HTTPError);
-                    expect(error.statusCode).toEqual(400);
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("trl");
+                    expect(insertedTestResult[0].testResultId).toEqual("1115");
                 });
         });
     });
@@ -1381,7 +1381,7 @@ describe("insertTestResult", () => {
     });
 
     context("when inserting a HGV test result with firstUseDate field", () => {
-        it("should throw 400", () => {
+        it("should not throw error", () => {
             const testResult = {...testResultsPostMock[4]};
             testResult.firstUseDate = "2019-10-11";
 
@@ -1412,9 +1412,9 @@ describe("insertTestResult", () => {
 
             expect.assertions(2);
             return testResultsService.insertTestResult(testResult)
-                .catch((error: { statusCode: any; body: any; }) => {
-                    expect(error).toBeInstanceOf(HTTPError);
-                    expect(error.statusCode).toEqual(400);
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("hgv");
+                    expect(insertedTestResult[0].testResultId).toEqual("1113");
                 });
         });
     });
@@ -2130,6 +2130,116 @@ describe("insertTestResult", () => {
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("91");
                     expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of lgv and the payload is valid", () => {
+        it("should not throw error.", () => {
+            const validLgvTestResult = cloneDeep(testResultsPostMock[11]);
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(validLgvTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validLgvTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("lgv");
+                    expect(insertedTestResult[0].testResultId).toEqual("501");
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of car and the payload is valid", () => {
+        it("then it should not throw error.", () => {
+            const validLgvTestResult = cloneDeep(testResultsPostMock[10]);
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(validLgvTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validLgvTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("car");
+                    expect(insertedTestResult[0].testResultId).toEqual("500");
+                });
+        });
+    });
+
+    context("when inserting a testResult that is a vehicleType of motorcycle and the payload is valid", () => {
+        it("then it should not throw error.", () => {
+            const validLgvTestResult = cloneDeep(testResultsPostMock[12]);
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(validLgvTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({
+                            testNumber: "W01A00209",
+                            id: "W01",
+                            certLetter: "A",
+                            sequenceNumber: "002"
+                        });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: null,
+                            defaultTestCode: "yf4",
+                            testTypeClassification: "Annual NO CERTIFICATE"
+                        });
+                    }
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validLgvTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("motorcycle");
+                    expect(insertedTestResult[0].testResultId).toEqual("502");
+                }).catch((error: any) => {
+                    console.log("CHECK HERE YOUR ERROR ->", error);
                 });
         });
     });
