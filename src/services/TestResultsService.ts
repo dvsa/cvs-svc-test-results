@@ -302,13 +302,13 @@ export class TestResultsService {
                     const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate!), 1);
                     // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
-                        testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                      testType.testExpiryDate = dateFns.lastDayOfMonth(dateFns.addYears(new Date(), 1)).toISOString();
                     } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesByVin, new Date(1970, 1, 1))) {
                       const anvDateForCompare = regOrFirstUseDate ? dateFns.addYears(dateFns.endOfDay(dateFns.lastDayOfMonth(regOrFirstUseDate)), 1).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
                       if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
-                        testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                        testType.testExpiryDate = dateFns.lastDayOfMonth(dateFns.addYears(new Date(), 1)).toISOString();
                         console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
                       } else {
                         // less than 2 months then set expiryDate 1 year after the Registration/First Use Anniversary date
@@ -317,9 +317,9 @@ export class TestResultsService {
                       }
                     } else {
                       if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesByVin, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesByVin, dateFns.addMonths(new Date(), 2))) {
-                        testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(mostRecentExpiryDateOnAllTestTypesByVin), 1).toISOString();
+                        testType.testExpiryDate = dateFns.lastDayOfMonth(dateFns.addYears(mostRecentExpiryDateOnAllTestTypesByVin, 1)).toISOString();
                       } else {
-                        testType.testExpiryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date()), 1).toISOString();
+                        testType.testExpiryDate = dateFns.lastDayOfMonth(dateFns.addYears(new Date(), 1)).toISOString();
                       }
                     }
                   }
