@@ -36,6 +36,7 @@ export class TestResultsDAO {
   public getBySystemNumber(systemNumber: any) {
     const params = {
       TableName: this.tableName,
+      IndexName: "SysNumIndex",
       KeyConditionExpression: "#systemNumber = :systemNumber",
       ExpressionAttributeNames: {
         "#systemNumber": "systemNumber"
