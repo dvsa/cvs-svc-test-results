@@ -213,7 +213,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting regnDate to a year older + 1 month
-                    hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
+                    hgvTestResult.regnDate = dateFns.lastDayOfMonth(dateFns.subYears(dateFns.addMonths(new Date(), 1), 1));
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
