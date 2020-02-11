@@ -129,7 +129,6 @@ export class TestResultsService {
       default:
         validationSchema = null;
     }
-    const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
       return Promise.reject(new HTTPError(400, MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT));
@@ -155,11 +154,9 @@ export class TestResultsService {
       return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
     }
 
-    const missingMandatoryTestResultFields: string[] = this.validateMandatoryTestResultFields(payload);
-    if (missingMandatoryTestResultFields.length > 0) {
-      return Promise.reject(new HTTPError(400,  {errors: missingMandatoryTestResultFields} ));
-    }
+    validationSchema = this.addMandatoryTestResultFieldsValidation(payload, validationSchema);
 
+    const validation: ValidationResult<ITestResultPayload> | null = Joi.validate(payload, validationSchema, {abortEarly: false});
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
@@ -545,27 +542,27 @@ export class TestResultsService {
     return missingFields;
   }
 
-  private validateMandatoryTestResultFields(payload: ITestResultPayload): string[] {
-    const missingMandatoryFields: string[] = [];
-    if (payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED) && payload.testStatus === TEST_STATUS.SUBMITTED) {
-      if (!payload.countryOfRegistration) {
-        missingMandatoryFields.push(ERRORS.CountryOfRegistrationMandatory);
-      }
-      if (!payload.euVehicleCategory) {
-        missingMandatoryFields.push(ERRORS.EuVehicleCategoryMandatory);
-      }
+  private addMandatoryTestResultFieldsValidation(payload: ITestResultPayload, validationSchema: Joi.ObjectSchema | null) {
+    let updatedValidationSchema: Joi.ObjectSchema | null = Object.create(validationSchema);
+    if (payload.testStatus === TEST_STATUS.SUBMITTED && updatedValidationSchema !== null &&
+      payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED)) {
+
+      updatedValidationSchema = updatedValidationSchema.keys({
+        euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4"]).required(),
+        countryOfRegistration: Joi.string().required().allow(""),
+      });
+
 
       if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.PSV) {
-        if (!payload.odometerReading) {
-          missingMandatoryFields.push(ERRORS.OdometerReadingMandatory);
-        }
-        if (!payload.odometerReadingUnits) {
-          missingMandatoryFields.push(ERRORS.OdometerReadingUnitsMandatory);
-        }
+        updatedValidationSchema = updatedValidationSchema.keys({
+          odometerReading: Joi.number().required(),
+          odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required(),
+        });
       }
     }
-    return missingMandatoryFields;
+    return updatedValidationSchema;
   }
+
   //#region Private Static Functions
   private static isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
     return HGV_TRL_ROADWORTHINESS_TEST_TYPES.IDS.includes(testTypeId);

@@ -299,7 +299,6 @@ describe("insertTestResult", () => {
     context("when inserting a testResult with prohibitionIssued not present on defects", () => {
         it("should throw validation error", () => {
             const mockData = testResultsPostMock[0];
-            mockData.testNumber = { testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" };
             delete mockData.testTypes[0].defects[0].prohibitionIssued;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1963,10 +1962,11 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: string[] } }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.CountryOfRegistrationMandatory,
-                        ERRORS.EuVehicleCategoryMandatory,
-                        ERRORS.OdometerReadingMandatory,
-                        ERRORS.OdometerReadingUnitsMandatory]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining(["\"countryOfRegistration\" must be a string",
+                    "\"euVehicleCategory\" must be one of [m1, m2, m3, n1, n2, n3, o1, o2, o3, o4]",
+                    "\"odometerReading\" must be a number",
+                    "\"odometerReadingUnits\" must be one of [kilometres, miles]",
+                    ]));
                 });
         });
     });
@@ -2017,15 +2017,14 @@ describe("insertTestResult", () => {
     });
 
     context("when inserting a testResult containing multiple testTypes (including abandoned testTypes) with missing mandatory fields", () => {
-        it("should return an error containing only the missing fields", () => {
+        it("should return an error message array containing all the missing fields", () => {
             const testResult = testResultsPostMock[0];
             const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
-
-            clonedTestResult.testTypes[2] = TEST_RESULT.ABANDONED;
+            clonedTestResult.testTypes.push({...clonedTestResult.testTypes[0]});
+            clonedTestResult.testTypes[1].testResult = TEST_RESULT.ABANDONED;
 
             clonedTestResult.countryOfRegistration = null;
             clonedTestResult.euVehicleCategory = null;
-
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -2052,8 +2051,9 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: string[] } }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.CountryOfRegistrationMandatory,
-                        ERRORS.EuVehicleCategoryMandatory]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining(["\"countryOfRegistration\" must be a string",
+                        "\"euVehicleCategory\" must be one of [m1, m2, m3, n1, n2, n3, o1, o2, o3, o4]"]));
+
                 });
         });
     });
