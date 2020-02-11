@@ -37,8 +37,10 @@ export class TestResultsService {
             return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
           }
         }
+        console.log("THESE ARE YOUR FILTERS", filters);
         if (filters.systemNumber) {
           return this.testResultsDAO.getBySystemNumber(filters.systemNumber).then((result) => {
+             console.log("THIS IS YOUR RESULT ->", result);
              const response: ITestResultData = {Count: result.Count, Items: result.Items};
              return this.applyTestResultsFilters(response, filters);
           }).catch((error: HTTPError) => {
