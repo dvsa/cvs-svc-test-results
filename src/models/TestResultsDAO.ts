@@ -45,6 +45,7 @@ export class TestResultsDAO {
         ":systemNumber": systemNumber
       }
     };
+    console.log("THESE ARE YOUR PARAMS ->", params);
     return TestResultsDAO.docClient.query(params).promise();
   }
 
