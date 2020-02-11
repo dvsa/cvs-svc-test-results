@@ -544,7 +544,7 @@ export class TestResultsService {
 
   private addMandatoryTestResultFieldsValidation(payload: ITestResultPayload, validationSchema: Joi.ObjectSchema | null) {
     let updatedValidationSchema: Joi.ObjectSchema | null = Object.create(validationSchema);
-    if (payload.testStatus === TEST_STATUS.SUBMITTED && updatedValidationSchema !== null &&
+    if (payload.testStatus === TEST_STATUS.SUBMITTED && updatedValidationSchema !== null && payload.testTypes &&
       payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED)) {
 
       updatedValidationSchema = updatedValidationSchema.keys({

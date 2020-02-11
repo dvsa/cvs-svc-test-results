@@ -1971,6 +1971,44 @@ describe("insertTestResult", () => {
         });
     });
 
+    context("when inserting a testResult with missing testType", () => {
+        it("should return an error containing the correct error message", () => {
+            const testResult = testResultsPostMock[0];
+            const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+
+            delete clonedTestResult.testTypes;
+
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(clonedTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    },
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(3);
+            return testResultsService.insertTestResult(clonedTestResult)
+                .catch((error: { statusCode: any; body: { errors: string[] } }) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(["\"testTypes\" is required"]);
+                });
+        });
+    });
+
     context("when inserting a test with only abandoned testTypes and missing mandatory fields", () => {
         it("it should insert the test correctly", () => {
             const testResult = testResultsPostMock[1];
