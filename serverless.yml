@@ -111,43 +111,7 @@ resources:
               - AttributeName: systemNumber
                 KeyType: HASH
             Projection:
-              NonKeyAttributes:
-                - vin
-                - testResultId
-                - systemNumber
-                - testerStaffId
-                - testStartTimestamp
-                - odometerReadingUnits
-                - testEndTimestamp
-                - testStatus
-                - vehicleClass
-                - vehicleSize
-                - testStationName
-                - vehicleId
-                - vehicleType
-                - countryOfRegistration
-                - preparerId
-                - preparerName
-                - odometerReading
-                - vehicleConfiguration
-                - testStationType
-                - reasonForCancellation
-                - testerName
-                - vrm
-                - testStationPNumber
-                - numberOfSeats
-                - noOfAxles
-                - testerEmailAddress
-                - euVehicleCategory
-                - deletionFlag
-                - regnDate
-                - firstUseDate
-                - trailerId
-                - vehicleSubclass
-                - numberOfWheelsDriven
-                - testTypes
-                - customDefects
-              ProjectionType: INCLUDE
+              ProjectionType: EXCLUDE
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
               WriteCapacityUnits: '1'
