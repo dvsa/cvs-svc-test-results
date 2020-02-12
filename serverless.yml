@@ -111,7 +111,7 @@ resources:
               - AttributeName: systemNumber
                 KeyType: HASH
             Projection:
-              ProjectionType: EXCLUDE
+              ProjectionType: ALL
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
               WriteCapacityUnits: '1'
