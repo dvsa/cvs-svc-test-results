@@ -115,11 +115,38 @@ resources:
                 - vin
                 - testResultId
                 - systemNumber
+                - testerStaffId
+                - testStartTimestamp
+                - odometerReadingUnits
+                - testEndTimestamp
+                - testStatus
+                - vehicleClass
+                - vehicleSize
+                - testStationName
+                - vehicleId
+                - vehicleType
+                - countryOfRegistration
+                - preparerId
+                - preparerName
+                - odometerReading
+                - vehicleConfiguration
+                - testStationType
+                - reasonForCancellation
+                - testerName
+                - vrm
+                - testStationPNumber
+                - numberOfSeats
+                - noOfAxles
+                - testerEmailAddress
+                - euVehicleCategory
+                - deletionFlag
+                - regnDate
+                - firstUseDate
                 - trailerId
-                - primaryVrm
-                - partialVin
-                - secondaryVrms
-                - techRecord
+                - vehicleSubclass
+                - numberOfWheelsDriven
+                - testTypes
+                - customDefects
               ProjectionType: INCLUDE
             ProvisionedThroughput:
               ReadCapacityUnits: '1'
