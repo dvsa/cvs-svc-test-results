@@ -32,7 +32,7 @@ const testResultsSchema = Joi.object().keys({
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     vehicleSubclass: Joi.array().items(Joi.string()).required().allow(null),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required().allow(null),
     euVehicleCategory: Joi.any().only(["m1"]).required().allow(null),
     testTypes: Joi.array().items(testTypesSchema).required()
 });

@@ -28,7 +28,7 @@ const testResultsSchema = Joi.object().keys({
     ...testResultsCommonSchema,
     vrm: Joi.string().alphanum().min(1).max(8).required(),
     countryOfRegistration: Joi.string().required().allow("", null),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required().allow(null),
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     reasonForCancellation: Joi.string().max(500).required().allow("", null),
