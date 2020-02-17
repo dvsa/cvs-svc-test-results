@@ -1,5 +1,8 @@
 export interface ITestResultPayload {
     systemNumber: string;
+    vehicleClass: any;
+    vehicleSubclass: any;
+    numberOfWheelsDriven: any;
     testStatus: string;
     testTypes: any[];
     vehicleType: any;

@@ -126,7 +126,8 @@ export class TestResultsDAO {
     };
   }
 
-  public getTestCodesAndClassificationFromTestTypes(testTypeId: string, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any) {
+  public getTestCodesAndClassificationFromTestTypes(testTypeId: string, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,
+                                                    euVehicleCategory: any, vehicleClass: any, vehicleSubclass: any, numberOfWheelsDriven: any) {
     const fields = "defaultTestCode,linkedTestCode,testTypeClassification";
 
     const event = {
@@ -136,6 +137,10 @@ export class TestResultsDAO {
         vehicleSize,
         vehicleConfiguration,
         vehicleAxles: noOfAxles,
+        euVehicleCategory,
+        vehicleClass,
+        vehicleSubclass,
+        vehicleWheels: numberOfWheelsDriven,
         fields
       },
       pathParameters: {
