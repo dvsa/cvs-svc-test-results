@@ -194,7 +194,8 @@ export class TestResultsService {
     }
 
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload);
-    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration, payload.noOfAxles)
+    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration,
+        payload.noOfAxles, payload.euVehicleCategory, payload.vehicleClass.code, payload.vehicleSubclass ? payload.vehicleSubclass[0] : undefined, payload.numberOfWheelsDriven)
         .then((testTypesWithTestCodesAndClassification) => {
           payload.testTypes = testTypesWithTestCodesAndClassification;
         })
@@ -394,13 +395,14 @@ export class TestResultsService {
         });
   }
 
-  public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any) {
+  public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,
+                                                    euVehicleCategory: any, vehicleClass: any, vehicleSubclass: any, numberOfWheelsDriven: any) {
     const promiseArray: any = [];
     if (testTypes === undefined) {
       testTypes = [];
     }
     testTypes.forEach((testType, index) => {
-      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
+      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles, euVehicleCategory, vehicleClass, vehicleSubclass, numberOfWheelsDriven)
         .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
           if (testTypes.length === 1) {
             testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;
