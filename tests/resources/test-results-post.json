@@ -634,8 +634,8 @@
           "code": "m",
           "description": "modification or change of engine"
         },
-        "emissionStandard": "0.08 g/kWh Euro 3 PM",
-        "fuelType": "gas",
+        "emissionStandard": "0.03 g/kWh Euro IV PM",
+        "fuelType": "gas-cng",
         "smokeTestKLimitApplied": "123",
         "particulateTrapFitted": null,
         "particulateTrapSerialNumber": null,

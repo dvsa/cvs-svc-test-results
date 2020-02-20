@@ -1604,8 +1604,8 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(testResultWithMandatoryFields)
                 .then((insertedTestResult: any) => {
                     expect(insertedTestResult[0].vehicleType).toEqual("psv");
-                    expect(insertedTestResult[0].testTypes[0].fuelType).toEqual("gas");
-                    expect(insertedTestResult[0].testTypes[0].emissionStandard).toEqual("0.08 g/kWh Euro 3 PM");
+                    expect(insertedTestResult[0].testTypes[0].fuelType).toEqual("gas-cng");
+                    expect(insertedTestResult[0].testTypes[0].emissionStandard).toEqual("0.03 g/kWh Euro IV PM");
                     expect(insertedTestResult[0].testTypes[0].testExpiryDate).toEqual("2020-01-14");
                     expect(insertedTestResult[0].testTypes[0].modType.code).toEqual("m");
                     expect(insertedTestResult[0].testTypes[0].modType.description).toEqual("modification or change of engine");

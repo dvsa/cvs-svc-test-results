@@ -31,10 +31,8 @@ const testTypesSchema = Joi.object().keys({
     }).allow(null),
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
-    emissionStandard: Joi.string().only("0.16 g/kWh Euro 3 PM", "0.08 g/kWh Euro 3 PM", "0.03 g/kWh Euro 4 PM").allow(null),
     modificationTypeUsed: Joi.string().max(100).allow(null),
-    particulateTrapFitted: Joi.string().max(100).allow(null),
-    fuelType: Joi.string().only(["diesel", "gas", "petrol"]).allow(null)
+    particulateTrapFitted: Joi.string().max(100).allow(null)
 });
 
 const testResultsSchema = Joi.object().keys({
