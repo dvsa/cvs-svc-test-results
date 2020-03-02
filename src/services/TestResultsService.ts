@@ -43,10 +43,8 @@ export class TestResultsService {
             return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
           }
         }
-        console.log("THESE ARE YOUR FILTERS", filters);
         if (filters.systemNumber) {
           return this.testResultsDAO.getBySystemNumber(filters.systemNumber).then((result) => {
-             console.log("THIS IS YOUR RESULT ->", result);
              const response: ITestResultData = {Count: result.Count, Items: result.Items};
              return this.applyTestResultsFilters(response, filters);
           }).catch((error: HTTPError) => {
@@ -335,7 +333,7 @@ export class TestResultsService {
                       const anvDateForCompare = regOrFirstUseDate ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate)).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
-                      if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
+                      if (!anvDateForCompare || dateFns.isBefore(new Date(), dateFns.subMonths(anvDateForCompare, 2))) {
                         testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                         console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
                       } else {
@@ -343,6 +341,12 @@ export class TestResultsService {
                         testType.testExpiryDate = dateFns.addYears(anvDateForCompare, 1).toISOString();
                         console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                       }
+                    } else if (this.isAnnualTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
+                        if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), regOrFirstUseDate) || dateFns.isEqual(dateFns.addMonths(new Date(), 2), regOrFirstUseDate)) {
+                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
+                        } else {
+                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(regOrFirstUseDate).toISOString();
+                        }
                     } else {
                       if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
                         testType.testExpiryDate = this.lastDayOfMonthInNextYear(mostRecentExpiryDateOnAllTestTypesBySystemNumber).toISOString();
@@ -372,10 +376,10 @@ export class TestResultsService {
     return adrTestTypeIds.includes(testType.testTypeId);
   }
 
-  /**
-   * Get Most Recent Expiry date on Annual test types
-   * @param systemNumber The systemNumber of the vehicle to fetch
-   */
+  public isAnnualTestRetestTestType(testType: any): boolean {
+    const annualTestRetestIds = ["94", "40", "53", "54"];
+    return annualTestRetestIds.includes(testType.testTypeId);
+  }
   public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
     return this.getTestResults({
