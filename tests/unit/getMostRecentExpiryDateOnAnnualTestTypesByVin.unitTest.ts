@@ -1,15 +1,15 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs from "fs";
-import path from "path";
+import testResultsMockDB from "../resources/test-results.json";
 import {cloneDeep} from "lodash";
+import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 
 describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByVin", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
-    let testResultsMockDB: any;
+    // let testResultsMockDB: any;
 
     beforeEach(() => {
-        testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
+        // testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {};
         });
@@ -17,7 +17,7 @@ describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByV
     });
 
     afterEach(() => {
-        testResultsMockDB = null;
+        // testResultsMockDB = null;
         testResultsService = null;
         MockTestResultsDAO.mockReset();
     });
@@ -25,13 +25,13 @@ describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByV
     context("When performing an annual test on a vehicle and the result is passed and the expiry has to be automatically calculated", () => {
         it("should fetch the most recent expiry from test history based on the annual test codes", () => {
 
-            const trlTestResult1 = cloneDeep(testResultsMockDB[17]);
+            const trlTestResult1 = cloneDeep<ITestResultPayload>(testResultsMockDB[17]);
             // set annual test code 1
             trlTestResult1.testTypes[0].testCode = "aat1";
             trlTestResult1.testTypes[0].testResult = "pass";
             trlTestResult1.testTypes[0].testExpiryDate = new Date(2020, 11, 20);
             // set annual test code 2
-            const trlTestResult2 = cloneDeep(testResultsMockDB[17]);
+            const trlTestResult2 = cloneDeep<ITestResultPayload>(testResultsMockDB[17]);
             trlTestResult2.testTypes[0].testCode = "p6t1";
             trlTestResult2.testTypes[0].testResult = "pass";
             trlTestResult2.testTypes[0].testExpiryDate = new Date(2020, 3, 10);
