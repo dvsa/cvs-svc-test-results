@@ -280,9 +280,8 @@ export class TestResultsService {
     } else {
       // fetch max date for annual test types
       return this.getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber)
-          .then((maxDate) => {
+          .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) => {
             payload.testTypes.forEach((testType: any, index: number) => {
-              const mostRecentExpiryDateOnAllTestTypesBySystemNumber = maxDate;
               if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
                   (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
                   payload.testTypes[index] = testType;
@@ -361,23 +360,21 @@ export class TestResultsService {
       toDateTime: new Date()
     })
         .then((testResults) => {
-          const filteredTestTypes: any[] = [];
+          const filteredTestTypeDates: any[] = [];
           testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
             testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
               // prepare a list of annualTestTypes with expiry.
               if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && testType.testExpiryDate) {
-                filteredTestTypes.push(testType);
+                filteredTestTypeDates.push(testType.testExpiryDate);
               }
             });
           });
-          return filteredTestTypes;
-        }).then((annualTestTypes) => {
+          return filteredTestTypeDates;
+        }).then((annualTestTypeDates) => {
           // fetch maxDate for annualTestTypes
-          annualTestTypes.forEach((testType) => {
-            if (dateFns.isAfter(testType.testExpiryDate, maxDate)) {
-              maxDate = testType.testExpiryDate;
-            }
-          });
+          if (annualTestTypeDates && annualTestTypeDates.length > 0) {
+          maxDate = dateFns.max(...annualTestTypeDates);
+          }
           return maxDate;
         }).catch((err) => {
           console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin  > getTestResults. Returning default test date and logging error:", err);
