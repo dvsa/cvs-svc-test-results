@@ -76,35 +76,8 @@ export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
     IDS: ["122", "91", "101", "62", "63"]
 };
 
-export const ANNUAL_TEST_CODES_FOR_EXPIRY_GENERATION = {
-    IDS: [
-                    "AAT1", "AAT2", "AAT3", "AAT4", "AAT5",
-                    "RPT1", "RPT2", "RPT3", "RPT4", "RPT5",
-                    "RST1", "RST2", "RST3", "RST4", "RST5",
-                    "P1T1", "P1T2", "P1T3", "P1T4", "P1T5",
-                    "P3T1", "P3T2", "P3T3", "P3T4", "P3T5",
-                    "P6T1", "P6T2", "P6T3", "P6T4", "P6T5",
-                    "AAV2", "AAV3", "AAV4", "AAV5",
-                    "RPV2", "RPV3", "RPV4", "RPV5",
-                    "RSV2", "RSV3", "RSV4", "RSV5",
-                    "P1V2", "P1V3", "P1V4", "P1V5",
-                    "P3V2", "P3V3", "P3V4", "P3V5",
-                    "P6V2", "P6V3", "P6V4", "P6V5",
-                    "AAL", "AAS", "ADL",
-                    "WDL", "WDS", "WBL", "WBS",
-                    "RHL", "RPL", "RPS",
-                    "WHL", "WHS",
-                    "RGL", "RSL", "RSS",
-                    "P1L", "P1S",
-                    "P8L", "P8S",
-                    "P6L", "P6S",
-                    "WIS", "WIL",
-                    "WFL", "WFS",
-                    "WEL", "WES"]
-};
-
 export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
-   IDS: [
+   CODES: [
         "AAT1", "AAT2", "AAT3", "AAT4", "AAT5",
         "FFT1", "FFT2", "FFT3", "FFT4", "FFT5",
         "RPT1", "RPT2", "RPT3", "RPT4", "RPT5",
@@ -138,6 +111,9 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "P6L", "P6S",
         "WIS", "WIL",
         "WFL", "WFS",
-        "WEL", "WES"]
+        "WEL", "WES",
+        "CEL", "CES",
+        "CHL", "CHS",
+        "CKL", "CKS",
+        "CML", "CMS"]
 };
-
