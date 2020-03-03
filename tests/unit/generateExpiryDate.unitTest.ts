@@ -292,8 +292,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(hgvTestResult.regnDate), 1).toISOString();
-                    const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
+                    const anniversaryDate = dateFns.addYears(hgvTestResult.regnDate, 1).toISOString();
+                    const expectedExpiryDate = dateFns.setHours(dateFns.lastDayOfMonth(dateFns.addYears(anniversaryDate, 1)), 12);
                     return testResultsService.generateExpiryDate(hgvTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
@@ -415,8 +415,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     });
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                    const anniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(trlTestResult.firstUseDate), 1).toISOString();
-                    const expectedExpiryDate = dateFns.addYears(anniversaryDate, 1);
+                    const anniversaryDate = dateFns.addYears(trlTestResult.firstUseDate, 1).toISOString();
+                    const expectedExpiryDate = dateFns.setHours(dateFns.lastDayOfMonth(dateFns.addYears(anniversaryDate, 1)), 12);
                     return testResultsService.generateExpiryDate(trlTestResult)
                         .then((hgvTestResultWithExpiryDate: any) => {
                             expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
