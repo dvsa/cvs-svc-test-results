@@ -243,6 +243,75 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         });
                 });
             });
+
+            context("when there is an Annual Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.", () => {
+                it("should set the expiry date to the last day of the test's month + 1 year", () => {
+                    const hgvTestResult = cloneDeep(testResultsMockDB[16]);
+                    hgvTestResult.testTypes[0].testTypeId = "94";
+                    hgvTestResult.regnDate = new Date().toISOString();
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(hgvTestResult),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "aav2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const expectedExpiryDate = dateFns.setHours(dateFns.lastDayOfMonth(dateFns.addYears(new Date(), 1)), 12);
+                    return testResultsService.generateExpiryDate(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
+
+            context("when there is an Annual Test Type with no existing expiryDate and testDate is less than 2 months before Registration Anniversary date.", () => {
+                it("should set the expiry date to 1 year after the aniversary regDate", () => {
+                    const hgvTestResult = cloneDeep(testResultsMockDB[16]);
+                    hgvTestResult.testTypes[0].testTypeId = "94";
+                    hgvTestResult.regnDate = dateFns.subMonths(new Date(), 11).toISOString();
+
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            getByVin: (vin: any) => {
+                                return Promise.resolve({
+                                    Items: Array.of(hgvTestResult),
+                                    Count: 1,
+                                    ScannedCount: 1
+                                });
+                            },
+                            getTestCodesAndClassificationFromTestTypes: () => {
+                                return Promise.resolve({
+                                    linkedTestCode: "aav2",
+                                    defaultTestCode: null,
+                                    testTypeClassification: "Annual With Certificate"
+                                });
+                            }
+                        };
+                    });
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                    const registrationAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(hgvTestResult.regnDate), 1).toISOString();
+                    const expectedExpiryDate = dateFns.setHours(dateFns.addYears(registrationAnniversaryDate, 1), 12);
+                    return testResultsService.generateExpiryDate(hgvTestResult)
+                        .then((hgvTestResultWithExpiryDate: any) => {
+                            expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                        });
+                });
+            });
         });
 
         /*

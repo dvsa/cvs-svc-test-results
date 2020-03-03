@@ -342,10 +342,11 @@ export class TestResultsService {
                         console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                       }
                     } else if (this.isAnnualTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
-                        if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), regOrFirstUseDate) || dateFns.isEqual(dateFns.addMonths(new Date(), 2), regOrFirstUseDate)) {
-                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
+                        const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate!), 1);
+                        if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), registrationFirstUseAnniversaryDate) || dateFns.isEqual(dateFns.addMonths(new Date(), 2), registrationFirstUseAnniversaryDate)) {
+                          testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(new Date()), 12).toISOString();
                         } else {
-                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(regOrFirstUseDate).toISOString();
+                          testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate), 12).toISOString();
                         }
                     } else {
                       if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
