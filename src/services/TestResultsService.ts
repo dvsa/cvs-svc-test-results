@@ -349,7 +349,7 @@ export class TestResultsService {
 
   /**
    * Get Most Recent Expiry date on Annual test types
-   * @param vin The vin of the vehicle to fetch
+   * @param systemNumber The systemNumber of the vehicle to fetch
    */
   public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
@@ -377,7 +377,7 @@ export class TestResultsService {
           }
           return maxDate;
         }).catch((err) => {
-          console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin  > getTestResults. Returning default test date and logging error:", err);
+          console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber  > getTestResults. Returning default test date and logging error:", err);
           return maxDate;
         });
   }
