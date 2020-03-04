@@ -1,6 +1,7 @@
 [
   {
     "testResultId": "1",
+    "systemNumber": "1211",
     "vrm": "JY58FPP",
     "vin": "XMGDE02FS0H012345",
     "testStationName": "Rowe, Wunsch and Wisoky",
@@ -77,6 +78,7 @@
   },
   {
     "testResultId": "2",
+    "systemNumber": "1212",
     "vrm": "BQ91YHQ",
     "vin": "1B7GG36N12S678410",
     "testStationName": "Larson, Nader and Okuneva",
@@ -153,6 +155,7 @@
   },
   {
     "testResultId": "3",
+    "systemNumber": "1213",
     "vrm": "AA12BCD",
     "vin": "XMGDE02FS0H012461",
     "testStationName": "Larson, Nader and Okuneva",
@@ -229,7 +232,7 @@
   },
   {
     "testerStaffId": "1",
-    "testResultId": "1112",
+    "testResultId": "1114",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -305,6 +308,7 @@
   },
   {
     "testerStaffId": "1",
+    "systemNumber": "1215",
     "testResultId": "1113",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -377,6 +381,7 @@
   },
   {
     "testerStaffId": "1",
+    "systemNumber": "1216",
     "testResultId": "1115",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -446,6 +451,7 @@
   },
   {
     "testerStaffId": "1",
+    "systemNumber": "1217",
     "testResultId": "1116",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -516,6 +522,7 @@
   },
   {
     "testerStaffId": "1",
+    "systemNumber": "1218",
     "testResultId": "195",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
@@ -587,6 +594,7 @@
   },
   {
     "testResultId": "5",
+    "systemNumber": "1219",
     "vrm": "JY58FPP",
     "vin": "XMGDE02FS0H012345",
     "testStationName": "Rowe, Wunsch and Wisoky",
@@ -634,8 +642,8 @@
           "code": "m",
           "description": "modification or change of engine"
         },
-        "emissionStandard": "0.08 g/kWh Euro 3 PM",
-        "fuelType": "gas",
+        "emissionStandard": "0.03 g/kWh Euro IV PM",
+        "fuelType": "gas-cng",
         "smokeTestKLimitApplied": "123",
         "particulateTrapFitted": null,
         "particulateTrapSerialNumber": null,
@@ -674,6 +682,7 @@
   },
   {
     "testResultId": "196",
+    "systemNumber": "1220",
     "testStationName": "Abshire-Kub",
     "testStationPNumber": "09-4129632",
     "testStationType": "gvts",
