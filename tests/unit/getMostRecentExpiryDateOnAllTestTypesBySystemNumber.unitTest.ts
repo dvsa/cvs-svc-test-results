@@ -3,7 +3,7 @@ import testResultsMockDB from "../resources/test-results.json";
 import {cloneDeep} from "lodash";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 
-describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByVin", () => {
+describe("generateExpiryDate calling getMostRecentExpiryDateOnAllTestTypesBySystemNumber", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
     // let testResultsMockDB: any;
@@ -40,11 +40,11 @@ describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByV
             mockData.push(trlTestResult1);
             mockData.push(trlTestResult2);
 
-            const vin = trlTestResult1.vin;
+            const systemNumber = trlTestResult1.systemNumber;
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    getByVin: () => {
+                    getBySystemNumber: () => {
                         return Promise.resolve({
                             Items: mockData,
                             Count: 2,
@@ -55,7 +55,7 @@ describe("generateExpiryDate calling getMostRecentExpiryDateOnAnnualTestTypesByV
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const expectedDate: Date = new Date(2020, 11, 20);
-            return testResultsService.getMostRecentExpiryDateOnAnnualTestTypesByVin(vin)
+            return testResultsService.getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber)
                 .then((response: any) => {
                     expect(response).toEqual(expectedDate);
                 });
