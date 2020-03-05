@@ -1,5 +1,6 @@
 export interface ITestResult {
   testResultId: string;
+  systemNumber: string;
   testerStaffId: string;
   testStartTimestamp: Date;
   odometerReadingUnits: string;

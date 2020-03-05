@@ -8,7 +8,7 @@ describe("The configuration service", () => {
             const functions = configService.getFunctions();
             expect(functions.length).toEqual(3);
             expect(functions[0].name).toEqual("postTestResults");
-            expect(functions[1].name).toEqual("getTestResultsByVin");
+            expect(functions[1].name).toEqual("getTestResultsBySystemNumber");
             expect(functions[2].name).toEqual("getTestResultsByTesterStaffId");
 
 
@@ -24,7 +24,7 @@ describe("The configuration service", () => {
             const functions = configService.getFunctions();
             expect(functions.length).toEqual(3);
             expect(functions[0].name).toEqual("postTestResults");
-            expect(functions[1].name).toEqual("getTestResultsByVin");
+            expect(functions[1].name).toEqual("getTestResultsBySystemNumber");
             expect(functions[2].name).toEqual("getTestResultsByTesterStaffId");
 
             const DBConfig = configService.getDynamoDBConfig();
@@ -39,7 +39,7 @@ describe("The configuration service", () => {
             const functions = configService.getFunctions();
             expect(functions.length).toEqual(3);
             expect(functions[0].name).toEqual("postTestResults");
-            expect(functions[1].name).toEqual("getTestResultsByVin");
+            expect(functions[1].name).toEqual("getTestResultsBySystemNumber");
             expect(functions[2].name).toEqual("getTestResultsByTesterStaffId");
 
             const DBConfig = configService.getDynamoDBConfig();

@@ -37,8 +37,10 @@ export class TestResultsService {
             return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
           }
         }
-        if (filters.vin) {
-          return this.testResultsDAO.getByVin(filters.vin).then((result) => {
+        console.log("THESE ARE YOUR FILTERS", filters);
+        if (filters.systemNumber) {
+          return this.testResultsDAO.getBySystemNumber(filters.systemNumber).then((result) => {
+             console.log("THIS IS YOUR RESULT ->", result);
              const response: ITestResultData = {Count: result.Count, Items: result.Items};
              return this.applyTestResultsFilters(response, filters);
           }).catch((error: HTTPError) => {
@@ -277,23 +279,23 @@ export class TestResultsService {
       return Promise.resolve(payload);
     } else {
       // fetch max date for annual test types
-      return this.getMostRecentExpiryDateOnAnnualTestTypesByVin(payload.vin)
-          .then((mostRecentExpiryDateOnAnnualTestTypes) => {
+      return this.getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber)
+          .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) => {
             payload.testTypes.forEach((testType: any, index: number) => {
               if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
                   (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
                   payload.testTypes[index] = testType;
                   if (payload.vehicleType === VEHICLE_TYPES.PSV) {
-                    if (dateFns.isEqual(mostRecentExpiryDateOnAnnualTestTypes, new Date(1970, 1, 1))
-                        || dateFns.isBefore(mostRecentExpiryDateOnAnnualTestTypes, dateFns.startOfDay(new Date()))
-                        || dateFns.isAfter(mostRecentExpiryDateOnAnnualTestTypes, dateFns.addMonths(new Date(), 2))) {
+                    if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))
+                        || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))
+                        || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
                       testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
                       payload.testTypes[index] = testType;
-                    } else if (dateFns.isToday(mostRecentExpiryDateOnAnnualTestTypes)) {
+                    } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
                       testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
                       payload.testTypes[index] = testType;
-                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAnnualTestTypes, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAnnualTestTypes, new Date())) {
-                      testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAnnualTestTypes, 1).toISOString();
+                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date())) {
+                      testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesBySystemNumber, 1).toISOString();
                       payload.testTypes[index] = testType;
                     }
                   } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
@@ -304,7 +306,7 @@ export class TestResultsService {
                     // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                       testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
-                    } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAnnualTestTypes, new Date(1970, 1, 1))) {
+                    } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
                       const anvDateForCompare = regOrFirstUseDate ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate)).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
@@ -317,8 +319,8 @@ export class TestResultsService {
                         console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                       }
                     } else {
-                      if (dateFns.isAfter(mostRecentExpiryDateOnAnnualTestTypes, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAnnualTestTypes, dateFns.addMonths(new Date(), 2))) {
-                        testType.testExpiryDate = this.lastDayOfMonthInNextYear(mostRecentExpiryDateOnAnnualTestTypes).toISOString();
+                      if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
+                        testType.testExpiryDate = this.lastDayOfMonthInNextYear(mostRecentExpiryDateOnAllTestTypesBySystemNumber).toISOString();
                       } else {
                         testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                       }
@@ -330,7 +332,7 @@ export class TestResultsService {
             console.log("generateExpiryDate payload", payload.testTypes);
             return Promise.resolve(payload);
           }).catch((error) => {
-            console.error("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin", error);
+            console.error("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber", error);
             throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
           });
     }
@@ -347,12 +349,12 @@ export class TestResultsService {
 
   /**
    * Get Most Recent Expiry date on Annual test types
-   * @param vin The vin of the vehicle to fetch
+   * @param systemNumber The systemNumber of the vehicle to fetch
    */
-  public getMostRecentExpiryDateOnAnnualTestTypesByVin(vin: string): Promise<Date> {
+  public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
     return this.getTestResults({
-      vin,
+      systemNumber,
       testStatus: TEST_STATUS.SUBMITTED,
       fromDateTime: new Date(1970, 1, 1),
       toDateTime: new Date()
@@ -375,7 +377,7 @@ export class TestResultsService {
           }
           return maxDate;
         }).catch((err) => {
-          console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesByVin  > getTestResults. Returning default test date and logging error:", err);
+          console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber  > getTestResults. Returning default test date and logging error:", err);
           return maxDate;
         });
   }
@@ -420,8 +422,8 @@ export class TestResultsService {
       });
   }
 
-  public deleteTestResultsList(testResultsVinIdPairs: any[]) {
-    return this.testResultsDAO.deleteMultiple(testResultsVinIdPairs)
+  public deleteTestResultsList(testResultsSystemNumberIdPairs: any[]) {
+    return this.testResultsDAO.deleteMultiple(testResultsSystemNumberIdPairs)
       .then((data: any) => {
         if (data.UnprocessedItems) {
           return data.UnprocessedItems;

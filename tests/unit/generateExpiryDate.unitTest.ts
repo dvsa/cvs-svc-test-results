@@ -25,74 +25,17 @@ describe("TestResultsService calling generateExpiryDate", () => {
         MockTestResultsDAO.mockReset();
     });
 
-    context("cancelled test", () => {
-        it("should return the payload", () => {
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const mockData = cloneDeep(testResultsMockDB[2]);
-
-            return testResultsService.generateExpiryDate(mockData)
-                .then((response: any) => {
-                    expect(response).toEqual(mockData);
-                });
-        });
-
-        it("should return the payload with expiry date prolonged by 1 year", () => {
-            const mockData = cloneDeep(testResultsMockDB[6]);
-            mockData.testTypes[0].testExpiryDate = new Date();
-            const mockPayload = cloneDeep(testResultsPostMock[3]);
-            mockPayload.testCode = "bde";
-            mockPayload.testTypes[0].testTypeClassification = "Annual With Certificate";
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                    getByVin: () => {
-                        return Promise.resolve({
-                            Items: Array.of(mockData),
-                            Count: 1,
-                            ScannedCount: 1
-                        });
-                    },
-                    getByTesterStaffId: () => {
-                        return Promise.resolve({
-                            Items: Array.of(mockData),
-                            Count: 1,
-                            ScannedCount: 1
-                        });
-                    },
-                    getTestNumber: () => {
-                        return Promise.resolve(mockData.testNumber);
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                        return Promise.resolve({
-                            linkedTestCode: "wde",
-                            defaultTestCode: "bde",
-                            testTypeClassification: "Annual With Certificate"
-                        });
-                    }
-                };
-            });
-            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-            const expectedExpiryDate = new Date();
-            expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
-            return testResultsService.generateExpiryDate(mockPayload)
-                .then((response: any) => {
-                    console.log("response", response.testTypes);
-                    expect((response.testTypes[0].testExpiryDate).split("T")[0]).toEqual(dateFns.addYears(new Date(), 1).toISOString().split("T")[0]);
-                });
-        });
-    });
-
     context("submitted test", () => {
         context("for psv vehicle type", () => {
             it("should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                const getByVinResponse = cloneDeep(testResultsMockDB[0]);
+                const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]);
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: () => {
+                        getBySystemNumber: () => {
                             return Promise.resolve({
-                                Items: Array.of(getByVinResponse),
+                                Items: Array.of(getBySystemNumberResponse),
                                 Count: 1,
                                 ScannedCount: 1
                             });
@@ -124,7 +67,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: [],
                                     Count: 0,
@@ -154,14 +97,14 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 it("should set the expiry date to last day of current month + 1 year", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                     const pastExpiryDate = dateFns.subMonths(new Date(), 1);
-                    const testResultExpiredCertificateWithSameVin = testResultsMockDB[15];
-                    testResultExpiredCertificateWithSameVin.testTypes[0].testExpiryDate = pastExpiryDate;
+                    const testResultExpiredCertificateWithSameSystemNumber = testResultsMockDB[15];
+                    testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultExpiredCertificateWithSameVin),
+                                    Items: Array.of(testResultExpiredCertificateWithSameSystemNumber),
                                     Count: 1,
                                     ScannedCount: 1
                                 });
@@ -198,7 +141,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -235,7 +178,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -270,11 +213,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 it("should set the expiry date to 1 year after the Registration Anniversary day", () => {
                     const hgvTestResult = cloneDeep(testResultsMockDB[16]);
                     // Setting regnDate to a year older + 1 month
-                    hgvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
+                    hgvTestResult.regnDate = dateFns.lastDayOfMonth(dateFns.subYears(dateFns.addMonths(new Date(), 1), 1));
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(hgvTestResult),
                                     Count: 1,
@@ -316,7 +259,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -356,7 +299,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -397,7 +340,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByVin: (vin: any) => {
+                            getBySystemNumber: (systemNumber: any) => {
                                 return Promise.resolve({
                                     Items: Array.of(trlTestResult),
                                     Count: 1,
@@ -436,7 +379,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 hgvTestResult.regnDate = "2018-10-04";
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: (vin: any) => {
+                        getBySystemNumber: (systemNumber: any) => {
                             return Promise.resolve({
                                 Items: Array.of(hgvTestResult),
                                 Count: 1,
@@ -472,7 +415,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 trlTestResult.firstUseDate = "2018-09-04";
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
-                        getByVin: (vin: any) => {
+                        getBySystemNumber: (systemNumber: any) => {
                             return Promise.resolve({
                                 Items: Array.of(trlTestResult),
                                 Count: 1,

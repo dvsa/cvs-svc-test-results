@@ -25,7 +25,7 @@ describe("getTestResults", () => {
     it("should return a populated response and status code 200", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getByVin: () => {
+          getBySystemNumber: () => {
             return Promise.resolve({
               Items: Array.of(testResultsMockDB[8]),
               Count: 1
@@ -35,7 +35,7 @@ describe("getTestResults", () => {
       });
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
-      return testResultsService.getTestResults({ vin: "XMGDE02FS0H012302", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString()})
+      return testResultsService.getTestResults({ systemNumber: "1119", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString()})
         .then((returnedRecords: any) => {
           expect(returnedRecords).not.toEqual(undefined);
           expect(returnedRecords).not.toEqual({});
@@ -50,7 +50,7 @@ describe("getTestResults", () => {
     it("should not return that test type", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getByVin: () => {
+          getBySystemNumber: () => {
             return Promise.resolve({
               Items: Array.of(testResultsMockDB[9]),
               Count: 1
@@ -61,7 +61,7 @@ describe("getTestResults", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-      return testResultsService.getTestResults({ vin: "XMGDE02FS0H012303", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResults({ systemNumber: "1120", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: { length: any; }; }>) => {
           expect(returnedRecords[0].testTypes.length).toEqual(0);
         });
@@ -72,7 +72,7 @@ describe("getTestResults", () => {
     it("should return a 404 error", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getByVin: () => {
+          getBySystemNumber: () => {
             return Promise.resolve({
               Items: Array.of(testResultsMockDB[7]),
               Count: 1
@@ -84,7 +84,7 @@ describe("getTestResults", () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
       expect.assertions(3);
-      return testResultsService.getTestResults({ vin: "XMGDE02FS0H012301", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResults({ systemNumber: "1118", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .catch((errorResponse: { statusCode: any; body: any; }) => {
           expect(errorResponse).toBeInstanceOf(HTTPError);
           expect(errorResponse.statusCode).toEqual(404);
@@ -97,7 +97,7 @@ describe("getTestResults", () => {
     it("should return a populated response", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getByVin: () => {
+          getBySystemNumber: () => {
             return Promise.resolve({
               Items: Array.of(testResultsMockDB[10]),
               Count: 1
@@ -108,7 +108,7 @@ describe("getTestResults", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-      return testResultsService.getTestResults({ vin: "XMGDE02FS0H012304", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResults({ systemNumber: "1121", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: Array<{ deletionFlag: any; }>; }>) => {
           expect(returnedRecords[0].testTypes[0].deletionFlag).toEqual(false);
         });

@@ -3,9 +3,9 @@ import {handler} from "../../src/handler";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
 import mockContext from "aws-lambda-mock-context";
 import eventWithStaffId from "../resources/event-getTestResultsByTesterStaffId.json";
-import eventWithVin from "../resources/event-getTestResultsByVin.json";
+import eventWithSystemNumber from "../resources/event-getTestResultsBySystemNumber.json";
 import * as getTestResultsByTesterStaffId from "../../src/functions/getTestResultsByTesterStaffId";
-import * as getTestResultsByVin from "../../src/functions/getTestResultsByVin";
+import * as getTestResultsBySystemNumber from "../../src/functions/getTestResultsBySystemNumber";
 const sandbox = sinon.createSandbox();
 
 describe("The lambda function handler", () => {
@@ -27,16 +27,16 @@ describe("The lambda function handler", () => {
                 sandbox.assert.called(getTestResultsByTesterStaffIdStub.getTestResultsByTesterStaffId);
             });
 
-            it("should call getTestResultsByVin function with correct event payload", async () => {
+            it("should call getTestResultsBySystemNumber function with correct event payload", async () => {
                 // Stub out the actual functions
-                const functionStub = sandbox.stub(getTestResultsByVin);
-                functionStub.getTestResultsByVin.resolves(new HTTPResponse(200, {}));
+                const functionStub = sandbox.stub(getTestResultsBySystemNumber);
+                functionStub.getTestResultsBySystemNumber.resolves(new HTTPResponse(200, {}));
 
-                const result = await handler(eventWithVin, ctx, () => {
+                const result = await handler(eventWithSystemNumber, ctx, () => {
                     return;
                 });
                 expect(result.statusCode).toEqual(200);
-                sandbox.assert.called(functionStub.getTestResultsByVin);
+                sandbox.assert.called(functionStub.getTestResultsBySystemNumber);
             });
 
             it("should return error on empty event", async () => {
