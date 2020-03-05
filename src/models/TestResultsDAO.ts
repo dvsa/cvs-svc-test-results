@@ -150,6 +150,7 @@ export class TestResultsDAO {
       resource: "/test-types/{id}"
     };
 
+    console.log("queryString for get Test: ", event);
     return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name, event);
   }
 
