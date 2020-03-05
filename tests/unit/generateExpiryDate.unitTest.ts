@@ -367,7 +367,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 });
             });
         });
-    /*
+        /*
         * AC1 - CVSB-9187
         */
         context("expiryDate for hgv vehicle type", () => {
@@ -455,6 +455,205 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 .then((data: any) => {
                     expect(data).toEqual(mockData);
                 });
+        });
+    });
+    /*
+    * AC1 - CVSB-11509
+    */
+    context("expiryDate for psv vehicle type", () => {
+        context("when there is no test history, the registration anniversary date is before the test date and the registration date exists.", () => {
+            it("should set the expiry date to the test date + 1 year - 1 day", () => {
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                // Setting regnDate to an null value
+                psvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 3), 1);
+                psvTestResult.testExpiryDate = null;
+
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: (vin: any) => {
+                            return Promise.resolve({
+                                Items: Array.of(psvTestResult),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "aas",
+                                defaultTestCode: null,
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
+                });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = dateFns.addYears(dateFns.subDays(new Date(), 1), 1);
+                return testResultsService.generateExpiryDate(psvTestResult)
+                    .then((hgvTestResultWithExpiryDate: any) => {
+                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                    });
+            });
+        });
+    });
+
+    /*
+    * AC2 - CVSB-11509
+    */
+    context("expiryDate for psv vehicle type", () => {
+        context("when there is no test history, the registration anniversary date is less 2 months after the test date and the registration date exists.", () => {
+            it("should set the expiry date to the registration date + 2 years", () => {
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                // Setting regnDate to an null value
+                psvTestResult.regnDate = dateFns.subYears(dateFns.addMonths(new Date(), 1), 1);
+                psvTestResult.testExpiryDate = null;
+
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: (vin: any) => {
+                            return Promise.resolve({
+                                Items: Array.of(psvTestResult),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "aas",
+                                defaultTestCode: null,
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
+                });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = dateFns.addYears(dateFns.addMonths(new Date(), 1), 1);
+                return testResultsService.generateExpiryDate(psvTestResult)
+                    .then((hgvTestResultWithExpiryDate: any) => {
+                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                    });
+            });
+        });
+    });
+
+    /*
+    * AC3 - CVSB-11509
+    */
+    context("expiryDate for psv vehicle type", () => {
+        context("when there is no test history, the registration anniversary date is before the test date and the registration date exists.", () => {
+            it("should set the expiry date to the test date + 1 year - 1 day", () => {
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                // Setting regnDate to an null value
+                psvTestResult.regnDate = dateFns.subYears(dateFns.subMonths(new Date(), 1), 1);
+                psvTestResult.testExpiryDate = null;
+
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: (vin: any) => {
+                            return Promise.resolve({
+                                Items: Array.of(psvTestResult),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "aas",
+                                defaultTestCode: null,
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
+                });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = dateFns.addYears(dateFns.subDays(new Date(), 1), 1);
+                return testResultsService.generateExpiryDate(psvTestResult)
+                    .then((hgvTestResultWithExpiryDate: any) => {
+                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                    });
+            });
+        });
+    });
+
+    /*
+    * AC4 - CVSB-11509
+    */
+    context("expiryDate for psv vehicle type", () => {
+        context("when there is a First Test Type with no test history, registration date doesnt exist and I'm not conducting a COIF + annual test.", () => {
+            it("should set the expiry date to the Testdate + 1 year - 1 day", () => {
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                // Setting regnDate to an null value
+                psvTestResult.regnDate = null;
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: (vin: any) => {
+                            return Promise.resolve({
+                                Items: Array.of(psvTestResult),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "aas",
+                                defaultTestCode: null,
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
+                });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1);
+                return testResultsService.generateExpiryDate(psvTestResult)
+                    .then((hgvTestResultWithExpiryDate: any) => {
+                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                    });
+            });
+        });
+    });
+
+    /*
+    * AC5 - CVSB-11509
+    */
+    context("expiryDate for psv vehicle type", () => {
+        context("when there is a First Test Type with no test history, registration date doesnt exist and I'm conducting a COIF + annual test.", () => {
+            it("should set the expiry date to the test date + 1 year - 1 day", () => {
+                const psvTestResult = cloneDeep(testResultsMockDB[0]);
+                // Setting regnDate to an null value
+
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getByVin: (vin: any) => {
+                            return Promise.resolve({
+                                Items: Array.of(psvTestResult),
+                                Count: 1,
+                                ScannedCount: 1
+                            });
+                        },
+                        getTestCodesAndClassificationFromTestTypes: () => {
+                            return Promise.resolve({
+                                linkedTestCode: "cel",
+                                defaultTestCode: null,
+                                testTypeClassification: "Annual With Certificate"
+                            });
+                        }
+                    };
+                });
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                const expectedExpiryDate = dateFns.addYears(dateFns.subDays(new Date(), 1), 1);
+                return testResultsService.generateExpiryDate(psvTestResult)
+                    .then((hgvTestResultWithExpiryDate: any) => {
+                        expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                    });
+            });
         });
     });
 });
