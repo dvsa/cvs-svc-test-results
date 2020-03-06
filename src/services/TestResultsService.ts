@@ -343,7 +343,7 @@ export class TestResultsService {
                       }
                     } else if (this.isAnnualTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
                         const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate!), 1);
-                        if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), registrationFirstUseAnniversaryDate) || dateFns.isEqual(dateFns.addMonths(new Date(), 2), registrationFirstUseAnniversaryDate)) {
+                        if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), dateFns.endOfDay(registrationFirstUseAnniversaryDate))) {
                           testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(new Date()), 4).toISOString();
                         } else {
                           testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate), 4).toISOString();
