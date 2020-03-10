@@ -3,8 +3,7 @@ import {testResultsCommonSchemaSpecialistTestsCancelled} from "./SpecialistTests
 
 const testResultsSchema = Joi.object().keys({
     ...testResultsCommonSchemaSpecialistTestsCancelled,
-    vehicleSubclass: Joi.array().items(Joi.string()).required().allow(null),
-    euVehicleCategory: Joi.any().only(["n1"]).required().allow(null)
+    vehicleSubclass: Joi.array().items(Joi.string()).required().allow(null)
 });
 
 export default testResultsSchema;

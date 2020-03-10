@@ -85,6 +85,7 @@ export const testResultsCommonSchema = {
     preparerName: Joi.string().required().allow(""),
     numberOfWheelsDriven: Joi.number().required().allow(null),
     regnDate: Joi.string().allow("", null),
-    firstUseDate: Joi.string().allow("", null)
+    firstUseDate: Joi.string().allow("", null),
+    euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4", "l1e-a", "l1e", "l2e", "l3e", "l4e", "l5e", "l6e", "l7e"]).required().allow(null)
 };
 

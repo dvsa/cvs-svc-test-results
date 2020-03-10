@@ -4,8 +4,7 @@ import {testResultsCommonSchemaSpecialistTestsCancelled} from "./SpecialistTests
 
 const testResultsSchema = Joi.object().keys({
     ...testResultsCommonSchemaSpecialistTestsCancelled,
-    vehicleSubclass: Joi.array().items(Joi.string()).required().allow(null),
-    euVehicleCategory: Joi.any().only(["m1"]).required().allow(null)
+    vehicleSubclass: Joi.array().items(Joi.string()).required().allow(null)
 });
 
 export default testResultsSchema;
