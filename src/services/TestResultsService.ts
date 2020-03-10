@@ -2,7 +2,7 @@ import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS, HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_CODES_FOR_CALCULATING_EXPIRY } from "../assets/Enums";
+import { MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS, HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_CODES_FOR_CALCULATING_EXPIRY, COIF_EXPIRY_TEST_TYPES } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
 import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
@@ -304,24 +304,55 @@ export class TestResultsService {
       // fetch max date for annual test types
       return this.getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber)
           .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) => {
+            const dateDefault = new Date(1970, 1, 1);
+            const used = false;
             payload.testTypes.forEach((testType: any, index: number) => {
               if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
                   (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
                   payload.testTypes[index] = testType;
                   if (payload.vehicleType === VEHICLE_TYPES.PSV) {
-                    if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))
-                        || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))
-                        || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
-                      testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
-                      payload.testTypes[index] = testType;
-                    } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
-                      testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
-                      payload.testTypes[index] = testType;
-                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.endOfDay(dateFns.addMonths(new Date(), 2)))
-                                && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))) {
-                      testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesBySystemNumber, 1).toISOString();
-                      payload.testTypes[index] = testType;
-                    }
+                      // registrationAnniversary = registration date + 1 year (anniversary date as is stated in CVSB-11509)
+                      const registrationAnniversary = dateFns.addYears(payload.regnDate!!, 1);
+                      // registrationAnniversaryDifference = calculated difference between the aniversary date ,declared above, and the current date (N.B this can be negative)
+                      const registrationAnniversaryDifference = dateFns.differenceInMonths(dateFns.addDays(registrationAnniversary, 1), new Date());
+                      // Check that the Anniversary date is greater than 2 months from the test date - CVSB-11509 AC1
+                      if (TestResultsService.checkEqualityOfExpiryAndRegDate(mostRecentExpiryDateOnAllTestTypesBySystemNumber, payload.regnDate)
+                          && (registrationAnniversaryDifference >= 2 )) {
+                            payload = TestResultsService.generatesExpiryOneYearMinusDay(payload, index);
+                      // Checks that the Anniversary date is greater than 2 months from the test date - CVSB-11509 AC2
+                      } else if (TestResultsService.checkEqualityOfExpiryAndRegDate(mostRecentExpiryDateOnAllTestTypesBySystemNumber, payload.regnDate)
+                          && (registrationAnniversaryDifference < 2 && registrationAnniversaryDifference > 0)) {
+                            payload = TestResultsService.generatesExpiryTwoYearsOnRegistrationDate(payload, index);
+                      // Checks that the Anniversary date is before the test date - CVSB-11509 AC3
+                      } else if (TestResultsService.checkEqualityOfExpiryAndRegDate(mostRecentExpiryDateOnAllTestTypesBySystemNumber, payload.regnDate)
+                          && (registrationAnniversaryDifference < 0)) {
+                            payload = TestResultsService.generatesExpiryOneYearMinusDay(payload, index);
+                      // Fills the gap in logic if the registrationAnniversaryDifference == 0
+                      } else if (TestResultsService.checkEqualityOfExpiryAndRegDate(mostRecentExpiryDateOnAllTestTypesBySystemNumber, payload.regnDate)
+                          && (registrationAnniversaryDifference === 0)) {
+                            if (dateFns.isBefore(new Date(), registrationAnniversary)) {
+                              payload = TestResultsService.generatesExpiryTwoYearsOnRegistrationDate(payload, index);
+                            } else {
+                              payload = TestResultsService.generatesExpiryOneYearMinusDay(payload, index);
+                            }
+                      // Generates the expiry if there is no regnDate && the test isnt A COIF test type - CVSB-11509 AC4
+                      } else if (dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateDefault) && !payload.regnDate && !COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
+                            payload = TestResultsService.generatesExpiryOneYearMinusDay(payload, index);
+                      // Generates the expiry for COIF test types that have an expiry date - CVSB-11509 AC5
+                      } else if (!dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateDefault) && COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
+                        payload = TestResultsService.generatesExpiryOneYearMinusDay(payload, index);
+                      } else if ((dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1)))
+                          || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))
+                          || dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
+                        testType.testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
+                        payload.testTypes[index] = testType;
+                      } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
+                        testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
+                        payload.testTypes[index] = testType;
+                      } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.endOfDay(dateFns.addMonths(new Date(), 2))) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))) {
+                        testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesBySystemNumber, 1).toISOString();
+                        payload.testTypes[index] = testType;
+                        }
                   } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
                     // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
                     let regOrFirstUseDate: string|undefined = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
@@ -637,6 +668,21 @@ export class TestResultsService {
 
   private static isValidTestCodeForExpiryCalculation(testCode: string): boolean {
     return TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
+  }
+
+  private static generatesExpiryOneYearMinusDay(payload: any, indexer: number): any {
+    payload.testTypes[indexer].testExpiryDate = dateFns.subDays(dateFns.addYears(new Date(), 1), 1).toISOString();
+    return payload;
+  }
+
+  private static generatesExpiryTwoYearsOnRegistrationDate(payload: any, indexer: number): any {
+    payload.testTypes[indexer].testExpiryDate = dateFns.addYears(payload.regnDate, 2).toISOString();
+    return payload;
+  }
+
+  private static checkEqualityOfExpiryAndRegDate(expiryDate: Date, regnDate: any): boolean {
+    const dateDefault = new Date(1970, 1, 1);
+    return dateFns.isEqual(expiryDate, dateDefault) && regnDate;
   }
  //#endregion
 
