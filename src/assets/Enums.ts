@@ -114,5 +114,9 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "P6L", "P6S",
         "WIS", "WIL",
         "WFL", "WFS",
-        "WEL", "WES"]
+        "WEL", "WES",
+        "CEL", "CES",
+        "CHL", "CHS",
+        "CKL", "CKS",
+        "CML", "CMS"]
 };
