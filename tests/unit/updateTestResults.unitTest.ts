@@ -19,9 +19,7 @@ describe("updateTestResults", () => {
             return {};
         });
         testResultsService = new TestResultsService(new MockTestResultsDAO());
-        testToUpdate = cloneDeep(testResultsMockDB[1]);
-        testToUpdate.countryOfRegistration = "gb";
-        delete testToUpdate.testTypes[0].testTypeClassification;
+        testToUpdate = cloneDeep(testResultsMockDB[30]);
     });
 
     afterEach(() => {
@@ -222,6 +220,87 @@ describe("updateTestResults", () => {
                           expect(errorResponse.body).toEqual({errors: ["\"testerStaffId\" length must be less than or equal to 36 characters long"]});
                       });
                 });
+            });
+        });
+
+        context("and when validating test types", () => {
+            context("and the test type contains a field that is not applicable", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    testToUpdate = cloneDeep(testResultsMockDB[1]);
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["\"prohibitionIssued\" is not allowed", "\"certificateNumber\" is not allowed"]);
+                      });
+                });
+            });
+
+            context("and when the testTypeId is unknown", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    testToUpdate.testTypes[0].testTypeId = "unknown";
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["Unknown testTypeId"]);
+                      });
+                });
+            });
+
+            context("and the test types are invalid", () => {
+                it("should apply the correct validation schema and return an array of validation errors", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    // testTypeId from each of the test-types groupings
+                    const testTypeIds = ["1", "15", "38", "76", "117", "45"];
+                    testToUpdate = cloneDeep(testResultsMockDB[1]);
+                    for (const testTypeId of testTypeIds) {
+                        testToUpdate.testTypes[0].testTypeId = testTypeId;
+                        const validationResponse = testResultsService.validateTestTypes(testToUpdate);
+                        expect(validationResponse).toBeDefined();
+                        expect(validationResponse.length).not.toEqual(0);
+                    }
+                });
+            });
+
+            context("and when testTypes attribute is not present on the payload", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    delete testToUpdate.testTypes;
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["\"testTypes\" is required"]);
+                      });
+                });
+            });
+
+            it("should remove the attributes that are not updatable from the payload", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation();
+
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+                testResultsService.removeNonEditableAttributes(testToUpdate);
+                expect(testToUpdate).not.toHaveProperty("systemNumber");
+                expect(testToUpdate).not.toHaveProperty("vin");
+                expect(testToUpdate).not.toHaveProperty("vehicleId");
+                expect(testToUpdate).not.toHaveProperty("testEndTimestamp");
+                expect(testToUpdate).not.toHaveProperty("testVersion");
+                expect(testToUpdate).toHaveProperty("testerEmailAddress");
+                expect(testToUpdate).toHaveProperty("testStationType");
             });
         });
     });

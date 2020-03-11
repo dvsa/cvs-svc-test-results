@@ -9,9 +9,15 @@ import {
   TEST_TYPE_CLASSIFICATION,
   TEST_RESULT,
   TEST_STATUS,
-  HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_VERSION, COUNTRY_OF_REGISTRATION,
+  HGV_TRL_ROADWORTHINESS_TEST_TYPES,
+  TEST_VERSION,
+  COUNTRY_OF_REGISTRATION,
   TEST_CODES_FOR_CALCULATING_EXPIRY,
-  COIF_EXPIRY_TEST_TYPES
+  COIF_EXPIRY_TEST_TYPES,
+  TEST_TYPES_GROUP1,
+  TEST_TYPES_GROUP2,
+  TEST_TYPES_GROUP3_4_5_10,
+  TEST_TYPES_GROUP6_7_8, TEST_TYPES_GROUP9_11, TEST_TYPES_GROUP12_13
 } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -34,6 +40,12 @@ import {ValidationResult} from "joi";
 import * as Joi from "joi";
 import {cloneDeep, mergeWith, isArray} from "lodash";
 import {IMsUserDetails} from "../models/IMsUserDetails";
+import {
+  testTypesArray,
+  testTypesSchemaGroup1, testTypesSchemaGroup12And13,
+  testTypesSchemaGroup2,
+  testTypesSchemaGroup3And4And5And10, testTypesSchemaGroup6And7And8, testTypesSchemaGroup9And11
+} from "../models/test-types/testTypesSchemaPut";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -126,21 +138,36 @@ export class TestResultsService {
     return testResults;
   }
 
+  public mapErrorMessage(validation: ValidationResult<any> | any ) {
+    return validation.error.details.map((detail: { message: string; }) => {
+      return detail.message;
+    });
+  }
+
   public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
     this.removeNonEditableAttributes(payload);
     let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
-    validationSchema = validationSchema!.keys({countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required().allow("", null)});
-    validationSchema = validationSchema!.optionalKeys(["testStationType", "testerEmailAddress", "testEndTimestamp", "systemNumber", "vin"]);
+    const testTypesValidationErrors = this.validateTestTypes(payload);
+    if (testTypesValidationErrors.length) {
+      return Promise.reject(new HTTPError(400, {errors: testTypesValidationErrors}));
+    }
+    // temporarily remove testTypes to validate only vehicle details and append testTypes to the payload again after the validation
+    const {testTypes} = payload;
+    delete payload.testTypes;
+    validationSchema = validationSchema!.keys({
+      countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required().allow("", null),
+      testTypes: Joi.any().forbidden()
+    });
+    validationSchema = validationSchema.optionalKeys(["testEndTimestamp", "systemNumber", "vin"]);
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
-          {
-            errors: validation.error.details.map((detail: { message: string; }) => {
-              return detail.message;
-            })
-          }));
+        {
+          errors: this.mapErrorMessage(validation)
+        }));
     }
+    payload.testTypes = testTypes;
     return this.testResultsDAO.getBySystemNumber(systemNumber)
         .then((result) => {
           const response: ITestResultData = {Count: result.Count, Items: result.Items};
@@ -174,6 +201,43 @@ export class TestResultsService {
     }
   }
 
+  public validateTestTypes(testResult: ITestResult) {
+    const validationErrors = [];
+    let validation: ValidationResult<any> | any;
+    validation = testTypesArray.validate({testTypes: testResult.testTypes});
+    if (validation.error) {
+      validationErrors.push(this.mapErrorMessage(validation));
+      return validationErrors;
+    }
+    for (const testType of testResult.testTypes) {
+      const context = {isPassed: testType.testResult, isSubmitted: testResult.testStatus};
+      if (TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup1.validate(testType, {context});
+      } else if (TEST_TYPES_GROUP2.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup2.validate(testType, {context});
+      } else if (TEST_TYPES_GROUP3_4_5_10.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup3And4And5And10.validate(testType, {context});
+      } else if (TEST_TYPES_GROUP6_7_8.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup6And7And8.validate(testType, {context});
+      } else if (TEST_TYPES_GROUP9_11.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup9And11.validate(testType, {context});
+      } else if (TEST_TYPES_GROUP12_13.includes(testType.testTypeId)) {
+        validation = testTypesSchemaGroup12And13.validate(testType, {context});
+      } else {
+        validation = {
+          error: {
+            details: [{message: "Unknown testTypeId"}]
+          }
+        };
+      }
+      if (validation.error) {
+        validationErrors.push(this.mapErrorMessage(validation));
+        break;
+      }
+    }
+    return validationErrors;
+  }
+
   public getTestResultToArchive(testResults: ITestResult[], testResultId: string): ITestResult {
     testResults = testResults.filter((testResult) => {
       return testResult.testResultId === testResultId && (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion);
@@ -185,18 +249,8 @@ export class TestResultsService {
   }
 
   public removeNonEditableAttributes(testResult: ITestResult) {
-    for (const testType of testResult.testTypes) {
-      delete testType.testCode;
-      delete testType.testNumber;
-      delete testType.testAnniversaryDate;
-      delete testType.createdAt;
-      delete testType.lastUpdatedAt;
-      delete testType.certificateLink;
-    }
     delete testResult.vehicleId;
     delete testResult.testEndTimestamp;
-    delete testResult.testStationType;
-    delete testResult.testerEmailAddress;
     delete testResult.testVersion;
     delete testResult.systemNumber;
     delete testResult.vin;
@@ -290,9 +344,7 @@ export class TestResultsService {
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
-          errors: validation.error.details.map((detail: { message: string; }) => {
-            return detail.message;
-          })
+          errors: this.mapErrorMessage(validation)
         }));
     }
 

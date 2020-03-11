@@ -111,6 +111,39 @@ describe("getTestResults", () => {
                   });
             });
         });
+
+        context("when the testVersion filter is ALL", () => {
+            it("should return all test-results (without testVersion, testVersion=current/archived)", () => {
+                const testResult = cloneDeep(testResultsMockDB[0]);
+                testResult.testHistory = ["some archived test-result"];
+
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                    return {
+                        getBySystemNumber: () => {
+                            return Promise.resolve({
+                                Items: Array.of(testResult),
+                                Count: 2
+                            });
+                        }
+                    };
+                });
+
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+                return testResultsService.getTestResults({
+                    systemNumber: "1111",
+                    fromDateTime: "2017-01-01",
+                    toDateTime: new Date().toString(),
+                    testVersion: TEST_VERSION.ALL,
+                    testResultId: testResult.testResultId
+                })
+                  .then((returnedRecords: any) => {
+                      expect(returnedRecords).not.toEqual(undefined);
+                      expect(returnedRecords).not.toEqual({});
+                      expect(returnedRecords.length).toEqual(1);
+                      expect(JSON.stringify(returnedRecords[0])).toEqual(JSON.stringify(testResult));
+                  });
+            });
+        });
     });
 
     context("when db returns undefined data", () => {
