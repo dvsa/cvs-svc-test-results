@@ -20,7 +20,7 @@ import {
   TEST_TYPES_GROUP5_13,
   TEST_TYPES_GROUP6_11,
   TEST_TYPES_GROUP7,
-  TEST_TYPES_GROUP9_10, TEST_TYPES_GROUP12_14, TEST_TYPES_GROUP15_16
+  TEST_TYPES_GROUP9_10, TEST_TYPES_GROUP12_14, TEST_TYPES_GROUP15_16, REASON_FOR_CREATION
 } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -518,11 +518,17 @@ export class TestResultsService {
   }
 
   public setCreatedAtAndLastUpdatedAtDates(payload: ITestResultPayload): ITestResultPayload {
+    const createdAtDate = new Date().toISOString();
+    payload.createdAt = createdAtDate;
+    payload.createdById = payload.testerStaffId;
+    payload.createdByName = payload.testerName;
+    payload.testVersion = TEST_VERSION.CURRENT;
+    payload.reasonForCreation = REASON_FOR_CREATION.TEST_CONDUCTED;
     if (payload.testTypes.length > 0) {
       payload.testTypes.forEach((testType: any) => {
         Object.assign(testType,
           {
-            createdAt: new Date().toISOString(), lastUpdatedAt: new Date().toISOString()
+            createdAt: createdAtDate, lastUpdatedAt: createdAtDate
           });
       });
     }

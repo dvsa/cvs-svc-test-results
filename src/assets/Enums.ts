@@ -89,6 +89,10 @@ export const TEST_VERSION = {
     ALL: "all"
 };
 
+export const REASON_FOR_CREATION = {
+  TEST_CONDUCTED: "Test conducted"
+};
+
 export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
     IDS: ["122", "91", "101", "62", "63"]
 };
