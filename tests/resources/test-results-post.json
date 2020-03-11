@@ -11,6 +11,7 @@
     "testerStaffId": "1",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
     "noOfAxles": "2",
+    "numberOfWheelsDriven": 3,
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
@@ -26,7 +27,7 @@
     "odometerReadingUnits": "kilometres",
     "preparerId": "ak4434",
     "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "countryOfRegistration": "united kingdom",
     "vehicleSize": "small",
     "testTypes": [
@@ -34,6 +35,7 @@
         "name": "Annual test",
         "testTypeName": "Annual test",
         "testTypeId": "1",
+        "secondaryCertificateNumber": "1234",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 2,
@@ -45,6 +47,13 @@
         "certificateNumber": null,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
         "additionalCommentsForAbandon": "none",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -90,6 +99,7 @@
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "reasonForCancellation": "none",
     "noOfAxles": "2",
     "vehicleClass": {
@@ -103,7 +113,7 @@
     "odometerReadingUnits": "kilometres",
     "preparerId": "bl5545",
     "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "countryOfRegistration": "united kingdom",
     "vehicleSize": "small",
     "testTypes": [
@@ -112,6 +122,7 @@
         "testTypeName": "Annual test",
         "testTypeId": "19",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 2,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
@@ -122,6 +133,13 @@
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
         "additionalCommentsForAbandon": "none",
         "certificateNumber": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -168,6 +186,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "cancelled",
     "reasonForCancellation": "mistake",
+    "numberOfWheelsDriven": 3,
     "vehicleClass": {
       "code": "2",
       "description": "motorbikes over 200cc or with a sidecar"
@@ -180,7 +199,7 @@
     "odometerReadingUnits": "kilometres",
     "preparerId": "bl5545",
     "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "countryOfRegistration": "united kingdom",
     "vehicleSize": "small",
     "testTypes": [
@@ -188,6 +207,7 @@
         "name": "Annual test",
         "testTypeName": "Annual test",
         "testTypeId": "19",
+        "secondaryCertificateNumber": "1234",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 2,
@@ -199,6 +219,13 @@
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
         "additionalCommentsForAbandon": "none",
         "certificateNumber": null,
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -237,6 +264,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "noOfAxles": "2",
     "testTypes": [
       {
@@ -247,11 +275,19 @@
         "reasonForAbandoning": "none",
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "testTypeId": "1",
+        "secondaryCertificateNumber": "1234",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "W01A00209",
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -304,7 +340,7 @@
     "testStationPNumber": "87-1369569",
     "numberOfSeats": 45,
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1"
+    "euVehicleCategory": "m2"
   },
   {
     "testerStaffId": "1",
@@ -314,6 +350,7 @@
     "odometerReadingUnits": "kilometres",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "noOfAxles": "2",
     "testTypes": [
       {
@@ -322,10 +359,18 @@
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "reasonForAbandoning": "none",
         "testTypeId": "1",
+        "secondaryCertificateNumber": "1234",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "W01A00209",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -376,7 +421,7 @@
     "vrm": "JY58FPP",
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "n2",
     "regnDate": "2018-10-10"
   },
   {
@@ -387,6 +432,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
     "noOfAxles": "2",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -395,9 +441,17 @@
         "reasonForAbandoning": "none",
         "testTypeId": "1",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "certificateNumber": "W01A00209",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -446,7 +500,7 @@
     "testerName": "Dorel",
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "o1",
     "trailerId": "abcd"
   },
   {
@@ -457,6 +511,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
     "noOfAxles": "2",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
@@ -465,10 +520,18 @@
         "reasonForAbandoning": "none",
         "testTypeId": "50",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "testExpiryDate": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "12512ds",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -517,7 +580,7 @@
     "testerName": "Dorel",
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "o2",
     "trailerId": "abcd"
   },
   {
@@ -527,18 +590,26 @@
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
-    "noOfAxles": "2",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
         "prohibitionIssued": false,
         "additionalCommentsForAbandon": "none",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
         "reasonForAbandoning": "none",
         "testTypeId": "95",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "certificateNumber": "W01A00209",
         "testTypeName": "First test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
         "defects": [
           {
             "prohibitionIssued": false,
@@ -588,7 +659,7 @@
     "testerName": "Dorel",
     "testStationPNumber": "87-1369569",
     "testerEmailAddress": "dorel.popescu@dvsagov.uk",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "o1",
     "trailerId": "abcd",
     "firstUseDate": "2018-11-11"
   },
@@ -608,6 +679,7 @@
     "testEndTimestamp": "2019-01-14T10:36:33.987Z",
     "testStatus": "submitted",
     "reasonForCancellation": "none",
+    "numberOfWheelsDriven": 3,
     "vehicleClass": {
       "code": "2",
       "description": "motorbikes over 200cc or with a sidecar"
@@ -619,7 +691,7 @@
     "odometerReadingUnits": "kilometres",
     "preparerId": "ak4434",
     "preparerName": "Durrell Vehicles Limited",
-    "euVehicleCategory": "m1",
+    "euVehicleCategory": "m2",
     "countryOfRegistration": "united kingdom",
     "vehicleSize": "small",
     "testTypes": [
@@ -632,6 +704,7 @@
         "numberOfSeatbeltsFitted": 2,
         "lastSeatbeltInstallationCheckDate": "2019-01-14",
         "seatbeltInstallationCheckDate": true,
+        "secondaryCertificateNumber": "1234",
         "testResult": "pass",
         "prohibitionIssued": false,
         "reasonForAbandoning": "none",
@@ -649,6 +722,7 @@
         "particulateTrapSerialNumber": null,
         "modificationTypeUsed": "123",
         "testExpiryDate": "2020-01-14",
+        "customDefects": null,
         "defects": [
           {
             "prohibitionIssued": false,
@@ -697,6 +771,7 @@
     "odometerReading": 123,
     "odometerReadingUnits": "kilometres",
     "vin": "P012301230123",
+    "numberOfWheelsDriven": null,
     "vehicleClass": {
       "description": "heavy goods vehicle",
       "code": "v"
@@ -705,7 +780,7 @@
     "vehicleConfiguration": "semi-car transporter",
     "preparerId": "No preparer ID given",
     "preparerName": "",
-    "euVehicleCategory": "n1",
+    "euVehicleCategory": "n2",
     "countryOfRegistration": "gb",
     "noOfAxles": 2,
     "testTypes": [
@@ -714,13 +789,14 @@
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
         "testTypeId": "44",
         "certificateNumber": null,
+        "secondaryCertificateNumber": "1234",
         "testTypeStartTimestamp": "2019-11-07T12:20:29.601Z",
         "testTypeEndTimestamp": "2019-11-07T12:21:49.754Z",
         "modType": {
           "code": "m",
           "description": "modification or change of engine"
         },
-        "emissionStandard": "0.16 g/kWh Euro 3 PM",
+        "emissionStandard": "0.10 g/kWh Euro 3 PM",
         "fuelType": "diesel",
         "smokeTestKLimitApplied": "123",
         "particulateTrapFitted": null,
@@ -732,6 +808,214 @@
         "reasonForAbandoning": null,
         "additionalCommentsForAbandon": null,
         "additionalNotesRecorded": "Test notes",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": null
+          }
+        ],
+        "defects": []
+      }
+    ]
+  },
+  {
+    "testResultId": "500",
+    "systemNumber": "1221",
+    "testStationName": "Abshire-Kub",
+    "testStationPNumber": "09-4129632",
+    "testStationType": "gvts",
+    "testerName": "Tester",
+    "testerStaffId": "1",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "testStartTimestamp": "2019-11-07T12:16:44.944Z",
+    "testEndTimestamp": "2019-11-07T12:21:49.752Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": null,
+    "vehicleSubclass": [
+      "string"
+    ],
+    "vrm": "CT70VRL",
+    "odometerReading": 123,
+    "odometerReadingUnits": "kilometres",
+    "vin": "P012301230900",
+    "numberOfWheelsDriven": null,
+    "vehicleClass": {
+      "description": "heavy goods vehicle",
+      "code": "v"
+    },
+    "vehicleType": "car",
+    "vehicleConfiguration": "semi-car transporter",
+    "preparerId": "No preparer ID given",
+    "preparerName": "",
+    "euVehicleCategory": "m1",
+    "countryOfRegistration": "gb",
+    "noOfAxles": 2,
+    "testTypes": [
+      {
+        "name": "Basic inspection",
+        "testTypeName": "Low Emissions Certificate (LEC) with annual test",
+        "testTypeId": "125",
+        "certificateNumber": null,
+        "secondaryCertificateNumber": "1234",
+        "testTypeStartTimestamp": "2019-11-07T12:20:29.601Z",
+        "testTypeEndTimestamp": "2019-11-07T12:21:49.754Z",
+        "modType": {
+          "code": "m",
+          "description": "modification or change of engine"
+        },
+        "emissionStandard": "0.10 g/kWh Euro 3 PM",
+        "fuelType": "diesel",
+        "smokeTestKLimitApplied": "123",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "modificationTypeUsed": "123",
+        "testExpiryDate": "2021-10-07",
+        "testResult": "pass",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": "Test notes",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": null
+          }
+        ],
+        "defects": []
+      }
+    ]
+  },
+  {
+    "testResultId": "501",
+    "systemNumber": "1222",
+    "testStationName": "Abshire-Kub",
+    "testStationPNumber": "09-4129632",
+    "testStationType": "gvts",
+    "testerName": "Tester",
+    "testerStaffId": "1",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "testStartTimestamp": "2019-11-07T12:16:44.944Z",
+    "testEndTimestamp": "2019-11-07T12:21:49.752Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": null,
+    "vrm": "CT90TTT",
+    "odometerReading": 123,
+    "odometerReadingUnits": "kilometres",
+    "vin": "P012301230901",
+    "numberOfWheelsDriven": null,
+    "vehicleClass": {
+      "description": "heavy goods vehicle",
+      "code": "v"
+    },
+    "vehicleType": "lgv",
+    "vehicleConfiguration": "semi-car transporter",
+    "preparerId": "No preparer ID given",
+    "preparerName": "",
+    "euVehicleCategory": "n1",
+    "vehicleSubclass": [
+      "string"
+    ],
+    "countryOfRegistration": "gb",
+    "noOfAxles": 2,
+    "testTypes": [
+      {
+        "name": "Basic inspection",
+        "testTypeName": "Low Emissions Certificate (LEC) with annual test",
+        "testTypeId": "125",
+        "certificateNumber": null,
+        "secondaryCertificateNumber": "1234",
+        "testTypeStartTimestamp": "2019-11-07T12:20:29.601Z",
+        "testTypeEndTimestamp": "2019-11-07T12:21:49.754Z",
+        "modType": {
+          "code": "m",
+          "description": "modification or change of engine"
+        },
+        "emissionStandard": "0.10 g/kWh Euro 3 PM",
+        "fuelType": "diesel",
+        "smokeTestKLimitApplied": "123",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "modificationTypeUsed": "123",
+        "testExpiryDate": "2021-10-07",
+        "testResult": "pass",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": "Test notes",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": null
+          }
+        ],
+        "defects": []
+      }
+    ]
+  },
+  {
+    "testResultId": "502",
+    "systemNumber": "1223",
+    "testStationName": "Abshire-Kub",
+    "testStationPNumber": "09-4129632",
+    "testStationType": "gvts",
+    "testerName": "Tester",
+    "testerStaffId": "1",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "testStartTimestamp": "2019-11-07T12:16:44.944Z",
+    "testEndTimestamp": "2019-11-07T12:21:49.752Z",
+    "testStatus": "submitted",
+    "reasonForCancellation": null,
+    "vrm": "CT80BBB",
+    "odometerReading": 123,
+    "odometerReadingUnits": "kilometres",
+    "vin": "P012301230902",
+    "numberOfWheelsDriven": null,
+    "vehicleClass": {
+      "description": "heavy goods vehicle",
+      "code": "v"
+    },
+    "vehicleType": "motorcycle",
+    "vehicleConfiguration": "semi-car transporter",
+    "preparerId": "No preparer ID given",
+    "preparerName": "",
+    "euVehicleCategory": "l1e",
+    "countryOfRegistration": "gb",
+    "noOfAxles": 2,
+    "testTypes": [
+      {
+        "name": "Basic inspection",
+        "testTypeName": "Low Emissions Certificate (LEC) with annual test",
+        "testTypeId": "125",
+        "certificateNumber": null,
+        "secondaryCertificateNumber": "1234",
+        "testTypeStartTimestamp": "2019-11-07T12:20:29.601Z",
+        "testTypeEndTimestamp": "2019-11-07T12:21:49.754Z",
+        "modType": {
+          "code": "m",
+          "description": "modification or change of engine"
+        },
+        "emissionStandard": "0.10 g/kWh Euro 3 PM",
+        "fuelType": "diesel",
+        "smokeTestKLimitApplied": "123",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "modificationTypeUsed": "123",
+        "testExpiryDate": "2021-10-07",
+        "testResult": "pass",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": "Test notes",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": null
+          }
+        ],
         "defects": []
       }
     ]

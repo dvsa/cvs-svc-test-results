@@ -1,7 +1,7 @@
 import * as Joi from "joi";
-import {defectsCommonSchema, testTypesCommonSchema, testResultsCommonSchema} from "./CommonSchema";
+import {defectsCommonSchema, testResultsCommonSchema, testTypesCommonSchema} from "./CommonSchema";
 
-const defectsSchema = Joi.object().keys({
+export const defectsCommonSchemaSpecialistTestsSubmitted = {
     ...defectsCommonSchema,
     additionalInformation: Joi.object().keys({
         location: Joi.object().keys({
@@ -15,24 +15,25 @@ const defectsSchema = Joi.object().keys({
         }).required().allow(null),
         notes: Joi.string().max(500).required().allow("", null)
     }).required().allow(null)
-});
+};
 
-const testTypesSchema = Joi.object().keys({
+export const testTypesCommonSchemaSpecialistTestsSubmitted = {
     ...testTypesCommonSchema,
     testTypeEndTimestamp: Joi.date().iso().required(),
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required(),
-    testExpiryDate: Joi.date().iso().allow(null),
-    defects: Joi.array().items(defectsSchema).required()
-});
+    defects: Joi.array().items(defectsCommonSchemaSpecialistTestsSubmitted).required()
+};
 
-const testResultsSchema = Joi.object().keys({
+export const testResultsCommonSchemaSpecialistTestsSubmitted = {
     ...testResultsCommonSchema,
-    reasonForCancellation: Joi.string().max(500).required().allow("", null),
+    vrm: Joi.string().alphanum().min(1).max(8).required(),
     countryOfRegistration: Joi.string().required().allow("", null),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
-    trailerId: Joi.string().required(),
-    testTypes: Joi.array().items(testTypesSchema).required(),
-    firstUseDate: Joi.string().allow("", null)
-});
+    odometerReading: Joi.number().required().allow(null),
+    odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
+    reasonForCancellation: Joi.string().max(500).required().allow("", null),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required().allow(null),
+    testTypes: Joi.array().items(Joi.object().keys({
+        ...testTypesCommonSchemaSpecialistTestsSubmitted
+    })).required()
+};
 
-export default testResultsSchema;

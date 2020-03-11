@@ -9,6 +9,12 @@ import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancell
 import testResultsSchemaPSVSubmitted from "../models/TestResultsSchemaPSVSubmitted";
 import testResultsSchemaTRLCancelled from "../models/TestResultsSchemaTRLCancelled";
 import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitted";
+import testResultsSchemaLGVCancelled from "../models/TestResultsSchemaLGVCancelled";
+import testResultsSchemaLGVSubmitted from "../models/TestResultsSchemaLGVSubmitted";
+import testResultsSchemaCarCancelled from "../models/TestResultsSchemaCarCancelled";
+import testResultsSchemaCarSubmitted from "../models/TestResultsSchemaCarSubmitted";
+import testResultsSchemaMotorcycleCancelled from "../models/TestResultsSchemaMotorcycleCancelled";
+import testResultsSchemaMotorcycleSubmitted from "../models/TestResultsSchemaMotorcycleSubmitted";
 import { ITestResultPayload } from "../models/ITestResultPayload";
 import { ITestResultData } from "../models/ITestResultData";
 import { ITestResultFilters } from "../models/ITestResultFilter";
@@ -128,6 +134,24 @@ export class TestResultsService {
       case "trlcancelled":
         validationSchema = testResultsSchemaTRLCancelled;
         break;
+      case "lgvsubmitted":
+        validationSchema = testResultsSchemaLGVSubmitted;
+        break;
+      case "lgvcancelled":
+        validationSchema = testResultsSchemaLGVCancelled;
+        break;
+      case "carsubmitted":
+        validationSchema = testResultsSchemaCarSubmitted;
+        break;
+      case "carcancelled":
+        validationSchema = testResultsSchemaCarCancelled;
+        break;
+      case "motorcyclesubmitted":
+        validationSchema = testResultsSchemaMotorcycleSubmitted;
+        break;
+      case "motorcyclecancelled":
+        validationSchema = testResultsSchemaMotorcycleCancelled;
+        break;
       default:
         validationSchema = null;
     }
@@ -172,7 +196,8 @@ export class TestResultsService {
     }
 
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload);
-    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration, payload.noOfAxles)
+    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration,
+        payload.noOfAxles, payload.euVehicleCategory, payload.vehicleClass.code, payload.vehicleSubclass ? payload.vehicleSubclass[0] : undefined, payload.numberOfWheelsDriven)
         .then((testTypesWithTestCodesAndClassification) => {
           payload.testTypes = testTypesWithTestCodesAndClassification;
         })
@@ -376,13 +401,14 @@ export class TestResultsService {
         });
   }
 
-  public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any) {
+  public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,
+                                                    euVehicleCategory: any, vehicleClass: any, vehicleSubclass: any, numberOfWheelsDriven: any) {
     const promiseArray: any = [];
     if (testTypes === undefined) {
       testTypes = [];
     }
     testTypes.forEach((testType, index) => {
-      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles)
+      const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles, euVehicleCategory, vehicleClass, vehicleSubclass, numberOfWheelsDriven)
         .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
           if (testTypes.length === 1) {
             testTypes[index].testCode = currentTestCodesAndClassification.defaultTestCode;

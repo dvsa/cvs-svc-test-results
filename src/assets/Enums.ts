@@ -25,7 +25,10 @@ export enum ERRORS {
     CountryOfRegistrationMandatory = "\"countryOfRegistration\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
-    OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory"
+    OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
+    VehicleSubclassIsNotAllowed = "\"vehicleSubclass\" is not allowed",
+    VehicleSubclassIsRequired = "\"vehicleSubclass\" is required",
+    EuVehicleCategoryMustBeOneOf = "\"euVehicleCategory\" must be one of [m1, null]"
 }
 
 export enum HTTPRESPONSE {
