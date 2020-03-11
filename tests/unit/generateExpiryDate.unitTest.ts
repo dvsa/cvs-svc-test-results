@@ -526,11 +526,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
     });
 
         context("expiryDate for psv vehicle type", () => {
-        context("when there is no test history, the registration anniversary date is less than a months after the test date and the registration date exists.", () => {
+        context("when there is no test history, the registration anniversary date is less than a month after the test date and the registration date exists.", () => {
             it("should set the expiry date to the registration date + 2 years", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
                 // Setting regnDate to an null value
-                psvTestResult.regnDate = dateFns.subYears(dateFns.addDays(new Date(), 1), 1);
+                psvTestResult.regnDate = dateFns.subYears(dateFns.addDays(new Date(), 2), 1);
                 psvTestResult.testExpiryDate = null;
 
 
@@ -570,7 +570,6 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("when there is no test history, the registration anniversary date is before the test date and the registration date exists.", () => {
             it("should set the expiry date to the test date + 1 year - 1 day", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                // Setting regnDate to an null value
                 psvTestResult.regnDate = dateFns.subYears(dateFns.subMonths(new Date(), 2), 1);
                 psvTestResult.testExpiryDate = null;
 
@@ -608,8 +607,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("when there is no test history, the registration anniversary date is before the test (Same Month) date and the registration date exists.", () => {
             it("should set the expiry date to the test date + 1 year - 1 day", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                // Setting regnDate to an null value
-                psvTestResult.regnDate = dateFns.subYears(dateFns.subDays(new Date(), 2), 1);
+                psvTestResult.regnDate = dateFns.subYears(dateFns.subDays(new Date(), 2  ), 1);
                 psvTestResult.testExpiryDate = null;
 
 
@@ -648,9 +646,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
         context("when there is a First Test Type with no test history, registration date doesnt exist and I'm not conducting a COIF + annual test.", () => {
             it("should set the expiry date to the Testdate + 1 year - 1 day", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                // Setting regnDate to an null value
                 psvTestResult.regnDate = null;
-                psvTestResult.testTypes[0].testCode = "aas";
+                psvTestResult.testTypes[0].testTypeId = "1";
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
                         getBySystemNumber: (systemNumber: any) => {
@@ -688,7 +685,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
             it("should set the expiry date to the test date + 1 year - 1 day", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
                 psvTestResult.regnDate = null;
-                psvTestResult.testTypes[0].testCode = COIF_EXPIRY_TEST_TYPES.IDS[0];
+                psvTestResult.testTypes[0].testTypeId = COIF_EXPIRY_TEST_TYPES.IDS[0];
                 psvTestResult.testTypes[0].testExpiryDate = dateFns.subMonths(new Date(), 3);
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -721,47 +718,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
     });
 
         context("expiryDate for psv vehicle type", () => {
-        context("when there is a First Test Type with no test history, registration date doesnt exist and I'm conducting a COIF + annual test.", () => {
+        context("when there is a First Test Type with no test history, registration date doesnt exist and I'm not conducting a COIF + annual test.", () => {
             it("should set the expiry date to the test date + 1 year - 1 day", () => {
                 const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                psvTestResult.regnDate = null;
-                psvTestResult.testTypes[0].testCode = COIF_EXPIRY_TEST_TYPES.IDS[0];
-                psvTestResult.testTypes[0].testExpiryDate = new Date(1970, 1, 1);
-
-                MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                    return {
-                        getBySystemNumber: (systemNumber: any) => {
-                            return Promise.resolve({
-                                Items: Array.of(psvTestResult),
-                                Count: 1,
-                                ScannedCount: 1
-                            });
-                        },
-                        getTestCodesAndClassificationFromTestTypes: () => {
-                            return Promise.resolve({
-                                linkedTestCode: "cel",
-                                defaultTestCode: null,
-                                testTypeClassification: "Annual With Certificate"
-                            });
-                        }
-                    };
-                });
-                testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-                const expectedExpiryDate = dateFns.addYears(dateFns.subDays(new Date(), 1), 1);
-                return testResultsService.generateExpiryDate(psvTestResult)
-                    .then((psvTestResultWithExpiryDate: any) => {
-                        expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
-                });
-            });
-        });
-    });
-
-        context("expiryDate for psv vehicle type", () => {
-        context("when there is a First Test Type with no test history, registration date doesnt exist and I'm conducting a COIF + annual test.", () => {
-            it("should set the expiry date to the test date + 1 year - 1 day", () => {
-                const psvTestResult = cloneDeep(testResultsMockDB[0]);
-                psvTestResult.testTypes[0].testCode = "aas";
+                psvTestResult.testTypes[0].testTypeId = "1";
                 psvTestResult.regnDate = null;
                 psvTestResult.testTypes[0].testExpiryDate = dateFns.subMonths(new Date(), 3);
 
@@ -793,8 +753,6 @@ describe("TestResultsService calling generateExpiryDate", () => {
             });
         });
     });
-
-
 
     });
 
