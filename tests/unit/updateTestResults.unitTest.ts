@@ -587,12 +587,13 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
-                    expect.assertions(3);
+                    expect.assertions(4);
                     return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
-                          expect(errorResponse.body.errors[0]).toEqual(["\"prohibitionIssued\" is not allowed", "\"certificateNumber\" is not allowed"]);
+                          expect(errorResponse.body.errors).toContain("\"prohibitionIssued\" is not allowed");
+                          expect(errorResponse.body.errors).toContain("\"certificateNumber\" is not allowed");
                       });
                 });
             });
@@ -608,7 +609,7 @@ describe("updateTestResults", () => {
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
-                          expect(errorResponse.body.errors[0]).toEqual(["Unknown testTypeId"]);
+                          expect(errorResponse.body.errors).toContain("Unknown testTypeId");
                       });
                 });
             });
@@ -619,7 +620,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     // testTypeId from each of the test-types groupings
-                    const testTypeIds = ["1", "15", "38", "76", "117", "45"];
+                    const testTypeIds = ["1", "15", "38", "56", "62", "59", "76", "117", "39"];
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
@@ -641,7 +642,7 @@ describe("updateTestResults", () => {
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
-                          expect(errorResponse.body.errors[0]).toEqual(["\"testTypes\" is required"]);
+                          expect(errorResponse.body.errors).toContain("\"testTypes\" is required");
                       });
                 });
             });

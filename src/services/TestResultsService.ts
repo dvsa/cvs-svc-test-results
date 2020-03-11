@@ -16,8 +16,11 @@ import {
   COIF_EXPIRY_TEST_TYPES,
   TEST_TYPES_GROUP1,
   TEST_TYPES_GROUP2,
-  TEST_TYPES_GROUP3_4_5_10,
-  TEST_TYPES_GROUP6_7_8, TEST_TYPES_GROUP9_11, TEST_TYPES_GROUP12_13
+  TEST_TYPES_GROUP3_4_8,
+  TEST_TYPES_GROUP5_13,
+  TEST_TYPES_GROUP6_11,
+  TEST_TYPES_GROUP7,
+  TEST_TYPES_GROUP9_10, TEST_TYPES_GROUP12_14, TEST_TYPES_GROUP15_16
 } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -42,9 +45,9 @@ import {cloneDeep, mergeWith, isArray, isEqual, differenceWith} from "lodash";
 import {IMsUserDetails} from "../models/IMsUserDetails";
 import {
   testTypesArray,
-  testTypesSchemaGroup1, testTypesSchemaGroup12And13,
-  testTypesSchemaGroup2,
-  testTypesSchemaGroup3And4And5And10, testTypesSchemaGroup6And7And8, testTypesSchemaGroup9And11
+  testTypesSchemaGroup1, testTypesSchemaGroup12And14, testTypesSchemaGroup15And16,
+  testTypesSchemaGroup2, testTypesSchemaGroup3And4And8, testTypesSchemaGroup5And13,
+  testTypesSchemaGroup6And11, testTypesSchemaGroup7, testTypesSchemaGroup9And10,
 } from "../models/test-types/testTypesSchemaPut";
 
 /**
@@ -148,7 +151,7 @@ export class TestResultsService {
     this.removeNonEditableAttributes(payload);
     let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
     const testTypesValidationErrors = this.validateTestTypes(payload);
-    if (testTypesValidationErrors.length) {
+    if (testTypesValidationErrors) {
       return Promise.reject(new HTTPError(400, {errors: testTypesValidationErrors}));
     }
     // temporarily remove testTypes to validate only vehicle details and append testTypes to the payload again after the validation
@@ -261,27 +264,42 @@ export class TestResultsService {
   }
 
   public validateTestTypes(testResult: ITestResult) {
-    const validationErrors = [];
+    let validationErrors;
     let validation: ValidationResult<any> | any;
     validation = testTypesArray.validate({testTypes: testResult.testTypes});
     if (validation.error) {
-      validationErrors.push(this.mapErrorMessage(validation));
+      validationErrors = this.mapErrorMessage(validation);
       return validationErrors;
     }
     for (const testType of testResult.testTypes) {
-      const context = {isPassed: testType.testResult, isSubmitted: testResult.testStatus};
+      const options = {abortEarly: false};
       if (TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup1.validate(testType, {context});
+        // tests for PSV - Annual test, Class 6A seatbelt installation check, Paid/Part paid annual test retest, Prohibition clearance
+        validation = testTypesSchemaGroup1.validate(testType, options);
       } else if (TEST_TYPES_GROUP2.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup2.validate(testType, {context});
-      } else if (TEST_TYPES_GROUP3_4_5_10.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup3And4And5And10.validate(testType, {context});
-      } else if (TEST_TYPES_GROUP6_7_8.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup6And7And8.validate(testType, {context});
-      } else if (TEST_TYPES_GROUP9_11.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup9And11.validate(testType, {context});
-      } else if (TEST_TYPES_GROUP12_13.includes(testType.testTypeId)) {
-        validation = testTypesSchemaGroup12And13.validate(testType, {context});
+        // tests for PSV - Paid/Part paid prohibition clearance(full/partial/retest without cert)
+        validation = testTypesSchemaGroup2.validate(testType, options);
+      } else if (TEST_TYPES_GROUP3_4_8.includes(testType.testTypeId)) {
+        // Notifiable alteration and voluntary tests for HGV, PSV and TRL
+        validation = testTypesSchemaGroup3And4And8.validate(testType, options);
+      } else if (TEST_TYPES_GROUP5_13.includes(testType.testTypeId)) {
+        // TIR tests for TRL and HGV
+        validation = testTypesSchemaGroup5And13.validate(testType, options);
+      } else if (TEST_TYPES_GROUP6_11.includes(testType.testTypeId)) {
+        // HGV and TRL - Paid/Part paid roadworthiness retest, Voluntary roadworthiness test
+        validation = testTypesSchemaGroup6And11.validate(testType, options);
+      } else if (TEST_TYPES_GROUP7.includes(testType.testTypeId)) {
+        // ADR tests for HGV and TRL
+        validation = testTypesSchemaGroup7.validate(testType, options);
+      } else if (TEST_TYPES_GROUP9_10.includes(testType.testTypeId)) {
+        // tests for HGV and TRL - Annual tests, First tests, Annual retests, Paid/Part paid prohibition clearance
+        validation = testTypesSchemaGroup9And10.validate(testType, options);
+      } else if (TEST_TYPES_GROUP12_14.includes(testType.testTypeId)) {
+        // tests for TRL - Paid/Part paid prohibition clearance(retest, full inspection, part inspection, without cert)
+        validation = testTypesSchemaGroup12And14.validate(testType, options);
+      } else if (TEST_TYPES_GROUP15_16.includes(testType.testTypeId)) {
+        // LEC tests for HGV and PSV
+        validation = testTypesSchemaGroup15And16.validate(testType, options);
       } else {
         validation = {
           error: {
@@ -290,7 +308,7 @@ export class TestResultsService {
         };
       }
       if (validation.error) {
-        validationErrors.push(this.mapErrorMessage(validation));
+        validationErrors = this.mapErrorMessage(validation);
         break;
       }
     }

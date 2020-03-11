@@ -45,8 +45,7 @@ export const testTypesCommonSchema = Joi.object().keys({
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
     modificationTypeUsed: Joi.string().max(100).allow(null),
-    particulateTrapFitted: Joi.string().max(100).allow(null),
-    testTypeClassification: Joi.string().optional()
+    particulateTrapFitted: Joi.string().max(100).allow(null)
 });
 
 export const testResultsCommonSchema = Joi.object().keys({

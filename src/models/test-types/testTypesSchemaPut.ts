@@ -43,7 +43,8 @@ export const testTypesCommonSchema = Joi.object().keys({
   createdAt: Joi.string().optional(),
   lastUpdatedAt: Joi.string().optional(),
   certificateLink: Joi.string().optional(),
-  testTypeClassification: Joi.string().required()
+  testTypeClassification: Joi.string().required(),
+  deletionFlag: Joi.boolean().optional()
 }).required();
 
 export const testTypesSchemaGroup1 = testTypesCommonSchema.keys({
@@ -63,31 +64,49 @@ export const testTypesSchemaGroup2 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup3And4And5And10 = testTypesCommonSchema.keys({
+export const testTypesSchemaGroup3And4And8 = testTypesCommonSchema.keys({
   prohibitionIssued: Joi.boolean().required().allow(null)
 });
 
-export const testTypesSchemaGroup6And7And8 = testTypesCommonSchema.keys({
+export const testTypesSchemaGroup5And13 = testTypesCommonSchema.keys({
+  certificateNumber: Joi.string().required().allow("", null),
+  prohibitionIssued: Joi.boolean().required().allow(null)
+});
+
+export const testTypesSchemaGroup6And11 = testTypesCommonSchema.keys({
+  certificateNumber: Joi.string().required().allow("", null),
+  defects: Joi.array().items(defectsSchemaPut).required()
+});
+
+export const testTypesSchemaGroup7 = testTypesCommonSchema.keys({
+  certificateNumber: Joi.string().required().allow("", null),
+  testExpiryDate: Joi.date().iso().allow(null),
+  prohibitionIssued: Joi.boolean().required().allow(null)
+});
+
+export const testTypesSchemaGroup9And10 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
   testAnniversaryDate: Joi.date().iso().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup9And11 = testTypesCommonSchema.keys({
+export const testTypesSchemaGroup12And14 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup12And13 = testTypesCommonSchema.keys({
+export const testTypesSchemaGroup15And16 = testTypesCommonSchema.keys({
+  certificateNumber: Joi.string().required().allow("", null),
+  testExpiryDate: Joi.date().iso().allow(null),
   modType: Joi.object().keys({
     code: Joi.any().only(["p", "m", "g"]),
     description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
-  }).allow(null),
-  emissionStandard: Joi.any().only(["0.10 g/kWh Euro 3 PM", "0.03 g/kWh Euro IV PM", "Euro 3", "Euro 4", "Euro 6", "Euro VI", "Full Electric"]).allow(null),
-  fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).allow(null),
-  particulateTrapSerialNumber: Joi.string().max(100).allow(null),
-  modificationTypeUsed: Joi.string().max(100).allow(null),
-  particulateTrapFitted: Joi.string().max(100).allow(null),
-  smokeTestKLimitApplied: Joi.string().max(100).allow(null),
-  prohibitionIssued: Joi.boolean().required().allow(null)
+  }).required().allow(null),
+  emissionStandard: Joi.any().only(["0.10 g/kWh Euro 3 PM", "0.03 g/kWh Euro IV PM", "Euro 3", "Euro 4", "Euro 6", "Euro VI", "Full Electric"]).required().allow(null),
+  fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).required().allow(null),
+  particulateTrapSerialNumber: Joi.string().max(100).required().allow(null),
+  modificationTypeUsed: Joi.string().max(100).required().allow(null),
+  particulateTrapFitted: Joi.string().max(100).required().allow(null),
+  smokeTestKLimitApplied: Joi.string().max(100).required().allow(null),
+  prohibitionIssued: Joi.boolean().required().required().allow(null)
 });
