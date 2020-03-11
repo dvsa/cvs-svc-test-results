@@ -119,8 +119,6 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
         };
       });
       const expectedResult = cloneDeep(testResultsMockDB[1]);
-      // Service removes TestId before returning. So must we.
-      delete expectedResult.testResultId;
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       expect.assertions(4);

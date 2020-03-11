@@ -18,6 +18,7 @@ describe("getTestResultsBySystemNumber Function", () => {
 
       const expectedFilters = {
         systemNumber: 1,
+        testVersion: "current",
         testStatus: "submitted",
         toDateTime: dateFns.endOfToday(),
         fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
@@ -92,6 +93,7 @@ describe("getTestResultsBySystemNumber Function", () => {
 
         const expectedFilters = {
           systemNumber: 1,
+          testVersion: "current",
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
           fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
@@ -120,6 +122,7 @@ describe("getTestResultsBySystemNumber Function", () => {
 
         const expectedFilters = {
           systemNumber: 1,
+          testVersion: "current",
           testStatus: "submitted",
           toDateTime: dateFns.endOfToday(),
           fromDateTime: new Date("01-01-2010")
@@ -148,7 +151,38 @@ describe("getTestResultsBySystemNumber Function", () => {
 
         const expectedFilters = {
           systemNumber: 1,
+          testVersion: "current",
           testStatus: "cheese",
+          toDateTime: dateFns.endOfToday(),
+          fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
+        };
+
+        expect.assertions(4);
+        // @ts-ignore
+        const result = await getTestResultsBySystemNumber(myEvent);
+        expect(testResultsMock).toHaveBeenCalledWith(expectedFilters);
+        expect(result).toBeInstanceOf(HTTPResponse);
+        expect(result.statusCode).toEqual(200);
+        expect(result.body).toEqual(JSON.stringify("Success"));
+      });
+    });
+
+    context("with non-empty test version", () => {
+      it("invokes testResultsService with custom filters", async () => {
+        const testResultsMock = jest.fn().mockResolvedValue("Success");
+        TestResultsService.prototype.getTestResults = testResultsMock;
+
+        const myEvent = {
+          ...minimalEvent,
+          queryStringParameters: {
+            version: "archived"
+          }
+        };
+
+        const expectedFilters = {
+          systemNumber: 1,
+          testVersion: "archived",
+          testStatus: "submitted",
           toDateTime: dateFns.endOfToday(),
           fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
         };

@@ -48,6 +48,13 @@ functions:
           method: post
       - http:
           path: test-results/{systemNumber}
+          method: put
+          request:
+            parameters:
+              paths:
+                systemNumber: true
+      - http:
+          path: test-results/{systemNumber}
           method: get
           request:
             parameters:

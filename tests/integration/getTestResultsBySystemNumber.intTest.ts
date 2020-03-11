@@ -14,7 +14,6 @@ describe("getTestResultsBySystemNumber", () => {
                         it("should return the test results for that systemNumber with default status 'submitted' and default date interval which is from too years ago until today", async () => {
                             const res = await request.get("test-results/11000002/");
                             const expectedResponse = Array.of(testResultsMockDB[1]);
-                            delete expectedResponse[0].testResultId;
                             expect(res.status).toEqual(200);
                             expect(res.header["access-control-allow-origin"]).toEqual("*");
                             expect(res.header["access-control-allow-credentials"]).toEqual("true");
