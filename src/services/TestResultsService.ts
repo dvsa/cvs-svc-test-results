@@ -102,6 +102,10 @@ export class TestResultsService {
 
   public applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
     let testResults = this.checkTestResults(data);
+    if (filters.testVersion === TEST_VERSION.ALL) {
+      return testResults;
+    }
+    testResults = GetTestResults.filterTestResultsByTestVersion(testResults, filters.testVersion);
     testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
     if (filters.testStatus) {
       testResults = GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
