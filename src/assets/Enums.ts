@@ -89,7 +89,7 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "RIT1", "RIT2", "RIT3", "RIT4", "RIT5",
         "RHT",
         "P1T1", "P1T2", "P1T3", "P1T4", "P1T5",
-        "P3T1", "P3T2", "P3T4", "P3T5",
+        "P3T1", "P3T2", "P3T3", "P3T4", "P3T5",
         "P6T1", "P6T2", "P6T3", "P6T4", "P6T5",
         "P7T1", "P7T2", "P7T3", "P7T4", "P7T5",
         "P4T1", "P4T2", "P4T3", "P4T4", "P4T5",
