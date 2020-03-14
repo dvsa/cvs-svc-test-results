@@ -47,6 +47,7 @@ export const getTestResultsByTesterStaffId = async (event: any) => {
     }
     return testResultsService.getTestResults(filters)
       .then((data: any) => {
+        console.log("Returning data:", data);
         return new HTTPResponse(200, data);
       })
       .catch((error: { statusCode: any; body: any; }) => {
