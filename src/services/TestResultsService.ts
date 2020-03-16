@@ -91,17 +91,14 @@ export class TestResultsService {
   }
 
   public applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
-    console.log("Before filters", data);
     let testResults = this.checkTestResults(data);
     testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
-    console.log("After date filters", testResults);
     if (filters.testStatus) {
       testResults = GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
     }
     if (filters.testStationPNumber) {
       testResults = GetTestResults.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
     }
-    console.log("Before deletion flags", testResults);
     testResults = GetTestResults.filterTestResultsByDeletionFlag(testResults);
     testResults = GetTestResults.filterTestTypesByDeletionFlag(testResults);
 
