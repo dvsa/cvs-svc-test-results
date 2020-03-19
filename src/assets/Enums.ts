@@ -177,3 +177,28 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "CKL", "CKS",
         "CML", "CMS"]
 };
+
+export const testTypesGroup1: string[] = [
+    "1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"
+];
+
+export const testTypesGroup2: string[] = [
+    "15", "16", "23", "19", "22"
+];
+
+export const testTypesGroup3And4And5And10: string[] = [
+    "38", "30", "33", "34", "32", "31", "100", "121", "36", "86", "88", "89", "90", "56", "59", "60", "87", "47", "48", "49", "50", "85", "57"
+
+];
+
+export const testTypesGroup6And7And8: string[] = [
+    "76", "62", "95", "94", "53", "54", "63", "65", "66", "70", "79", "82", "83", "122", "41", "40", "98", "99", "101", "103", "104", "67", "107", "113", "116", "119", "120", "91"
+];
+
+export const testTypesGroup9And11: string[] = [
+    "117", "108", "109", "110", "114", "71", "72", "73", "77", "80"
+];
+
+export const testTypesGroup12And13: string[] = [
+    "39", "45", "44"
+];
