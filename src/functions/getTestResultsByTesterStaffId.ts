@@ -35,7 +35,7 @@ export const getTestResultsByTesterStaffId = async (event: any) => {
   const BAD_REQUEST_MISSING_FIELDS = "Bad request in getTestResultsByTesterStaffId - missing required parameters";
 
   try {
-    if (!event.queryStringParameters || !(event.queryStringParameters.testerStaffId && event.queryStringParameters.testStationPNumber && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime)) {
+    if (!event.queryStringParameters || !(event.queryStringParameters.testerStaffId && event.queryStringParameters.toDateTime && event.queryStringParameters.fromDateTime)) {
       console.log(BAD_REQUEST_MISSING_FIELDS);
       if (subseg) { subseg.addError(BAD_REQUEST_MISSING_FIELDS); }
       return Promise.resolve(new HTTPResponse(400, MESSAGES.BAD_REQUEST));
