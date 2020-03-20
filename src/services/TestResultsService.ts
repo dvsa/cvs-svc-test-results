@@ -325,14 +325,17 @@ export class TestResultsService {
                     }
                   } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
                     // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
-                    const regOrFirstUseDate = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+                    let regOrFirstUseDate: string|undefined = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+                    if (!this.isValidDate(regOrFirstUseDate)) {
+                      regOrFirstUseDate = undefined;
+                    }
                     // preparaing compare date for CVSB-9187 to compare first test/retest conducted after anniversary date
                     const firstTestAfterAnvCompareDate = dateFns.addYears(dateFns.startOfMonth(regOrFirstUseDate!), 1);
                     // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                     if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                       testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                     } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
-                      const anvDateForCompare = regOrFirstUseDate ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate)).toISOString() : undefined;
+                      const anvDateForCompare = this.isValidDate(regOrFirstUseDate) ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate as any)).toISOString() : undefined;
                       // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                       console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
                       if (!anvDateForCompare || dateFns.isBefore(new  Date(), dateFns.subMonths(anvDateForCompare, 2))) {
@@ -363,6 +366,11 @@ export class TestResultsService {
     }
   }
 
+  private isValidDate(input: string | Date | number | undefined): boolean {
+    // dateFns typing is wrong so need the "any"
+    return dateFns.isValid(dateFns.parse(input as any)) && dateFns.isAfter(input as any, new Date(0));
+  }
+
   private lastDayOfMonthInNextYear(inputDate: Date): Date {
     return dateFns.lastDayOfMonth(dateFns.addYears(inputDate, 1));
   }
@@ -384,27 +392,27 @@ export class TestResultsService {
       fromDateTime: new Date(1970, 1, 1),
       toDateTime: new Date()
     })
-        .then((testResults) => {
-          const filteredTestTypeDates: any[] = [];
-          testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-            testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
-              // prepare a list of annualTestTypes with expiry.
-              if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && testType.testExpiryDate) {
-                filteredTestTypeDates.push(testType.testExpiryDate);
-              }
-            });
+      .then((testResults) => {
+        const filteredTestTypeDates: any[] = [];
+        testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
+          testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
+            // prepare a list of annualTestTypes with expiry.
+            if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && this.isValidDate(testType.testExpiryDate)) {
+              filteredTestTypeDates.push(testType.testExpiryDate);
+            }
           });
-          return filteredTestTypeDates;
-        }).then((annualTestTypeDates) => {
-          // fetch maxDate for annualTestTypes
-          if (annualTestTypeDates && annualTestTypeDates.length > 0) {
-          maxDate = dateFns.max(...annualTestTypeDates);
-          }
-          return maxDate;
-        }).catch((err) => {
-          console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber  > getTestResults. Returning default test date and logging error:", err);
-          return maxDate;
         });
+        return filteredTestTypeDates;
+      }).then((annualTestTypeDates) => {
+        // fetch maxDate for annualTestTypes
+        if (annualTestTypeDates && annualTestTypeDates.length > 0) {
+          maxDate = dateFns.max(...annualTestTypeDates);
+        }
+        return maxDate;
+      }).catch((err) => {
+        console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber > getTestResults. Returning default test date and logging error:", err);
+        return maxDate;
+      });
   }
 
   public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,

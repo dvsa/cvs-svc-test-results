@@ -13,8 +13,8 @@ export interface ITestResultPayload {
     testResultId?: string;
     vehicleId?: string;
     vrm?: string;
-    regnDate?: Date;
-    firstUseDate?: Date;
+    regnDate?: string;
+    firstUseDate?: string;
     countryOfRegistration: string | null;
     euVehicleCategory: string | null;
     odometerReading: number | null;
