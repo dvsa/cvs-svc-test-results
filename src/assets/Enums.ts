@@ -17,7 +17,7 @@ export enum ERRORS {
     NoEmissionStandard = "Emission standard not present on LEC test type",
     NoFuelType = "Fuel Type not present on LEC test type",
     NoSmokeTestKLimitApplied = "Smoke Test K Limit Applied not present on LEC test type",
-    CountryOfRegistrationMandatory = "\"countryOfRegistration\" is mandatory",
+    CountryOfRegistrationMandatory = "\"COUNTRY_OF_REGISTRATION\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",

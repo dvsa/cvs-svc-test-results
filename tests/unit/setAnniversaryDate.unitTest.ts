@@ -75,7 +75,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
             "    \"testStationName\": \"Rowe, Wunsch and Wisoky\",\n" +
             "    \"noOfAxles\": 2,\n" +
             "    \"vehicleType\": \"trl\",\n" +
-            "    \"countryOfRegistration\": \"united kingdom\",\n" +
+            "    \"COUNTRY_OF_REGISTRATION\": \"united kingdom\",\n" +
             "    \"preparerId\": \"ak4434\",\n" +
             "    \"preparerName\": \"Durrell Vehicles Limited\",\n" +
             "    \"vehicleConfiguration\": \"rigid\",\n" +
@@ -156,7 +156,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
             "    \"testStationName\": \"Rowe, Wunsch and Wisoky\",\n" +
             "    \"noOfAxles\": 2,\n" +
             "    \"vehicleType\": \"hgv\",\n" +
-            "    \"countryOfRegistration\": \"united kingdom\",\n" +
+            "    \"COUNTRY_OF_REGISTRATION\": \"united kingdom\",\n" +
             "    \"preparerId\": \"ak4434\",\n" +
             "    \"preparerName\": \"Durrell Vehicles Limited\",\n" +
             "    \"vehicleConfiguration\": \"rigid\",\n" +
@@ -237,7 +237,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
             "    \"testStationName\": \"Rowe, Wunsch and Wisoky\",\n" +
             "    \"noOfAxles\": 2,\n" +
             "    \"vehicleType\": \"psv\",\n" +
-            "    \"countryOfRegistration\": \"united kingdom\",\n" +
+            "    \"COUNTRY_OF_REGISTRATION\": \"united kingdom\",\n" +
             "    \"preparerId\": \"ak4434\",\n" +
             "    \"preparerName\": \"Durrell Vehicles Limited\",\n" +
             "    \"vehicleConfiguration\": \"rigid\",\n" +
