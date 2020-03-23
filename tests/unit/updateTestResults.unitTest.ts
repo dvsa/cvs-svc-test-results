@@ -19,7 +19,7 @@ describe("updateTestResults", () => {
             return {};
         });
         testResultsService = new TestResultsService(new MockTestResultsDAO());
-        testToUpdate = cloneDeep(testResultsMockDB[1]);
+        testToUpdate = cloneDeep(testResultsMockDB[30]);
         testToUpdate.countryOfRegistration = "gb";
         delete testToUpdate.testTypes[0].testTypeClassification;
     });
@@ -220,6 +220,41 @@ describe("updateTestResults", () => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
                           expect(errorResponse.body).toEqual({errors: ["\"testerStaffId\" length must be less than or equal to 36 characters long"]});
+                      });
+                });
+            });
+        });
+
+        context("and when validating test types", () => {
+            context("and the test type contains a field that is not applicable", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    testToUpdate = testResultsMockDB[1];
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["\"prohibitionIssued\" is not allowed", "\"certificateNumber\" is not allowed"]);
+                      });
+                });
+            });
+
+            context("and when the testTypeId is unknown", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    testToUpdate = testResultsMockDB[30];
+                    testToUpdate.testTypes[0].testTypeId = "unknown";
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["Unknown testTypeId"]);
                       });
                 });
             });

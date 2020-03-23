@@ -17,7 +17,7 @@ export enum ERRORS {
     NoEmissionStandard = "Emission standard not present on LEC test type",
     NoFuelType = "Fuel Type not present on LEC test type",
     NoSmokeTestKLimitApplied = "Smoke Test K Limit Applied not present on LEC test type",
-    CountryOfRegistrationMandatory = "\"countryOfRegistration\" is mandatory",
+    CountryOfRegistrationMandatory = "\"COUNTRY_OF_REGISTRATION\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
@@ -178,27 +178,27 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "CML", "CMS"]
 };
 
-export const testTypesGroup1: string[] = [
+export const TEST_TYPES_GROUP1: string[] = [
     "1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"
 ];
 
-export const testTypesGroup2: string[] = [
+export const TEST_TYPES_GROUP2: string[] = [
     "15", "16", "23", "19", "22"
 ];
 
-export const testTypesGroup3And4And5And10: string[] = [
+export const TEST_TYPES_GROUP3_4_5_10: string[] = [
     "38", "30", "33", "34", "32", "31", "100", "121", "36", "86", "88", "89", "90", "56", "59", "60", "87", "47", "48", "49", "50", "85", "57"
 
 ];
 
-export const testTypesGroup6And7And8: string[] = [
+export const TEST_TYPES_GROUP6_7_8: string[] = [
     "76", "62", "95", "94", "53", "54", "63", "65", "66", "70", "79", "82", "83", "122", "41", "40", "98", "99", "101", "103", "104", "67", "107", "113", "116", "119", "120", "91"
 ];
 
-export const testTypesGroup9And11: string[] = [
+export const TEST_TYPES_GROUP9_11: string[] = [
     "117", "108", "109", "110", "114", "71", "72", "73", "77", "80"
 ];
 
-export const testTypesGroup12And13: string[] = [
+export const TEST_TYPES_GROUP12_13: string[] = [
     "39", "45", "44"
 ];
