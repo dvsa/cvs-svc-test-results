@@ -3069,7 +3069,7 @@
   },
   {
     "testResultId": "23",
-    "systemNumber": "10000010",
+    "systemNumber": "10000029",
     "testerStaffId": "16",
     "testStartTimestamp": "2019-01-14T10:36:33.987Z",
     "testExpiryDate": "2020-01-14T10:36:33.987Z",
@@ -3105,14 +3105,14 @@
       }
     ],
     "vehicleClass": {
-      "description": "large psv(ie: greater than 23 seats)",
-      "code": "l"
+      "description": "trailer",
+      "code": "t"
     },
-    "vin": "YV31MEC18GA011910",
+    "vin": "T72741998",
     "vehicleSize": "small",
     "testStationName": "Larson, Nader and Okuneva",
     "vehicleId": "AA12BCD",
-    "vehicleType": "psv",
+    "vehicleType": "trl",
     "countryOfRegistration": "united kingdom",
     "preparerId": "bl5545",
     "preparerName": "Durrell Vehicles Limited",
@@ -3130,7 +3130,7 @@
   },
   {
     "testResultId": "24",
-    "systemNumber": "10000010",
+    "systemNumber": "10000029",
     "testerStaffId": "16",
     "testStartTimestamp": "2019-01-15T10:36:33.987Z",
     "odometerReadingUnits": "kilometres",
@@ -3190,14 +3190,14 @@
       }
     ],
     "vehicleClass": {
-      "description": "large psv(ie: greater than 23 seats",
-      "code": "l"
+      "description": "trailer",
+      "code": "t"
     },
-    "vin": "YV31MEC18GA011911",
+    "vin": "T72741999",
     "vehicleSize": "small",
     "testStationName": "Larson, Nader and Okuneva",
     "vehicleId": "AA12BCE",
-    "vehicleType": "psv",
+    "vehicleType": "trl",
     "countryOfRegistration": "united kingdom",
     "preparerId": "bl5545",
     "preparerName": "Durrell Vehicles Limited",
