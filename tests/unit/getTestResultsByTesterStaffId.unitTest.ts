@@ -125,7 +125,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       expect.assertions(4);
       return testResultsService.getTestResults({
-        testerStaffId: "1",
+        testerStaffId: "15",
         testStationPNumber: "84-926821",
         fromDateTime: "2015-02-22",
         toDateTime: "2019-02-22",
