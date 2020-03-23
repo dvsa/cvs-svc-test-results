@@ -2134,6 +2134,43 @@ describe("insertTestResult", () => {
         });
     });
 
+    context("when inserting a testResult with special characters in the VIN", () => {
+        it("it should insert the test correctly", () => {
+            const testResult = testResultsPostMock[1];
+            const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+
+            clonedTestResult.vin = "YV31ME00000 1/\\*-1";
+
+
+
+            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                return {
+                    createSingle: () => {
+                        return Promise.resolve(Array.of(clonedTestResult));
+                    },
+                    getTestNumber: () => {
+                        return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
+                    },
+                    getTestCodesAndClassificationFromTestTypes: () => {
+                        return Promise.resolve({
+                            linkedTestCode: "wde",
+                            defaultTestCode: "bde",
+                            testTypeClassification: "Annual With Certificate"
+                        });
+                    },
+                };
+            });
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            expect.assertions(1);
+            return testResultsService.insertTestResult(clonedTestResult)
+                .then((data: any) => {
+                    expect(data[0].vin).toBe(clonedTestResult.vin);
+                });
+        });
+    });
+
     context("when inserting a testResult that is a vehicleType of lgv and the payload is valid", () => {
         it("should not throw error.", () => {
             const validLgvTestResult = cloneDeep(testResultsPostMock[11]);
