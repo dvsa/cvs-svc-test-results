@@ -3066,5 +3066,151 @@
     "euVehicleCategory": "n2",
     "deletionFlag": false,
     "regnDate": "2018-10-10"
+  },
+  {
+    "testResultId": "23",
+    "systemNumber": "10000010",
+    "testerStaffId": "16",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testExpiryDate": "2020-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "pms",
+        "testNumber": "3",
+        "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": "1234",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "createdAt": "2019-02-22T08:52:10.255Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "certificateNumber": "12334",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [ ],
+        "defects": [ ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testResult": "pass",
+        "testTypeClassification": "Annual With Certificate"
+      }
+    ],
+    "vehicleClass": {
+      "description": "large psv(ie: greater than 23 seats)",
+      "code": "l"
+    },
+    "vin": "YV31MEC18GA011910",
+    "vehicleSize": "small",
+    "testStationName": "Larson, Nader and Okuneva",
+    "vehicleId": "AA12BCD",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "bl5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 350000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "atf",
+    "reasonForCancellation": "mistake",
+    "testerName": "Dorel",
+    "vrm": "AA12BCE",
+    "testStationPNumber": "84-926821",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
+    "euVehicleCategory": "n3"
+  },
+  {
+    "testResultId": "24",
+    "systemNumber": "10000010",
+    "testerStaffId": "16",
+    "testStartTimestamp": "2019-01-15T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-15T10:36:33.987Z",
+    "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "aav2",
+        "testNumber": "3",
+        "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
+        "additionalCommentsForAbandon": "none",
+        "numberOfSeatbeltsFitted": 2,
+        "secondaryCertificateNumber": null,
+        "testTypeEndTimestamp": "2019-01-15T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-15",
+        "createdAt": "2019-02-22T08:52:10.255Z",
+        "testTypeId": "19",
+        "testTypeStartTimestamp": "2019-01-15T10:36:33.987Z",
+        "certificateNumber": null,
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
+        "defects": [
+          {
+            "deficiencyCategory": "major",
+            "deficiencyText": null,
+            "prs": null,
+            "additionalInformation": {
+              "location": null,
+              "notes": "seatbelt missing"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "3.1.a",
+            "stdForProhibition": null,
+            "deficiencySubId": null,
+            "imDescription": "Seat Belts & Supplementary Restraint Systems",
+            "deficiencyId": "a",
+            "itemDescription": "Obligatory Seat Belt:",
+            "imNumber": 3,
+            "prohibitionIssued": false
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate"
+      }
+    ],
+    "vehicleClass": {
+      "description": "large psv(ie: greater than 23 seats",
+      "code": "l"
+    },
+    "vin": "YV31MEC18GA011911",
+    "vehicleSize": "small",
+    "testStationName": "Larson, Nader and Okuneva",
+    "vehicleId": "AA12BCE",
+    "vehicleType": "psv",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "bl5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 350000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "atf",
+    "reasonForCancellation": "mistake",
+    "testerName": "Dorel",
+    "vrm": "AA12BCD",
+    "testStationPNumber": "84-926821",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
+    "euVehicleCategory": "n3"
   }
 ]
