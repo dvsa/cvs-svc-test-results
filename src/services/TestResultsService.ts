@@ -141,6 +141,12 @@ export class TestResultsService {
     return testResults;
   }
 
+  public mapErrorMessage(validation: ValidationResult<any> | any ) {
+    return validation.error.details.map((detail: { message: string; }) => {
+      return detail.message;
+    });
+  }
+
   public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
     this.removeNonEditableAttributes(payload);
     let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
@@ -161,9 +167,7 @@ export class TestResultsService {
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
-          errors: validation.error.details.map((detail: { message: string; }) => {
-            return detail.message;
-          })
+          errors: this.mapErrorMessage(validation)
         }));
     }
     payload.testTypes = testTypes;
@@ -225,9 +229,7 @@ export class TestResultsService {
         };
       }
       if (validation.error) {
-        validationErrors.push(validation.error.details.map((detail: { message: string; }) => {
-          return detail.message;
-        }));
+        validationErrors.push(this.mapErrorMessage(validation));
         break;
       }
     }
@@ -349,9 +351,7 @@ export class TestResultsService {
     if (validation !== null && validation.error) {
       return Promise.reject(new HTTPError(400,
         {
-          errors: validation.error.details.map((detail: { message: string; }) => {
-            return detail.message;
-          })
+          errors: this.mapErrorMessage(validation)
         }));
     }
 

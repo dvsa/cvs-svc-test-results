@@ -229,7 +229,7 @@ describe("updateTestResults", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation();
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
-                    testToUpdate = testResultsMockDB[1];
+                    testToUpdate = cloneDeep(testResultsMockDB[1]);
                     expect.assertions(3);
                     return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
@@ -245,7 +245,6 @@ describe("updateTestResults", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation();
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
-                    testToUpdate = testResultsMockDB[30];
                     testToUpdate.testTypes[0].testTypeId = "unknown";
                     expect.assertions(3);
                     return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
@@ -254,6 +253,22 @@ describe("updateTestResults", () => {
                           expect(errorResponse.statusCode).toEqual(400);
                           expect(errorResponse.body.errors[0]).toEqual(["Unknown testTypeId"]);
                       });
+                });
+            });
+
+            context("and the test types are invalid", () => {
+                it("should apply the correct validation schema and return an array of validation errors", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    // testTypeId from each of the test-types groupings
+                    const testTypeIds = ["1", "15", "38", "76", "117", "45"];
+                    for (const testTypeId of testTypeIds) {
+                        testToUpdate.testTypes[0].testTypeId = testTypeId;
+                        const validationResponse = testResultsService.validateTestTypes(testToUpdate);
+                        expect(validationResponse).toBeDefined();
+                        expect(validationResponse.length).not.toEqual(0);
+                    }
                 });
             });
         });
