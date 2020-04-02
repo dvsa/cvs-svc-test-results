@@ -164,6 +164,23 @@ export class TestResultsDAO {
     return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name, event);
   }
 
+  public getActivity(filters: {fromStartTime: Date, toStartTime: Date, activityType: string, testStationPNumber: string, testerStaffId: string}): any {
+    const event = {
+      path: "/activities/details",
+      queryStringParameters: {
+        fromStartTime: filters.fromStartTime,
+        toStartTime: filters.toStartTime,
+        activityType: filters.activityType,
+        testStationPNumber: filters.testStationPNumber,
+        testerStaffId: filters.testerStaffId
+      },
+      httpMethod: "GET",
+      resource: "/activities/details"
+    };
+
+    return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getActivity.name, event);
+  }
+
   public updateTestResult(updatedTestResult: ITestResult): Promise<PromiseResult<DocumentClient.TransactWriteItemsOutput, AWSError>> {
     const query: DocumentClient.TransactWriteItemsInput = {
       TransactItems: [

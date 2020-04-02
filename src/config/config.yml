@@ -50,6 +50,8 @@ endpoints:
         name: cvs-svc-global-dev-getTestTypesById
       getTestNumber:
         name: cvs-svc-global-dev-generateTestNumber
+      getActivity:
+        name: cvs-svc-activities-dev-main
   remote:
     params:
       apiVersion: '2015-03-31'
@@ -58,3 +60,5 @@ endpoints:
         name: test-types-${BRANCH}
       getTestNumber:
         name: test-number-${BRANCH}
+      getActivity:
+        name: activities-${BRANCH}

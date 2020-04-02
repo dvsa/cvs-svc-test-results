@@ -19,6 +19,7 @@ export enum ERRORS {
     NoSmokeTestKLimitApplied = "Smoke Test K Limit Applied not present on LEC test type",
     CountryOfRegistrationMandatory = "\"COUNTRY_OF_REGISTRATION\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
+    NoUniqueActivityFound = "More than one activity found",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
 }

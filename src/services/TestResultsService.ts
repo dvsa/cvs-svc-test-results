@@ -38,7 +38,7 @@ import { ITestResult, TestType } from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
 import {ValidationResult} from "joi";
 import * as Joi from "joi";
-import {cloneDeep, mergeWith, isArray} from "lodash";
+import {cloneDeep, mergeWith, isArray, isEqual, differenceWith} from "lodash";
 import {IMsUserDetails} from "../models/IMsUserDetails";
 import {
   testTypesArray,
@@ -169,7 +169,7 @@ export class TestResultsService {
     }
     payload.testTypes = testTypes;
     return this.testResultsDAO.getBySystemNumber(systemNumber)
-        .then((result) => {
+        .then(async (result) => {
           const response: ITestResultData = {Count: result.Count, Items: result.Items};
           const testResults = this.checkTestResults(response);
           const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
@@ -177,6 +177,14 @@ export class TestResultsService {
           const newTestResult: ITestResult = cloneDeep(oldTestResult);
           newTestResult.testVersion = TEST_VERSION.CURRENT;
           mergeWith(newTestResult, payload, this.arrayCustomizer);
+          if (this.shouldGenerateNewTestCodeRe(oldTestResult, newTestResult)) {
+            await this.getTestTypesWithTestCodesAndClassification(newTestResult.testTypes as any[],
+              newTestResult.vehicleType, newTestResult.vehicleSize, newTestResult.vehicleConfiguration,
+              newTestResult.noOfAxles, newTestResult.euVehicleCategory, newTestResult.vehicleClass.code,
+              newTestResult.vehicleSubclass ? newTestResult.vehicleSubclass[0] : undefined,
+              newTestResult.numberOfWheelsDriven);
+          }
+          await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
           this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
           if (!newTestResult.testHistory) {
             newTestResult.testHistory = [oldTestResult];
@@ -198,6 +206,40 @@ export class TestResultsService {
   private arrayCustomizer(objValue: any, srcValue: any) {
     if (isArray(objValue) && isArray(srcValue)) {
       return srcValue;
+    }
+  }
+
+  public shouldGenerateNewTestCodeRe(oldTestResult: ITestResult, newTestResult: ITestResult) {
+    const attributesToCheck = ["vehicleType", "euVehicleCategory", "vehicleSize", "vehicleConfiguration", "noOfAxles", "numberOfWheelsDriven"];
+    if (differenceWith(oldTestResult.testTypes, newTestResult.testTypes, isEqual).length) {
+      return true;
+    }
+    for (const attributeToCheck of attributesToCheck) {
+      if (oldTestResult[attributeToCheck as keyof typeof oldTestResult] !== newTestResult[attributeToCheck as keyof typeof newTestResult]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public async checkTestTypeStartAndEndTimestamp(oldTestResult: ITestResult, newTestResult: ITestResult) {
+    const params = {
+      fromStartTime: dateFns.startOfDay(oldTestResult.testStartTimestamp),
+      toStartTime: oldTestResult.testStartTimestamp,
+      activityType: "visit",
+      testStationPNumber: oldTestResult.testStationPNumber,
+      testerStaffId: oldTestResult.testerStaffId
+    };
+    try {
+      const activities: any[] = await this.testResultsDAO.getActivity(params);
+      if (activities.length > 1) {
+        return Promise.reject({statusCode: 500, body: ERRORS.NoUniqueActivityFound});
+      }
+    } catch (err) {
+      return Promise.reject({statusCode: err.statusCode, body: `Activitites microservice error: ${err.body}`});
+    }
+    for (const testType of newTestResult.testTypes) {
+      // validate testTypeStart/End timestamp
     }
   }
 
