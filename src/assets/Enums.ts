@@ -20,6 +20,7 @@ export enum ERRORS {
     CountryOfRegistrationMandatory = "\"COUNTRY_OF_REGISTRATION\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     NoUniqueActivityFound = "More than one activity found",
+    StartTimeBeforeEndTime = "testTypeStartTimestamp must be before testTypeEndTimestamp",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
 }

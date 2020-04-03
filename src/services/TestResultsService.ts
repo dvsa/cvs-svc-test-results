@@ -231,15 +231,30 @@ export class TestResultsService {
       testerStaffId: oldTestResult.testerStaffId
     };
     try {
-      const activities: any[] = await this.testResultsDAO.getActivity(params);
+      const activities: [{startTime: Date, endTime: Date}] = await this.testResultsDAO.getActivity(params);
       if (activities.length > 1) {
         return Promise.reject({statusCode: 500, body: ERRORS.NoUniqueActivityFound});
       }
+      const activity = activities[0];
+      for (const testType of newTestResult.testTypes) {
+        if (dateFns.isAfter(testType.testTypeStartTimestamp, activity.endTime) || dateFns.isBefore(testType.testTypeStartTimestamp, activity.startTime)) {
+          return Promise.reject({
+            statusCode: 400,
+            body: `The testTypeStartTimestamp must be within the visit, between ${activity.startTime} and ${activity.endTime}`
+          });
+        }
+        if (dateFns.isAfter(testType.testTypeEndTimestamp, activity.endTime) || dateFns.isBefore(testType.testTypeEndTimestamp, activity.startTime)) {
+          return Promise.reject({
+            statusCode: 400,
+            body: `The testTypeEndTimestamp must be within the visit, between ${activity.startTime} and ${activity.endTime}`
+          });
+        }
+        if (dateFns.isAfter(testType.testTypeStartTimestamp, testType.testTypeEndTimestamp)) {
+          return Promise.reject({statusCode: 400, body: ERRORS.StartTimeBeforeEndTime});
+        }
+      }
     } catch (err) {
-      return Promise.reject({statusCode: err.statusCode, body: `Activitites microservice error: ${err.body}`});
-    }
-    for (const testType of newTestResult.testTypes) {
-      // validate testTypeStart/End timestamp
+      return Promise.reject({statusCode: err.statusCode, body: `Activities microservice error: ${err.body}`});
     }
   }
 
