@@ -195,7 +195,7 @@ export class TestResultsService {
 
     payload = this.setCreatedAtAndLastUpdatedAtDates(payload);
     return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration,
-        payload.noOfAxles, payload.euVehicleCategory, payload.vehicleClass.code, payload.vehicleSubclass ? payload.vehicleSubclass[0] : undefined, payload.numberOfWheelsDriven)
+        payload.noOfAxles, payload.euVehicleCategory, payload.vehicleClass ? payload.vehicleClass.code : undefined, payload.vehicleSubclass ? payload.vehicleSubclass[0] : undefined, payload.numberOfWheelsDriven)
         .then((testTypesWithTestCodesAndClassification) => {
           payload.testTypes = testTypesWithTestCodesAndClassification;
         })

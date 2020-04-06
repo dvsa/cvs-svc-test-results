@@ -1,6 +1,6 @@
 export interface ITestResultPayload {
     systemNumber: string;
-    vehicleClass: any;
+    vehicleClass?: any;
     vehicleSubclass: any;
     numberOfWheelsDriven: any;
     testStatus: string;

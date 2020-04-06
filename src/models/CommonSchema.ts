@@ -78,7 +78,7 @@ export const testResultsCommonSchema = {
             "PSV of unknown or unspecified size",
             "Not Known"])
             .required()
-    }).required(),
+    }),
     vehicleType: Joi.any().only(["psv", "hgv", "trl", "car", "lgv", "motorcycle"]).required(),
     noOfAxles: Joi.number().max(99).required(),
     preparerId: Joi.string().required().allow(""),
