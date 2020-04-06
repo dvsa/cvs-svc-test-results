@@ -2,12 +2,35 @@ import { TestResultsService } from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
-import {MESSAGES, ERRORS, VEHICLE_TYPES, TEST_STATUS, TEST_RESULT} from "../../src/assets/Enums";
+import {MESSAGES, ERRORS, VEHICLE_TYPES, TEST_STATUS, TEST_RESULT, TESTING_ERRORS} from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import { cloneDeep } from "lodash";
 
 describe("insertTestResult", () => {
+
+    const baseMockTestResultsDAO = {
+        createSingle: () => {
+            return Promise.resolve(Array.of());
+        },
+        getTestNumber: () => {
+            return Promise.resolve({
+                testNumber: "W01A00209",
+                id: "W01",
+                certLetter: "A",
+                sequenceNumber: "002"
+            });
+        },
+        getTestCodesAndClassificationFromTestTypes: () => {
+            return Promise.resolve({
+                linkedTestCode: null,
+                defaultTestCode: "yf4",
+                testTypeClassification: "Annual NO CERTIFICATE"
+            });
+        }
+    };
+    const extendMockTestResultsDAO = (additionalMockedFunctions: { [key: string]: () => any}) => jest.fn().mockImplementation(() => ({...baseMockTestResultsDAO, ...additionalMockedFunctions}));
+
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
     let testResultsMockDB: any;
@@ -128,7 +151,7 @@ describe("insertTestResult", () => {
             return testResultsService.insertTestResult(mockData)
                 .catch((error: { statusCode: any; body: any; }) => {
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body).toEqual(ERRORS.NoDeficiencyCategory);
+                    expect(error.body).toEqual(TESTING_ERRORS.NoDeficiencyCategory);
                 });
         });
     });
@@ -1644,7 +1667,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.FuelTypeInvalid);
+                    expect(error.body.errors[0]).toEqual(TESTING_ERRORS.FuelTypeInvalid);
                 });
         });
     });
@@ -1683,7 +1706,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.EmissionStandardInvalid);
+                    expect(error.body.errors[0]).toEqual(TESTING_ERRORS.EmissionStandardInvalid);
                 });
         });
     });
@@ -1723,7 +1746,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.ModTypeDescriptionInvalid);
+                    expect(error.body.errors[0]).toEqual(TESTING_ERRORS.ModTypeDescriptionInvalid);
                 });
         });
     });
@@ -1762,7 +1785,7 @@ describe("insertTestResult", () => {
                 .catch((error: { statusCode: any; body: { errors: any[]; }; }) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors[0]).toEqual(ERRORS.ModTypeCodeInvalid);
+                    expect(error.body.errors[0]).toEqual(TESTING_ERRORS.ModTypeCodeInvalid);
                 });
         });
     });
@@ -2279,6 +2302,103 @@ describe("insertTestResult", () => {
         });
     });
 
+    context("when inserting a testResult for a motorcycle", () => {
+        it("should fail if the vehicleClass is missing", () => {
+            const motorcycleWithoutVehicleClass = cloneDeep(testResultsPostMock[12]);
+            delete motorcycleWithoutVehicleClass.vehicleClass;
+
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithoutVehicleClass)))});
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+            expect.assertions(3);
+            return testResultsService.insertTestResult(motorcycleWithoutVehicleClass)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.VehicleClassIsRequired]));
+                });
+        });
+
+        it("should fail if the vehicleClass is null", () => {
+            const motorcycleWithoutVehicleClass = cloneDeep(testResultsPostMock[12]);
+            motorcycleWithoutVehicleClass.vehicleClass = null;
+
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithoutVehicleClass)))});
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+            expect.assertions(3);
+            return testResultsService.insertTestResult(motorcycleWithoutVehicleClass)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.VehicleClassInvalid]));
+                });
+        });
+
+        it("should fail if the vehicleClass is an object containing null values", () => {
+            const motorcycleWithInvalidVehicleClass = cloneDeep(testResultsPostMock[12]);
+            motorcycleWithInvalidVehicleClass.vehicleClass = {
+                code: null,
+                description: null
+            };
+
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithInvalidVehicleClass)))});
+
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+            expect.assertions(3);
+            return testResultsService.insertTestResult(motorcycleWithInvalidVehicleClass)
+                .catch((error: any) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.VehicleClassCodeIsInvalid]));
+                });
+        });
+    });
+
+    context("when inserting a testResult for a vehicle different than motorcycle", () => {
+        it("should submit successfully is the vehicleClass is missing", () => {
+            const validCarTestResult = cloneDeep(testResultsPostMock[10]);
+            delete validCarTestResult.vehicleClass;
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validCarTestResult)))});
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validCarTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("car");
+                    expect(insertedTestResult[0].testResultId).toEqual("500");
+                });
+        });
+
+        it("should submit successfully if vehicleClass is null", () => {
+            const validCarTestResult = cloneDeep(testResultsPostMock[10]);
+            validCarTestResult.vehicleClass = null;
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validCarTestResult)))});
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validCarTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("car");
+                    expect(insertedTestResult[0].testResultId).toEqual("500");
+                });
+        });
+
+        it("should submit successfully if vehicleClass is an invalid object", () => {
+            const validTestResult = cloneDeep(testResultsPostMock[0]);
+            validTestResult.vehicleClass = {
+                code: null,
+                description: null
+            };
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validTestResult)))});
+            testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+            return testResultsService.insertTestResult(validTestResult)
+                .then((insertedTestResult: any) => {
+                    expect(insertedTestResult[0].vehicleType).toEqual("psv");
+                    expect(insertedTestResult[0].testResultId).toEqual("1");
+                });
+        });
+    });
+
     context("when inserting a testResult that is a vehicleType of motorcycle and the payload contains vehicleSubclass", () => {
         it("should throw error", () => {
             const motorCycleWithoutVehicleSubClass = cloneDeep(testResultsPostMock[12]);
@@ -2312,7 +2432,7 @@ describe("insertTestResult", () => {
                 .catch((error: any) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.VehicleSubclassIsNotAllowed]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.VehicleSubclassIsNotAllowed]));
                 });
         });
     });
@@ -2350,7 +2470,7 @@ describe("insertTestResult", () => {
                 .catch((error: any) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.VehicleSubclassIsRequired]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.VehicleSubclassIsRequired]));
                 });
         });
     });
@@ -2388,7 +2508,7 @@ describe("insertTestResult", () => {
                 .catch((error: any) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.EuVehicleCategoryMustBeOneOf]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.EuVehicleCategoryMustBeOneOf]));
                 });
         });
     });
@@ -2426,7 +2546,7 @@ describe("insertTestResult", () => {
                 .catch((error: any) => {
                     expect(error).toBeInstanceOf(HTTPError);
                     expect(error.statusCode).toEqual(400);
-                    expect(error.body.errors).toEqual(expect.arrayContaining([ERRORS.EuVehicleCategoryMustBeOneOf]));
+                    expect(error.body.errors).toEqual(expect.arrayContaining([TESTING_ERRORS.EuVehicleCategoryMustBeOneOf]));
                 });
         });
     });

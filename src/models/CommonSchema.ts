@@ -62,7 +62,7 @@ export const testResultsCommonSchema = {
     testEndTimestamp: Joi.date().iso().required(),
     testStatus: Joi.any().only(["submitted", "cancelled"]).required(),
     vehicleClass: Joi.object().keys({
-        code: Joi.any().only(["1", "2", "3", "n", "s", "t", "l", "v", "4", "5", "7", "p", "u"]).required(),
+        code: Joi.any().only(["1", "2", "3", "n", "s", "t", "l", "v", "4", "5", "7", "p", "u"]).allow(null),
         description: Joi.any().only([
             "motorbikes up to 200cc",
             "motorbikes over 200cc or with a sidecar",
@@ -76,9 +76,9 @@ export const testResultsCommonSchema = {
             "MOT class 5",
             "MOT class 7",
             "PSV of unknown or unspecified size",
-            "Not Known"])
-            .required()
-    }).required(),
+            "Not Known"
+        ]).allow(null)
+    }).allow(null),
     vehicleType: Joi.any().only(["psv", "hgv", "trl", "car", "lgv", "motorcycle"]).required(),
     noOfAxles: Joi.number().max(99).required(),
     preparerId: Joi.string().required().allow(""),
