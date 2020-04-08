@@ -12,7 +12,7 @@ describe("getTestResultsBySystemNumber", () => {
                 context("and toDateTime and fromDateTime are not provided", () => {
                     context("and there are test results for that systemNumber that have status 'submitted' and createdAt date value between two years ago and today", () => {
                         it("should return the test results for that systemNumber with default status 'submitted' and default date interval which is from too years ago until today", async () => {
-                            const res = await request.get("test-results/10000002/");
+                            const res = await request.get("test-results/11000002/");
                             const expectedResponse = Array.of(testResultsMockDB[1]);
                             delete expectedResponse[0].testResultId;
                             expect(res.status).toEqual(200);
@@ -29,7 +29,7 @@ describe("getTestResultsBySystemNumber", () => {
             context("and toDateTime and fromDateTime are provided", () => {
                 context("and there are test results in the db that satisfy both conditions", () => {
                     it( "should return the test results for that systemNumber with status 'submitted' and that have createdAt value between 2017-01-01 and 2019-02-23", async () => {
-                        const res = await request.get("test-results/10000002?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-02-23");
+                        const res = await request.get("test-results/11000002?status=submitted&fromDateTime=2017-01-01&toDateTime=2019-02-23");
                         expect(res.status).toEqual(200);
                         expect(res.header["access-control-allow-origin"]).toEqual("*");
                         expect(res.header["access-control-allow-credentials"]).toEqual("true");
