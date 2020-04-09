@@ -317,7 +317,8 @@ export class TestResultsService {
                     } else if (dateFns.isToday(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
                       testType.testExpiryDate = dateFns.addYears(new Date(), 1).toISOString();
                       payload.testTypes[index] = testType;
-                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2)) && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date())) {
+                    } else if (dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.endOfDay(dateFns.addMonths(new Date(), 2)))
+                                && dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))) {
                       testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesBySystemNumber, 1).toISOString();
                       payload.testTypes[index] = testType;
                     }
@@ -347,12 +348,13 @@ export class TestResultsService {
                     } else if (this.isAnnualTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
                         const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate!), 1);
                         if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), dateFns.endOfDay(registrationFirstUseAnniversaryDate))) {
-                          testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(new Date()), 4).toISOString();
+                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                         } else {
-                          testType.testExpiryDate = dateFns.addHours(this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate), 4).toISOString();
+                          testType.testExpiryDate = this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate).toISOString();
                         }
                     } else {
-                      if (dateFns.isAfter(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date()) && dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.addMonths(new Date(), 2))) {
+                      const monthOfMostRecentExpiryDate = dateFns.endOfDay(dateFns.endOfMonth(mostRecentExpiryDateOnAllTestTypesBySystemNumber));
+                      if (dateFns.isAfter(monthOfMostRecentExpiryDate, new Date()) && dateFns.isBefore(monthOfMostRecentExpiryDate, dateFns.addMonths(new Date(), 2))) {
                         testType.testExpiryDate = this.lastDayOfMonthInNextYear(mostRecentExpiryDateOnAllTestTypesBySystemNumber).toISOString();
                       } else {
                         testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
@@ -377,7 +379,7 @@ export class TestResultsService {
   }
 
   private lastDayOfMonthInNextYear(inputDate: Date): Date {
-    return dateFns.lastDayOfMonth(dateFns.addYears(inputDate, 1));
+    return dateFns.endOfDay(dateFns.lastDayOfMonth(dateFns.addYears(inputDate, 1)));
   }
 
   public isFirstTestRetestTestType(testType: any): boolean {

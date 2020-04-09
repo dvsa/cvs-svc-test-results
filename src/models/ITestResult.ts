@@ -2,9 +2,9 @@ export interface ITestResult {
   testResultId: string;
   systemNumber: string;
   testerStaffId: string;
-  testStartTimestamp: Date;
+  testStartTimestamp: string | Date;
   odometerReadingUnits: string;
-  testEndTimestamp: Date;
+  testEndTimestamp: string | Date;
   testStatus: string;
   testTypes: TestType[];
   vehicleClass: VehicleClass;
@@ -28,36 +28,36 @@ export interface ITestResult {
   testerEmailAddress: string;
   euVehicleCategory: string;
   deletionFlag: boolean | null; // Not sent from FE, calculated in the BE.
-  regnDate?: Date; // Used only for PSV and HGV
+  regnDate?: string | Date; // Used only for PSV and HGV
   trailerId?: string; // Mandatory for TRL, not applicable to PSV and HGV
-  firstUseDate?: Date; // Used only for TRL
+  firstUseDate?: string | Date; // Used only for TRL
 }
 
 export interface TestType {
   prohibitionIssued: boolean;
   testCode: string | null; // Not sent from FE, calculated in the BE.
   testNumber: string | null; // Not sent from FE, calculated in the BE.
-  lastUpdatedAt: Date;
-  testAnniversaryDate: Date | null; // Not sent from FE, calculated in the BE.
+  lastUpdatedAt: string | Date;
+  testAnniversaryDate: string | Date | null; // Not sent from FE, calculated in the BE.
   additionalCommentsForAbandon: string | null;
   numberOfSeatbeltsFitted?: number | null; // mandatory for PSV only, not applicable for HGV and TRL
-  testTypeEndTimestamp: Date;
+  testTypeEndTimestamp: string | Date;
   reasonForAbandoning: string | null;
-  lastSeatbeltInstallationCheckDate?: Date | null; // mandatory for PSV only, not applicable for HGV and TRL
-  createdAt: Date | null;
+  lastSeatbeltInstallationCheckDate?: string | Date | null; // mandatory for PSV only, not applicable for HGV and TRL
+  createdAt: string | Date | null;
   testTypeId: string;
-  testTypeStartTimestamp: Date;
+  testTypeStartTimestamp: string | Date;
   testTypeName: string;
   seatbeltInstallationCheckDate?: boolean | null; // mandatory for PSV only, not applicable for HGV and TRL
   additionalNotesRecorded: string;
   defects: Defect[];
   name: string;
-  certificateLink: string | null; // Not sent from FE, calculated in the BE.
+  certificateLink?: string | null; // Not sent from FE, calculated in the BE.
   // testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
   testResult: string;
-  certificateNumber: string | null;
-  testExpiryDate: Date | null; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
-  deletionFlag: boolean | null; // Not sent from FE, calculated in the BE.
+  certificateNumber?: string | null;
+  testExpiryDate?: string | Date | null; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
+  deletionFlag?: boolean | null; // Not sent from FE, calculated in the BE.
 
   // Used only for LEC tests.
   modType?: ModType | null;

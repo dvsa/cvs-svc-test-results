@@ -1,6 +1,7 @@
 {
   "exceptions": [
     "https://npmjs.com/advisories/781",
+    "https://npmjs.com/advisories/1179",
     "https://npmjs.com/advisories/1217"
   ]
 }
