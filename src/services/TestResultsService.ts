@@ -41,6 +41,7 @@ import * as Joi from "joi";
 import {cloneDeep, mergeWith, isArray} from "lodash";
 import {IMsUserDetails} from "../models/IMsUserDetails";
 import {
+  testTypesArray,
   testTypesSchemaGroup1, testTypesSchemaGroup12And13,
   testTypesSchemaGroup2,
   testTypesSchemaGroup3And4And5And10, testTypesSchemaGroup6And7And8, testTypesSchemaGroup9And11
@@ -207,6 +208,11 @@ export class TestResultsService {
   public validateTestTypes(testResult: ITestResult) {
     const validationErrors = [];
     let validation: ValidationResult<any> | any;
+    validation = testTypesArray.validate({testTypes: testResult.testTypes});
+    if (validation.error) {
+      validationErrors.push(this.mapErrorMessage(validation));
+      return validationErrors;
+    }
     for (const testType of testResult.testTypes) {
       const context = {isPassed: testType.testResult, isSubmitted: testResult.testStatus};
       if (TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
@@ -247,13 +253,6 @@ export class TestResultsService {
   }
 
   public removeNonEditableAttributes(testResult: ITestResult) {
-    for (const testType of testResult.testTypes) {
-      delete testType.testCode;
-      delete testType.testNumber;
-      delete testType.createdAt;
-      delete testType.lastUpdatedAt;
-      delete testType.certificateLink;
-    }
     delete testResult.vehicleId;
     delete testResult.testEndTimestamp;
     delete testResult.testStationType;

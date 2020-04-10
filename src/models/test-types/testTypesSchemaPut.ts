@@ -22,6 +22,10 @@ export const defectsSchemaPut = defectsCommonSchema.keys({
   })
 });
 
+export const testTypesArray = Joi.object().keys({
+  testTypes: Joi.array().min(1).required()
+});
+
 export const testTypesCommonSchema = Joi.object().keys({
   name: Joi.string().required(),
   testTypeName: Joi.string().required(),
@@ -37,12 +41,18 @@ export const testTypesCommonSchema = Joi.object().keys({
     referenceNumber: Joi.string().max(10).required(),
     defectName: Joi.string().max(200).required(),
     defectNotes: Joi.string().max(200).required().allow(null)
-  })).required().allow(null)
-});
+  })).required().allow(null),
+  testCode: Joi.string().required(),
+  testNumber: Joi.string().required(),
+  createdAt: Joi.string().optional(),
+  lastUpdatedAt: Joi.string().optional(),
+  certificateLink: Joi.string().optional(),
+  testTypeClassification: Joi.string().required()
+}).required();
 
 export const testTypesSchemaGroup1 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
-  testExpiryDate: Joi.date().when("isPassed", {
+  testExpiryDate: Joi.date().when("$isPassed", {
     is: "pass",
     then: Joi.date().iso().allow(null),
     otherwise: Joi.date().forbidden()

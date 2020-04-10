@@ -263,12 +263,29 @@ describe("updateTestResults", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     // testTypeId from each of the test-types groupings
                     const testTypeIds = ["1", "15", "38", "76", "117", "45"];
+                    testToUpdate = cloneDeep(testResultsMockDB[1]);
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
                         const validationResponse = testResultsService.validateTestTypes(testToUpdate);
                         expect(validationResponse).toBeDefined();
                         expect(validationResponse.length).not.toEqual(0);
                     }
+                });
+            });
+
+            context("and when testTypes attribute is not present on the payload", () => {
+                it("should return validation Error 400", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    delete testToUpdate.testTypes;
+                    expect.assertions(3);
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          expect(errorResponse).toBeInstanceOf(HTTPError);
+                          expect(errorResponse.statusCode).toEqual(400);
+                          expect(errorResponse.body.errors[0]).toEqual(["\"testTypes\" is required"]);
+                      });
                 });
             });
         });
