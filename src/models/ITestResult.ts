@@ -8,7 +8,7 @@ export interface ITestResult {
   testStatus: string;
   testTypes: TestType[];
   vehicleClass: VehicleClass;
-  vehicleSubclass: any;
+  vehicleSubclass: string[];
   vin: string;
   vehicleSize?: string; // Mandatory for PSV only & not applicable to HGV and TRL
   testStationName: string;
@@ -26,7 +26,7 @@ export interface ITestResult {
   testStationPNumber: string;
   numberOfSeats?: number; // mandatory for PSV only, not applicable for HGV and TRL
   noOfAxles: number;
-  numberOfWheelsDriven: any;
+  numberOfWheelsDriven: number;
   testerEmailAddress: string;
   euVehicleCategory: string;
   deletionFlag: boolean | null; // Not sent from FE, calculated in the BE.
