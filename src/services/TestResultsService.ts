@@ -178,11 +178,11 @@ export class TestResultsService {
           newTestResult.testVersion = TEST_VERSION.CURRENT;
           mergeWith(newTestResult, payload, this.arrayCustomizer);
           if (this.shouldGenerateNewTestCodeRe(oldTestResult, newTestResult)) {
+            const vehicleSubclass = newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length ? newTestResult.vehicleSubclass[0] : undefined;
             await this.getTestTypesWithTestCodesAndClassification(newTestResult.testTypes as any[],
               newTestResult.vehicleType, newTestResult.vehicleSize, newTestResult.vehicleConfiguration,
               newTestResult.noOfAxles, newTestResult.euVehicleCategory, newTestResult.vehicleClass.code,
-              newTestResult.vehicleSubclass ? newTestResult.vehicleSubclass[0] : undefined,
-              newTestResult.numberOfWheelsDriven);
+              vehicleSubclass, newTestResult.numberOfWheelsDriven);
           }
           await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
           this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
