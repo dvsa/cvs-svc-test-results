@@ -114,17 +114,14 @@ describe("getTestResults", () => {
 
         context("when the testVersion filter is ALL", () => {
             it("should return all test-results (without testVersion, testVersion=current/archived)", () => {
-                const firstTest = testResultsMockDB[0];
-                const secondTest = testResultsMockDB[0];
-                firstTest.testVersion = "current";
-                secondTest.testVersion = "archived";
-                const testResults = Array.of(firstTest, secondTest);
+                const testResult = cloneDeep(testResultsMockDB[0]);
+                testResult.testHistory = ["some archived test-result"];
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
                         getBySystemNumber: () => {
                             return Promise.resolve({
-                                Items: testResults,
+                                Items: Array.of(testResult),
                                 Count: 2
                             });
                         }
@@ -132,13 +129,18 @@ describe("getTestResults", () => {
                 });
 
                 testResultsService = new TestResultsService(new MockTestResultsDAO());
-                return testResultsService.getTestResults({ systemNumber: "1111", testVersion: TEST_VERSION.ALL})
+                return testResultsService.getTestResults({
+                    systemNumber: "1111",
+                    fromDateTime: "2017-01-01",
+                    toDateTime: new Date().toString(),
+                    testVersion: TEST_VERSION.ALL,
+                    testResultId: testResult.testResultId
+                })
                   .then((returnedRecords: any) => {
                       expect(returnedRecords).not.toEqual(undefined);
                       expect(returnedRecords).not.toEqual({});
-                      expect(returnedRecords.length).toEqual(2);
-                      expect(JSON.stringify(returnedRecords[0])).toEqual(JSON.stringify(firstTest));
-                      expect(JSON.stringify(returnedRecords[1])).toEqual(JSON.stringify(secondTest));
+                      expect(returnedRecords.length).toEqual(1);
+                      expect(JSON.stringify(returnedRecords[0])).toEqual(JSON.stringify(testResult));
                   });
             });
         });
