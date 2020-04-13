@@ -164,7 +164,7 @@ export class TestResultsDAO {
     return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name, event);
   }
 
-  public getActivity(filters: {fromStartTime: Date, toStartTime: Date, activityType: string, testStationPNumber: string, testerStaffId: string}): any {
+  public getActivity(filters: {fromStartTime: string | Date, toStartTime: string | Date, activityType: string, testStationPNumber: string, testerStaffId: string}): any {
     const event = {
       path: "/activities/details",
       queryStringParameters: {
