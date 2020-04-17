@@ -306,7 +306,7 @@ export class TestResultsService {
           payload.testTypes.forEach((testType: any, index: number) => {
             if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
               (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
-              payload.testTypes[index] = testType;
+              // payload.testTypes[index] = testType;
               if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                 if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && this.isValidDate(payload.regnDate)) {
                   const registrationAnniversary = dateFns.addYears(payload.regnDate!, 1); // registrationAnniversary = registration date + 1 year (anniversary date as is stated in CVSB-11509)
@@ -322,10 +322,8 @@ export class TestResultsService {
                   } else if (registrationAnniversaryDifference < 0) {
                     testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
                   } else if (registrationAnniversaryDifference === 0) {
-                    // if the anniversaryDifference is between 0 to 0.4
-                    if (dateFns.isBefore(new Date(), registrationAnniversary)) {
+                    if (dateFns.isAfter(registrationAnniversary, dateFns.startOfDay(new Date()))) {
                       testType.testExpiryDate = dateFns.addYears(payload.regnDate!, 2).toISOString();
-                      // if the anniversaryDifference is between 0 to -0.4
                     } else {
                       testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
                     }
