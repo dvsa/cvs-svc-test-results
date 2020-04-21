@@ -309,24 +309,12 @@ export class TestResultsService {
               // payload.testTypes[index] = testType;
               if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                 if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && this.isValidDate(payload.regnDate)) {
-                  const registrationAnniversary = dateFns.addYears(payload.regnDate!, 1); // registrationAnniversary = registration date + 1 year (anniversary date as is stated in CVSB-11509)
-                  // registrationAnniversaryDifference = calculated difference between the anniversary date ,declared above, and the current date (N.B this can be negative)
-                  const registrationAnniversaryDifference = dateFns.differenceInMonths(dateFns.addDays(registrationAnniversary, 1), new Date());
-
-                  if (registrationAnniversaryDifference >= 2) { // Check that the Anniversary date is greater than 2 months from the test date - CVSB-11509 AC1
+                  const registrationAnniversary = dateFns.addYears(new Date(payload.regnDate!), 1); // registrationAnniversary = registration date + 1 year (anniversary date as is stated in CVSB-11509)
+                  if (registrationAnniversary.toISOString().substring(0, 10) >= new Date().toISOString().substring(0, 10)
+                      && registrationAnniversary.toISOString().substring(0, 10) < dateFns.addMonths(new Date(), 2).toISOString().substring(0, 10)) {
+                    testType.testExpiryDate = dateFns.addYears(registrationAnniversary, 1).toISOString();
+                  } else {
                     testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
-                    // Checks that the Anniversary date is greater than 2 months from the test date - CVSB-11509 AC2
-                  } else if (registrationAnniversaryDifference === 1) {
-                    testType.testExpiryDate = dateFns.addYears(payload.regnDate!, 2).toISOString();
-                    // Checks that the Anniversary date is before the test date - CVSB-11509 AC3
-                  } else if (registrationAnniversaryDifference < 0) {
-                    testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
-                  } else if (registrationAnniversaryDifference === 0) {
-                    if (dateFns.isAfter(registrationAnniversary, dateFns.startOfDay(new Date()))) {
-                      testType.testExpiryDate = dateFns.addYears(payload.regnDate!, 2).toISOString();
-                    } else {
-                      testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
-                    }
                   }
                   // Generates the expiry if there is no regnDate && the test isnt A COIF test type - CVSB-11509 AC4
                 } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)
@@ -356,7 +344,7 @@ export class TestResultsService {
                 // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
                 if (this.isFirstTestRetestTestType(testType) && dateFns.isAfter(new Date(), firstTestAfterAnvCompareDate)) {
                   testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
-                } else if (this.isFirstTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
+                } else if (this.isFirstTestRetestTestType(testType) && TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
                   const anvDateForCompare = this.isValidDate(regOrFirstUseDate) ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate as any)).toISOString() : undefined;
                   // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                   console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
@@ -368,7 +356,7 @@ export class TestResultsService {
                     testType.testExpiryDate = dateFns.addYears(anvDateForCompare, 1).toISOString();
                     console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                   }
-                } else if (this.isAnnualTestRetestTestType(testType) && dateFns.isEqual(mostRecentExpiryDateOnAllTestTypesBySystemNumber, new Date(1970, 1, 1))) {
+                } else if (this.isAnnualTestRetestTestType(testType) && TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
                   const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate!), 1);
                   if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), dateFns.endOfDay(registrationFirstUseAnniversaryDate))) {
                     testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
