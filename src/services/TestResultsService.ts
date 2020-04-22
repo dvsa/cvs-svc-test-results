@@ -306,9 +306,10 @@ export class TestResultsService {
           payload.testTypes.forEach((testType: any, index: number) => {
             if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
               (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
-              // payload.testTypes[index] = testType;
               if (payload.vehicleType === VEHICLE_TYPES.PSV) {
-                if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && this.isValidDate(payload.regnDate)) {
+                if (COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
+                  testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
+                } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && this.isValidDate(payload.regnDate)) {
                   const registrationAnniversary = dateFns.addYears(new Date(payload.regnDate!), 1); // registrationAnniversary = registration date + 1 year (anniversary date as is stated in CVSB-11509)
                   if (registrationAnniversary.toISOString().substring(0, 10) >= new Date().toISOString().substring(0, 10)
                       && registrationAnniversary.toISOString().substring(0, 10) < dateFns.addMonths(new Date(), 2).toISOString().substring(0, 10)) {
@@ -317,11 +318,7 @@ export class TestResultsService {
                     testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
                   }
                   // Generates the expiry if there is no regnDate && the test isnt A COIF test type - CVSB-11509 AC4
-                } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)
-                  && !this.isValidDate(payload.regnDate) && !COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
-                  testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
-                  // Generates the expiry for COIF test types that have an expiry date - CVSB-11509 AC5
-                } else if (!TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
+                } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && !this.isValidDate(payload.regnDate)) {
                   testType.testExpiryDate = this.addOneYearMinusOneDay(new Date()).toISOString();
                 } else if ((TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber))
                   || dateFns.isBefore(mostRecentExpiryDateOnAllTestTypesBySystemNumber, dateFns.startOfDay(new Date()))
