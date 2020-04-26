@@ -2081,6 +2081,34 @@ describe("TestResultsService calling generateExpiryDate", () => {
                           });
                     });
                 });
+
+                context("when inserting an annual test/retest for trailers without previous tests", () => {
+                    it("should set the expiry date to today.lastDayOfMonth + 1 year if the firstUse anniversary is in the past", () => {
+                        const trlTestResult = cloneDeep(testResultsMockDB[17]);
+                        console.log(trlTestResult);
+                        trlTestResult.testTypes[0].testTypeId = "94";
+                        trlTestResult.firstUseDate = "2006-04-04";
+
+                        MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                            return {
+                                getTestCodesAndClassificationFromTestTypes: () => {
+                                    return Promise.resolve({
+                                        linkedTestCode: "aav2",
+                                        defaultTestCode: null,
+                                        testTypeClassification: "Annual With Certificate"
+                                    });
+                                }
+                            };
+                        });
+                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+                        const expectedExpiryDate = dateFns.setHours(dateFns.lastDayOfMonth(dateFns.addYears(new Date(), 1)), 12);
+                        return testResultsService.generateExpiryDate(trlTestResult)
+                            .then((generatedTestResult: any) => {
+                                expect((generatedTestResult.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                            });
+                    });
+                });
             });
             /*
                 * AC1 - CVSB-9187

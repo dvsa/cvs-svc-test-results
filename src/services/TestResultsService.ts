@@ -331,7 +331,6 @@ export class TestResultsService {
                   testType.testExpiryDate = dateFns.addYears(mostRecentExpiryDateOnAllTestTypesBySystemNumber, 1).toISOString();
                 }
               } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
-                // Applying CVSB-8658 logic changes if vehicle doesn't currently have an existing expiry date
                 let regOrFirstUseDate: string | undefined = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
                 if (!this.isValidDate(regOrFirstUseDate)) {
                   regOrFirstUseDate = undefined;
@@ -345,7 +344,7 @@ export class TestResultsService {
                   const anvDateForCompare = this.isValidDate(regOrFirstUseDate) ? dateFns.endOfDay(this.lastDayOfMonthInNextYear(regOrFirstUseDate as any)).toISOString() : undefined;
                   // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
                   console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
-                  if (!anvDateForCompare || dateFns.isBefore(new Date(), dateFns.subMonths(anvDateForCompare, 2))) {
+                  if (!anvDateForCompare || dateFns.isBefore(new Date(), dateFns.subMonths(anvDateForCompare, 2))) { // anniversary is more than 2 months further than today
                     testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                     console.log(`Setting expiryDate: ${testType.testExpiryDate}`);
                   } else {
@@ -354,11 +353,15 @@ export class TestResultsService {
                     console.log(`Setting expiryDate as 1yr from RegDate: ${testType.testExpiryDate}`);
                   }
                 } else if (this.isAnnualTestRetestTestType(testType) && TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
-                  const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(regOrFirstUseDate!), 1);
-                  if (!regOrFirstUseDate || dateFns.isBefore(dateFns.addMonths(new Date(), 2), dateFns.endOfDay(registrationFirstUseAnniversaryDate))) {
+                  if (!this.isValidDate(regOrFirstUseDate)) {
                     testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
                   } else {
-                    testType.testExpiryDate = this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate).toISOString();
+                    const registrationFirstUseAnniversaryDate = dateFns.addYears(dateFns.lastDayOfMonth(new Date(regOrFirstUseDate!)), 1);
+                    if (this.isWithinTwoMonthsFromToday(registrationFirstUseAnniversaryDate)) {
+                      testType.testExpiryDate = this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate).toISOString();
+                    } else {
+                      testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date()).toISOString();
+                    }
                   }
                 } else {
                   const monthOfMostRecentExpiryDate = dateFns.endOfDay(dateFns.endOfMonth(mostRecentExpiryDateOnAllTestTypesBySystemNumber));
@@ -630,6 +633,11 @@ export class TestResultsService {
     }
     return missingMandatoryFields;
   }
+
+  private isWithinTwoMonthsFromToday(date: Date) {
+    return date.toISOString().substring(0, 10) > new Date().toISOString().substring(0, 10) && date.toISOString().substring(0, 10) < dateFns.addMonths(new Date(), 2).toISOString().substring(0, 10);
+  }
+
   //#region Private Static Functions
   private static isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
     return HGV_TRL_ROADWORTHINESS_TEST_TYPES.IDS.includes(testTypeId);
