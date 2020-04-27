@@ -402,7 +402,7 @@ export class TestResultsService {
   }
 
   public isAnnualTestRetestTestType(testType: any): boolean {
-    const annualTestRetestIds = ["94", "40", "53", "54", "98", "99"];
+    const annualTestRetestIds = ["94", "40", "53", "54", "98", "99", "70", "76", "79", "107", "113", "116"];
     return annualTestRetestIds.includes(testType.testTypeId);
   }
   public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
