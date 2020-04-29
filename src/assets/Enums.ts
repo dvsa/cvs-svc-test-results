@@ -79,6 +79,10 @@ export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
     IDS: ["122", "91", "101", "62", "63"]
 };
 
+export const COIF_EXPIRY_TEST_TYPES = {
+    IDS: ["142", "146", "175", "177"]
+};
+
 export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
    CODES: [
         "AAT1", "AAT2", "AAT3", "AAT4", "AAT5",
@@ -114,5 +118,9 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "P6L", "P6S",
         "WIS", "WIL",
         "WFL", "WFS",
-        "WEL", "WES"]
+        "WEL", "WES",
+        "CEL", "CES",
+        "CHL", "CHS",
+        "CKL", "CKS",
+        "CML", "CMS"]
 };
