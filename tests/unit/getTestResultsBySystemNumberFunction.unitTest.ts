@@ -1,9 +1,9 @@
 import {getTestResultsBySystemNumber} from "../../src/functions/getTestResultsBySystemNumber";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
-import * as dateFns from "date-fns";
 import {MESSAGES} from "../../src/assets/Enums";
 import {HTTPError} from "../../src/models/HTTPError";
+import moment from "moment";
 
 describe("getTestResultsBySystemNumber Function", () => {
   const minimalEvent =  {
@@ -20,8 +20,8 @@ describe("getTestResultsBySystemNumber Function", () => {
         systemNumber: 1,
         testVersion: "current",
         testStatus: "submitted",
-        toDateTime: dateFns.endOfToday(),
-        fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
+        toDateTime: moment().endOf("day").toDate(),
+        fromDateTime: moment().subtract(2, "years").endOf("day").toDate()
       };
 
       expect.assertions(4);
@@ -96,7 +96,7 @@ describe("getTestResultsBySystemNumber Function", () => {
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
-          fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
+          fromDateTime: moment().subtract(2, "years").endOf("day").toDate()
         };
 
         expect.assertions(4);
@@ -124,7 +124,7 @@ describe("getTestResultsBySystemNumber Function", () => {
           systemNumber: 1,
           testVersion: "current",
           testStatus: "submitted",
-          toDateTime: dateFns.endOfToday(),
+          toDateTime: moment().endOf("day").toDate(),
           fromDateTime: new Date("01-01-2010")
         };
 
@@ -153,8 +153,8 @@ describe("getTestResultsBySystemNumber Function", () => {
           systemNumber: 1,
           testVersion: "current",
           testStatus: "cheese",
-          toDateTime: dateFns.endOfToday(),
-          fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
+          toDateTime: moment().endOf("day").toDate(),
+          fromDateTime: moment().subtract(2, "years").endOf("day").toDate()
         };
 
         expect.assertions(4);
@@ -183,8 +183,8 @@ describe("getTestResultsBySystemNumber Function", () => {
           systemNumber: 1,
           testVersion: "archived",
           testStatus: "submitted",
-          toDateTime: dateFns.endOfToday(),
-          fromDateTime: dateFns.subYears(dateFns.endOfToday(), 2)
+          toDateTime: moment().endOf("day").toDate(),
+          fromDateTime: moment().subtract(2, "years").endOf("day").toDate()
         };
 
         expect.assertions(4);

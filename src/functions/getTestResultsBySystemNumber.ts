@@ -1,9 +1,9 @@
 import {TestResultsDAO} from "../models/TestResultsDAO";
 import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
-import * as dateFns from "date-fns";
 import {MESSAGES, TEST_VERSION} from "../assets/Enums";
 import {ISubSeg} from "../models/ISubSeg";
+import moment from "moment";
 /* workaround AWSXRay.captureAWS(...) call obscures types provided by the AWS sdk.
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */
@@ -35,8 +35,8 @@ export const getTestResultsBySystemNumber = async (event: {
     let testResultId;
     let testStatus = "submitted";
     let testVersion = TEST_VERSION.CURRENT;
-    let toDateTime = dateFns.endOfToday();
-    let fromDateTime = dateFns.subYears(toDateTime, 2);
+    let toDateTime = moment().endOf("day").toDate();
+    let fromDateTime = moment(toDateTime).subtract(2, "years").toDate();
 
     try {
         if (event.queryStringParameters) {

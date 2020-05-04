@@ -1,7 +1,7 @@
-import * as dateFns from "date-fns";
 import {isDate, isFinite} from "lodash";
 import {TEST_VERSION} from "../assets/Enums";
 import {ITestResult} from "../models/ITestResult";
+import moment from "moment";
 
 
 export class GetTestResults {
@@ -18,7 +18,7 @@ export class GetTestResults {
   public static filterTestResultByDate(testResults: any, fromDateTime: string | number | Date, toDateTime: string | number | Date) {
 
     return testResults.filter((testResult: { testStartTimestamp: string | number | Date; testEndTimestamp: string | number | Date; }) => {
-      return dateFns.isAfter(testResult.testStartTimestamp, fromDateTime) && dateFns.isBefore(testResult.testEndTimestamp, toDateTime);
+      return moment(testResult.testStartTimestamp).isAfter(fromDateTime) && moment(testResult.testEndTimestamp).isBefore(toDateTime);
     });
   }
 
