@@ -11,12 +11,7 @@ export enum ERRORS {
     NoCertificateNumberOnTir = "Certificate number not present on TIR test type",
     NoExpiryDate = "Expiry date not present on ADR test type",
     IncorrectTestStatus = '"testStatus" should be one of ["submitted", "cancelled"]',
-    NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory",
     PayloadCannotBeEmpty = "Payload cannot be empty",
-    FuelTypeInvalid = "\"fuelType\" must be one of [diesel, gas-cng, gas-lng, gas-lpg, petrol, fuel cell, full electric, null]",
-    ModTypeDescriptionInvalid = "\"description\" must be one of [particulate trap, modification or change of engine, gas engine]",
-    EmissionStandardInvalid= "\"emissionStandard\" must be one of [0.10 g/kWh Euro 3 PM, 0.03 g/kWh Euro IV PM, Euro 3, Euro 4, Euro 6, Euro VI, Full Electric, null]",
-    ModTypeCodeInvalid = "\"code\" must be one of [p, m, g]",
     NoLECExpiryDate = "Expiry Date not present on LEC test type",
     NoModificationType = "Modification type not present on LEC test type",
     NoEmissionStandard = "Emission standard not present on LEC test type",
@@ -26,9 +21,20 @@ export enum ERRORS {
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
+}
+
+export enum TESTING_ERRORS {
+    NoDeficiencyCategory = "/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory",
+    FuelTypeInvalid = "\"fuelType\" must be one of [diesel, gas-cng, gas-lng, gas-lpg, petrol, fuel cell, full electric, null]",
+    ModTypeDescriptionInvalid = "\"description\" must be one of [particulate trap, modification or change of engine, gas engine]",
+    EmissionStandardInvalid= "\"emissionStandard\" must be one of [0.10 g/kWh Euro 3 PM, 0.03 g/kWh Euro IV PM, Euro 3, Euro 4, Euro 6, Euro VI, Full Electric, null]",
+    ModTypeCodeInvalid = "\"code\" must be one of [p, m, g]",
     VehicleSubclassIsNotAllowed = "\"vehicleSubclass\" is not allowed",
     VehicleSubclassIsRequired = "\"vehicleSubclass\" is required",
-    EuVehicleCategoryMustBeOneOf = "\"euVehicleCategory\" must be one of [m1, null]"
+    EuVehicleCategoryMustBeOneOf = "\"euVehicleCategory\" must be one of [m1, null]",
+    VehicleClassIsRequired = "\"vehicleClass\" is required",
+    VehicleClassCodeIsInvalid = "\"code\" must be one of [1, 2, 3, n, s, t, l, v, 4, 5, 7, p, u]",
+    VehicleClassInvalid = "\"vehicleClass\" must be an object",
 }
 
 export enum HTTPRESPONSE {

@@ -69,7 +69,7 @@
     "tslint": "^5.20.0",
     "tslint-jsdoc-rules": "^0.2.0",
     "tslint-no-unused-expression-chai": "^0.1.4",
-    "typescript": "^3.6.4"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
     "aws-sdk": "^2.645.0",
