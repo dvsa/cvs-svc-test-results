@@ -288,6 +288,20 @@ describe("updateTestResults", () => {
                       });
                 });
             });
+
+            it("should remove the attributes that are not updatable from the payload", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation();
+
+                testResultsService = new TestResultsService(new MockTestResultsDAO());
+                testResultsService.removeNonEditableAttributes(testToUpdate);
+                expect(testToUpdate).not.toHaveProperty("systemNumber");
+                expect(testToUpdate).not.toHaveProperty("vin");
+                expect(testToUpdate).not.toHaveProperty("vehicleId");
+                expect(testToUpdate).not.toHaveProperty("testEndTimestamp");
+                expect(testToUpdate).not.toHaveProperty("testVersion");
+                expect(testToUpdate).toHaveProperty("testerEmailAddress");
+                expect(testToUpdate).toHaveProperty("testStationType");
+            });
         });
     });
 });

@@ -158,7 +158,7 @@ export class TestResultsService {
       countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required().allow("", null),
       testTypes: Joi.any().forbidden()
     });
-    validationSchema = validationSchema.optionalKeys(["testStationType", "testerEmailAddress", "testEndTimestamp", "systemNumber", "vin"]);
+    validationSchema = validationSchema.optionalKeys(["testEndTimestamp", "systemNumber", "vin"]);
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (validation !== null && validation.error) {
@@ -251,8 +251,6 @@ export class TestResultsService {
   public removeNonEditableAttributes(testResult: ITestResult) {
     delete testResult.vehicleId;
     delete testResult.testEndTimestamp;
-    delete testResult.testStationType;
-    delete testResult.testerEmailAddress;
     delete testResult.testVersion;
     delete testResult.systemNumber;
     delete testResult.vin;
