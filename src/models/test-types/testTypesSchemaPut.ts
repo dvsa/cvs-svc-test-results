@@ -3,23 +3,19 @@ import {defectsCommonSchema} from "../CommonSchema";
 
 const additionalInformationSchema = Joi.object().keys({
   location: Joi.object().keys({
-    vertical: Joi.any().only(["upper", "lower"]).required().allow(null),
-    horizontal: Joi.any().only(["inner", "outer"]).required().allow(null),
-    lateral: Joi.any().only(["nearside", "centre", "offside"]).required().allow(null),
-    longitudinal: Joi.any().only(["front", "rear"]).required().allow(null),
-    rowNumber: Joi.number().max(20).required().allow(null),
-    seatNumber: Joi.number().max(6).required().allow(null),
-    axleNumber: Joi.number().max(10).required().allow(null)
-  }).required().allow(null),
-  notes: Joi.string().max(500).required().allow("", null)
+    vertical: Joi.any().only(["upper", "lower"]).allow(null),
+    horizontal: Joi.any().only(["inner", "outer"]).allow(null),
+    lateral: Joi.any().only(["nearside", "centre", "offside"]).allow(null),
+    longitudinal: Joi.any().only(["front", "rear"]).allow(null),
+    rowNumber: Joi.number().max(20).allow(null),
+    seatNumber: Joi.number().max(6).allow(null),
+    axleNumber: Joi.number().max(10).allow(null)
+  }).optional().allow(null),
+  notes: Joi.string().max(500).allow("", null)
 });
 
 export const defectsSchemaPut = defectsCommonSchema.keys({
-  additionalInformation: Joi.object().when("$isSubmitted", {
-    is: "submitted",
-    then: additionalInformationSchema.required().allow(null),
-    otherwise: additionalInformationSchema.optional()
-  })
+  additionalInformation: additionalInformationSchema.optional().allow(null)
 });
 
 export const testTypesArray = Joi.object().keys({
