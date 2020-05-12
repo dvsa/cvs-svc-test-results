@@ -1,8 +1,5 @@
-import * as Joi from "joi";
 import {testResultsCommonSchemaSpecialistTestsCancelled} from "./SpecialistTestsCommonSchemaCancelled";
 
-const testResultsSchema = Joi.object().keys({
-    ...testResultsCommonSchemaSpecialistTestsCancelled,
-});
+const testResultsSchema = testResultsCommonSchemaSpecialistTestsCancelled;
 
 export default testResultsSchema;

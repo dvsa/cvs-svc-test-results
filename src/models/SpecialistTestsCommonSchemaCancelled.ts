@@ -1,8 +1,7 @@
 import * as Joi from "joi";
 import {defectsCommonSchema, testResultsCommonSchema, testTypesCommonSchema} from "./CommonSchema";
 
-export const defectsCommonSchemaSpecialistTestsCancelled = {
-    ...defectsCommonSchema,
+export const defectsCommonSchemaSpecialistTestsCancelled = defectsCommonSchema.keys({
     additionalInformation: Joi.object().keys({
         location: Joi.object().keys({
             vertical: Joi.any().only(["upper", "lower"]).required().allow(null),
@@ -15,25 +14,21 @@ export const defectsCommonSchemaSpecialistTestsCancelled = {
         }).required().allow(null),
         notes: Joi.string().max(500).required().allow("", null)
     })
-};
+});
 
-export const testTypesCommonSchemaSpecialistTestsCancelled = {
-    ...testTypesCommonSchema,
+export const testTypesCommonSchemaSpecialistTestsCancelled = testTypesCommonSchema.keys({
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required().allow(null),
     testTypeEndTimestamp: Joi.date().iso().required().allow(null),
     defects: Joi.array().items(defectsCommonSchemaSpecialistTestsCancelled).required()
-};
+});
 
-export const testResultsCommonSchemaSpecialistTestsCancelled = {
-    ...testResultsCommonSchema,
+export const testResultsCommonSchemaSpecialistTestsCancelled = testResultsCommonSchema.keys({
     vrm: Joi.string().alphanum().min(1).max(8).required(),
     countryOfRegistration: Joi.string().required().allow("", null),
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required().allow(null),
-    testTypes: Joi.array().items(Joi.object().keys({
-        ...testTypesCommonSchemaSpecialistTestsCancelled
-    })).required()
-};
+    testTypes: Joi.array().items(testTypesCommonSchemaSpecialistTestsCancelled).required()
+});
 

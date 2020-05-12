@@ -2,7 +2,17 @@ import { HTTPError } from "../models/HTTPError";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import * as dateFns from "date-fns";
 import { GetTestResults } from "../utils/GetTestResults";
-import { MESSAGES, ERRORS, VEHICLE_TYPES, TEST_TYPE_CLASSIFICATION, TEST_RESULT, TEST_STATUS, HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_CODES_FOR_CALCULATING_EXPIRY, COIF_EXPIRY_TEST_TYPES } from "../assets/Enums";
+import {
+  MESSAGES,
+  ERRORS,
+  VEHICLE_TYPES,
+  TEST_TYPE_CLASSIFICATION,
+  TEST_RESULT,
+  TEST_STATUS,
+  HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_VERSION, COUNTRY_OF_REGISTRATION,
+  TEST_CODES_FOR_CALCULATING_EXPIRY,
+  COIF_EXPIRY_TEST_TYPES
+} from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
 import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
@@ -22,6 +32,8 @@ import { ITestResult, TestType } from "../models/ITestResult";
 import { HTTPResponse } from "../models/HTTPResponse";
 import {ValidationResult} from "joi";
 import * as Joi from "joi";
+import {cloneDeep, mergeWith, isArray} from "lodash";
+import {IMsUserDetails} from "../models/IMsUserDetails";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -99,60 +111,151 @@ export class TestResultsService {
     }
     testResults = GetTestResults.filterTestResultsByDeletionFlag(testResults);
     testResults = GetTestResults.filterTestTypesByDeletionFlag(testResults);
-
+    if (filters.testResultId) {
+      testResults = GetTestResults.filterTestResultsByParam(testResults, "testResultId", filters.testResultId);
+      if (filters.testVersion) {
+        testResults = GetTestResults.filterTestResultsByTestVersion(testResults, filters.testVersion);
+      }
+    } else {
+      testResults = GetTestResults.filterTestResultsByTestVersion(testResults, TEST_VERSION.CURRENT);
+      testResults = GetTestResults.removeTestHistory(testResults);
+    }
     if (testResults.length === 0) {
       throw new HTTPError(404, ERRORS.NoResourceMatch);
     }
-    testResults = GetTestResults.removeTestResultId(testResults);
     return testResults;
   }
 
+  public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
+    this.removeNonEditableAttributes(payload);
+    let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
+    validationSchema = validationSchema!.keys({countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required().allow("", null)});
+    validationSchema = validationSchema!.optionalKeys(["testStationType", "testerEmailAddress", "testEndTimestamp", "systemNumber", "vin"]);
+    const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
+
+    if (validation !== null && validation.error) {
+      return Promise.reject(new HTTPError(400,
+          {
+            errors: validation.error.details.map((detail: { message: string; }) => {
+              return detail.message;
+            })
+          }));
+    }
+    return this.testResultsDAO.getBySystemNumber(systemNumber)
+        .then((result) => {
+          const response: ITestResultData = {Count: result.Count, Items: result.Items};
+          const testResults = this.checkTestResults(response);
+          const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
+          oldTestResult.testVersion = TEST_VERSION.ARCHIVED;
+          const newTestResult: ITestResult = cloneDeep(oldTestResult);
+          newTestResult.testVersion = TEST_VERSION.CURRENT;
+          mergeWith(newTestResult, payload, this.arrayCustomizer);
+          this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
+          if (!newTestResult.testHistory) {
+            newTestResult.testHistory = [oldTestResult];
+          } else {
+            delete oldTestResult.testHistory;
+            newTestResult.testHistory.push(oldTestResult);
+          }
+          return this.testResultsDAO.updateTestResult(newTestResult)
+              .then((data) => {
+                return newTestResult;
+              }).catch((error) => {
+                throw new HTTPError(500, error.message);
+              });
+        }).catch((error) => {
+          throw new HTTPError(error.statusCode, error.body);
+        });
+  }
+
+  private arrayCustomizer(objValue: any, srcValue: any) {
+    if (isArray(objValue) && isArray(srcValue)) {
+      return srcValue;
+    }
+  }
+
+  public getTestResultToArchive(testResults: ITestResult[], testResultId: string): ITestResult {
+    testResults = testResults.filter((testResult) => {
+      return testResult.testResultId === testResultId && (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion);
+    });
+    if (testResults.length !== 1) {
+      throw new HTTPError(404, ERRORS.NoResourceMatch);
+    }
+    return testResults[0];
+  }
+
+  public removeNonEditableAttributes(testResult: ITestResult) {
+    for (const testType of testResult.testTypes) {
+      delete testType.testCode;
+      delete testType.testNumber;
+      delete testType.testAnniversaryDate;
+      delete testType.createdAt;
+      delete testType.lastUpdatedAt;
+      delete testType.certificateLink;
+    }
+    delete testResult.vehicleId;
+    delete testResult.testEndTimestamp;
+    delete testResult.testStationType;
+    delete testResult.testerEmailAddress;
+    delete testResult.testVersion;
+    delete testResult.systemNumber;
+    delete testResult.vin;
+  }
+
+  public setAuditDetails(newTestResult: ITestResult, oldTestResult: ITestResult, msUserDetails: IMsUserDetails) {
+    const date = new Date().toISOString();
+    newTestResult.createdAt = date;
+    newTestResult.createdByName = msUserDetails.msUser;
+    newTestResult.createdById = msUserDetails.msOid;
+    delete newTestResult.lastUpdatedAt;
+    delete newTestResult.lastUpdatedById;
+    delete newTestResult.lastUpdatedByName;
+
+    oldTestResult.lastUpdatedAt = date;
+    oldTestResult.lastUpdatedByName = msUserDetails.msUser;
+    oldTestResult.lastUpdatedById = msUserDetails.msOid;
+
+    newTestResult.shouldEmailCertificate = "false";
+    oldTestResult.shouldEmailCertificate = "false;";
+  }
+
+  public getValidationSchema(vehicleType: string, testStatus: string) {
+    switch (vehicleType + testStatus) {
+      case "psvsubmitted":
+        return testResultsSchemaPSVSubmitted;
+      case "psvcancelled":
+        return testResultsSchemaPSVCancelled;
+      case "hgvsubmitted":
+        return testResultsSchemaHGVSubmitted;
+      case "hgvcancelled":
+        return testResultsSchemaHGVCancelled;
+      case "trlsubmitted":
+        return testResultsSchemaTRLSubmitted;
+      case "trlcancelled":
+        return testResultsSchemaTRLCancelled;
+      case "lgvsubmitted":
+        return testResultsSchemaLGVSubmitted;
+      case "lgvcancelled":
+        return testResultsSchemaLGVCancelled;
+      case "carsubmitted":
+        return testResultsSchemaCarSubmitted;
+      case "carcancelled":
+        return testResultsSchemaCarCancelled;
+      case "motorcyclesubmitted":
+        return testResultsSchemaMotorcycleSubmitted;
+      case "motorcyclecancelled":
+        return testResultsSchemaMotorcycleCancelled;
+      default:
+        return null;
+    }
+  }
+
   public insertTestResult(payload: ITestResultPayload) {
-    let validationSchema = null;
     if (Object.keys(payload).length === 0) { // if empty object
       return Promise.reject(new HTTPError(400, ERRORS.PayloadCannotBeEmpty));
     }
+    const validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
 
-    switch (payload.vehicleType + payload.testStatus) {
-      case "psvsubmitted":
-        validationSchema = testResultsSchemaPSVSubmitted;
-        break;
-      case "psvcancelled":
-        validationSchema = testResultsSchemaPSVCancelled;
-        break;
-      case "hgvsubmitted":
-        validationSchema = testResultsSchemaHGVSubmitted;
-        break;
-      case "hgvcancelled":
-        validationSchema = testResultsSchemaHGVCancelled;
-        break;
-      case "trlsubmitted":
-        validationSchema = testResultsSchemaTRLSubmitted;
-        break;
-      case "trlcancelled":
-        validationSchema = testResultsSchemaTRLCancelled;
-        break;
-      case "lgvsubmitted":
-        validationSchema = testResultsSchemaLGVSubmitted;
-        break;
-      case "lgvcancelled":
-        validationSchema = testResultsSchemaLGVCancelled;
-        break;
-      case "carsubmitted":
-        validationSchema = testResultsSchemaCarSubmitted;
-        break;
-      case "carcancelled":
-        validationSchema = testResultsSchemaCarCancelled;
-        break;
-      case "motorcyclesubmitted":
-        validationSchema = testResultsSchemaMotorcycleSubmitted;
-        break;
-      case "motorcyclecancelled":
-        validationSchema = testResultsSchemaMotorcycleCancelled;
-        break;
-      default:
-        validationSchema = null;
-    }
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {

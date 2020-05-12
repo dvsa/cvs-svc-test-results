@@ -163,4 +163,24 @@ export class TestResultsDAO {
 
     return LambdaService.invoke(TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name, event);
   }
+
+  public updateTestResult(updatedTestResult: ITestResult): Promise<PromiseResult<DocumentClient.TransactWriteItemsOutput, AWSError>> {
+    const query: DocumentClient.TransactWriteItemsInput = {
+      TransactItems: [
+        {
+          Put: {
+            TableName: this.tableName,
+            Item: updatedTestResult,
+            ConditionExpression: "systemNumber = :systemNumber AND testResultId = :oldTestResultId AND vin = :vin",
+            ExpressionAttributeValues: {
+              ":systemNumber": updatedTestResult.systemNumber,
+              ":vin": updatedTestResult.vin,
+              ":oldTestResultId": updatedTestResult.testResultId
+            }
+          }
+        }
+      ]
+    };
+    return TestResultsDAO.docClient.transactWrite(query).promise();
+  }
 }

@@ -1,8 +1,7 @@
 import * as Joi from "joi";
 import {defectsCommonSchema, testTypesCommonSchema, testResultsCommonSchema} from "./CommonSchema";
 
-const defectsSchema = Joi.object().keys({
-    ...defectsCommonSchema,
+const defectsSchema = defectsCommonSchema.keys({
     additionalInformation: Joi.object().keys({
         location: Joi.object().keys({
             vertical: Joi.any().only(["upper", "lower"]).required().allow(null),
@@ -17,16 +16,14 @@ const defectsSchema = Joi.object().keys({
     })
 });
 
-const testTypesSchema = Joi.object().keys({
-    ...testTypesCommonSchema,
+const testTypesSchema = testTypesCommonSchema.keys({
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required().allow(null),
     testTypeEndTimestamp: Joi.date().iso().required().allow(null),
     // testExpiryDate: Joi.date().iso().allow(null),
     defects: Joi.array().items(defectsSchema).required()
 });
 
-const testResultsSchema = Joi.object().keys({
-    ...testResultsCommonSchema,
+const testResultsSchema = testResultsCommonSchema.keys({
     vrm: Joi.string().alphanum().min(1).max(8).required(),
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     odometerReading: Joi.number().required().allow(null),

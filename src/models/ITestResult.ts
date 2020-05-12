@@ -31,6 +31,16 @@ export interface ITestResult {
   regnDate?: string | Date; // Used only for PSV and HGV
   trailerId?: string; // Mandatory for TRL, not applicable to PSV and HGV
   firstUseDate?: string | Date; // Used only for TRL
+  testVersion?: string;
+  reasonForCreation?: string;
+  createdByName?: string;
+  createdById?: string;
+  createdAt?: string;
+  lastUpdatedByName?: string;
+  lastUpdatedById?: string;
+  lastUpdatedAt?: string;
+  shouldEmailCertificate?: string;
+  testHistory?: ITestResult[];
 }
 
 export interface TestType {
@@ -53,7 +63,7 @@ export interface TestType {
   defects: Defect[];
   name: string;
   certificateLink?: string | null; // Not sent from FE, calculated in the BE.
-  // testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
+  testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
   testResult: string;
   certificateNumber?: string | null;
   testExpiryDate?: string | Date | null; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.

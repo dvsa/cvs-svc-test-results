@@ -1,19 +1,12 @@
 import * as dateFns from "date-fns";
-import * as _ from "lodash";
+import {isDate, isFinite} from "lodash";
+import {TEST_VERSION} from "../assets/Enums";
+import {ITestResult} from "../models/ITestResult";
 
 
 export class GetTestResults {
   public static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-    return _.isDate(new Date(fromDateTime)) && _.isDate( new Date(toDateTime)) && _.isFinite((new Date(fromDateTime)).getTime()) && _.isFinite((new Date(toDateTime)).getTime());
-  }
-
-  public static removeTestResultId(testResults: Array<{ testResultId: string | number; }>) {
-    if (testResults.length > 0) {
-      for (const [index, testResult] of testResults.entries()) {
-        delete testResults[index].testResultId;
-      }
-    }
-    return testResults;
+    return isDate(new Date(fromDateTime)) && isDate(new Date(toDateTime)) && isFinite((new Date(fromDateTime)).getTime()) && isFinite((new Date(toDateTime)).getTime());
   }
 
   public static filterTestResultsByParam(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }, filterName: string | number, filterValue: any) {
@@ -27,6 +20,37 @@ export class GetTestResults {
     return testResults.filter((testResult: { testStartTimestamp: string | number | Date; testEndTimestamp: string | number | Date; }) => {
       return dateFns.isAfter(testResult.testStartTimestamp, fromDateTime) && dateFns.isBefore(testResult.testEndTimestamp, toDateTime);
     });
+  }
+
+  public static filterTestResultsByTestVersion(testResults: ITestResult[], testVersion: string = TEST_VERSION.CURRENT): ITestResult[] {
+    let result: ITestResult[] = [];
+    if (testVersion === TEST_VERSION.ALL) {
+      return testResults;
+    }
+    for (const testResult of testResults) {
+      if (testVersion === TEST_VERSION.CURRENT && (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion)) {
+        delete testResult.testHistory;
+        result.push(testResult);
+      } else if (testVersion === TEST_VERSION.ARCHIVED) {
+        if (testResult.testVersion === TEST_VERSION.ARCHIVED) {
+          result.push(testResult);
+          if (testResult.testHistory) {
+            result = result.concat(testResult.testHistory);
+            delete testResult.testHistory;
+          }
+        } else {
+          result = testResult.testHistory || [];
+        }
+      }
+    }
+    return result;
+  }
+
+  public static removeTestHistory(testResults: ITestResult[]) {
+    for (const testResult of testResults) {
+      delete testResult.testHistory;
+    }
+    return testResults;
   }
 
   public static filterTestResultsByDeletionFlag(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }) {

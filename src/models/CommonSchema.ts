@@ -1,6 +1,6 @@
 import * as Joi from "joi";
 
-export const defectsCommonSchema = {
+export const defectsCommonSchema = Joi.object().keys({
     imNumber: Joi.number().required(),
     imDescription: Joi.string().required().allow(""),
     itemNumber: Joi.number().required(),
@@ -13,9 +13,9 @@ export const defectsCommonSchema = {
     stdForProhibition: Joi.boolean().required().allow(null),
     prohibitionIssued: Joi.boolean().required().allow(null),
     prs: Joi.boolean().required().allow(null)
-};
+});
 
-export const testTypesCommonSchema = {
+export const testTypesCommonSchema = Joi.object().keys({
     name: Joi.string().required(),
     testTypeName: Joi.string().required().allow(""),
     testTypeId: Joi.string().required().allow(""),
@@ -45,10 +45,11 @@ export const testTypesCommonSchema = {
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
     modificationTypeUsed: Joi.string().max(100).allow(null),
-    particulateTrapFitted: Joi.string().max(100).allow(null)
-};
+    particulateTrapFitted: Joi.string().max(100).allow(null),
+    testTypeClassification: Joi.string().optional()
+});
 
-export const testResultsCommonSchema = {
+export const testResultsCommonSchema = Joi.object().keys({
     testResultId: Joi.string().required(),
     systemNumber: Joi.string().required(),
     vin: Joi.string().min(1).max(21).required(),
@@ -86,6 +87,14 @@ export const testResultsCommonSchema = {
     numberOfWheelsDriven: Joi.number().required().allow(null),
     regnDate: Joi.string().allow("", null),
     firstUseDate: Joi.string().allow("", null),
-    euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4", "l1e-a", "l1e", "l2e", "l3e", "l4e", "l5e", "l6e", "l7e"]).required().allow(null)
-};
+    euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4", "l1e-a", "l1e", "l2e", "l3e", "l4e", "l5e", "l6e", "l7e"]).required().allow(null),
+    reasonForCreation: Joi.string().max(100).optional(),
+    createdAt: Joi.string().optional().allow(null),
+    createdByName: Joi.string().optional(),
+    createdById: Joi.string().optional(),
+    lastUpdatedAt: Joi.string().optional().allow(null),
+    lastUpdatedByName: Joi.string().optional(),
+    lastUpdatedById: Joi.string().optional(),
+    shouldEmailCertificate: Joi.string().optional()
+});
 
