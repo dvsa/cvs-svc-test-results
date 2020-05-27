@@ -3068,6 +3068,67 @@
     "regnDate": "2018-10-10"
   },
   {
+    "testResultId": "99",
+    "systemNumber": "10000043",
+    "testerStaffId": "15",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "odometerReadingUnits": "kilometres",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "cancelled",
+    "numberOfWheelsDriven": 3,
+    "testTypes": [
+      {
+        "prohibitionIssued": false,
+        "testCode": "pms",
+        "testNumber": "3",
+        "secondaryCertificateNumber": "1234",
+        "lastUpdatedAt": "2019-02-22T08:52:10.255Z",
+        "additionalCommentsForAbandon": "none",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "reasonForAbandoning": "none",
+        "createdAt": "2019-02-22T08:52:10.255Z",
+        "testTypeId": "39",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeName": "Annual test",
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
+        "name": "Annual test",
+        "certificateLink": "http://dvsagov.co.uk",
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate"
+      }
+    ],
+    "vehicleClass": {
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
+    },
+    "vin": "XMGDE02FS0H012461",
+    "vehicleSize": "small",
+    "testStationName": "Larson, Nader and Okuneva",
+    "vehicleId": "AA12BCD",
+    "vehicleType": "psv",
+    "countryOfRegistration": "gb",
+    "preparerId": "bl5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 350000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "atf",
+    "reasonForCancellation": "mistake",
+    "testerName": "Dorel",
+    "vrm": "AA12BCD",
+    "testStationPNumber": "84-926821",
+    "numberOfSeats": 45,
+    "noOfAxles": 2,
+    "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
+    "euVehicleCategory": "m2"
+  },
+  {
     "testResultId": "23",
     "systemNumber": "11000029",
     "testerStaffId": "16",
