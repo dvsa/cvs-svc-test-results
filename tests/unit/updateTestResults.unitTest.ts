@@ -344,12 +344,12 @@ describe("updateTestResults", () => {
                         });
                     });
 
-                    context("and the getActivity function throws an error", () => {
+                    context("and the getActivity function throws an error different from 404", () => {
                         it("should return Error Activities microservice error", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getActivity: () => {
-                                        return Promise.reject({statusCode: 404, body: ERRORS.NoResourceMatch});
+                                        return Promise.reject({statusCode: 400, body: ERRORS.EventIsEmpty});
                                     },
                                     getBySystemNumber: () => {
                                         return Promise.resolve({
@@ -365,8 +365,49 @@ describe("updateTestResults", () => {
                             return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
-                                  expect(errorResponse.statusCode).toEqual(404);
-                                  expect(errorResponse.body).toEqual(`Activities microservice error: ${ERRORS.NoResourceMatch}`);
+                                  expect(errorResponse.statusCode).toEqual(400);
+                                  expect(errorResponse.body).toEqual(`Activities microservice error: ${ERRORS.EventIsEmpty}`);
+                              });
+                        });
+                    });
+
+                    context("and the getActivity function throws a 404 Not Found error", () => {
+                        it("should skip the validation for testTypeStart/EndTimestamp and accept the values from the payload", () => {
+                            MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                                return {
+                                    getActivity: () => {
+                                        return Promise.reject({statusCode: 404, body: ERRORS.NoResourceMatch});
+                                    },
+                                    getBySystemNumber: () => {
+                                        return Promise.resolve({
+                                            Items: Array.of(cloneDeep(testToUpdate)),
+                                            Count: 1
+                                        });
+                                    },
+                                    updateTestResult: () => {
+                                        return Promise.resolve({});
+                                    },
+                                    getTestCodesAndClassificationFromTestTypes: () => {
+                                        return Promise.resolve({
+                                            defaultTestCode: "lbp",
+                                            testTypeClassification: "Annual No Certificate"
+                                        });
+                                    }
+                                };
+                            });
+
+                            testResultsService = new TestResultsService(new MockTestResultsDAO());
+                            const expectedTestTypeStartTimestamp = "2020-12-28T09:26:58.477Z";
+                            const expectedTestTypeEndTimestamp = "2020-12-28T18:00:00.000Z";
+                            testToUpdate.testTypes[0].testTypeStartTimestamp = expectedTestTypeStartTimestamp;
+                            testToUpdate.testTypes[0].testTypeEndTimestamp = expectedTestTypeEndTimestamp;
+                            expect.assertions(4);
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
+                              .then((returnedRecord: any) => {
+                                  expect(returnedRecord).not.toEqual(undefined);
+                                  expect(returnedRecord).not.toEqual({});
+                                  expect(returnedRecord.testTypes[0].testTypeStartTimestamp).toEqual(expectedTestTypeStartTimestamp);
+                                  expect(returnedRecord.testTypes[0].testTypeEndTimestamp).toEqual(expectedTestTypeEndTimestamp);
                               });
                         });
                     });

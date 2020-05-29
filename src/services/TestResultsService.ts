@@ -254,7 +254,9 @@ export class TestResultsService {
         }
       }
     } catch (err) {
-      return Promise.reject({statusCode: err.statusCode, body: `Activities microservice error: ${err.body}`});
+      if (err.statusCode !== 404) {
+        return Promise.reject({statusCode: err.statusCode, body: `Activities microservice error: ${err.body}`});
+      }
     }
   }
 
