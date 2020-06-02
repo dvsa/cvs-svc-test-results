@@ -23,6 +23,8 @@ export enum ERRORS {
     StartTimeBeforeEndTime = "testTypeStartTimestamp must be before testTypeEndTimestamp",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
+    NoTestTypesToArchive = "There are no test types to archive",
+    TestTypeToArchiveNotFound = "The test type you want to archive does not exists on this test-result"
 }
 
 export enum TESTING_ERRORS {
