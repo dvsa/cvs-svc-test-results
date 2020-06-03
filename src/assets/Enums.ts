@@ -19,6 +19,8 @@ export enum ERRORS {
     NoSmokeTestKLimitApplied = "Smoke Test K Limit Applied not present on LEC test type",
     CountryOfRegistrationMandatory = "\"countryOfRegistration\" is mandatory",
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
+    NoUniqueActivityFound = "More than one activity found",
+    StartTimeBeforeEndTime = "testTypeStartTimestamp must be before testTypeEndTimestamp",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
 }
@@ -85,6 +87,10 @@ export const TEST_VERSION = {
     CURRENT: "current",
     ARCHIVED: "archived",
     ALL: "all"
+};
+
+export const REASON_FOR_CREATION = {
+  TEST_CONDUCTED: "Test conducted"
 };
 
 export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
@@ -178,27 +184,55 @@ export const TEST_CODES_FOR_CALCULATING_EXPIRY = {
         "CML", "CMS"]
 };
 
+// CVSB-10300 - the following constants are based on the grouping of the test-types in the excel "Use_for_dynamic_functionality - CVSB-10298 only" sheet
+
+// tests for PSV - Annual test, Class 6A seatbelt installation check(annual test, first test), Paid/Part paid annual test retest
+// Paid/Part paid prohibition clearance(full inspection, retest with certificate), Prohibition clearance(retest with/without class 6A seatbelt)
 export const TEST_TYPES_GROUP1: string[] = [
     "1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"
 ];
 
+// tests for PSV - Paid/Part paid prohibition clearance(full/partial/retest without cert)
 export const TEST_TYPES_GROUP2: string[] = [
     "15", "16", "23", "19", "22"
 ];
 
-export const TEST_TYPES_GROUP3_4_5_10: string[] = [
-    "38", "30", "33", "34", "32", "31", "100", "121", "36", "86", "88", "89", "90", "56", "59", "60", "87", "47", "48", "49", "50", "85", "57"
-
+// 38 through 36 - tests for PSV - Notifiable alteration check, voluntary brake test, voluntary multi check, voluntary speed limiter check
+// voluntary smoke test, voluntary headlamp aim test, vitesse 100 replacement, vitesse 100 application, voluntary tempo 100
+// 86 through 90 - tests for HGV - voluntary multi-check, voluntary speed limiter check, voluntary smoke and headlamp aim test
+// 87 through 85 - tests for HGV and TRL - voluntary shaker plate check, Free/Paid notifiable alteration, voluntary break test
+export const TEST_TYPES_GROUP3_4_8: string[] = [
+  "38", "30", "33", "34", "32", "31", "100", "121", "36", "86", "88", "89", "90", "87", "47", "48", "85"
 ];
 
-export const TEST_TYPES_GROUP6_7_8: string[] = [
-    "76", "62", "95", "94", "53", "54", "63", "65", "66", "70", "79", "82", "83", "122", "41", "40", "98", "99", "101", "103", "104", "67", "107", "113", "116", "119", "120", "91"
+// 56 and 49 - tests for HGV and TRL - Paid TIR retest, TIR test
+// 57 - test for TRL - Free TIR retest
+export const TEST_TYPES_GROUP5_13: string[] = [
+  "56", "49", "57"
 ];
 
-export const TEST_TYPES_GROUP9_11: string[] = [
-    "117", "108", "109", "110", "114", "71", "72", "73", "77", "80"
+// 62, 63, 122 - tests for HGV and TRL - Paid/Part paid roadworthiness retest, Voluntary roadworthiness test
+// 101, 91 - tests for TRL - Paid roadworthiness retest, Voluntary roadworthiness test
+export const TEST_TYPES_GROUP6_11: string[] = [
+  "62", "63", "122", "101", "91"
 ];
 
-export const TEST_TYPES_GROUP12_13: string[] = [
-    "39", "45", "44"
+// ADR tests for HGV and TRL
+export const TEST_TYPES_GROUP7: string[] = [
+  "59", "60", "50"
+];
+
+// tests for HGV and TRL - Annual tests, First tests, Annual retests, Paid/Part paid prohibition clearance
+export const TEST_TYPES_GROUP9_10: string[] = [
+  "76", "95", "94", "53", "54", "65", "66", "70", "79", "82", "83", "41", "40", "98", "99", "103", "104", "67", "107", "113", "116", "119", "120"
+];
+
+// tests for TRL - Paid/Part paid prohibition clearance(retest, full inspection, part inspection, without cert)
+export const TEST_TYPES_GROUP12_14: string[] = [
+  "117", "108", "109", "110", "114", "71", "72", "73", "77", "80"
+];
+
+// 39 - LEC with annual test for PSV, 45 - LEC without annual test for HGV, 44 - LEC with annual test for HGV
+export const TEST_TYPES_GROUP15_16: string[] = [
+  "39", "45", "44"
 ];

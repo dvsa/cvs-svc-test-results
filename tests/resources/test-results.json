@@ -3090,6 +3090,17 @@
         "testTypeId": "39",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeName": "Annual test",
+        "certificateNumber": "123456",
+        "fuelType": "diesel",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "modificationTypeUsed": "123",
+        "smokeTestKLimitApplied": "123",
+        "modType": {
+          "code": "m",
+          "description": "modification or change of engine"
+        },
+        "emissionStandard": "0.10 g/kWh Euro 3 PM",
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
         "customDefects": [
           {

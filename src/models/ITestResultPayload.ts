@@ -19,4 +19,11 @@ export interface ITestResultPayload {
     euVehicleCategory: string | null;
     odometerReading: number | null;
     odometerReadingUnits: string | null;
+    createdByName?: string;
+    createdById?: string;
+    createdAt?: string | Date;
+    testerStaffId: string;
+    testerName: string;
+    testVersion?: string;
+    reasonForCreation?: string;
 }
