@@ -226,8 +226,9 @@ export class TestResultsService {
   }
 
   public async checkTestTypeStartAndEndTimestamp(oldTestResult: ITestResult, newTestResult: ITestResult) {
+    moment.tz.setDefault("UTC");
     const params = {
-      fromStartTime: dateFns.startOfDay(oldTestResult.testStartTimestamp),
+      fromStartTime: moment(oldTestResult.testStartTimestamp).startOf("day").toDate(),
       toStartTime: oldTestResult.testStartTimestamp,
       activityType: "visit",
       testStationPNumber: oldTestResult.testStationPNumber,
@@ -240,19 +241,19 @@ export class TestResultsService {
       }
       const activity = activities[0];
       for (const testType of newTestResult.testTypes) {
-        if (dateFns.isAfter(testType.testTypeStartTimestamp, activity.endTime) || dateFns.isBefore(testType.testTypeStartTimestamp, activity.startTime)) {
+        if (moment(testType.testTypeStartTimestamp).isAfter(activity.endTime) || moment(testType.testTypeStartTimestamp).isBefore(activity.startTime)) {
           return Promise.reject({
             statusCode: 400,
             body: `The testTypeStartTimestamp must be within the visit, between ${activity.startTime} and ${activity.endTime}`
           });
         }
-        if (dateFns.isAfter(testType.testTypeEndTimestamp, activity.endTime) || dateFns.isBefore(testType.testTypeEndTimestamp, activity.startTime)) {
+        if (moment(testType.testTypeEndTimestamp).isAfter(activity.endTime) || moment(testType.testTypeEndTimestamp).isBefore(activity.startTime)) {
           return Promise.reject({
             statusCode: 400,
             body: `The testTypeEndTimestamp must be within the visit, between ${activity.startTime} and ${activity.endTime}`
           });
         }
-        if (dateFns.isAfter(testType.testTypeStartTimestamp, testType.testTypeEndTimestamp)) {
+        if (moment(testType.testTypeStartTimestamp).isAfter(testType.testTypeEndTimestamp)) {
           return Promise.reject({statusCode: 400, body: ERRORS.StartTimeBeforeEndTime});
         }
       }
