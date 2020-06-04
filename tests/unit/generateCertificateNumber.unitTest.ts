@@ -1,7 +1,6 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
-import * as dateFns from "date-fns";
 import {cloneDeep} from "lodash";
 
 describe("TestResultsService calling generateExpiryDate", () => {
