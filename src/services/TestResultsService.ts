@@ -19,7 +19,16 @@ import {
   TEST_TYPES_GROUP5_13,
   TEST_TYPES_GROUP6_11,
   TEST_TYPES_GROUP7,
-  TEST_TYPES_GROUP9_10, TEST_TYPES_GROUP12_14, TEST_TYPES_GROUP15_16, REASON_FOR_CREATION
+  TEST_TYPES_GROUP9_10,
+  TEST_TYPES_GROUP12_14,
+  TEST_TYPES_GROUP15_16,
+  REASON_FOR_CREATION,
+  TEST_TYPES_GROUP1_SPEC_TEST,
+  TEST_TYPES_GROUP5_SPEC_TEST,
+  TEST_TYPES_GROUP4_SPEC_TEST,
+  TEST_TYPES_GROUP3_SPEC_TEST,
+  TEST_TYPES_GROUP2_SPEC_TEST,
+  SPECIALIST_TEST_TYPE_IDS
 } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -49,6 +58,10 @@ import {
   testTypesSchemaGroup2, testTypesSchemaGroup3And4And8, testTypesSchemaGroup5And13,
   testTypesSchemaGroup6And11, testTypesSchemaGroup7, testTypesSchemaGroup9And10,
 } from "../models/test-types/testTypesSchemaPut";
+import {
+  testTypesSchemaSpecTestGroup1, testTypesSchemaSpecTestGroup2,
+  testTypesSchemaSpecTestGroup3, testTypesSchemaSpecTestGroup4, testTypesSchemaSpecTestGroup5
+} from "../models/test-types/testTypesSchemaSpecialistTestsPut";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -147,6 +160,14 @@ export class TestResultsService {
     });
   }
 
+  public manageDefectsArray(testResult: ITestResult) {
+    testResult.testTypes.forEach((testType: TestType) => {
+      if (SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
+        testType.defects = [];
+      }
+    });
+  }
+
   public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
     this.removeNonEditableAttributes(payload);
     let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
@@ -158,7 +179,7 @@ export class TestResultsService {
     const {testTypes} = payload;
     delete payload.testTypes;
     validationSchema = validationSchema!.keys({
-      countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required().allow("", null),
+      countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required(),
       testTypes: Joi.any().forbidden()
     });
     validationSchema = validationSchema.optionalKeys(["testEndTimestamp", "systemNumber", "vin"]);
@@ -188,6 +209,7 @@ export class TestResultsService {
               vehicleSubclass, newTestResult.numberOfWheelsDriven);
           }
           await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
+          this.manageDefectsArray(newTestResult);
           this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
           if (!newTestResult.testHistory) {
             newTestResult.testHistory = [oldTestResult];
@@ -273,7 +295,7 @@ export class TestResultsService {
       return validationErrors;
     }
     for (const testType of testResult.testTypes) {
-      const options = {abortEarly: false};
+      const options = {abortEarly: false, context: {hasTestResult: testType.testResult}};
       if (TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
         // tests for PSV - Annual test, Class 6A seatbelt installation check, Paid/Part paid annual test retest, Prohibition clearance
         validation = testTypesSchemaGroup1.validate(testType, options);
@@ -301,6 +323,21 @@ export class TestResultsService {
       } else if (TEST_TYPES_GROUP15_16.includes(testType.testTypeId)) {
         // LEC tests for HGV and PSV
         validation = testTypesSchemaGroup15And16.validate(testType, options);
+      }  else if (TEST_TYPES_GROUP1_SPEC_TEST.includes(testType.testTypeId)) {
+        // Test/Retest - Free/Paid - IVA inspection, MSVA inspection
+        validation = testTypesSchemaSpecTestGroup1.validate(testType, options);
+      } else if (TEST_TYPES_GROUP2_SPEC_TEST.includes(testType.testTypeId)) {
+        // Test/Retest COIF with annual test, Seatbelt installation check COIF with annual test
+        validation = testTypesSchemaSpecTestGroup2.validate(testType, options);
+      } else if (TEST_TYPES_GROUP3_SPEC_TEST.includes(testType.testTypeId)) {
+        // Test/Retest COIF without annual test, Type approved to bus directive COIF, Annex 7 COIF, TILT COIF retest
+        validation = testTypesSchemaSpecTestGroup3.validate(testType, options);
+      } else if (TEST_TYPES_GROUP4_SPEC_TEST.includes(testType.testTypeId)) {
+        // Test Seatbelt installation check COIF without annual test
+        validation = testTypesSchemaSpecTestGroup4.validate(testType, options);
+      } else if (TEST_TYPES_GROUP5_SPEC_TEST.includes(testType.testTypeId)) {
+        // Test/Retest Normal/Basic voluntary IVA inspection
+        validation = testTypesSchemaSpecTestGroup5.validate(testType, options);
       } else {
         validation = {
           error: {

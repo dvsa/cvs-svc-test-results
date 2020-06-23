@@ -620,7 +620,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     // testTypeId from each of the test-types groupings
-                    const testTypeIds = ["1", "15", "38", "56", "62", "59", "76", "117", "39"];
+                    const testTypeIds = ["1", "15", "38", "56", "62", "59", "76", "117", "39", "125", "142", "143", "147", "153"];
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
@@ -644,6 +644,24 @@ describe("updateTestResults", () => {
                           expect(errorResponse.statusCode).toEqual(400);
                           expect(errorResponse.body.errors).toContain("\"testTypes\" is required");
                       });
+                });
+            });
+
+            context("and the test is a specialist test", () => {
+                it("should set the defects attribute as an empty array", () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation();
+
+                    testResultsService = new TestResultsService(new MockTestResultsDAO());
+                    // testTypeId from each of the specialist test-types groupings
+                    const testTypeIds = ["125", "142", "143", "147", "153"];
+                    testToUpdate = cloneDeep(testResultsMockDB[1]);
+                    for (const testTypeId of testTypeIds) {
+                        testToUpdate.testTypes[0].testTypeId = testTypeId;
+                        delete testToUpdate.testTypes[0].defects;
+                        testResultsService.manageDefectsArray(testToUpdate);
+                        expect(testToUpdate.testTypes[0].defects).toBeDefined();
+                        expect(testToUpdate.testTypes[0].defects).toEqual([]);
+                    }
                 });
             });
 

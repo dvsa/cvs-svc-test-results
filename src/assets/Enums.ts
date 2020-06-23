@@ -236,3 +236,37 @@ export const TEST_TYPES_GROUP12_14: string[] = [
 export const TEST_TYPES_GROUP15_16: string[] = [
   "39", "45", "44"
 ];
+
+// CVSB-10372 - the following constants are based on the grouping of the test-types for specialist tests in the excel "specialist test fields mapping"
+
+// Test/Retest - Free/Paid - IVA inspection, MSVA inspection
+export const TEST_TYPES_GROUP1_SPEC_TEST: string[] = [
+  "125", "126", "186", "187", "128", "188", "189", "129", "130", "133", "134", "135", "136", "138", "139", "140", "150", "151",
+  "158", "159", "161", "192", "193", "162", "194", "195", "163", "166", "167", "169", "170", "172", "173", "181", "182"
+];
+
+// Test/Retest COIF with annual test, Seatbelt installation check COIF with annual test
+export const TEST_TYPES_GROUP2_SPEC_TEST: string[] = [
+  "142", "146", "175", "177"
+];
+
+// Test/Retest COIF without annual test, Type approved to bus directive COIF, Annex 7 COIF, TILT COIF retest
+export const TEST_TYPES_GROUP3_SPEC_TEST: string[] = [
+  "143", "144", "148", "176", "178", "179",
+];
+
+// Test Seatbelt installation check COIF without annual test
+export const TEST_TYPES_GROUP4_SPEC_TEST: string[] = [
+  "147"
+];
+
+// Test/Retest Normal/Basic voluntary IVA inspection
+export const TEST_TYPES_GROUP5_SPEC_TEST: string[] = [
+  "153", "190", "191", "154", "184", "196", "197", "185",
+];
+
+export const SPECIALIST_TEST_TYPE_IDS: string[] = [
+  "125", "126", "186", "187", "128", "188", "189", "129", "130", "133", "134", "135", "136", "138", "139", "140", "150", "151",
+  "158", "159", "161", "192", "193", "162", "194", "195", "163", "166", "167", "169", "170", "172", "173", "181", "182",
+  "142", "146", "175", "177", "143", "144", "148", "176", "178", "179", "147", "153", "190", "191", "154", "184", "196", "197", "185"
+];
