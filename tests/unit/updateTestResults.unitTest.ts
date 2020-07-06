@@ -44,7 +44,7 @@ describe("updateTestResults", () => {
                                     endTime: "2020-04-22"
                                 }]);
                             },
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: Array.of(cloneDeep(testToUpdate)),
                                     Count: 1
@@ -55,7 +55,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     expect.assertions(9);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                         .then((returnedRecord: any) => {
                             expect(returnedRecord).not.toEqual(undefined);
                             expect(returnedRecord).not.toEqual({});
@@ -83,7 +83,7 @@ describe("updateTestResults", () => {
                                             endTime: "2020-04-22"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -102,7 +102,7 @@ describe("updateTestResults", () => {
                             const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
                             updatedPayload.testTypes[0].testTypeName = "Another test type name";
                             expect.assertions(4);
-                            return testResultsService.updateTestResult(updatedPayload.testResultId, updatedPayload, msUserDetails)
+                            return testResultsService.updateTestResult(updatedPayload.systemNumber, updatedPayload, msUserDetails)
                               .then((returnedRecord: any) => {
                                   expect(returnedRecord).not.toEqual(undefined);
                                   expect(returnedRecord).not.toEqual({});
@@ -125,7 +125,7 @@ describe("updateTestResults", () => {
                                             endTime: "2020-04-22"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -146,7 +146,7 @@ describe("updateTestResults", () => {
                             updatedPayload.vehicleSize = "large";
                             updatedPayload.noOfAxles = "4";
                             expect.assertions(4);
-                            return testResultsService.updateTestResult(updatedPayload.testResultId, updatedPayload, msUserDetails)
+                            return testResultsService.updateTestResult(updatedPayload.systemNumber, updatedPayload, msUserDetails)
                               .then((returnedRecord: any) => {
                                   expect(returnedRecord).not.toEqual(undefined);
                                   expect(returnedRecord).not.toEqual({});
@@ -171,7 +171,7 @@ describe("updateTestResults", () => {
                                             endTime: "2019-01-14T20:00:33.987Z"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -183,7 +183,7 @@ describe("updateTestResults", () => {
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             testToUpdate.testTypes[0].testTypeStartTimestamp = "2019-01-13T08:36:33.987Z";
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -202,7 +202,7 @@ describe("updateTestResults", () => {
                                             endTime: "2019-01-14T20:00:33.987Z"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -214,7 +214,7 @@ describe("updateTestResults", () => {
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             testToUpdate.testTypes[0].testTypeStartTimestamp = "2019-01-14T21:00:33.987Z";
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -233,7 +233,7 @@ describe("updateTestResults", () => {
                                             endTime: "2019-01-14T20:00:33.987Z"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -245,7 +245,7 @@ describe("updateTestResults", () => {
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             testToUpdate.testTypes[0].testTypeEndTimestamp = "2019-01-13T18:00:33.987Z";
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -264,7 +264,7 @@ describe("updateTestResults", () => {
                                             endTime: "2019-01-14T20:00:33.987Z"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -276,7 +276,7 @@ describe("updateTestResults", () => {
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             testToUpdate.testTypes[0].testTypeEndTimestamp = "2019-01-15T18:00:33.987Z";
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -295,7 +295,7 @@ describe("updateTestResults", () => {
                                             endTime: "2019-01-14T20:00:33.987Z"
                                         }]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -308,7 +308,7 @@ describe("updateTestResults", () => {
                             testToUpdate.testTypes[0].testTypeEndTimestamp = "2019-01-14T16:00:33.987Z";
                             testToUpdate.testTypes[0].testTypeStartTimestamp = "2019-01-14T18:00:33.987Z";
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -324,7 +324,7 @@ describe("updateTestResults", () => {
                                     getActivity: () => {
                                         return Promise.resolve(["firstActivity", "secondActivity"]);
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -335,7 +335,7 @@ describe("updateTestResults", () => {
 
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(500);
@@ -351,7 +351,7 @@ describe("updateTestResults", () => {
                                     getActivity: () => {
                                         return Promise.reject({statusCode: 400, body: ERRORS.EventIsEmpty});
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -362,7 +362,7 @@ describe("updateTestResults", () => {
 
                             testResultsService = new TestResultsService(new MockTestResultsDAO());
                             expect.assertions(3);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
@@ -378,7 +378,7 @@ describe("updateTestResults", () => {
                                     getActivity: () => {
                                         return Promise.reject({statusCode: 404, body: ERRORS.NoResourceMatch});
                                     },
-                                    getByTestResultId: () => {
+                                    getBySystemNumber: () => {
                                         return Promise.resolve({
                                             Items: Array.of(cloneDeep(testToUpdate)),
                                             Count: 1
@@ -402,7 +402,7 @@ describe("updateTestResults", () => {
                             testToUpdate.testTypes[0].testTypeStartTimestamp = expectedTestTypeStartTimestamp;
                             testToUpdate.testTypes[0].testTypeEndTimestamp = expectedTestTypeEndTimestamp;
                             expect.assertions(4);
-                            return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                            return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                               .then((returnedRecord: any) => {
                                   expect(returnedRecord).not.toEqual(undefined);
                                   expect(returnedRecord).not.toEqual({});
@@ -430,7 +430,7 @@ describe("updateTestResults", () => {
                                     endTime: "2020-04-22"
                                 }]);
                             },
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: Array.of(existingTest),
                                     Count: 1
@@ -441,7 +441,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     expect.assertions(3);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                         .catch((errorResponse: { statusCode: any; body: any; }) => {
                             expect(errorResponse).toBeInstanceOf(HTTPError);
                             expect(errorResponse.statusCode).toEqual(500);
@@ -454,7 +454,7 @@ describe("updateTestResults", () => {
                 it("should throw an error 404-No resources match the search criteria", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: [],
                                     Count: 0
@@ -465,7 +465,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     expect.assertions(3);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                         .catch((errorResponse: { statusCode: any; body: any; }) => {
                             expect(errorResponse).toBeInstanceOf(HTTPError);
                             expect(errorResponse.statusCode).toEqual(404);
@@ -478,10 +478,10 @@ describe("updateTestResults", () => {
                 it("should throw an error 404-No resources match the search criteria", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
-                                    Items: Array.of(testResultsMockDB[0], testResultsMockDB[1]),
-                                    Count: 2
+                                    Items: Array.of(testResultsMockDB[0]),
+                                    Count: 1
                                 });
                             }
                         };
@@ -489,7 +489,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     expect.assertions(3);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                         .catch((errorResponse: { statusCode: any; body: any; }) => {
                             expect(errorResponse).toBeInstanceOf(HTTPError);
                             expect(errorResponse.statusCode).toEqual(404);
@@ -507,7 +507,7 @@ describe("updateTestResults", () => {
                         updateTestResult: () => {
                             return Promise.resolve({});
                         },
-                        getByTestResultId: () => {
+                        getBySystemNumber: () => {
                             return Promise.resolve({
                                 Items: Array.of(testToUpdate),
                                 Count: 1
@@ -518,7 +518,7 @@ describe("updateTestResults", () => {
 
                 testResultsService = new TestResultsService(new MockTestResultsDAO());
                 testToUpdate.vehicleType = "trl";
-                return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                     .catch((errorResponse: { statusCode: any; body: any; }) => {
                         expect(errorResponse).toBeInstanceOf(HTTPError);
                         expect(errorResponse.statusCode).toEqual(400);
@@ -533,7 +533,7 @@ describe("updateTestResults", () => {
                             updateTestResult: () => {
                                 return Promise.resolve({});
                             },
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: Array.of(testToUpdate),
                                     Count: 1
@@ -544,7 +544,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     testToUpdate.euVehicleCategory = "invalid value";
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
@@ -559,7 +559,7 @@ describe("updateTestResults", () => {
                             updateTestResult: () => {
                                 return Promise.resolve({});
                             },
-                            getByTestResultId: () => {
+                            getBySystemNumber: () => {
                                 return Promise.resolve({
                                     Items: Array.of(testToUpdate),
                                     Count: 1
@@ -570,7 +570,7 @@ describe("updateTestResults", () => {
 
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     testToUpdate.testerStaffId = "invalid value exceeding size limit 123456789012343454";
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
@@ -588,7 +588,7 @@ describe("updateTestResults", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
                     expect.assertions(4);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
@@ -605,7 +605,7 @@ describe("updateTestResults", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     testToUpdate.testTypes[0].testTypeId = "unknown";
                     expect.assertions(3);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
@@ -638,7 +638,7 @@ describe("updateTestResults", () => {
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
                     delete testToUpdate.testTypes;
                     expect.assertions(3);
-                    return testResultsService.updateTestResult(testToUpdate.testResultId, testToUpdate, msUserDetails)
+                    return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                       .catch((errorResponse: { statusCode: any; body: any; }) => {
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);

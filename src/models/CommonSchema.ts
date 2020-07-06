@@ -87,7 +87,7 @@ export const testResultsCommonSchema = Joi.object().keys({
     regnDate: Joi.string().allow("", null),
     firstUseDate: Joi.string().allow("", null),
     euVehicleCategory: Joi.any().only(["m1", "m2", "m3", "n1", "n2", "n3", "o1", "o2", "o3", "o4", "l1e-a", "l1e", "l2e", "l3e", "l4e", "l5e", "l6e", "l7e"]).required().allow(null),
-    reasonForCreation: Joi.string().max(500).optional(),
+    reasonForCreation: Joi.string().max(100).optional(),
     createdAt: Joi.string().optional().allow(null),
     createdByName: Joi.string().optional(),
     createdById: Joi.string().optional(),

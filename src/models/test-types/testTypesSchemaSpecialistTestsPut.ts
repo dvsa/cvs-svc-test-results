@@ -25,8 +25,7 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object().keys({
   createdAt: Joi.string().optional(),
   lastUpdatedAt: Joi.string().optional(),
   certificateLink: Joi.string().optional(),
-  testTypeClassification: Joi.string().required(),
-  statusUpdatedFlag: Joi.boolean().optional().allow(null)
+  testTypeClassification: Joi.string().required()
 }).required();
 
 export const testTypesSchemaSpecTestGroup1 = testTypesCommonSchemaSpecialistTests.keys({

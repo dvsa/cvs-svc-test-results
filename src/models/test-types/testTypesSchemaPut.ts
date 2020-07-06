@@ -44,8 +44,7 @@ export const testTypesCommonSchema = Joi.object().keys({
   lastUpdatedAt: Joi.string().optional(),
   certificateLink: Joi.string().optional(),
   testTypeClassification: Joi.string().required(),
-  deletionFlag: Joi.boolean().optional(),
-  statusUpdatedFlag: Joi.boolean().optional().allow(null)
+  deletionFlag: Joi.boolean().optional()
 }).required();
 
 export const testTypesSchemaGroup1 = testTypesCommonSchema.keys({

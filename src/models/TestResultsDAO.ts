@@ -49,22 +49,6 @@ export class TestResultsDAO {
     return TestResultsDAO.docClient.query(params).promise();
   }
 
-  public getByTestResultId(testResultId: string, vin: string) {
-    const params = {
-      TableName: this.tableName,
-      KeyConditionExpression: "#vin = :vin and #testResultId = :testResultId",
-      ExpressionAttributeNames: {
-        "#vin": "vin",
-        "#testResultId": "testResultId"
-      },
-      ExpressionAttributeValues: {
-        ":vin": vin,
-        ":testResultId": testResultId
-      }
-    };
-    return TestResultsDAO.docClient.query(params).promise();
-  }
-
   public getByTesterStaffId(testerStaffId: any) {
     const params = {
       TableName: this.tableName,
