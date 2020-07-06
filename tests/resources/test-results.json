@@ -3137,8 +3137,7 @@
     "numberOfSeats": 45,
     "noOfAxles": 2,
     "testerEmailAddress": "dorel.ionescu@dvsagov.uk",
-    "euVehicleCategory": "m2",
-    "reasonForCreation": "For testing"
+    "euVehicleCategory": "m2"
   },
   {
     "testResultId": "23",

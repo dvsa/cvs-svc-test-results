@@ -3,7 +3,6 @@ import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
 import {MESSAGES} from "../assets/Enums";
 import {ISubSeg} from "../models/ISubSeg";
-import {formatErrorMessage} from "../utils/formatErrorMessage";
 /* workaround AWSXRay.captureAWS(...) call obscures types provided by the AWS sdk.
 https://github.com/aws/aws-xray-sdk-node/issues/14
 */
@@ -17,7 +16,7 @@ if (process.env._X_AMZN_TRACE_ID) {
 }
 /* tslint:enable */
 
-export const updateTestResults = async (event: { pathParameters: { testResultId: any; }; body: any; }) => {
+export const updateTestResults = async (event: { pathParameters: { systemNumber: any; }; body: any; }) => {
     let subseg: ISubSeg | null = null;
     if (process.env._X_AMZN_TRACE_ID) {
         const segment = AWS.getSegment();
@@ -29,27 +28,27 @@ export const updateTestResults = async (event: { pathParameters: { testResultId:
     const testResultsDAO = new TestResultsDAO();
     const testResultsService = new TestResultsService(testResultsDAO);
 
-    const testResultId = event.pathParameters.testResultId;
+    const systemNumber = event.pathParameters.systemNumber;
     const testResult = event.body.testResult;
     const msUserDetails = event.body.msUserDetails;
 
     try {
         if (!testResult) {
-            const errorMessage = MESSAGES.BAD_REQUEST + " test-result object not provided";
+            const errorMessage = MESSAGES.BAD_REQUEST + " testResult not provided";
             if (subseg) {
                 subseg.addError(errorMessage);
             }
-            return Promise.resolve(new HTTPResponse(400, formatErrorMessage(errorMessage)));
+            return Promise.resolve(new HTTPResponse(400, errorMessage));
         }
         if (!msUserDetails || !msUserDetails.msUser || !msUserDetails.msOid) {
             const errorMessage = MESSAGES.BAD_REQUEST + " msUserDetails not provided";
             if (subseg) {
                 subseg.addError(errorMessage);
             }
-            return Promise.resolve(new HTTPResponse(400, formatErrorMessage(errorMessage)));
+            return Promise.resolve(new HTTPResponse(400, errorMessage));
         }
 
-        return testResultsService.updateTestResult(testResultId, testResult, msUserDetails)
+        return testResultsService.updateTestResult(systemNumber, testResult, msUserDetails)
             .then((data) => {
                 return new HTTPResponse(200, data);
             })

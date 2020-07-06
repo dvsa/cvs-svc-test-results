@@ -154,8 +154,21 @@ export class TestResultsService {
     return testResults;
   }
 
-  public updateTestResult(testResultId: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
-    const {vin} = payload;
+  public mapErrorMessage(validation: ValidationResult<any> | any ) {
+    return validation.error.details.map((detail: { message: string; }) => {
+      return detail.message;
+    });
+  }
+
+  public manageDefectsArray(testResult: ITestResult) {
+    testResult.testTypes.forEach((testType: TestType) => {
+      if (SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
+        testType.defects = [];
+      }
+    });
+  }
+
+  public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
     this.removeNonEditableAttributes(payload);
     let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
     const testTypesValidationErrors = this.validateTestTypes(payload);
@@ -167,7 +180,6 @@ export class TestResultsService {
     delete payload.testTypes;
     validationSchema = validationSchema!.keys({
       countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required(),
-      reasonForCreation: Joi.string().max(500).required(),
       testTypes: Joi.any().forbidden()
     });
     validationSchema = validationSchema.optionalKeys(["testEndTimestamp", "systemNumber", "vin"]);
@@ -180,11 +192,11 @@ export class TestResultsService {
         }));
     }
     payload.testTypes = testTypes;
-    return this.testResultsDAO.getByTestResultId(testResultId, vin)
+    return this.testResultsDAO.getBySystemNumber(systemNumber)
         .then(async (result) => {
           const response: ITestResultData = {Count: result.Count, Items: result.Items};
           const testResults = this.checkTestResults(response);
-          const oldTestResult = this.getTestResultToArchive(testResults);
+          const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
           oldTestResult.testVersion = TEST_VERSION.ARCHIVED;
           const newTestResult: ITestResult = cloneDeep(oldTestResult);
           newTestResult.testVersion = TEST_VERSION.CURRENT;
@@ -199,7 +211,12 @@ export class TestResultsService {
           await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
           this.manageDefectsArray(newTestResult);
           this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
-          this.manageTestHistoryArray(newTestResult, oldTestResult);
+          if (!newTestResult.testHistory) {
+            newTestResult.testHistory = [oldTestResult];
+          } else {
+            delete oldTestResult.testHistory;
+            newTestResult.testHistory.push(oldTestResult);
+          }
           return this.testResultsDAO.updateTestResult(newTestResult)
               .then((data) => {
                 return newTestResult;
@@ -209,83 +226,6 @@ export class TestResultsService {
         }).catch((error) => {
           throw new HTTPError(error.statusCode, error.body);
         });
-  }
-
-  public archiveTestResult(testResultId: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
-    return this.testResultsDAO.getByTestResultId(testResultId, payload.vin)
-      .then(async (result) => {
-        const response: ITestResultData = {Count: result.Count, Items: result.Items};
-        const testResults = this.checkTestResults(response);
-        const oldTestResult = this.getTestResultToArchive(testResults);
-        oldTestResult.testVersion = TEST_VERSION.ARCHIVED;
-        const newTestResult: ITestResult = cloneDeep(oldTestResult);
-        newTestResult.testVersion = TEST_VERSION.CURRENT;
-        this.manageTestTypesToArchive(payload.testTypes, oldTestResult, newTestResult);
-        if (!newTestResult.testTypes.length) {
-          newTestResult.testVersion = TEST_VERSION.ARCHIVED;
-        }
-        newTestResult.reasonForCreation = this.getReasonForCreation(payload.reasonForCreation);
-        this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
-        this.manageTestHistoryArray(newTestResult, oldTestResult);
-        return this.testResultsDAO.updateTestResult(newTestResult)
-          .then((data) => {
-            return newTestResult;
-          }).catch((error) => {
-            throw new HTTPError(500, error.message);
-          });
-      }).catch((error) => {
-        throw new HTTPError(error.statusCode, error.body);
-      });
-  }
-
-  private mapErrorMessage(validation: ValidationResult<any> | any ) {
-    return validation.error.details.map((detail: { message: string; }) => {
-      return detail.message;
-    });
-  }
-
-  private manageDefectsArray(testResult: ITestResult) {
-    testResult.testTypes.forEach((testType: TestType) => {
-      if (SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
-        testType.defects = [];
-      }
-    });
-  }
-
-  private manageTestHistoryArray(newTestResult: ITestResult, oldTestResult: ITestResult) {
-    if (!newTestResult.testHistory) {
-      newTestResult.testHistory = [oldTestResult];
-    } else {
-      delete oldTestResult.testHistory;
-      newTestResult.testHistory.push(oldTestResult);
-    }
-  }
-
-  private getReasonForCreation(reasonForCreation: string | undefined) {
-    const reasonForCreationValidation = Joi.object().keys({
-      reasonForCreation: Joi.string().max(500).required()
-    }).validate({reasonForCreation});
-    if (reasonForCreationValidation.error) {
-      throw new HTTPError(400, {errors: this.mapErrorMessage(reasonForCreationValidation)});
-    }
-    return reasonForCreation;
-  }
-
-  private manageTestTypesToArchive(newTestTypes: TestType[], oldTestResult: ITestResult, newTestResult: ITestResult) {
-    const testTypesToArchive = newTestTypes.filter((testType: TestType) => testType.statusUpdatedFlag === true);
-    if (!testTypesToArchive.length) {
-      throw new HTTPError(400, ERRORS.NoTestTypesToArchive);
-    }
-    testTypesToArchive.forEach((testType: TestType) => {
-      const testTypeFromDb = oldTestResult.testTypes.find((oldTestType: TestType) => oldTestType.testNumber === testType.testNumber);
-      if (!testTypeFromDb) {
-        throw new HTTPError(400, ERRORS.TestTypeToArchiveNotFound);
-      }
-      testTypeFromDb.statusUpdatedFlag = true;
-      testTypeFromDb.lastUpdatedAt = new Date().toISOString();
-      // removing the archived test type from the current test-result object
-      newTestResult.testTypes = newTestResult.testTypes.filter((testTypeToRemove: TestType) => testTypeToRemove.testNumber !== testTypeFromDb.testNumber);
-    });
   }
 
   private arrayCustomizer(objValue: any, srcValue: any) {
@@ -413,9 +353,9 @@ export class TestResultsService {
     return validationErrors;
   }
 
-  public getTestResultToArchive(testResults: ITestResult[]): ITestResult {
+  public getTestResultToArchive(testResults: ITestResult[], testResultId: string): ITestResult {
     testResults = testResults.filter((testResult) => {
-      return (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion);
+      return testResult.testResultId === testResultId && (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion);
     });
     if (testResults.length !== 1) {
       throw new HTTPError(404, ERRORS.NoResourceMatch);

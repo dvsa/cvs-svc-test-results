@@ -17,13 +17,8 @@ functions:
 - updateTestResults:
     method: PUT
     path: /test-results/{+proxy}
-    proxy: :testResultId
+    proxy: :systemNumber
     function: updateTestResults
-- archiveTestResults:
-    method: PUT
-    path: /test-results/archive/{+proxy}
-    proxy: :testResultId
-    function: archiveTestResults
 dynamodb:
   local:
     params:
