@@ -818,6 +818,7 @@ export class TestResultsService {
       if (testType.testExpiryDate) {
         if (payload.vehicleType === VEHICLE_TYPES.PSV) {
           testType.testAnniversaryDate = moment(testType.testExpiryDate).utc().subtract(2, "months").add(1, "days").toISOString();
+
         } else {
           testType.testAnniversaryDate = testType.testExpiryDate;
         }
