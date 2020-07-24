@@ -70,6 +70,7 @@ export interface TestType {
   certificateNumber?: string | null;
   testExpiryDate?: string | Date | null; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
   deletionFlag?: boolean | null; // Not sent from FE, calculated in the BE.
+  statusUpdatedFlag?: boolean | null; // Sent from FE when a testType is updated/archived
 
   // Used only for LEC tests.
   modType?: ModType | null;

@@ -44,16 +44,6 @@ functions:
     handler: src/handler.handler
     events:
       - http:
-          path: test-results
-          method: post
-      - http:
-          path: test-results/{systemNumber}
-          method: put
-          request:
-            parameters:
-              paths:
-                systemNumber: true
-      - http:
           path: test-results/{systemNumber}
           method: get
           request:
@@ -70,7 +60,32 @@ functions:
       - http:
           path: test-results/getTestResultsByTesterStaffId
           method: get
-
+  archiveTestResults:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: test-results/archive/{testResultId}
+          method: put
+          request:
+            parameters:
+              paths:
+                testResultId: true
+  updateTestResults:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: test-results/{testResultId}
+          method: put
+          request:
+            parameters:
+              paths:
+                testResultId: true
+  postTestResults:
+    handler: src/handler.handler
+    events:
+      - http:
+          path: test-results
+          method: post
 
 resources:
   Resources:

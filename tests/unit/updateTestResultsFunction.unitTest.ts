@@ -9,7 +9,7 @@ describe("updateTestResults Function", () => {
     beforeEach(() => {
         event = {
             pathParameters: {
-                systemNumber: 1
+                testResultId: 1
             },
             body: {}
         };
@@ -20,7 +20,7 @@ describe("updateTestResults Function", () => {
     });
 
     context("when testResult object is not present on the payload", () => {
-        it("should return Error 400 Bad request testResult not provided", async () => {
+        it("should return Error 400 Bad request test-result object not provided", async () => {
             const testResultsMock = jest.fn().mockResolvedValue("Failure");
             TestResultsService.prototype.updateTestResult = testResultsMock;
 
@@ -28,7 +28,7 @@ describe("updateTestResults Function", () => {
             const result = await updateTestResults(event);
             expect(result).toBeInstanceOf(HTTPResponse);
             expect(result.statusCode).toEqual(400);
-            expect(result.body).toEqual(JSON.stringify("Bad request testResult not provided"));
+            expect(JSON.parse(result.body).errors).toContain("Bad request test-result object not provided");
         });
     });
 
@@ -42,7 +42,7 @@ describe("updateTestResults Function", () => {
             const result = await updateTestResults(event);
             expect(result).toBeInstanceOf(HTTPResponse);
             expect(result.statusCode).toEqual(400);
-            expect(result.body).toEqual(JSON.stringify("Bad request msUserDetails not provided"));
+            expect(JSON.parse(result.body).errors).toContain("Bad request msUserDetails not provided");
         });
     });
 
