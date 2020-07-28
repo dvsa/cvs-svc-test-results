@@ -61,6 +61,12 @@ export enum MESSAGES {
     REASON_FOR_ABANDONING_NOT_PRESENT = "Reason for Abandoning not present on all abandoned tests"
 }
 
+export enum VEHICLE_TYPE {
+  PSV= "psv",
+  HGV= "hgv",
+  TRL= "trl"
+}
+
 export const VEHICLE_TYPES = {
     PSV: "psv",
     HGV: "hgv",

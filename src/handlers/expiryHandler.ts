@@ -1,28 +1,60 @@
 import moment from "moment";
 
 import { ITestResultPayload } from "../models/ITestResultPayload";
-import { TEST_STATUS, TEST_TYPE_CLASSIFICATION, TEST_RESULT, COIF_EXPIRY_TEST_TYPES, VEHICLE_TYPES, HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_CODES_FOR_CALCULATING_EXPIRY, MESSAGES, ERRORS, TEST_VERSION } from "../assets/Enums";
+import { TEST_STATUS, TEST_TYPE_CLASSIFICATION, TEST_RESULT, COIF_EXPIRY_TEST_TYPES, VEHICLE_TYPES, HGV_TRL_ROADWORTHINESS_TEST_TYPES, TEST_CODES_FOR_CALCULATING_EXPIRY, MESSAGES, ERRORS, TEST_VERSION, VEHICLE_TYPE } from "../assets/Enums";
 import { HTTPError } from "../models/HTTPError";
 import { GetTestResults } from "../utils/GetTestResults";
 import { ITestResultFilters } from "../models/ITestResultFilter";
 import { TestResultsDAO } from "../models/TestResultsDAO";
 import { ITestResultData } from "../models/ITestResultData";
+import { TestType } from "../models/ITestResult";
 
-export function generateExpiryDate(payload: ITestResultPayload, testResultsDAO: TestResultsDAO ) {
+public interface TestTypeWithExpiry {
+  vehicleType: VEHICLE_TYPE;
+  recentExpiry: Date;
+  anniversaryDate: moment.Moment;
+  testType: TestType;
+}
+export function preparePrerequisites(payload: ITestResultPayload) {
+// fetch most recent expiry
+// identify vehicle Type
+// calculate anniversary date based on vehicle type
+}
+
+export function generateExpiry() {
+  // identify vehcileType
+  // preparePrerequisites
+  // filter out tests which need expiry calculation
+      // generate expiry by vehicleType
+        // for each testType generate expiry by testtype
+}
+export async function  generateExpiryDate(payload: ITestResultPayload, testResultsDAO: TestResultsDAO ) {
     moment.tz.setDefault("UTC");
     if (payload.testStatus !== TEST_STATUS.SUBMITTED) {
       return Promise.resolve(payload);
     } else {
-      return getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber, testResultsDAO)
-        .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) => { // fetch max date for annual test types
-          payload.testTypes.forEach((testType: any, index: number) => {
-            if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-              (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
+      const mostRecentExpiryDateOnAllTestTypesBySystemNumber = await getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber, testResultsDAO);
+      const filteredTestResult = payload.testTypes.filter((testType) => testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+                                                                        testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS);
+      let registrationAnniversary = moment(new Date());
+      if (payload.vehicleType === VEHICLE_TYPES.PSV) {
+         registrationAnniversary = moment(payload.regnDate).add(1, "years");
+      } else {
+        let regOrFirstUseDate: string | undefined = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
+        if (!isValidDate(regOrFirstUseDate)) {
+          regOrFirstUseDate = undefined;
+        }
+        registrationAnniversary = moment(regOrFirstUseDate).add(1, "years").startOf("month");
+      }
+        // .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) =>
+      // { // fetch max date for annual test types
+      filteredTestResult.forEach((testType: any, index: number) => {
+              const testTypeWithExpiry: TestTypeWithExpiry = {vehicleType:payload.vehicleType, testType, anniversaryDate: registrationAnniversary, recentExpiry: mostRecentExpiryDateOnAllTestTypesBySystemNumber};
               if (payload.vehicleType === VEHICLE_TYPES.PSV) {
                 if (COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
                   testType.testExpiryDate = addOneYearMinusOneDay(new Date());
                 } else if (isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && isValidDate(payload.regnDate)) {
-                  const registrationAnniversary = moment(payload.regnDate).add(1, "years");
+                  // const registrationAnniversary = moment(payload.regnDate).add(1, "years");
                   if (registrationAnniversary.isBetween(moment(new Date()), moment(new Date()).add(2, "months"), "days", "[)")) {
                     testType.testExpiryDate = addOneYear(registrationAnniversary.toDate());
                   } else {
@@ -76,15 +108,14 @@ export function generateExpiryDate(payload: ITestResultPayload, testResultsDAO: 
                   }
                 }
               }
-            }
           });
-          console.log("generateExpiryDate payload", payload.testTypes);
-          return Promise.resolve(payload);
-        }).catch((error) => {
-          console.error("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber", error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        });
-    }
+      console.log("generateExpiryDate payload", payload.testTypes);
+      return Promise.resolve(payload);
+        // }).catch((error) => {
+        //   console.error("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber", error);
+        //   throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+        // });
+    // }
   }
 
 
@@ -92,7 +123,7 @@ export function generateExpiryDate(payload: ITestResultPayload, testResultsDAO: 
  * To check the whether the value provided is a valid date
  * @param input date value
  */
-function isValidDate(input: string | Date | number | undefined): boolean {
+    function isValidDate(input: string | Date | number | undefined): boolean {
     return input !== undefined && moment(input).isValid() && moment(input).isAfter(new Date(0));
   }
 
@@ -103,28 +134,28 @@ function isValidDate(input: string | Date | number | undefined): boolean {
    * new Date(string) considers the ambiguous parsed string as UTC
    * new Date() creates a new date based on the local timezone
    */
-function lastDayOfMonthInNextYear(inputDate: Date): string {
+    function lastDayOfMonthInNextYear(inputDate: Date): string {
     return moment(inputDate).add(1, "year").endOf("month").startOf("day").toISOString();
   }
 
-function addOneYearMinusOneDay(inputDate: Date): string {
+    function addOneYearMinusOneDay(inputDate: Date): string {
     return moment(inputDate).add(1, "year").subtract(1, "day").startOf("day").toISOString();
   }
 
-function addOneYear(inputDate: Date): string {
+    function addOneYear(inputDate: Date): string {
     return moment(inputDate).add(1, "year").startOf("day").toISOString();
   }
 
-function isFirstTestRetestTestType(testType: any): boolean {
+    function isFirstTestRetestTestType(testType: any): boolean {
     const adrTestTypeIds = ["41", "64", "65", "66", "67", "95", "102", "103", "104"];
     return adrTestTypeIds.includes(testType.testTypeId);
   }
 
-function isAnnualTestRetestTestType(testType: any): boolean {
+    function isAnnualTestRetestTestType(testType: any): boolean {
     const annualTestRetestIds = ["94", "40", "53", "54", "98", "99", "70", "76", "79", "107", "113", "116"];
     return annualTestRetestIds.includes(testType.testTypeId);
   }
-function getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any, testResultsDAO: TestResultsDAO): Promise<Date> {
+    function getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any, testResultsDAO: TestResultsDAO): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
     return getTestResults({
       systemNumber,
@@ -155,33 +186,33 @@ function getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any, 
       });
   }
   //#region Private Static Functions
-function isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
+    function isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
     return HGV_TRL_ROADWORTHINESS_TEST_TYPES.IDS.includes(testTypeId);
    }
-function isHgvOrTrl(vehicleType: string): boolean {
+    function isHgvOrTrl(vehicleType: string): boolean {
     return vehicleType === VEHICLE_TYPES.HGV || vehicleType === VEHICLE_TYPES.TRL;
   }
 
-function isPassedRoadworthinessTestForHgvTrl(vehicleType: string, testTypeId: string, testResult: string): boolean {
+    function isPassedRoadworthinessTestForHgvTrl(vehicleType: string, testTypeId: string, testResult: string): boolean {
     return isHgvOrTrl(vehicleType) && isHGVTRLRoadworthinessTest(testTypeId) && testResult === TEST_RESULT.PASS;
   }
 
-function isAnnualTestTypeClassificationWithoutAbandonedResult(testTypeClassification: string, testResult: string): boolean {
+    function isAnnualTestTypeClassificationWithoutAbandonedResult(testTypeClassification: string, testResult: string): boolean {
     return testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testResult !== TEST_RESULT.ABANDONED;
   }
 
-function isValidTestCodeForExpiryCalculation(testCode: string): boolean {
+    function isValidTestCodeForExpiryCalculation(testCode: string): boolean {
     return TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
   }
 
-function isMostRecentExpiryNotFound(mostRecentExpiryDate: Date): boolean {
+    function isMostRecentExpiryNotFound(mostRecentExpiryDate: Date): boolean {
     return moment(mostRecentExpiryDate).isSame(new Date(1970, 1, 1));
   }
-function isWithinTwoMonthsFromToday(date: Date): boolean {
+    function isWithinTwoMonthsFromToday(date: Date): boolean {
     return moment(date).utc().isBetween(moment(new Date()).utc(), moment(new Date()).utc().add(2, "months"), "days", "()");
   }
 
-async function  getTestResults(filters: ITestResultFilters, testResultsDAO: TestResultsDAO ): Promise < any > {
+    async function  getTestResults(filters: ITestResultFilters, testResultsDAO: TestResultsDAO ): Promise < any > {
     if (filters) {
       if (Object.keys(filters).length !== 0) {
         if (filters.fromDateTime && filters.toDateTime) {
@@ -227,7 +258,7 @@ async function  getTestResults(filters: ITestResultFilters, testResultsDAO: Test
   }
 
 
-function applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
+    function applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
     let testResults = checkTestResults(data);
     testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
     if (filters.testStatus) {
@@ -253,7 +284,7 @@ function applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilt
     return testResults;
   }
 
-function checkTestResults(data: ITestResultData) {
+    function checkTestResults(data: ITestResultData) {
     if (data) {
       if (!data.Count) {
         throw new HTTPError(404, ERRORS.NoResourceMatch);
