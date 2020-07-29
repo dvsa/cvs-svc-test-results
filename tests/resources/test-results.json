@@ -4279,5 +4279,226 @@
     "vehicleType": "hgv",
     "vin": "P012301230123",
     "vrm": "CT70VRL"
+  },
+  {
+    "countryOfRegistration": null,
+    "deletionFlag": false,
+    "euVehicleCategory": "o1",
+    "firstUseDate": "2018-11-11",
+    "noOfAxles": 2,
+    "numberOfSeats": 45,
+    "numberOfWheelsDriven": 3,
+    "odometerReading": 100000,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
+    "reasonForCancellation": "none",
+    "systemNumber": "11220279",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "testerName": "Bogdan",
+    "testerStaffId": "1",
+    "testResultId": "220279",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "testStationPNumber": "87-1369569",
+    "testStationType": "gvts",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": "none",
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "certificateLink": "http://dvsagov.co.uk",
+        "createdAt": "2019-02-22T08:47:59.269Z",
+        "customDefects": [
+          {
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe",
+            "referenceNumber": "abcd"
+          }
+        ],
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": "None"
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "a",
+            "deficiencyRef": "1.1.a",
+            "deficiencySubId": null,
+            "deficiencyText": "missing.",
+            "imDescription": "Registration Plate",
+            "imNumber": 1,
+            "itemDescription": "A registration plate:",
+            "itemNumber": 1,
+            "prs": false,
+            "stdForProhibition": false
+          }
+        ],
+        "deletionFlag": false,
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "lastUpdatedAt": "2019-02-22T08:47:59.269Z",
+        "name": "First test",
+        "numberOfSeatbeltsFitted": 2,
+        "prohibitionIssued": false,
+        "reasonForAbandoning": "none",
+        "seatbeltInstallationCheckDate": true,
+        "secondaryCertificateNumber": "1234",
+        "testAnniversaryDate": "2019-12-22T08:47:59.749Z",
+        "testCode": "ffv2",
+        "testNumber": "1",
+        "testResult": "pass",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "testTypeId": "95",
+        "testTypeName": "First test",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z"
+      }
+    ],
+    "trailerId": "C220279",
+    "vehicleClass": {
+      "code": "2",
+      "description": "motorbikes over 200cc or with a sidecar"
+    },
+    "vehicleConfiguration": "rigid",
+    "vehicleSize": "small",
+    "vehicleType": "trl",
+    "vin": "T12220222"
+  },
+  {
+    "createdAt": "2020-07-28T00:06:26.300Z",
+    "createdById": "c26d6b02-49b2-456a-ac20-7435",
+    "createdByName": "Test Test",
+    "euVehicleCategory": "n2",
+    "noOfAxles": 3,
+    "numberOfWheelsDriven": 4,
+    "odometerReading": 55000,
+    "odometerReadingUnits": "kilometres",
+    "preparerId": "BL5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "reasonForCancellation": null,
+    "reasonForCreation": "Test conducted",
+    "systemNumber": "11220280",
+    "testEndTimestamp": "2020-07-28T01:21:25.657Z",
+    "testerEmailAddress": "test@test-station.com",
+    "testerName": "Test Test",
+    "testerStaffId": "c26d6b02-49b2-456a-ac20-7435",
+    "testResultId": "ec894560-a8f3-43f7-809d-1d6e35b5bfff",
+    "testStartTimestamp": "2020-07-28T01:06:25.657Z",
+    "testStationName": "Abshire-Kub",
+    "testStationPNumber": "09-4129632",
+    "testStationType": "gvts",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": " ",
+        "additionalNotesRecorded": "notes",
+        "certificateNumber": "12345678",
+        "createdAt": "2020-07-28T00:06:26.300Z",
+        "customDefects": [
+          {
+            "defectName": "custom defect 1",
+            "defectNotes": "custom defects 1 notes",
+            "referenceNumber": "1"
+          }
+        ],
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 1,
+                "horizontal": "inner",
+                "lateral": null,
+                "longitudinal": "rear",
+                "rowNumber": 3,
+                "seatNumber": 4,
+                "vertical": null
+              },
+              "notes": "seatbelt broken"
+            },
+            "deficiencyCategory": "advisory",
+            "deficiencyId": "b",
+            "deficiencyRef": "deficiency reference (1)*",
+            "deficiencySubId": "d",
+            "deficiencyText": null,
+            "imDescription": "im description 1",
+            "imNumber": 1000,
+            "itemDescription": "item description 1",
+            "itemNumber": 1500,
+            "prohibitionIssued": true,
+            "prs": true,
+            "stdForProhibition": true
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": "centre",
+                "longitudinal": null,
+                "rowNumber": 1,
+                "seatNumber": 2,
+                "vertical": "upper"
+              },
+              "notes": "seatbelt missing"
+            },
+            "deficiencyCategory": "minor",
+            "deficiencyId": "a",
+            "deficiencyRef": "deficiency reference 2",
+            "deficiencySubId": "m",
+            "deficiencyText": "deficiency text 2",
+            "imDescription": "im description 2",
+            "imNumber": 2000,
+            "itemDescription": "item description 2",
+            "itemNumber": 2500,
+            "prohibitionIssued": false,
+            "prs": false,
+            "stdForProhibition": false
+          }
+        ],
+        "emissionStandard": "Euro 3",
+        "fuelType": "diesel",
+        "lastUpdatedAt": "2020-07-28T00:06:26.300Z",
+        "modificationTypeUsed": "modification",
+        "modType": {
+          "code": "p",
+          "description": "particulate trap"
+        },
+        "name": "With linked test",
+        "particulateTrapFitted": "yes",
+        "particulateTrapSerialNumber": "1234",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": "123456",
+        "smokeTestKLimitApplied": "20",
+        "testCode": "ldv",
+        "testNumber": "W12F08363",
+        "testResult": "fail",
+        "testTypeClassification": "Annual NO CERTIFICATE",
+        "testTypeEndTimestamp": "2020-07-28T01:21:25.657Z",
+        "testTypeId": "44",
+        "testTypeName": "Low Emissions Certificate (LEC) with annual test",
+        "testTypeStartTimestamp": "2020-07-28T01:06:25.657Z"
+      }
+    ],
+    "testVersion": "current",
+    "vehicleClass": {
+      "code": "v",
+      "description": "heavy goods vehicle"
+    },
+    "vehicleConfiguration": "articulated",
+    "vehicleId": "QX9YVJ",
+    "vehicleType": "hgv",
+    "vin": "H12220223",
+    "vrm": "B999XFX"
   }
 ]
