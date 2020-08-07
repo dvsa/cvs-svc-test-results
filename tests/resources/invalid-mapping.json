@@ -1,0 +1,68 @@
+{
+    "psv":[
+        {
+        "isHistoryRequired": null,
+        "isRegistrationRequired": null,
+        "testTypes": ["142", "146", "175", "177"],
+        "strategy": "PsvDefaultExpiryStrategy"
+        },
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": false,
+        "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
+        "strategy": "PsvDefaultExpiryStrategy"
+        },
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": false,
+        "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
+        "strategy": "PsvMostRecentExpiryStrategy"
+        },
+        {
+        "isHistoryRequired": null,
+        "isRegistrationRequired": true,
+        "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
+        "strategy": "PsvRegistrationAnniversaryStrategy"
+        }
+    ],
+    "hgv": [
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": null,
+        "testTypes": ["64", "65", "66", "67", "82", "83", "95"],
+        "strategy": "HgvTrlFirstTestStrategy"
+        },
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": null,
+        "testTypes": ["94", "53", "54","70", "76", "79"],
+        "strategy": "HgvTrlAnnualTestStrategy"
+        },
+        {
+        "isHistoryRequired": true,
+        "isRegistrationRequired": null,
+        "testTypes": ["64", "65", "66", "67", "82", "83", "95", "94", "53", "54", "70", "76", "79"],
+        "strategy": "HgvTrlMostRecentExpiryStrategy"
+        }
+    ],
+    "car": [ 
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": null,
+        "testTypes": ["41", "64", "65", "66", "67", "82", "83", "95", "103", "104", "119", "120"],
+        "strategy": "HgvTrlFirstTestStrategy"
+        },
+        {
+        "isHistoryRequired": false,
+        "isRegistrationRequired": null,
+        "testTypes": ["40", "53", "54", "94", "98", "99", "70", "76", "79", "107", "113", "116"],
+        "strategy": "HgvTrlAnnualTestStrategy"
+        },
+        {
+        "isHistoryRequired": true,
+        "isRegistrationRequired": null,
+        "testTypes": ["41", "64", "65", "66", "67", "82", "83", "95", "103", "104", "119", "120", "40", "53", "54", "94", "98", "99", "70", "76", "79", "107", "113", "116"],
+        "strategy": "HgvTrlMostRecentExpiryStrategy"
+        }
+    ]
+}

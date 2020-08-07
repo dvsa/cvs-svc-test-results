@@ -406,55 +406,6 @@ describe("TestResultsService calling generateExpiryDate", () => {
                               });
                         });
                     });
-                    describe("with previous expiry date, and today 2 months before the previous expiry date>", () => {
-                        beforeAll(() => {
-                            dateMockUtils.setupDateMock("2020-02-01T10:00:00.000Z");
-                        });
-                        afterAll(() => {
-                            dateMockUtils.restoreDateMock();
-                        });
-
-                        it("should set the expiryDate to one year from previous expiry date for Pass results - not for PRS and Fail", () => {
-                            const test: ITestResult = cloneDeep(testResultsMockDB[0]);
-                            test.testTypes.forEach((type) => {
-                                if (type.testResult === "pass") {
-                                    type.testExpiryDate = new Date("2020-04-01");
-                                }
-                                delete type.testAnniversaryDate;
-                                return type;
-                            });
-                            const psvTestResult = test;
-                            const getBySystemNumberResponse = test;
-
-                            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                                return {
-                                    getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
-                                    },
-                                    getTestCodesAndClassificationFromTestTypes: () => {
-                                        return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
-                                            testTypeClassification: "Annual With Certificate"
-                                        });
-                                    }
-                                };
-                            });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-                            const expectedExpiryDate = new Date("2021-04-01");
-                            return testResultsService.generateExpiryDate(psvTestResult)
-                              .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
-                                  expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
-                                  expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
-                                  expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[2].testExpiryDate).toBeUndefined();
-                              });
-                        });
-                    });
                     describe("with previous expiry date, and today <2 months before the previous expiry date>", () => {
                         beforeAll(() => {
                             dateMockUtils.setupDateMock("2020-02-01T10:00:00.000Z");
@@ -676,6 +627,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 describe("with good regn/first use date strings", () => {
                     it("should set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+                        hgvTestResult.testTypes[0].testTypeId = "94";
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: () => {
@@ -687,8 +639,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
-                                        linkedTestCode: "wde",
-                                        defaultTestCode: "bde",
+                                        linkedTestCode: null,
+                                        defaultTestCode: "aav2",
                                         testTypeClassification: "Annual With Certificate"
                                     });
                                 }
@@ -707,6 +659,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     it("should STILL set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                         hgvTestResult.regnDate = "2020-0";
+                        hgvTestResult.testTypes[0].testTypeId = "94";
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: () => {
@@ -718,8 +671,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
-                                        linkedTestCode: "wde",
-                                        defaultTestCode: "bde",
+                                        linkedTestCode: null,
+                                        defaultTestCode: "aav2",
                                         testTypeClassification: "Annual With Certificate"
                                     });
                                 }
@@ -739,8 +692,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 describe("and the previous expiry date is a valid date", () => {
                     it("should set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+                        hgvTestResult.testTypes[0].testTypeId = "94";
                         const pastExpiryDate = moment().subtract(1, "months").toDate();
                         const testResultExpiredCertificateWithSameSystemNumber = testResultsMockDB[15];
+                        hgvTestResult.testTypes[0].testTypeId = "94";
                         testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -754,8 +709,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
-                                        linkedTestCode: "wde",
-                                        defaultTestCode: "bde",
+                                        linkedTestCode: null,
+                                        defaultTestCode: "aav2",
                                         testTypeClassification: "Annual With Certificate"
                                     });
                                 }
@@ -773,8 +728,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     it("should still set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                         const pastExpiryDate = "2020-0";
+                        hgvTestResult.testTypes[0].testTypeId = "94";
                         const testResultExpiredCertificateWithSameSystemNumber = cloneDeep(testResultsMockDB[15]);
                         testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
+                        testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testTypeId = "94";
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
@@ -787,8 +744,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
-                                        linkedTestCode: "wde",
-                                        defaultTestCode: "bde",
+                                        linkedTestCode: null,
+                                        defaultTestCode: "aav2",
                                         testTypeClassification: "Annual With Certificate"
                                     });
                                 }
@@ -806,7 +763,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 describe("First test types", () => {
                     const hgvTestResult = cloneDeep(testResults[15]) as ITestResult;
                     hgvTestResult.testTypes.forEach((type) => {
-                        type.testTypeId = "41";
+                        type.testTypeId = "65";
                         delete type.testExpiryDate;
                         delete type.testAnniversaryDate;
                         return type;
@@ -1049,6 +1006,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         it("should set the expiryDate to last day of current month + 1 year for Pass results - nothing for PRS and Fail", () => {
                             hgvTestResult.testTypes.forEach((type) => {
                                 type.testExpiryDate = "2020-05-01T10:00:00.000Z";
+                                type.testTypeId = "94";
                             });
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
@@ -1061,8 +1019,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1087,6 +1045,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         it("should set the expiryDate to last day of CURRENT month + 1 year for Pass results - nothing for PRS and Fail", () => {
                             hgvTestResult.testTypes.forEach((type) => {
                                 type.testExpiryDate = "2020-04-01T10:00:00.000Z";
+                                type.testTypeId = "94";
                             });
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
@@ -1099,8 +1058,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1125,6 +1084,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         it("should set the expiryDate to last day of EXPIRY month + 1 year for Pass results - nothing for PRS and Fail", () => {
                             hgvTestResult.testTypes.forEach((type) => {
                                 type.testExpiryDate = "2020-04-01T10:00:00.000Z";
+                                type.testTypeId = "94";
                             });
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
@@ -1137,8 +1097,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1163,6 +1123,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         it("should set the expiryDate to last day of EXPIRY month + 1 year for Pass results - nothing for PRS and Fail", () => {
                             hgvTestResult.testTypes.forEach((type) => {
                                 type.testExpiryDate = "2020-03-01T10:00:00.000Z";
+                                type.testTypeId = "94";
                             });
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
@@ -1175,8 +1136,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1201,6 +1162,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         it("should set the expiryDate to last day of current month + 1 year for Pass results - nothing for PRS and Fail", () => {
                             hgvTestResult.testTypes.forEach((type) => {
                                 type.testExpiryDate = "2020-03-01T10:00:00.000Z";
+                                type.testTypeId = "94";
                             });
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
@@ -1213,8 +1175,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1819,7 +1781,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                 describe("Non-First-Test Types", () => {
                     const trlTestResult = cloneDeep(testResults[15]) as ITestResult;
                     trlTestResult.testTypes.forEach((type) => {
-                        type.testTypeId = "1";
+                        type.testTypeId = "94";
                     });
                     describe("with Today >2 months before previous expiry date", () => {
                         beforeAll(() => {
@@ -1843,8 +1805,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1881,8 +1843,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1919,8 +1881,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1957,8 +1919,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -1995,8 +1957,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
-                                            linkedTestCode: "wde",
-                                            defaultTestCode: "bde",
+                                            linkedTestCode: null,
+                                            defaultTestCode: "aav2",
                                             testTypeClassification: "Annual With Certificate"
                                         });
                                     }
@@ -2138,7 +2100,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
-                                getByVin: (vin: any) => {
+                                getBySystemNumber: (vin: any) => {
                                     return Promise.resolve({
                                         Items: Array.of(hgvTestResult),
                                         Count: 1,
@@ -2171,7 +2133,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
-                                getByVin: (vin: any) => {
+                                getBySystemNumber: (vin: any) => {
                                     return Promise.resolve({
                                         Items: Array.of(hgvTestResult),
                                         Count: 1,
@@ -2205,7 +2167,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
-                                getByVin: (vin: any) => {
+                                getBySystemNumber: (vin: any) => {
                                     return Promise.resolve({
                                         Items: Array.of(hgvTestResult),
                                         Count: 1,
@@ -2363,7 +2325,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
-                                getByVin: (vin: any) => {
+                                getBySystemNumber: (vin: any) => {
                                     return Promise.resolve({
                                         Items: Array.of(trlTestResult),
                                         Count: 1,
@@ -2399,7 +2361,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
-                                getByVin: (vin: any) => {
+                                getBySystemNumber: (vin: any) => {
                                     return Promise.resolve({
                                         Items: Array.of(trlTestResult),
                                         Count: 1,
@@ -2434,6 +2396,13 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
+                                getBySystemNumber: (vin: any) => {
+                                        return Promise.resolve({
+                                            Items: Array.of(trlTestResult),
+                                            Count: 1,
+                                            ScannedCount: 1
+                                        });
+                                    },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
                                         linkedTestCode: "aav2",
