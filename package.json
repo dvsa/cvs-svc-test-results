@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "src/handler.js",
+  "engines": {
+    "node": "10.18.1",
+    "npm": "5.6.0"
+  },
   "scripts": {
     "start": "BRANCH=local ./node_modules/serverless/bin/serverless offline start",
     "start:test": "npm run tslint && SLS_DEBUG=* BRANCH=local node_modules/gulp/bin/gulp.js start-serverless",
@@ -19,7 +23,7 @@
     "tslint": "tslint src/**/*.ts tests/**/*.ts",
     "sonar-scanner": "npm run tslint && npm run test && sonar-scanner",
     "coverage": "BRANCH=local SLS_DEBUG=* jest --testMatch=\"**/*.*Test.ts\" --coverage",
-    "audit-dep": "npm audit --json | audit-filter --nsp-config=.nsprc --audit=-",
+    "audit-dep": "npm audit --json | node_modules/.bin/audit-filter --nsp-config=.nsprc --audit=-",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "tools-setup": "sls dynamodb migrate && BRANCH=local node_modules/gulp/bin/gulp.js start-serverless && sls dynamodb seed --seed=test-results"
   },
