@@ -2182,7 +2182,7 @@ describe("insertTestResult", () => {
                         return Promise.resolve({
                             linkedTestCode: null,
                             defaultTestCode: "qjt1",
-                            testTypeClassification: "Annual NO CERTIFICATE"
+                            testTypeClassification: "Annual With Certificate"
                         });
                     },
                     getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))

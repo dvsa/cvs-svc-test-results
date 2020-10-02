@@ -802,19 +802,25 @@ export class TestResultsService {
     return bool;
   }
 
+  /**
+   * This function will not remove the certificate number on the test types which already have it set
+   */
   public generateCertificateNumber(payload: ITestResultPayload) {
     if (payload.testStatus === TEST_STATUS.SUBMITTED) {
       payload.testTypes.forEach((testType) => {
-        // CVSB-7675 if vehicle type is HGV/TRL and testTypeId is Roadworthiness test and testResult is pass then testNumber = certificateNumber
-       if (TestResultsService.isPassedRoadworthinessTestForHgvTrl(payload.vehicleType, testType.testTypeId, testType.testResult)
-                    ||
-            (TestResultsService.isAnnualTestTypeClassificationWithoutAbandonedResult(testType.testTypeClassification, testType.testResult) && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType))
-                  ) {
-          testType.certificateNumber = testType.testNumber;
-        }
+        if (this.shouldGenerateCertificateNumber(testType, payload.vehicleType)) { testType.certificateNumber = testType.testNumber; }
       });
     }
     return payload;
+  }
+
+  private shouldGenerateCertificateNumber(testType: TestType, vehicleType: string): boolean {
+    if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== TEST_RESULT.ABANDONED) {
+      if (this.isTestTypeAdr(testType) || this.isTestTypeLec(testType)) { return false; }
+      if (TestResultsService.isHGVTRLRoadworthinessTest(testType.testTypeId)) { return (TestResultsService.isHgvOrTrl(vehicleType) && testType.testResult !== TEST_RESULT.FAIL); }
+      return true;
+    }
+    return false;
   }
 
   private validateLecTestTypeFields(payload: ITestResultPayload): string[] {
@@ -873,16 +879,9 @@ export class TestResultsService {
   private static isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
     return HGV_TRL_ROADWORTHINESS_TEST_TYPES.IDS.includes(testTypeId);
    }
-   private static isHgvOrTrl(vehicleType: string): boolean {
+
+  private static isHgvOrTrl(vehicleType: string): boolean {
     return vehicleType === VEHICLE_TYPES.HGV || vehicleType === VEHICLE_TYPES.TRL;
-  }
-
-  private static isPassedRoadworthinessTestForHgvTrl(vehicleType: string, testTypeId: string, testResult: string): boolean {
-    return TestResultsService.isHgvOrTrl(vehicleType) && TestResultsService.isHGVTRLRoadworthinessTest(testTypeId) && testResult === TEST_RESULT.PASS;
-  }
-
-  private static isAnnualTestTypeClassificationWithoutAbandonedResult(testTypeClassification: string, testResult: string): boolean {
-    return testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testResult !== TEST_RESULT.ABANDONED;
   }
 
   private static isValidTestCodeForExpiryCalculation(testCode: string): boolean {
