@@ -49,7 +49,7 @@ export class TestResultsDAO {
     return TestResultsDAO.docClient.query(params).promise();
   }
 
-  public getByTesterStaffId(testerStaffId: any) {
+  public getByTesterStaffId(testerStaffId: string): Promise<ITestResult[]> {
     const params = {
       TableName: this.tableName,
       IndexName: "TesterStaffIdIndex",
@@ -62,7 +62,7 @@ export class TestResultsDAO {
       }
     };
 
-    return TestResultsDAO.docClient.query(params).promise();
+    return this.queryAllData(params);
   }
 
   public createSingle(payload: ITestResultPayload) {
@@ -199,5 +199,20 @@ export class TestResultsDAO {
       ]
     };
     return TestResultsDAO.docClient.transactWrite(query).promise();
+  }
+
+  private async queryAllData(params: any, allData: ITestResult[] = []): Promise<ITestResult[]> {
+    const data: PromiseResult<DocumentClient.QueryOutput, AWSError> = await TestResultsDAO.docClient.query(params).promise();
+
+    if (data.Items && data.Items.length > 0) {
+      allData = [...allData, ...data.Items as ITestResult[]];
+    }
+
+    if (data.LastEvaluatedKey) {
+      params.ExclusiveStartKey = data.LastEvaluatedKey;
+      return this.queryAllData(params, allData);
+    } else {
+      return allData; // will this work?
+    }
   }
 }
