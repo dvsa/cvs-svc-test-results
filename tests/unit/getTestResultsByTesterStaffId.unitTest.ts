@@ -41,10 +41,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       MockTestResultsDAO = jest.fn().mockImplementation((testerStaffId) => {
         return {
           getByTesterStaffId: () => {
-            return Promise.resolve({
-              Items: [testResultsMockDB[0]],
-              Count: 1
-            });
+            return Promise.resolve([testResultsMockDB[0]]);
           }
         };
       });
@@ -111,10 +108,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       MockTestResultsDAO = jest.fn().mockImplementation((testerStaffId) => {
         return {
           getByTesterStaffId: () => {
-            return Promise.resolve({
-              Items: filteredTestResults,
-              Count: 5
-            });
+            return Promise.resolve(filteredTestResults);
           }
         };
       });

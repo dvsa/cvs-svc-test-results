@@ -95,7 +95,7 @@ export class TestResultsService {
             throw error;
           });
         } else if (filters.testerStaffId) {
-          const results = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
+          const testResults = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
             .catch((error: HTTPError) => {
               if (!(error instanceof HTTPError)) {
                 console.log(error);
@@ -103,7 +103,7 @@ export class TestResultsService {
               }
               throw error;
             });
-          const response: ITestResultData = {Count: results.Count, Items: results.Items};
+          const response: ITestResultData = {Count: testResults.length, Items: testResults};
           return this.applyTestResultsFilters(response, filters);
         } else {
           console.log("Filters object invalid");
