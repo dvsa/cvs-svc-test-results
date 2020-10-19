@@ -212,7 +212,7 @@ export class TestResultsDAO {
       params.ExclusiveStartKey = data.LastEvaluatedKey;
       return this.queryAllData(params, allData);
     } else {
-      return allData; // will this work?
+      return allData;
     }
   }
 }
