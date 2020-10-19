@@ -41,6 +41,32 @@ describe("Test Results DAO", () => {
 
       expect(daoStub.mock.calls[0][0].ExpressionAttributeValues[":testerStaffId"]).toEqual("abc123");
     });
+
+    it("will query dynamodb using the pagination until there are no more results left", async () => {
+
+      let queryResponse: any = {
+        Items: [{id: 1}, {id: 2}],
+        LastEvaluatedKey: 123
+      };
+
+      const queryStub  = jest.fn().mockImplementation(() => {
+        return {
+          promise: () => {
+            // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+            // and will remove it in the next calls
+            const promiseToReturn = Promise.resolve(queryResponse);
+            queryResponse = Object.assign({}, queryResponse);
+            delete queryResponse.LastEvaluatedKey;
+            return promiseToReturn;
+          }
+        };
+      });
+      (TestResultsDAO as any).docClient.query = queryStub;
+
+      const results = await dao.getByTesterStaffId("abc123");
+      expect(results.length).toBe(4);
+      expect(queryStub).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe("createSingle function", () =>  {
