@@ -67,6 +67,44 @@ describe("Test Results DAO", () => {
       expect(results.length).toBe(4);
       expect(queryStub).toHaveBeenCalledTimes(2);
     });
+
+    it("will query dynamodb using the pagination and the nested objects will be merged correctly", async () => {
+
+      const complexObject = {
+        id: 1,
+        nestedObject: {
+          nestedProperty: "test"
+        }
+      };
+      const simpleObject = {id: 2};
+
+      let queryResponse: any = {
+        Items: [complexObject, simpleObject],
+        LastEvaluatedKey: 123
+      };
+
+      const queryStub  = jest.fn().mockImplementation(() => {
+        return {
+          promise: () => {
+            // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+            // and will remove it in the next calls
+            const promiseToReturn = Promise.resolve(queryResponse);
+            queryResponse = Object.assign({}, queryResponse);
+            delete queryResponse.LastEvaluatedKey;
+            return promiseToReturn;
+          }
+        };
+      });
+      (TestResultsDAO as any).docClient.query = queryStub;
+
+      const results = await dao.getByTesterStaffId("abc123");
+      expect(results.length).toBe(4);
+      expect(results[0]).toEqual(complexObject);
+      expect(results[1]).toEqual(simpleObject);
+      expect(results[2]).toEqual(complexObject);
+      expect(results[3]).toEqual(simpleObject);
+
+    });
   });
 
   describe("createSingle function", () =>  {
