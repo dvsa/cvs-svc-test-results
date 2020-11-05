@@ -12,7 +12,6 @@ import {
   TEST_VERSION,
   COUNTRY_OF_REGISTRATION,
   TEST_CODES_FOR_CALCULATING_EXPIRY,
-  COIF_EXPIRY_TEST_TYPES,
   TEST_TYPES_GROUP1,
   TEST_TYPES_GROUP2,
   TEST_TYPES_GROUP3_4_8,
@@ -28,7 +27,8 @@ import {
   TEST_TYPES_GROUP4_SPEC_TEST,
   TEST_TYPES_GROUP3_SPEC_TEST,
   TEST_TYPES_GROUP2_SPEC_TEST,
-  SPECIALIST_TEST_TYPE_IDS
+  SPECIALIST_TEST_TYPE_IDS,
+  VEHICLE_TYPE
 } from "../assets/Enums";
 import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
 import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
@@ -52,6 +52,7 @@ import * as Joi from "joi";
 import {cloneDeep, mergeWith, isArray, isEqual, differenceWith} from "lodash";
 import moment from "moment-timezone";
 import {IMsUserDetails} from "../models/IMsUserDetails";
+import { VehicleTestController } from "../handlers/VehicleTestController";
 import {
   testTypesArray,
   testTypesSchemaGroup1, testTypesSchemaGroup12And14, testTypesSchemaGroup15And16,
@@ -62,6 +63,10 @@ import {
   testTypesSchemaSpecTestGroup1, testTypesSchemaSpecTestGroup2,
   testTypesSchemaSpecTestGroup3, testTypesSchemaSpecTestGroup4, testTypesSchemaSpecTestGroup5
 } from "../models/test-types/testTypesSchemaSpecialistTestsPut";
+import { Injector } from "../models/injector/Injector";
+import { TestDataProvider } from "../handlers/expiry/providers/TestDataProvider";
+import { TestTypeForExpiry } from "../models/TestTypeforExpiry";
+import { DateProvider } from "../handlers/expiry/providers/DateProvider";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -69,9 +74,11 @@ import {
  */
 export class TestResultsService {
   public readonly testResultsDAO: TestResultsDAO;
-
+  public vehicleTestController: VehicleTestController;
   constructor(testResultsDAO: TestResultsDAO) {
     this.testResultsDAO = testResultsDAO;
+    this.vehicleTestController = Injector.resolve<VehicleTestController>(VehicleTestController, [TestDataProvider, DateProvider]);
+    this.vehicleTestController.dataProvider.testResultsDAO = this.testResultsDAO;
   }
 
   public async getTestResults(filters: ITestResultFilters): Promise<any> {
@@ -579,121 +586,56 @@ export class TestResultsService {
    *
    * @param payload
    */
-  public generateExpiryDate(payload: ITestResultPayload) {
+  public async generateExpiryDate(payload: ITestResultPayload): Promise<ITestResultPayload> {
     moment.tz.setDefault("UTC");
-    if (payload.testStatus !== TEST_STATUS.SUBMITTED) {
+    try {
+      if (payload.testStatus !== TEST_STATUS.SUBMITTED ||
+          this.isNotAllowedVehicleTypeForExpiry(payload.vehicleType)) {
+        return Promise.resolve(payload);
+      }
+      const expiryTestTypes = payload.testTypes.filter((testType) => this.isAllowedTestTypeForExpiry(testType));
+
+      const recentExpiry =  await this.vehicleTestController.dataProvider.getMostRecentExpiryDate(payload.systemNumber);
+
+      expiryTestTypes.forEach((testType: any, index: number) => {
+          const testTypeForExpiry: TestTypeForExpiry = {
+            testType,
+            vehicleType: VEHICLE_TYPE[payload.vehicleType.toUpperCase() as keyof typeof VEHICLE_TYPE],
+            recentExpiry,
+            regnDate: this.getRegnDateByVehicleType(payload),
+            hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
+            hasRegistration: DateProvider.isValidDate(this.getRegnDateByVehicleType(payload))
+          };
+          console.log(testTypeForExpiry);
+          const strategy = this.vehicleTestController.getExpiryStrategy(testTypeForExpiry);
+          console.log(strategy.constructor.name);
+          testType.testExpiryDate = strategy.getExpiryDate();
+      });
+      console.log("generateExpiryDate payload", payload.testTypes);
       return Promise.resolve(payload);
-    } else {
-      return this.getMostRecentExpiryDateOnAllTestTypesBySystemNumber(payload.systemNumber)
-        .then((mostRecentExpiryDateOnAllTestTypesBySystemNumber) => { // fetch max date for annual test types
-          payload.testTypes.forEach((testType: any, index: number) => {
-            if (testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-              (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS)) {
-              if (payload.vehicleType === VEHICLE_TYPES.PSV) {
-                if (COIF_EXPIRY_TEST_TYPES.IDS.includes(payload.testTypes[index].testTypeId)) {
-                  testType.testExpiryDate = this.addOneYearMinusOneDay(new Date());
-                } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && this.isValidDate(payload.regnDate)) {
-                  const registrationAnniversary = moment(payload.regnDate).add(1, "years");
-                  if (registrationAnniversary.isBetween(moment(new Date()), moment(new Date()).add(2, "months"), "days", "[)")) {
-                    testType.testExpiryDate = this.addOneYear(registrationAnniversary.toDate());
-                  } else {
-                    testType.testExpiryDate = this.addOneYearMinusOneDay(new Date());
-                  }
-                  // Generates the expiry if there is no regnDate && the test isnt A COIF test type - CVSB-11509 AC4
-                } else if (TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber) && !this.isValidDate(payload.regnDate)) {
-                  testType.testExpiryDate = this.addOneYearMinusOneDay(new Date());
-                } else if (moment(mostRecentExpiryDateOnAllTestTypesBySystemNumber).isBetween(moment(new Date()), moment(new Date()).add(2, "months"), "days", "[]")) {
-                  testType.testExpiryDate = this.addOneYear(mostRecentExpiryDateOnAllTestTypesBySystemNumber);
-                } else {
-                  testType.testExpiryDate = this.addOneYearMinusOneDay(new Date());
-                }
-              } else if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.TRL) {
-                let regOrFirstUseDate: string | undefined = payload.vehicleType === VEHICLE_TYPES.HGV ? payload.regnDate : payload.firstUseDate;
-                if (!this.isValidDate(regOrFirstUseDate)) {
-                  regOrFirstUseDate = undefined;
-                }
-                // preparaing compare date for CVSB-9187 to compare first test/retest conducted after anniversary date
-                const firstTestAfterAnvCompareDate = moment(regOrFirstUseDate).add(1, "years").startOf("month");
-                // Checks for testType = First test or First test Retest AND test date is 1 year from the month of first use or registration date
-                if (this.isFirstTestRetestTestType(testType) && moment(new Date()).isAfter(firstTestAfterAnvCompareDate, "days")) {
-                  testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date());
-                } else if (this.isFirstTestRetestTestType(testType) && TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
-                  const anvDateForCompare = this.isValidDate(regOrFirstUseDate) ? this.lastDayOfMonthInNextYear(moment(regOrFirstUseDate).toDate()) : undefined;
-                  // If anniversaryDate is not populated in tech-records OR test date is 2 months or more before the Registration/First Use Anniversary for HGV/TRL
-                  console.log(`Current date: ${new Date()}, annv Date: ${anvDateForCompare}`);
-                  if (!anvDateForCompare || moment(new Date()).isBefore(moment(anvDateForCompare).subtract(2, "months"), "days")) { // anniversary is more than 2 months further than today
-                    testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date());
-                  } else {
-                    // less than 2 months then set expiryDate 1 year after the Registration/First Use Anniversary date
-                    testType.testExpiryDate = this.addOneYear(moment(anvDateForCompare).toDate());
-                  }
-                } else if (this.isAnnualTestRetestTestType(testType) && TestResultsService.isMostRecentExpiryNotFound(mostRecentExpiryDateOnAllTestTypesBySystemNumber)) {
-                  if (!this.isValidDate(regOrFirstUseDate)) {
-                    testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date());
-                  } else {
-                    const registrationFirstUseAnniversaryDate = moment(regOrFirstUseDate).add(1, "years").endOf("month").toDate();
-                    if (this.isWithinTwoMonthsFromToday(registrationFirstUseAnniversaryDate)) {
-                      testType.testExpiryDate = this.lastDayOfMonthInNextYear(registrationFirstUseAnniversaryDate);
-                    } else {
-                      testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date());
-                    }
-                  }
-                } else {
-                  const monthOfMostRecentExpiryDate = moment(mostRecentExpiryDateOnAllTestTypesBySystemNumber).endOf("month");
-                  if (monthOfMostRecentExpiryDate.isBetween(moment(new Date()), moment(new Date()).add(2, "months"), "days", "[)")) {
-                    testType.testExpiryDate = this.lastDayOfMonthInNextYear(mostRecentExpiryDateOnAllTestTypesBySystemNumber);
-                  } else {
-                    testType.testExpiryDate = this.lastDayOfMonthInNextYear(new Date());
-                  }
-                }
-              }
-            }
-          });
-          console.log("generateExpiryDate payload", payload.testTypes);
-          return Promise.resolve(payload);
-        }).catch((error) => {
-          console.error("Error in error generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber", error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        });
+    } catch (error) {
+      console.error("Error in error generateExpiryDate", error);
+      throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
     }
+
   }
 
-  /**
-   * Note: moment(undefined) === moment() === new Date()
-   * @param input
-   */
-  private isValidDate(input: string | Date | number | undefined): boolean {
-    return input !== undefined && moment(input).isValid() && moment(input).isAfter(new Date(0));
+  private getRegnDateByVehicleType(payload: ITestResultPayload) {
+  return payload.vehicleType === VEHICLE_TYPES.TRL ? payload.firstUseDate : payload.regnDate;
   }
 
-  /**
-   * Important: The local timezone in AWS lambda is GMT for all the regions.
-   * dateFns only uses local timezones and therefore generates different hours when running locally or deployed in AWS.
-   *
-   * new Date(string) considers the ambiguous parsed string as UTC
-   * new Date() creates a new date based on the local timezone
-   */
-  private lastDayOfMonthInNextYear(inputDate: Date): string {
-    return moment(inputDate).add(1, "year").endOf("month").startOf("day").toISOString();
+  private isNotAllowedVehicleTypeForExpiry(vehicleType: string) {
+    return vehicleType === VEHICLE_TYPES.CAR ||
+           vehicleType === VEHICLE_TYPES.LGV ||
+           vehicleType === VEHICLE_TYPES.MOTORCYCLE;
   }
 
-  private addOneYearMinusOneDay(inputDate: Date): string {
-    return moment(inputDate).add(1, "year").subtract(1, "day").startOf("day").toISOString();
+  private isAllowedTestTypeForExpiry(testType: TestType) {
+   return testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+      (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS) &&
+      !TestResultsService.isHGVTRLRoadworthinessTest(testType.testTypeId);
   }
 
-  private addOneYear(inputDate: Date): string {
-    return moment(inputDate).add(1, "year").startOf("day").toISOString();
-  }
-
-  public isFirstTestRetestTestType(testType: any): boolean {
-    const adrTestTypeIds = ["41", "64", "65", "66", "67", "95", "102", "103", "104"];
-    return adrTestTypeIds.includes(testType.testTypeId);
-  }
-
-  public isAnnualTestRetestTestType(testType: any): boolean {
-    const annualTestRetestIds = ["94", "40", "53", "54", "98", "99", "70", "76", "79", "107", "113", "116"];
-    return annualTestRetestIds.includes(testType.testTypeId);
-  }
   public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
     return this.getTestResults({
@@ -707,7 +649,7 @@ export class TestResultsService {
         testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
           testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
             // prepare a list of annualTestTypes with expiry.
-            if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && this.isValidDate(testType.testExpiryDate)) {
+            if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && DateProvider.isValidDate(testType.testExpiryDate)) {
               filteredTestTypeDates.push(moment(testType.testExpiryDate));
             }
           });
@@ -921,10 +863,6 @@ export class TestResultsService {
       }
     }
     return missingMandatoryFields;
-  }
-
-  private isWithinTwoMonthsFromToday(date: Date): boolean {
-    return moment(date).utc().isBetween(moment(new Date()).utc(), moment(new Date()).utc().add(2, "months"), "days", "()");
   }
 
   //#region Private Static Functions

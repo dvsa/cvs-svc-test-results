@@ -23,6 +23,8 @@ export enum ERRORS {
     StartTimeBeforeEndTime = "testTypeStartTimestamp must be before testTypeEndTimestamp",
     OdometerReadingMandatory = "\"odometerReading\" is mandatory",
     OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
+    ExpiryConfigMissing = "Invalid Expiry config!",
+    MethodNotImplemented  = "Method not implemented."
 }
 
 export enum TESTING_ERRORS {
@@ -61,10 +63,28 @@ export enum MESSAGES {
     REASON_FOR_ABANDONING_NOT_PRESENT = "Reason for Abandoning not present on all abandoned tests"
 }
 
+export enum VEHICLE_TYPE {
+  PSV = "psv",
+  HGV = "hgv",
+  TRL = "trl"
+}
+
+export enum EXPIRY_STRATEGY {
+  PSV_DEFAULT = "PsvDefaultExpiryStrategy",
+  PSV_MOST_RECENT = "PsvMostRecentExpiryStrategy",
+  PSV_REGN_ANNIVERSARY = "PsvRegistrationAnniversaryStrategy",
+  HGV_TRL_FIRST_TEST = "HgvTrlFirstTestStrategy",
+  HGV_TRL_ANNUAL_TEST = "HgvTrlAnnualTestStrategy",
+  HGV_TRL_MOST_RECENT = "HgvTrlMostRecentExpiryStrategy"
+}
+
 export const VEHICLE_TYPES = {
     PSV: "psv",
     HGV: "hgv",
-    TRL: "trl"
+    TRL: "trl",
+    LGV: "lgv",
+    MOTORCYCLE: "motorcycle",
+    CAR: "car"
 };
 
 export const TEST_TYPE_CLASSIFICATION = {
@@ -270,3 +290,4 @@ export const SPECIALIST_TEST_TYPE_IDS: string[] = [
   "158", "159", "161", "192", "193", "162", "194", "195", "163", "166", "167", "169", "170", "172", "173", "181", "182",
   "142", "146", "175", "177", "143", "144", "148", "176", "178", "179", "147", "153", "190", "191", "154", "184", "196", "197", "185"
 ];
+

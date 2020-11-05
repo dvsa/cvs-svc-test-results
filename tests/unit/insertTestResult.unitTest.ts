@@ -216,6 +216,7 @@ describe("insertTestResult", () => {
                             testTypeClassification: "Annual With Certificate"
                         });
                     },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({})),
                     createSingle: () => {
                         return Promise.reject(
                             {
@@ -226,6 +227,7 @@ describe("insertTestResult", () => {
                 };
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
+            mockData.testTypes.pop(); // removing the second test in the array as the mock implementation makes this record invalid
             for (const testType of mockData.testTypes) {
                 testType.certificateNumber = "1234";
                 delete testType.testCode;
@@ -304,6 +306,7 @@ describe("insertTestResult", () => {
                             testTypeClassification: "Annual With Certificate"
                         });
                     },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({})),
                     createSingle: () => {
                         return Promise.resolve("It worked");
                     }
@@ -392,7 +395,9 @@ describe("insertTestResult", () => {
     context("when inserting an HGV test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
             const testResult = testResultsPostMock[4];
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -407,7 +412,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -458,7 +464,9 @@ describe("insertTestResult", () => {
     context("when inserting an TRL test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
             const testResult = {...testResultsPostMock[5]};
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -473,7 +481,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -717,7 +726,9 @@ describe("insertTestResult", () => {
         it("should not throw error", () => {
             const testResult = {...testResultsPostMock[5]};
             testResult.vehicleConfiguration = "centre axle drawbar";
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -737,7 +748,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -830,7 +842,9 @@ describe("insertTestResult", () => {
     context("when inserting an HGV test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
             const testResult = testResultsPostMock[4];
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -845,7 +859,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -896,7 +911,9 @@ describe("insertTestResult", () => {
     context("when inserting an TRL test result with fields applicable to this vehicleType", () => {
         it("should not throw error", () => {
             const testResult = {...testResultsPostMock[5]};
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -911,7 +928,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1170,7 +1188,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1190,7 +1209,9 @@ describe("insertTestResult", () => {
         it("should not throw error", () => {
             const testResult = cloneDeep(testResultsPostMock[5]);
             testResult.regnDate = "2019-10-11";
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -1210,7 +1231,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1228,6 +1250,9 @@ describe("insertTestResult", () => {
     context("when inserting an HGV test result with regnDate field", () => {
         it("should not throw error", () => {
             const testResult = {...testResultsPostMock[4]};
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1243,7 +1268,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1262,8 +1288,11 @@ describe("insertTestResult", () => {
     context("when inserting a non-adr HGV with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
             const testResult = cloneDeep(testResultsPostMock[4]);
-            testResult.testTypes[0].testExpiryDate = null;
-            testResult.testTypes[0].certificateNumber = null;
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+                type.testExpiryDate = null;
+                type.certificateNumber = null;
+            });
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1279,7 +1308,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1297,8 +1327,11 @@ describe("insertTestResult", () => {
     context("when inserting a non-adr TRL with null expiry Date and null certificateNumber", () => {
         it("should not throw error", () => {
             const testResult = cloneDeep(testResultsPostMock[5]);
-            testResult.testTypes[0].testExpiryDate = null;
-            testResult.testTypes[0].certificateNumber = null;
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+                type.testExpiryDate = null;
+                type.certificateNumber = null;
+            });
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1314,7 +1347,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1407,7 +1441,9 @@ describe("insertTestResult", () => {
         it("should not throw error", () => {
             const testResult = {...testResultsPostMock[4]};
             testResult.firstUseDate = "2019-10-11";
-
+            testResult.testTypes.forEach((type: any) => {
+                type.testTypeId = "95";
+            });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     createSingle: () => {
@@ -1427,7 +1463,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1461,11 +1498,12 @@ describe("insertTestResult", () => {
                     },
                     getTestCodesAndClassificationFromTestTypes: () => {
                         return Promise.resolve({
-                            linkedTestCode: "wde",
-                            defaultTestCode: "bde",
-                            testTypeClassification: "Annual With Certificate"
+                            linkedTestCode: null,
+                            defaultTestCode: "ddt",
+                            testTypeClassification: "Annual NO CERTIFICATE"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1563,7 +1601,7 @@ describe("insertTestResult", () => {
         it("then the inserted test result should set the testNumber as the certificateNumber.", () => {
             const testResultWithOtherTestTypeWithCertNum = cloneDeep(testResultsPostMock[6]);
             // Setting the testType to any other than ADR
-            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "1";
+            testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "95";
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
@@ -1584,7 +1622,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "bde",
                             testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -1593,7 +1632,7 @@ describe("insertTestResult", () => {
             expect.assertions(2);
             return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
                 .then((insertedTestResult: any) => {
-                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("1");
+                    expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("95");
                     expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
                 });
         });
@@ -1618,7 +1657,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "lbp",
                             testTypeClassification: "NON ANNUAL"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -2022,6 +2062,7 @@ describe("insertTestResult", () => {
                             testTypeClassification: "Annual With Certificate"
                         });
                     },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -2102,9 +2143,10 @@ describe("insertTestResult", () => {
                         return Promise.resolve({
                             linkedTestCode: null,
                             defaultTestCode: "qjv3",
-                            testTypeClassification: "Annual NO CERTIFICATE"
+                            testTypeClassification: "Annual With Certificate"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -2142,7 +2184,8 @@ describe("insertTestResult", () => {
                             defaultTestCode: "qjt1",
                             testTypeClassification: "Annual NO CERTIFICATE"
                         });
-                    }
+                    },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -2181,6 +2224,7 @@ describe("insertTestResult", () => {
                             testTypeClassification: "Annual With Certificate"
                         });
                     },
+                    getBySystemNumber: (systemNumber: any) => (Promise.resolve({}))
                 };
             });
 
@@ -2388,7 +2432,12 @@ describe("insertTestResult", () => {
                 code: null,
                 description: null
             };
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validTestResult)))});
+            MockTestResultsDAO = extendMockTestResultsDAO(
+                {
+                    createSingle: () => (Promise.resolve(Array.of(validTestResult))),
+                    getBySystemNumber: () => (Promise.resolve({}))
+                }
+            );
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             return testResultsService.insertTestResult(validTestResult)
