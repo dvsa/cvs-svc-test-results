@@ -57,12 +57,7 @@ describe("ExpiryDateStrategyFactory", () => {
         expect.assertions(1);
         try {
           //  @ts-ignore
-          jest.spyOn(ExpiryDateStrategyFactory, 'getStrategyMapping').mockReturnValue(
-            //  @ts-ignore
-            ExpiryDateStrategyFactory.getStrategyMapping(
-              VEHICLE_TYPE.PSV,
-              duplicatedConfig
-            ));
+          jest.spyOn(ExpiryDateStrategyFactory, 'getStrategyMapping').mockReturnValue(duplicatedConfig.psv);
 
           const testTypeForExpiry: TestTypeForExpiry = {
             testType: { testTypeId: "3" } as TestType,
