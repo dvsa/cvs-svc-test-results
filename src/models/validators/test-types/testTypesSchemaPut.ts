@@ -47,7 +47,7 @@ export const testTypesCommonSchema = Joi.object().keys({
   deletionFlag: Joi.boolean().optional()
 }).required();
 
-export const testTypesSchemaGroup1 = testTypesCommonSchema.keys({
+export const testTypesGroup1 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
   testAnniversaryDate: Joi.date().iso().required().allow(null),
@@ -57,45 +57,45 @@ export const testTypesSchemaGroup1 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup2 = testTypesCommonSchema.keys({
+export const testTypesGroup2 = testTypesCommonSchema.keys({
   numberOfSeatbeltsFitted: Joi.number().required().allow(null),
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup3And4And8 = testTypesCommonSchema.keys({
+export const testTypesGroup3And4And8 = testTypesCommonSchema.keys({
   prohibitionIssued: Joi.boolean().required().allow(null)
 });
 
-export const testTypesSchemaGroup5And13 = testTypesCommonSchema.keys({
+export const testTypesGroup5And13 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   prohibitionIssued: Joi.boolean().required().allow(null)
 });
 
-export const testTypesSchemaGroup6And11 = testTypesCommonSchema.keys({
+export const testTypesGroup6And11 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup7 = testTypesCommonSchema.keys({
+export const testTypesGroup7 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
   prohibitionIssued: Joi.boolean().required().allow(null)
 });
 
-export const testTypesSchemaGroup9And10 = testTypesCommonSchema.keys({
+export const testTypesGroup9And10 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
   testAnniversaryDate: Joi.date().iso().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup12And14 = testTypesCommonSchema.keys({
+export const testTypesGroup12And14 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required()
 });
 
-export const testTypesSchemaGroup15And16 = testTypesCommonSchema.keys({
+export const testTypesGroup15And16 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
   modType: Joi.object().keys({

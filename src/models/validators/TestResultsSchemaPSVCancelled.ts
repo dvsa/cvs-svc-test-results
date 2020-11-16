@@ -33,7 +33,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
     particulateTrapFitted: Joi.string().max(100).allow(null)
 });
 
-const testResultsSchema = testResultsCommonSchema.keys({
+export const psvCancelled = testResultsCommonSchema.keys({
     vrm: Joi.string().alphanum().min(1).max(8).required(),
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     numberOfSeats: Joi.number().required(),
@@ -44,5 +44,3 @@ const testResultsSchema = testResultsCommonSchema.keys({
     vehicleSize: Joi.any().only(["small", "large"]).required(),
     testTypes: Joi.array().items(testTypesSchema).required()
 });
-
-export default testResultsSchema;

@@ -3,6 +3,7 @@ import {HTTPError} from "../../src/models/HTTPError";
 import testResults from "../resources/test-results.json";
 import {ERRORS, MESSAGES} from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
+import { MappingUtil } from "../../src/utils/mappingUtil";
 
 describe("updateTestResults", () => {
     let testResultsService: TestResultsService | any;
@@ -658,7 +659,8 @@ describe("updateTestResults", () => {
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
                         delete testToUpdate.testTypes[0].defects;
-                        testResultsService.manageDefectsArray(testToUpdate);
+                        // FIXME: move to a separate test
+                        MappingUtil.cleanDefectsArrayForSpecialistTests(testToUpdate);
                         expect(testToUpdate.testTypes[0].defects).toBeDefined();
                         expect(testToUpdate.testTypes[0].defects).toEqual([]);
                     }
@@ -668,8 +670,9 @@ describe("updateTestResults", () => {
             it("should remove the attributes that are not updatable from the payload", () => {
                 MockTestResultsDAO = jest.fn().mockImplementation();
 
-                testResultsService = new TestResultsService(new MockTestResultsDAO());
-                testResultsService.removeNonEditableAttributes(testToUpdate);
+                // testResultsService = new TestResultsService(new MockTestResultsDAO());
+                // FIXME: move to a separate test
+                MappingUtil.removeNonEditableAttributes(testToUpdate);
                 expect(testToUpdate).not.toHaveProperty("systemNumber");
                 expect(testToUpdate).not.toHaveProperty("vin");
                 expect(testToUpdate).not.toHaveProperty("vehicleId");

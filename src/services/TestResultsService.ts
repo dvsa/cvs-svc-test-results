@@ -1,248 +1,160 @@
-import { HTTPError } from "../models/HTTPError";
-import { TestResultsDAO } from "../models/TestResultsDAO";
-import { GetTestResults } from "../utils/GetTestResults";
-import {
-  MESSAGES,
-  ERRORS,
-  VEHICLE_TYPES,
-  TEST_TYPE_CLASSIFICATION,
-  TEST_RESULT,
-  TEST_STATUS,
-  HGV_TRL_ROADWORTHINESS_TEST_TYPES,
-  TEST_VERSION,
-  COUNTRY_OF_REGISTRATION,
-  TEST_CODES_FOR_CALCULATING_EXPIRY,
-  TEST_TYPES_GROUP1,
-  TEST_TYPES_GROUP2,
-  TEST_TYPES_GROUP3_4_8,
-  TEST_TYPES_GROUP5_13,
-  TEST_TYPES_GROUP6_11,
-  TEST_TYPES_GROUP7,
-  TEST_TYPES_GROUP9_10,
-  TEST_TYPES_GROUP12_14,
-  TEST_TYPES_GROUP15_16,
-  REASON_FOR_CREATION,
-  TEST_TYPES_GROUP1_SPEC_TEST,
-  TEST_TYPES_GROUP5_SPEC_TEST,
-  TEST_TYPES_GROUP4_SPEC_TEST,
-  TEST_TYPES_GROUP3_SPEC_TEST,
-  TEST_TYPES_GROUP2_SPEC_TEST,
-  SPECIALIST_TEST_TYPE_IDS,
-  VEHICLE_TYPE
-} from "../assets/Enums";
-import testResultsSchemaHGVCancelled from "../models/TestResultsSchemaHGVCancelled";
-import testResultsSchemaHGVSubmitted from "../models/TestResultsSchemaHGVSubmitted";
-import testResultsSchemaPSVCancelled from "../models/TestResultsSchemaPSVCancelled";
-import testResultsSchemaPSVSubmitted from "../models/TestResultsSchemaPSVSubmitted";
-import testResultsSchemaTRLCancelled from "../models/TestResultsSchemaTRLCancelled";
-import testResultsSchemaTRLSubmitted from "../models/TestResultsSchemaTRLSubmitted";
-import testResultsSchemaLGVCancelled from "../models/TestResultsSchemaLGVCancelled";
-import testResultsSchemaLGVSubmitted from "../models/TestResultsSchemaLGVSubmitted";
-import testResultsSchemaCarCancelled from "../models/TestResultsSchemaCarCancelled";
-import testResultsSchemaCarSubmitted from "../models/TestResultsSchemaCarSubmitted";
-import testResultsSchemaMotorcycleCancelled from "../models/TestResultsSchemaMotorcycleCancelled";
-import testResultsSchemaMotorcycleSubmitted from "../models/TestResultsSchemaMotorcycleSubmitted";
-import { ITestResultPayload } from "../models/ITestResultPayload";
-import { ITestResultData } from "../models/ITestResultData";
-import { ITestResultFilters } from "../models/ITestResultFilter";
-import { ITestResult, TestType } from "../models/ITestResult";
-import { HTTPResponse } from "../models/HTTPResponse";
-import {ValidationResult} from "joi";
 import * as Joi from "joi";
-import {cloneDeep, mergeWith, isArray, isEqual, differenceWith} from "lodash";
+import {ValidationResult} from "joi";
 import moment from "moment-timezone";
-import {IMsUserDetails} from "../models/IMsUserDetails";
+import {cloneDeep, mergeWith, isEqual, differenceWith} from "lodash";
+import * as enums from "../assets/Enums";
+import * as models from "../models";
+import * as validators from "../models/validators";
+import * as utils from "../utils";
 import { VehicleTestController } from "../handlers/VehicleTestController";
-import {
-  testTypesArray,
-  testTypesSchemaGroup1, testTypesSchemaGroup12And14, testTypesSchemaGroup15And16,
-  testTypesSchemaGroup2, testTypesSchemaGroup3And4And8, testTypesSchemaGroup5And13,
-  testTypesSchemaGroup6And11, testTypesSchemaGroup7, testTypesSchemaGroup9And10,
-} from "../models/test-types/testTypesSchemaPut";
-import {
-  testTypesSchemaSpecTestGroup1, testTypesSchemaSpecTestGroup2,
-  testTypesSchemaSpecTestGroup3, testTypesSchemaSpecTestGroup4, testTypesSchemaSpecTestGroup5
-} from "../models/test-types/testTypesSchemaSpecialistTestsPut";
-import { Injector } from "../models/injector/Injector";
 import { TestDataProvider } from "../handlers/expiry/providers/TestDataProvider";
-import { TestTypeForExpiry } from "../models/TestTypeforExpiry";
 import { DateProvider } from "../handlers/expiry/providers/DateProvider";
-import { LoggingUtil } from "../utils/LoggingUtil";
+import { MappingUtil } from "../utils/mappingUtil";
+import { ValidationUtil } from "../utils/validationUtil";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
  * @returns Promise
  */
 export class TestResultsService {
-  public readonly testResultsDAO: TestResultsDAO;
+
+  public readonly testResultsDAO: models.TestResultsDAO;
   public vehicleTestController: VehicleTestController;
-  constructor(testResultsDAO: TestResultsDAO) {
+
+  constructor(testResultsDAO: models.TestResultsDAO) {
     this.testResultsDAO = testResultsDAO;
-    this.vehicleTestController = Injector.resolve<VehicleTestController>(VehicleTestController, [TestDataProvider, DateProvider]);
+    this.vehicleTestController = models.Injector.resolve<VehicleTestController>(VehicleTestController, [TestDataProvider, DateProvider]);
     this.vehicleTestController.dataProvider.testResultsDAO = this.testResultsDAO;
   }
 
-  public async getTestResults(filters: ITestResultFilters): Promise<any> {
-    if (filters) {
-      if (Object.keys(filters).length !== 0) {
-        if (filters.fromDateTime && filters.toDateTime) {
-          if (!GetTestResults.validateDates(filters.fromDateTime, filters.toDateTime)) {
-            console.log("Invalid Filter Dates");
-            return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
-          }
-        }
-        if (filters.systemNumber) {
-          return this.testResultsDAO.getBySystemNumber(filters.systemNumber).then((result) => {
-             const response: ITestResultData = {Count: result.Count, Items: result.Items};
-             return this.applyTestResultsFilters(response, filters);
-          }).catch((error: HTTPError) => {
-            if (!(error instanceof HTTPError)) {
-              console.log(error);
-              error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-            }
-            throw error;
-          });
-        } else if (filters.testerStaffId) {
-          const testResults = await this.testResultsDAO.getByTesterStaffId(filters.testerStaffId)
-            .catch((error: HTTPError) => {
-              if (!(error instanceof HTTPError)) {
-                console.log(error);
-                error = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-              }
-              throw error;
-            });
-          const response: ITestResultData = {Count: testResults.length, Items: testResults};
+  // TODO: CVSB-18780: refactor to guard logic, handle errors via Promise.reject and destructure object where needed
+  public async getTestResultBySystemNumber(filters: models.ITestResultFilters): Promise<any> {
+    if (filters.systemNumber && ValidationUtil.validateGetTestResultFilters(filters)) {
+      try {
+          const result = await this.testResultsDAO.getBySystemNumber(filters.systemNumber);
+          const response: models.ITestResultData = { Count: result.Count, Items: result.Items };
           return this.applyTestResultsFilters(response, filters);
-        } else {
-          console.log("Filters object invalid");
-          return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
+        } catch (error) {
+          if (!(error instanceof models.HTTPError)) {
+            console.error("dynamoError on getBySystemNumber", error);
+            error = new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
+          }
+          throw error;
         }
       } else {
-        console.log("Filters object empty");
-        return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
+        // console.log("invalid systemNumber Filters", filters);
+        return Promise.reject(new models.HTTPError(400, enums.MESSAGES.BAD_REQUEST));
+      }
+  }
+
+  // TODO: CVSB-18780: refactor logic, handle errors via Promise.reject and destructure object where needed
+  public async getTestResultsByTesterStaffId(filters: models.ITestResultFilters): Promise<any> {
+    if (filters.testerStaffId && ValidationUtil.validateGetTestResultFilters(filters)) {
+      try {
+        const result = await this.testResultsDAO.getByTesterStaffId(filters.systemNumber);
+        const response: models.ITestResultData = { Count: result.length, Items: result };
+        return this.applyTestResultsFilters(response, filters);
+      } catch (error) {
+        if (!(error instanceof models.HTTPError)) {
+          error = new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
+        }
+        throw error;
       }
     } else {
-      console.log("Missing filters object");
-      return Promise.reject(new HTTPError(400, MESSAGES.BAD_REQUEST));
+      console.log("invalid testerStaffId Filters", filters);
+      return Promise.reject(new models.HTTPError(400, enums.MESSAGES.BAD_REQUEST));
     }
   }
 
-  public checkTestResults(data: ITestResultData) {
-    if (data) {
-      if (!data.Count) {
-        throw new HTTPError(404, ERRORS.NoResourceMatch);
-      }
-    }
-    return data.Items;
-  }
-
-  public applyTestResultsFilters(data: ITestResultData, filters: ITestResultFilters) {
-    let testResults = this.checkTestResults(data);
-    testResults = GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
+  // TODO: CVSB-18780: relocate function to TestDataProvider, sort filters in readable format and destructure object
+  public applyTestResultsFilters(data: models.ITestResultData, filters: models.ITestResultFilters) {
+    let testResults = ValidationUtil.getTestResultItems(data);
+    testResults = utils.GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
     if (filters.testStatus) {
-      testResults = GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
+      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
     }
     if (filters.testStationPNumber) {
-      testResults = GetTestResults.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
+      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
     }
-    testResults = GetTestResults.filterTestResultsByDeletionFlag(testResults);
-    testResults = GetTestResults.filterTestTypesByDeletionFlag(testResults);
+    testResults = utils.GetTestResults.filterTestResultsByDeletionFlag(testResults);
+    testResults = utils.GetTestResults.filterTestTypesByDeletionFlag(testResults);
     if (filters.testResultId) {
-      testResults = GetTestResults.filterTestResultsByParam(testResults, "testResultId", filters.testResultId);
+      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testResultId", filters.testResultId);
       if (filters.testVersion) {
-        testResults = GetTestResults.filterTestResultsByTestVersion(testResults, filters.testVersion);
+        testResults = utils.GetTestResults.filterTestResultsByTestVersion(testResults, filters.testVersion);
       }
     } else {
-      testResults = GetTestResults.filterTestResultsByTestVersion(testResults, TEST_VERSION.CURRENT);
-      testResults = GetTestResults.removeTestHistory(testResults);
+      testResults = utils.GetTestResults.filterTestResultsByTestVersion(testResults, enums.TEST_VERSION.CURRENT);
+      testResults = utils.GetTestResults.removeTestHistory(testResults);
     }
+    // check testResults after filters
     if (testResults.length === 0) {
-      throw new HTTPError(404, ERRORS.NoResourceMatch);
+      throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
     }
     return testResults;
   }
 
-  public mapErrorMessage(validation: ValidationResult<any> | any ) {
-    return validation.error.details.map((detail: { message: string; }) => {
-      return detail.message;
-    });
-  }
-
-  public manageDefectsArray(testResult: ITestResult) {
-    testResult.testTypes.forEach((testType: TestType) => {
-      if (SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
-        testType.defects = [];
-      }
-    });
-  }
-
-  public updateTestResult(systemNumber: string, payload: ITestResult, msUserDetails: IMsUserDetails) {
-    this.removeNonEditableAttributes(payload);
-    let validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
+  public async updateTestResult(systemNumber: string, payload: models.ITestResult, msUserDetails: models.IMsUserDetails) {
+    utils.MappingUtil.removeNonEditableAttributes(payload);
+    let validationSchema = utils.MappingUtil.getValidationSchema(payload.vehicleType, payload.testStatus);
     const testTypesValidationErrors = this.validateTestTypes(payload);
     if (testTypesValidationErrors) {
-      return Promise.reject(new HTTPError(400, {errors: testTypesValidationErrors}));
+      return Promise.reject(new models.HTTPError(400, {errors: testTypesValidationErrors}));
     }
     // temporarily remove testTypes to validate only vehicle details and append testTypes to the payload again after the validation
     const {testTypes} = payload;
     delete payload.testTypes;
     validationSchema = validationSchema!.keys({
-      countryOfRegistration: Joi.string().valid(COUNTRY_OF_REGISTRATION).required(),
+      countryOfRegistration: Joi.string().valid(enums.COUNTRY_OF_REGISTRATION).required(),
       testTypes: Joi.any().forbidden()
     });
     validationSchema = validationSchema.optionalKeys(["testEndTimestamp", "systemNumber", "vin"]);
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (validation !== null && validation.error) {
-      return Promise.reject(new HTTPError(400,
+      return Promise.reject(new models.HTTPError(400,
         {
-          errors: this.mapErrorMessage(validation)
+          errors: MappingUtil.mapErrorMessage(validation)
         }));
     }
     payload.testTypes = testTypes;
-    return this.testResultsDAO.getBySystemNumber(systemNumber)
-        .then(async (result) => {
-          const response: ITestResultData = {Count: result.Count, Items: result.Items};
-          const testResults = this.checkTestResults(response);
-          const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
-          oldTestResult.testVersion = TEST_VERSION.ARCHIVED;
-          const newTestResult: ITestResult = cloneDeep(oldTestResult);
-          newTestResult.testVersion = TEST_VERSION.CURRENT;
-          mergeWith(newTestResult, payload, this.arrayCustomizer);
-          if (this.shouldGenerateNewTestCodeRe(oldTestResult, newTestResult)) {
-            const vehicleSubclass = newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length ? newTestResult.vehicleSubclass[0] : undefined;
-            await this.getTestTypesWithTestCodesAndClassification(newTestResult.testTypes as any[],
-              newTestResult.vehicleType, newTestResult.vehicleSize, newTestResult.vehicleConfiguration,
-              newTestResult.noOfAxles, newTestResult.euVehicleCategory, newTestResult.vehicleClass.code,
-              vehicleSubclass, newTestResult.numberOfWheelsDriven);
-          }
-          await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
-          this.manageDefectsArray(newTestResult);
-          this.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
-          if (!newTestResult.testHistory) {
-            newTestResult.testHistory = [oldTestResult];
-          } else {
-            delete oldTestResult.testHistory;
-            newTestResult.testHistory.push(oldTestResult);
-          }
-          return this.testResultsDAO.updateTestResult(newTestResult)
-              .then((data) => {
-                return newTestResult;
-              }).catch((error) => {
-                throw new HTTPError(500, error.message);
-              });
-        }).catch((error) => {
-          throw new HTTPError(error.statusCode, error.body);
-        });
-  }
-
-  private arrayCustomizer(objValue: any, srcValue: any) {
-    if (isArray(objValue) && isArray(srcValue)) {
-      return srcValue;
+    try {
+      const result = await this.testResultsDAO.getBySystemNumber(systemNumber);
+      const response: models.ITestResultData = { Count: result.Count, Items: result.Items };
+      const testResults = ValidationUtil.getTestResultItems(response);
+      const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
+      oldTestResult.testVersion = enums.TEST_VERSION.ARCHIVED;
+      const newTestResult: models.ITestResult = cloneDeep(oldTestResult);
+      newTestResult.testVersion = enums.TEST_VERSION.CURRENT;
+      mergeWith(newTestResult, payload, MappingUtil.arrayCustomizer);
+      if (this.shouldGenerateNewTestCodeRe(oldTestResult, newTestResult)) {
+        const vehicleSubclass = newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length ? newTestResult.vehicleSubclass[0] : undefined;
+        await this.getTestTypesWithTestCodesAndClassification((newTestResult.testTypes as any[]),
+          newTestResult.vehicleType, newTestResult.vehicleSize, newTestResult.vehicleConfiguration,
+          newTestResult.noOfAxles, newTestResult.euVehicleCategory, newTestResult.vehicleClass.code,
+          vehicleSubclass, newTestResult.numberOfWheelsDriven);
+      }
+      await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
+      MappingUtil.cleanDefectsArrayForSpecialistTests(newTestResult);
+      MappingUtil.setAuditDetails(newTestResult, oldTestResult, msUserDetails);
+      if (!newTestResult.testHistory) {
+        newTestResult.testHistory = [oldTestResult];
+      } else {
+        delete oldTestResult.testHistory;
+        newTestResult.testHistory.push(oldTestResult);
+      }
+      try {
+        await this.testResultsDAO.updateTestResult(newTestResult);
+        return newTestResult;
+      } catch (dynamoError) {
+        throw new models.HTTPError(500, dynamoError.message);
+      }
+    } catch (error) {
+      throw new models.HTTPError(error.statusCode, error.body);
     }
   }
 
-  public shouldGenerateNewTestCodeRe(oldTestResult: ITestResult, newTestResult: ITestResult) {
+  public shouldGenerateNewTestCodeRe(oldTestResult: models.ITestResult, newTestResult: models.ITestResult) {
     const attributesToCheck = ["vehicleType", "euVehicleCategory", "vehicleSize", "vehicleConfiguration", "noOfAxles", "numberOfWheelsDriven"];
     if (differenceWith(oldTestResult.testTypes, newTestResult.testTypes, isEqual).length) {
       return true;
@@ -255,7 +167,7 @@ export class TestResultsService {
     return false;
   }
 
-  public async checkTestTypeStartAndEndTimestamp(oldTestResult: ITestResult, newTestResult: ITestResult) {
+  public async checkTestTypeStartAndEndTimestamp(oldTestResult: models.ITestResult, newTestResult: models.ITestResult) {
     moment.tz.setDefault("UTC");
     const params = {
       fromStartTime: moment(oldTestResult.testStartTimestamp).startOf("day").toDate(),
@@ -267,7 +179,7 @@ export class TestResultsService {
     try {
       const activities: [{startTime: Date, endTime: Date}] = await this.testResultsDAO.getActivity(params);
       if (activities.length > 1) {
-        return Promise.reject({statusCode: 500, body: ERRORS.NoUniqueActivityFound});
+        return Promise.reject({statusCode: 500, body: enums.ERRORS.NoUniqueActivityFound});
       }
       const activity = activities[0];
       for (const testType of newTestResult.testTypes) {
@@ -284,7 +196,7 @@ export class TestResultsService {
           });
         }
         if (moment(testType.testTypeStartTimestamp).isAfter(testType.testTypeEndTimestamp)) {
-          return Promise.reject({statusCode: 400, body: ERRORS.StartTimeBeforeEndTime});
+          return Promise.reject({statusCode: 400, body: enums.ERRORS.StartTimeBeforeEndTime});
         }
       }
     } catch (err) {
@@ -294,58 +206,58 @@ export class TestResultsService {
     }
   }
 
-  public validateTestTypes(testResult: ITestResult) {
+  public validateTestTypes(testResult: models.ITestResult) {
     let validationErrors;
     let validation: ValidationResult<any> | any;
-    validation = testTypesArray.validate({testTypes: testResult.testTypes});
+    validation = validators.testTypesArray.validate({testTypes: testResult.testTypes});
     if (validation.error) {
-      validationErrors = this.mapErrorMessage(validation);
+      validationErrors = MappingUtil.mapErrorMessage(validation);
       return validationErrors;
     }
     for (const testType of testResult.testTypes) {
       const options = {abortEarly: false, context: {hasTestResult: testType.testResult}};
-      if (TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
+      if (enums.TEST_TYPES_GROUP1.includes(testType.testTypeId)) {
         // tests for PSV - Annual test, Class 6A seatbelt installation check, Paid/Part paid annual test retest, Prohibition clearance
-        validation = testTypesSchemaGroup1.validate(testType, options);
-      } else if (TEST_TYPES_GROUP2.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup1.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP2.includes(testType.testTypeId)) {
         // tests for PSV - Paid/Part paid prohibition clearance(full/partial/retest without cert)
-        validation = testTypesSchemaGroup2.validate(testType, options);
-      } else if (TEST_TYPES_GROUP3_4_8.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup2.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP3_4_8.includes(testType.testTypeId)) {
         // Notifiable alteration and voluntary tests for HGV, PSV and TRL
-        validation = testTypesSchemaGroup3And4And8.validate(testType, options);
-      } else if (TEST_TYPES_GROUP5_13.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup5And13.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP5_13.includes(testType.testTypeId)) {
         // TIR tests for TRL and HGV
-        validation = testTypesSchemaGroup5And13.validate(testType, options);
-      } else if (TEST_TYPES_GROUP6_11.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup5And13.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP6_11.includes(testType.testTypeId)) {
         // HGV and TRL - Paid/Part paid roadworthiness retest, Voluntary roadworthiness test
-        validation = testTypesSchemaGroup6And11.validate(testType, options);
-      } else if (TEST_TYPES_GROUP7.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup6And11.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP7.includes(testType.testTypeId)) {
         // ADR tests for HGV and TRL
-        validation = testTypesSchemaGroup7.validate(testType, options);
-      } else if (TEST_TYPES_GROUP9_10.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup7.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP9_10.includes(testType.testTypeId)) {
         // tests for HGV and TRL - Annual tests, First tests, Annual retests, Paid/Part paid prohibition clearance
-        validation = testTypesSchemaGroup9And10.validate(testType, options);
-      } else if (TEST_TYPES_GROUP12_14.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup9And10.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP12_14.includes(testType.testTypeId)) {
         // tests for TRL - Paid/Part paid prohibition clearance(retest, full inspection, part inspection, without cert)
-        validation = testTypesSchemaGroup12And14.validate(testType, options);
-      } else if (TEST_TYPES_GROUP15_16.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup12And14.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP15_16.includes(testType.testTypeId)) {
         // LEC tests for HGV and PSV
-        validation = testTypesSchemaGroup15And16.validate(testType, options);
-      }  else if (TEST_TYPES_GROUP1_SPEC_TEST.includes(testType.testTypeId)) {
+        validation = validators.testTypesGroup15And16.validate(testType, options);
+      }  else if (enums.TEST_TYPES_GROUP1_SPEC_TEST.includes(testType.testTypeId)) {
         // Test/Retest - Free/Paid - IVA inspection, MSVA inspection
-        validation = testTypesSchemaSpecTestGroup1.validate(testType, options);
-      } else if (TEST_TYPES_GROUP2_SPEC_TEST.includes(testType.testTypeId)) {
+        validation = validators.testTypesSpecialistGroup1.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP2_SPEC_TEST.includes(testType.testTypeId)) {
         // Test/Retest COIF with annual test, Seatbelt installation check COIF with annual test
-        validation = testTypesSchemaSpecTestGroup2.validate(testType, options);
-      } else if (TEST_TYPES_GROUP3_SPEC_TEST.includes(testType.testTypeId)) {
+        validation = validators.testTypesSpecialistGroup2.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP3_SPEC_TEST.includes(testType.testTypeId)) {
         // Test/Retest COIF without annual test, Type approved to bus directive COIF, Annex 7 COIF, TILT COIF retest
-        validation = testTypesSchemaSpecTestGroup3.validate(testType, options);
-      } else if (TEST_TYPES_GROUP4_SPEC_TEST.includes(testType.testTypeId)) {
+        validation = validators.testTypesSpecialistGroup3.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP4_SPEC_TEST.includes(testType.testTypeId)) {
         // Test Seatbelt installation check COIF without annual test
-        validation = testTypesSchemaSpecTestGroup4.validate(testType, options);
-      } else if (TEST_TYPES_GROUP5_SPEC_TEST.includes(testType.testTypeId)) {
+        validation = validators.testTypesSpecialistGroup4.validate(testType, options);
+      } else if (enums.TEST_TYPES_GROUP5_SPEC_TEST.includes(testType.testTypeId)) {
         // Test/Retest Normal/Basic voluntary IVA inspection
-        validation = testTypesSchemaSpecTestGroup5.validate(testType, options);
+        validation = validators.testTypesSpecialistGroup5.validate(testType, options);
       } else {
         validation = {
           error: {
@@ -354,186 +266,90 @@ export class TestResultsService {
         };
       }
       if (validation.error) {
-        validationErrors = this.mapErrorMessage(validation);
+        validationErrors = MappingUtil.mapErrorMessage(validation);
         break;
       }
     }
     return validationErrors;
   }
 
-  public getTestResultToArchive(testResults: ITestResult[], testResultId: string): ITestResult {
+  public getTestResultToArchive(testResults: models.ITestResult[], testResultId: string): models.ITestResult {
     testResults = testResults.filter((testResult) => {
-      return testResult.testResultId === testResultId && (testResult.testVersion === TEST_VERSION.CURRENT || !testResult.testVersion);
+      return testResult.testResultId === testResultId && (testResult.testVersion === enums.TEST_VERSION.CURRENT || !testResult.testVersion);
     });
     if (testResults.length !== 1) {
-      throw new HTTPError(404, ERRORS.NoResourceMatch);
+      throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
     }
     return testResults[0];
   }
 
-  public removeNonEditableAttributes(testResult: ITestResult) {
-    delete testResult.vehicleId;
-    delete testResult.testEndTimestamp;
-    delete testResult.testVersion;
-    delete testResult.systemNumber;
-    delete testResult.vin;
-  }
-
-  public setAuditDetails(newTestResult: ITestResult, oldTestResult: ITestResult, msUserDetails: IMsUserDetails) {
-    const date = new Date().toISOString();
-    newTestResult.createdAt = date;
-    newTestResult.createdByName = msUserDetails.msUser;
-    newTestResult.createdById = msUserDetails.msOid;
-    delete newTestResult.lastUpdatedAt;
-    delete newTestResult.lastUpdatedById;
-    delete newTestResult.lastUpdatedByName;
-
-    oldTestResult.lastUpdatedAt = date;
-    oldTestResult.lastUpdatedByName = msUserDetails.msUser;
-    oldTestResult.lastUpdatedById = msUserDetails.msOid;
-
-    newTestResult.shouldEmailCertificate = "false";
-    oldTestResult.shouldEmailCertificate = "false;";
-  }
-
-  public getValidationSchema(vehicleType: string, testStatus: string) {
-    switch (vehicleType + testStatus) {
-      case "psvsubmitted":
-        return testResultsSchemaPSVSubmitted;
-      case "psvcancelled":
-        return testResultsSchemaPSVCancelled;
-      case "hgvsubmitted":
-        return testResultsSchemaHGVSubmitted;
-      case "hgvcancelled":
-        return testResultsSchemaHGVCancelled;
-      case "trlsubmitted":
-        return testResultsSchemaTRLSubmitted;
-      case "trlcancelled":
-        return testResultsSchemaTRLCancelled;
-      case "lgvsubmitted":
-        return testResultsSchemaLGVSubmitted;
-      case "lgvcancelled":
-        return testResultsSchemaLGVCancelled;
-      case "carsubmitted":
-        return testResultsSchemaCarSubmitted;
-      case "carcancelled":
-        return testResultsSchemaCarCancelled;
-      case "motorcyclesubmitted":
-        return testResultsSchemaMotorcycleSubmitted;
-      case "motorcyclecancelled":
-        return testResultsSchemaMotorcycleCancelled;
-      default:
-        return null;
-    }
-  }
-
-  public insertTestResult(payload: ITestResultPayload) {
+  public async insertTestResult(payload: models.ITestResultPayload) {
+    // TODO: CVSB-18782 move all validation logic to validationUtil
     if (Object.keys(payload).length === 0) { // if empty object
-      return Promise.reject(new HTTPError(400, ERRORS.PayloadCannotBeEmpty));
+      return Promise.reject(new models.HTTPError(400, enums.ERRORS.PayloadCannotBeEmpty));
     }
-    const validationSchema = this.getValidationSchema(payload.vehicleType, payload.testStatus);
+    const validationSchema = utils.MappingUtil.getValidationSchema(payload.vehicleType, payload.testStatus);
 
     const validation: ValidationResult<any> | any | null = Joi.validate(payload, validationSchema);
 
     if (!this.reasonForAbandoningPresentOnAllAbandonedTests(payload)) {
-      return Promise.reject(new HTTPError(400, MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT));
+      return Promise.reject(new models.HTTPError(400, enums.MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT));
     }
 
-    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = this.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload);
+    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload);
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
-      return Promise.reject(new HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + " are null for a defect with deficiency category other than advisory"));
+      return Promise.reject(new models.HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + " are null for a defect with deficiency category other than advisory"));
     }
 
     // CVSB-7964: Fields Validation for LEC Test Types
-    const missingFieldsForLecTestType: string[] = this.validateLecTestTypeFields(payload);
+    const missingFieldsForLecTestType: string[] = utils.ValidationUtil.validateLecTestTypeFields(payload);
     if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
-      return Promise.reject(new HTTPError(400,  {errors: missingFieldsForLecTestType} ));
+      return Promise.reject(new models.HTTPError(400,  {errors: missingFieldsForLecTestType} ));
     }
-    if (this.isMissingRequiredCertificateNumberOnAdr(payload)) {
-      return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnAdr));
+    if (utils.ValidationUtil.isMissingRequiredCertificateNumberOnAdr(payload)) {
+      return Promise.reject(new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnAdr));
     }
-    if (this.isMissingRequiredCertificateNumberOnTir(payload)) {
-      return Promise.reject(new HTTPError(400, ERRORS.NoCertificateNumberOnTir));
+    if (utils.ValidationUtil.isMissingRequiredCertificateNumberOnTir(payload)) {
+      return Promise.reject(new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnTir));
     }
-    if (this.isPassAdrTestTypeWithoutExpiryDate(payload)) {
-      return Promise.reject(new HTTPError(400, ERRORS.NoExpiryDate));
+    if (utils.ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
+      return Promise.reject(new models.HTTPError(400, enums.ERRORS.NoExpiryDate));
     }
 
-    const missingMandatoryTestResultFields: string[] = this.validateMandatoryTestResultFields(payload);
+    const missingMandatoryTestResultFields: string[] = utils.ValidationUtil.validateMandatoryTestResultFields(payload);
     if (missingMandatoryTestResultFields.length > 0) {
-      return Promise.reject(new HTTPError(400,  {errors: missingMandatoryTestResultFields} ));
+      return Promise.reject(new models.HTTPError(400,  {errors: missingMandatoryTestResultFields} ));
     }
 
     if (validation !== null && validation.error) {
-      return Promise.reject(new HTTPError(400,
+      return Promise.reject(new models.HTTPError(400,
         {
-          errors: this.mapErrorMessage(validation)
+          errors: MappingUtil.mapErrorMessage(validation)
         }));
     }
 
-    payload = this.setCreatedAtAndLastUpdatedAtDates(payload);
-    return this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration,
-        payload.noOfAxles, payload.euVehicleCategory, payload?.vehicleClass?.code, payload?.vehicleSubclass?.[0], payload.numberOfWheelsDriven)
-        .then((testTypesWithTestCodesAndClassification) => {
-          payload.testTypes = testTypesWithTestCodesAndClassification;
-        })
-        .then(() => {
-          return this.setTestNumber(payload)
-              .then((payloadWithTestNumber) => {
-                return this.generateExpiryDate(payloadWithTestNumber)
-                    .then((payloadWithExpiryDate: any) => {
-                      const payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate);
-                      const payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithCertificateNumber);
-                      const payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate);
-                      return this.testResultsDAO.createSingle(payloadWithVehicleId).then((putItemOutput) => {
-                        LoggingUtil.logDefectsReporting(payloadWithVehicleId);
-                        return putItemOutput;
-                      });
-                    });
-              });
-        }).catch((error) => {
-          if (error.statusCode === 400 && error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED) {
-            console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists", error);
-            return Promise.reject(new HTTPResponse(201, MESSAGES.ID_ALREADY_EXISTS));
-          }
-          console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification", error);
-          return Promise.reject(new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR));
-        });
-  }
-
-  public fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload: ITestResultPayload) {
-    const missingFields: string[] = [];
-    let bool = false;
-    if (payload.testTypes) {
-      payload.testTypes.forEach((testType: { defects: { forEach: (arg0: (defect: any) => void) => void; }; }) => {
-        if (testType.defects) {
-          testType.defects.forEach((defect) => {
-            if (defect.deficiencyCategory !== "advisory") {
-              if (defect.additionalInformation.location === null) {
-                missingFields.push("location");
-                bool = true;
-              }
-              if (defect.deficiencyText === null) {
-                missingFields.push("deficiencyText");
-                bool = true;
-              }
-              if (defect.stdForProhibition === null) {
-                missingFields.push("stdForProhibition");
-                bool = true;
-              }
-            }
-          });
-        }
-      });
+    payload = MappingUtil.setCreatedAtAndLastUpdatedAtDates(payload);
+    try {
+      const testTypesWithTestCodesAndClassification = await this.getTestTypesWithTestCodesAndClassification(payload.testTypes, payload.vehicleType, payload.vehicleSize, payload.vehicleConfiguration,
+        payload.noOfAxles, payload.euVehicleCategory, payload?.vehicleClass?.code, payload?.vehicleSubclass?.[0], payload.numberOfWheelsDriven);
+      payload.testTypes = testTypesWithTestCodesAndClassification;
+      const payloadWithTestNumber = await this.setTestNumber(payload);
+      const payloadWithExpiryDate = await this.generateExpiryDate(payloadWithTestNumber);
+      const payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate);
+      const payloadWithAnniversaryDate = this.calculateAnniversaryDate(payloadWithCertificateNumber);
+      const payloadWithVehicleId = this.setVehicleIdToVRM(payloadWithAnniversaryDate);
+      return await this.testResultsDAO.createSingle(payloadWithVehicleId);
+    } catch (error) {
+      if (error.statusCode === 400 && error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED) {
+        console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification: Test Result id already exists", error);
+        return Promise.reject(new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS));
+      }
+      console.log("Error in insertTestResult > getTestTypesWithTestCodesAndClassification", error);
+      return Promise.reject(new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR));
     }
-    let missingFieldsString = "";
-    missingFields.forEach((missingField) => {
-      missingFieldsString = missingFieldsString + "/" + missingField;
-    });
-    return { result: bool, missingFields: missingFieldsString };
   }
 
-  public setTestNumber(payload: ITestResultPayload) {
+  public async setTestNumber(payload: models.ITestResultPayload) {
     const promiseArray: any[] = [];
     if (payload.testTypes) {
       payload.testTypes.forEach((testType: { testNumber: any; }) => {
@@ -544,20 +360,19 @@ export class TestResultsService {
 
         promiseArray.push(promise);
       });
-      return Promise.all(promiseArray).then(() => {
-        return payload;
-      });
+      await Promise.all(promiseArray);
+      return payload;
     } else {
       return Promise.resolve(payload);
     }
   }
 
-  public reasonForAbandoningPresentOnAllAbandonedTests(payload: ITestResultPayload) {
+  public reasonForAbandoningPresentOnAllAbandonedTests(payload: models.ITestResultPayload) {
     let bool = true;
     if (payload.testTypes) {
       if (payload.testTypes.length > 0) {
         payload.testTypes.forEach((testType: { testResult: string; reasonForAbandoning: any; }) => {
-          if (testType.testResult === TEST_RESULT.ABANDONED && !testType.reasonForAbandoning) {
+          if (testType.testResult === enums.TEST_RESULT.ABANDONED && !testType.reasonForAbandoning) {
             bool = false;
           }
         });
@@ -566,49 +381,31 @@ export class TestResultsService {
     return bool;
   }
 
-  public setCreatedAtAndLastUpdatedAtDates(payload: ITestResultPayload): ITestResultPayload {
-    const createdAtDate = new Date().toISOString();
-    payload.createdAt = createdAtDate;
-    payload.createdById = payload.testerStaffId;
-    payload.createdByName = payload.testerName;
-    payload.testVersion = TEST_VERSION.CURRENT;
-    payload.reasonForCreation = REASON_FOR_CREATION.TEST_CONDUCTED;
-    if (payload.testTypes.length > 0) {
-      payload.testTypes.forEach((testType: any) => {
-        Object.assign(testType,
-          {
-            createdAt: createdAtDate, lastUpdatedAt: createdAtDate
-          });
-      });
-    }
-    return payload;
-  }
-
   /**
    * Note: When performing actions on a moment instance, it gets mutated
    * Note: Expiry dates on the payload should be set at the UTC start of day.
    *
    * @param payload
    */
-  public async generateExpiryDate(payload: ITestResultPayload): Promise<ITestResultPayload> {
+  public async generateExpiryDate(payload: models.ITestResultPayload): Promise<models.ITestResultPayload> {
     moment.tz.setDefault("UTC");
     try {
-      if (payload.testStatus !== TEST_STATUS.SUBMITTED ||
-          this.isNotAllowedVehicleTypeForExpiry(payload.vehicleType)) {
+      if (payload.testStatus !== enums.TEST_STATUS.SUBMITTED ||
+          utils.ValidationUtil.isNotAllowedVehicleTypeForExpiry(payload.vehicleType)) {
         return Promise.resolve(payload);
       }
-      const expiryTestTypes = payload.testTypes.filter((testType) => this.isAllowedTestTypeForExpiry(testType));
+      const expiryTestTypes = payload.testTypes.filter((testType) => utils.ValidationUtil.isAllowedTestTypeForExpiry(testType));
 
       const recentExpiry =  await this.vehicleTestController.dataProvider.getMostRecentExpiryDate(payload.systemNumber);
 
       expiryTestTypes.forEach((testType: any, index: number) => {
-          const testTypeForExpiry: TestTypeForExpiry = {
+          const testTypeForExpiry: models.TestTypeForExpiry = {
             testType,
-            vehicleType: VEHICLE_TYPE[payload.vehicleType.toUpperCase() as keyof typeof VEHICLE_TYPE],
+            vehicleType: enums.VEHICLE_TYPE[payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE],
             recentExpiry,
-            regnDate: this.getRegnDateByVehicleType(payload),
+            regnOrFirstUseDate: this.getRegistrationOrFirstUseDate(payload),
             hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
-            hasRegistration: DateProvider.isValidDate(this.getRegnDateByVehicleType(payload))
+            hasRegistration: DateProvider.isValidDate(this.getRegistrationOrFirstUseDate(payload))
           };
           console.log(testTypeForExpiry);
           const strategy = this.vehicleTestController.getExpiryStrategy(testTypeForExpiry);
@@ -618,65 +415,54 @@ export class TestResultsService {
       console.log("generateExpiryDate: testTypes ->", payload.testTypes);
       return Promise.resolve(payload);
     } catch (error) {
-      console.error("generateExpiryDate: ", error);
-      throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+      console.error("Error in error generateExpiryDate", error);
+      throw new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
     }
 
   }
 
-  private getRegnDateByVehicleType(payload: ITestResultPayload) {
-  return payload.vehicleType === VEHICLE_TYPES.TRL ? payload.firstUseDate : payload.regnDate;
+  private getRegistrationOrFirstUseDate(payload: models.ITestResultPayload) {
+  return payload.vehicleType === enums.VEHICLE_TYPES.TRL ? payload.firstUseDate : payload.regnDate;
   }
 
-  private isNotAllowedVehicleTypeForExpiry(vehicleType: string) {
-    return vehicleType === VEHICLE_TYPES.CAR ||
-           vehicleType === VEHICLE_TYPES.LGV ||
-           vehicleType === VEHICLE_TYPES.MOTORCYCLE;
-  }
-
-  private isAllowedTestTypeForExpiry(testType: TestType) {
-   return testType.testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-      (testType.testResult === TEST_RESULT.PASS || testType.testResult === TEST_RESULT.PRS) &&
-      !TestResultsService.isHGVTRLRoadworthinessTest(testType.testTypeId);
-  }
-
-  public getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
+  public async getMostRecentExpiryDateOnAllTestTypesBySystemNumber(systemNumber: any): Promise<Date> {
     let maxDate = new Date(1970, 1, 1);
-    return this.getTestResults({
-      systemNumber,
-      testStatus: TEST_STATUS.SUBMITTED,
-      fromDateTime: new Date(1970, 1, 1),
-      toDateTime: new Date()
-    })
-      .then((testResults) => {
-        const filteredTestTypeDates: any[] = [];
-        testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-          testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
-            // prepare a list of annualTestTypes with expiry.
-            if (TestResultsService.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && DateProvider.isValidDate(testType.testExpiryDate)) {
-              filteredTestTypeDates.push(moment(testType.testExpiryDate));
-            }
-          });
-        });
-        return filteredTestTypeDates;
-      }).then((annualTestTypeDates) => {
-        // fetch maxDate for annualTestTypes
-        if (annualTestTypeDates && annualTestTypeDates.length > 0) {
-          maxDate = moment.max(annualTestTypeDates).toDate();
-        }
-        return maxDate;
-      }).catch((err) => {
-        console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber > getTestResults. Returning default test date and logging error:", err);
-        return maxDate;
+    try {
+      const testResults = await this.getTestResultBySystemNumber({
+        systemNumber,
+        testStatus: enums.TEST_STATUS.SUBMITTED,
+        fromDateTime: new Date(1970, 1, 1),
+        toDateTime: new Date()
       });
+      const filteredTestTypeDates: any[] = [];
+      testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
+        testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
+          // prepare a list of annualTestTypes with expiry.
+          if (utils.ValidationUtil.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && DateProvider.isValidDate(testType.testExpiryDate)) {
+            filteredTestTypeDates.push(moment(testType.testExpiryDate));
+          }
+        });
+      });
+      const annualTestTypeDates = filteredTestTypeDates;
+      // fetch maxDate for annualTestTypes
+      if (annualTestTypeDates && annualTestTypeDates.length > 0) {
+        maxDate = moment.max(annualTestTypeDates).toDate();
+      }
+      return maxDate;
+    } catch (err) {
+      console.error("Something went wrong in generateExpiryDate > getMostRecentExpiryDateOnAllTestTypesBySystemNumber > getTestResultBySystemNumber. Returning default test date and logging error:", err);
+      return maxDate;
+    }
   }
 
-  public getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }>, vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,
-                                                    euVehicleCategory: any, vehicleClass: any, vehicleSubclass: any, numberOfWheelsDriven: any) {
+  // TODO: CVSB-18782 set default value as empty array for testTypes
+  public async getTestTypesWithTestCodesAndClassification(testTypes: Array<{ testTypeClassification: any; testTypeId: any; testCode?: any; }> = [], vehicleType: any, vehicleSize: any, vehicleConfiguration: any, noOfAxles: any,
+                                                          euVehicleCategory: any, vehicleClass: any, vehicleSubclass: any, numberOfWheelsDriven: any) {
     const promiseArray: any = [];
     if (testTypes === undefined) {
       testTypes = [];
     }
+    // TODO: CVSB-18782 flatten promise and refactor code
     testTypes.forEach((testType, index) => {
       const promise = this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(testType.testTypeId, vehicleType, vehicleSize, vehicleConfiguration, noOfAxles, euVehicleCategory, vehicleClass, vehicleSubclass, numberOfWheelsDriven)
         .then((currentTestCodesAndClassification: { defaultTestCode: any; testTypeClassification: any; linkedTestCode: any; }) => {
@@ -694,57 +480,8 @@ export class TestResultsService {
         });
       promiseArray.push(promise);
     });
-    return Promise.all(promiseArray).then(() => {
-      return Promise.resolve(testTypes);
-    });
-  }
-
-  public insertTestResultsList(testResultsItems: ITestResult[]) {
-    return this.testResultsDAO.createMultiple(testResultsItems)
-      .then((data: any) => {
-        if (data.UnprocessedItems) { return data.UnprocessedItems; }
-      })
-      .catch((error: any) => {
-        if (error) {
-          console.log("Error in insertTestResultsList: ", error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        }
-      });
-  }
-
-  public deleteTestResultsList(testResultsSystemNumberIdPairs: any[]) {
-    return this.testResultsDAO.deleteMultiple(testResultsSystemNumberIdPairs)
-      .then((data: any) => {
-        if (data.UnprocessedItems) {
-          return data.UnprocessedItems;
-        }
-      })
-      .catch((error: any) => {
-        if (error) {
-          console.log(error);
-          throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-        }
-      });
-  }
-
-  private isMissingRequiredCertificateNumber(typeFunc: (testType: TestType) => boolean, payload: ITestResultPayload): boolean {
-    let bool = false;
-    if (payload.testTypes) {
-      payload.testTypes.forEach((testType) => {
-        if (typeFunc(testType) && testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.certificateNumber) {
-          bool = true;
-        }
-      });
-    }
-    return bool;
-  }
-
-  public isMissingRequiredCertificateNumberOnAdr(payload: ITestResultPayload): boolean {
-    return this.isMissingRequiredCertificateNumber(this.isTestTypeAdr, payload);
-  }
-
-  public isMissingRequiredCertificateNumberOnTir(payload: ITestResultPayload): boolean {
-    return this.isMissingRequiredCertificateNumber(this.isTestTypeTir, payload);
+    await Promise.all(promiseArray);
+    return Promise.resolve(testTypes);
   }
 
   public removeVehicleClassification(payload: { testTypes: { forEach: (arg0: (testType: any) => void) => void; }; }) {
@@ -754,15 +491,15 @@ export class TestResultsService {
     return payload;
   }
 
-  public setVehicleId(payload: ITestResultPayload): ITestResultPayload {
+  public setVehicleIdToVRM(payload: models.ITestResultPayload): models.ITestResultPayload {
     payload.vehicleId = payload.vrm;
     return payload;
   }
 
-  public setAnniversaryDate(payload: ITestResultPayload) {
+  public calculateAnniversaryDate(payload: models.ITestResultPayload) {
     payload.testTypes.forEach((testType) => {
       if (testType.testExpiryDate) {
-        if (payload.vehicleType === VEHICLE_TYPES.PSV) {
+        if (payload.vehicleType === enums.VEHICLE_TYPES.PSV) {
           testType.testAnniversaryDate = moment(testType.testExpiryDate).utc().subtract(2, "months").add(1, "days").toISOString();
         } else {
           testType.testAnniversaryDate = testType.testExpiryDate;
@@ -772,127 +509,19 @@ export class TestResultsService {
     return payload;
   }
 
-  public isTestTypeAdr(testType: TestType): boolean {
-    const adrTestTypeIds = ["50", "59", "60"];
-
-    return adrTestTypeIds.includes(testType.testTypeId);
-  }
-
-  public isTestTypeTir(testType: TestType): boolean {
-    const tirTestTypeIds = ["49", "56", "57"];
-
-    return tirTestTypeIds.includes(testType.testTypeId);
-  }
-
-  public isTestTypeLec(testType: any): boolean {
-    const lecTestTypeIds = ["39", "44", "45"];
-
-    return lecTestTypeIds.includes(testType.testTypeId);
-  }
-
-  public isPassAdrTestTypeWithoutExpiryDate(payload: ITestResultPayload): boolean {
-    let bool = false;
-    if (payload.testTypes) {
-      payload.testTypes.forEach((testType) => {
-        if (this.isTestTypeAdr(testType) && testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED && !testType.testExpiryDate) {
-          bool = true;
-        }
-      });
+  public generateCertificateNumber(payload: models.ITestResultPayload) {
+    if (payload.testStatus !== enums.TEST_STATUS.SUBMITTED) {
+      return payload;
     }
-    return bool;
-  }
-
-  public generateCertificateNumber(payload: ITestResultPayload) {
-    if (payload.testStatus === TEST_STATUS.SUBMITTED) {
-      payload.testTypes.forEach((testType) => {
+    payload.testTypes.forEach((testType) => {
         // CVSB-7675 if vehicle type is HGV/TRL and testTypeId is Roadworthiness test and testResult is pass then testNumber = certificateNumber
-       if (TestResultsService.isPassedRoadworthinessTestForHgvTrl(payload.vehicleType, testType.testTypeId, testType.testResult)
+       if (utils.ValidationUtil.isPassedRoadworthinessTestForHgvTrl(payload.vehicleType, testType.testTypeId, testType.testResult)
                     ||
-            (TestResultsService.isAnnualTestTypeClassificationWithoutAbandonedResult(testType.testTypeClassification, testType.testResult) && !this.isTestTypeAdr(testType) && !this.isTestTypeLec(testType))
+            (utils.ValidationUtil.isAnnualTestTypeClassificationWithoutAbandonedResult(testType.testTypeClassification, testType.testResult) && !utils.ValidationUtil.isTestTypeAdr(testType) && !utils.ValidationUtil.isTestTypeLec(testType))
                   ) {
           testType.certificateNumber = testType.testNumber;
         }
       });
-    }
     return payload;
   }
-
-  private validateLecTestTypeFields(payload: ITestResultPayload): string[] {
-    const missingFields: string[] = [];
-    if (payload.testTypes) {
-      payload.testTypes.forEach((testType: { testTypeId: string; certificateNumber: string; expiryDate: Date; modType: any; emissionStandard: string; fuelType: string;
-        testExpiryDate: any; testResult: string; smokeTestKLimitApplied: any}) => {
-        if (this.isTestTypeLec(testType) ) {
-            if (testType.testResult === TEST_RESULT.PASS && payload.testStatus === TEST_STATUS.SUBMITTED ) {
-            if (!testType.testExpiryDate) {
-              missingFields.push(ERRORS.NoLECExpiryDate);
-            }
-            if (!testType.modType) {
-              missingFields.push(ERRORS.NoModificationType);
-            }
-            if (!testType.emissionStandard) {
-              missingFields.push(ERRORS.NoEmissionStandard);
-            }
-            if (!testType.fuelType) {
-              missingFields.push(ERRORS.NoFuelType);
-            }
-            if (!testType.smokeTestKLimitApplied) {
-              missingFields.push(ERRORS.NoSmokeTestKLimitApplied);
-            }
-          }
-        }
-      });
-
-    }
-    return missingFields;
-  }
-
-  private validateMandatoryTestResultFields(payload: ITestResultPayload): string[] {
-    const missingMandatoryFields: string[] = [];
-    if (payload.testTypes.some((testType: TestType) => testType.testResult !== TEST_RESULT.ABANDONED) && payload.testStatus === TEST_STATUS.SUBMITTED) {
-      if (!payload.countryOfRegistration) {
-        missingMandatoryFields.push(ERRORS.CountryOfRegistrationMandatory);
-      }
-      if (!payload.euVehicleCategory) {
-        missingMandatoryFields.push(ERRORS.EuVehicleCategoryMandatory);
-      }
-
-      if (payload.vehicleType === VEHICLE_TYPES.HGV || payload.vehicleType === VEHICLE_TYPES.PSV) {
-        if (!payload.odometerReading) {
-          missingMandatoryFields.push(ERRORS.OdometerReadingMandatory);
-        }
-        if (!payload.odometerReadingUnits) {
-          missingMandatoryFields.push(ERRORS.OdometerReadingUnitsMandatory);
-        }
-      }
-    }
-    return missingMandatoryFields;
-  }
-
-  //#region Private Static Functions
-  private static isHGVTRLRoadworthinessTest(testTypeId: string): boolean {
-    return HGV_TRL_ROADWORTHINESS_TEST_TYPES.IDS.includes(testTypeId);
-   }
-   private static isHgvOrTrl(vehicleType: string): boolean {
-    return vehicleType === VEHICLE_TYPES.HGV || vehicleType === VEHICLE_TYPES.TRL;
-  }
-
-  private static isPassedRoadworthinessTestForHgvTrl(vehicleType: string, testTypeId: string, testResult: string): boolean {
-    return TestResultsService.isHgvOrTrl(vehicleType) && TestResultsService.isHGVTRLRoadworthinessTest(testTypeId) && testResult === TEST_RESULT.PASS;
-  }
-
-  private static isAnnualTestTypeClassificationWithoutAbandonedResult(testTypeClassification: string, testResult: string): boolean {
-    return testTypeClassification === TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testResult !== TEST_RESULT.ABANDONED;
-  }
-
-  private static isValidTestCodeForExpiryCalculation(testCode: string): boolean {
-    return TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
-  }
-
-  private static isMostRecentExpiryNotFound(mostRecentExpiryDate: Date): boolean {
-    return moment(mostRecentExpiryDate).isSame(new Date(1970, 1, 1));
-  }
- //#endregion
-
-
 }

@@ -1,7 +1,7 @@
 import * as Joi from "joi";
 import {testResultsCommonSchemaSpecialistTestsSubmitted} from "./SpecialistTestsCommonSchemaSubmitted";
 
-const testResultsSchema = testResultsCommonSchemaSpecialistTestsSubmitted.keys({
+export const motorcycleSubmitted = testResultsCommonSchemaSpecialistTestsSubmitted.keys({
   vehicleClass: Joi.object().keys({
     code: Joi.any().only(["1", "2", "3", "n", "s", "t", "l", "v", "4", "5", "7", "p", "u"]).required(),
     description: Joi.any().only([
@@ -21,5 +21,3 @@ const testResultsSchema = testResultsCommonSchemaSpecialistTestsSubmitted.keys({
     ])
   }).required(),
 });
-
-export default testResultsSchema;

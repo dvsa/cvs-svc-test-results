@@ -22,7 +22,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
     defects: Joi.array().items(defectsSchema).required()
 });
 
-const testResultsSchema = testResultsCommonSchema.keys({
+export const trlCancelled = testResultsCommonSchema.keys({
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     countryOfRegistration: Joi.string().required().allow("", null),
     vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
@@ -30,5 +30,3 @@ const testResultsSchema = testResultsCommonSchema.keys({
     testTypes: Joi.array().items(testTypesSchema).required(),
     firstUseDate: Joi.string().allow("", null)
 });
-
-export default testResultsSchema;

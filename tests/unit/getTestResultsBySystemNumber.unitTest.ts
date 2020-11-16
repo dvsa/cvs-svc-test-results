@@ -5,8 +5,8 @@ import { HTTPError } from "../../src/models/HTTPError";
 import {MESSAGES, ERRORS, TEST_VERSION} from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
 
-describe("getTestResults", () => {
-    let testResultsService: TestResultsService | any;
+describe("getTestResultBySystemNumber", () => {
+    let testResultsService: TestResultsService | null;
     let MockTestResultsDAO: jest.Mock;
     let testResultsMockDB: any;
     beforeEach(() => {
@@ -37,7 +37,7 @@ describe("getTestResults", () => {
             });
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            return testResultsService.getTestResults({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
                 .then((returnedRecords: any) => {
                     expect(returnedRecords).not.toEqual(undefined);
                     expect(returnedRecords).not.toEqual({});
@@ -64,7 +64,7 @@ describe("getTestResults", () => {
                 });
                 testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                return testResultsService.getTestResults({
+                return testResultsService.getTestResultBySystemNumber({
                     systemNumber: "1111",
                     fromDateTime: "2017-01-01",
                     toDateTime: new Date().toString(),
@@ -96,7 +96,7 @@ describe("getTestResults", () => {
                 });
                 testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                return testResultsService.getTestResults({ systemNumber: "1111",
+                return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111",
                     testVersion: TEST_VERSION.CURRENT,
                     fromDateTime: "2017-01-01",
                     toDateTime: new Date().toString(),
@@ -129,7 +129,7 @@ describe("getTestResults", () => {
                 });
 
                 testResultsService = new TestResultsService(new MockTestResultsDAO());
-                return testResultsService.getTestResults({
+                return testResultsService.getTestResultBySystemNumber({
                     systemNumber: "1111",
                     fromDateTime: "2017-01-01",
                     toDateTime: new Date().toString(),
@@ -160,9 +160,10 @@ describe("getTestResults", () => {
             });
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-
             expect.assertions(3);
-            return testResultsService.getTestResults()
+            return testResultsService.getTestResultBySystemNumber({
+                systemNumber: "1111"
+            })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
                     expect(errorResponse).toBeInstanceOf(HTTPError);
                     expect(errorResponse.statusCode).toEqual(400);
@@ -185,7 +186,7 @@ describe("getTestResults", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             expect.assertions(3);
-            return testResultsService.getTestResults({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
                     expect(errorResponse).toBeInstanceOf(HTTPError);
                     expect(errorResponse.statusCode).toEqual(404);
@@ -210,7 +211,7 @@ describe("getTestResults", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             expect.assertions(3);
-            return testResultsService.getTestResults({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: "qwerty" })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "2017-01-01", toDateTime: "qwerty" })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
                     expect(errorResponse).toBeInstanceOf(HTTPError);
                     expect(errorResponse.statusCode).toEqual(400);
@@ -235,7 +236,7 @@ describe("getTestResults", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             expect.assertions(3);
-            return testResultsService.getTestResults({ systemNumber: "1111", status: "submitted", fromDateTime: "qwerty", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "qwerty", toDateTime: new Date().toString() })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
                   expect(errorResponse).toBeInstanceOf(HTTPError);
                   expect(errorResponse.statusCode).toEqual(400);
@@ -259,7 +260,7 @@ describe("getTestResults", () => {
             });
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            return testResultsService.getTestResults({ systemNumber: "1130", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1130", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
                 .then((returnedRecords: any) => {
                     expect(returnedRecords.length).toEqual(1);
                     expect(returnedRecords[0].systemNumber).toEqual("1130");

@@ -5,9 +5,6 @@ import moment from "moment";
 
 
 export class GetTestResults {
-  public static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-    return isDate(new Date(fromDateTime)) && isDate(new Date(toDateTime)) && isFinite((new Date(fromDateTime)).getTime()) && isFinite((new Date(toDateTime)).getTime());
-  }
 
   public static filterTestResultsByParam(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }, filterName: string | number, filterValue: any) {
     return testResults.filter((testResult) => {

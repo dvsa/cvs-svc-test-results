@@ -32,6 +32,17 @@ export class DateProvider {
   public static isSameAsEpoc(inputDate: Date): boolean {
     return moment(inputDate).isSame(DateProvider.getEpoc());
   }
+  /**
+   * Fetch end of date for the provided date.
+   * @param inputDate The date for which end of day is needed. Default is today.
+   */
+  public static getEndOfDay(inputDate: Date = new Date()) {
+    return moment(inputDate).endOf("day").toDate();
+  }
+
+  public static getTwoYearsFromDate(inputDate: Date) {
+    return moment(inputDate).subtract(2, "years").endOf("day").toDate();
+  }
 
   public static getInstance(dateValue: string | number | Date) {
     return moment(dateValue);
