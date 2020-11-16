@@ -44,21 +44,30 @@ export class DateProvider {
     return moment(inputDate).subtract(2, "years").endOf("day").toDate();
   }
 
+  /**
+   * Fetch start of day for the provided date.
+   * @param inputDate The date for which start of day is needed. Default is today.
+   */
+  public static getStartOfDay(inputDate: string | Date) {
+    return moment(inputDate).startOf("day").toDate();
+  }
+
   public static getInstance(dateValue: string | number | Date) {
     return moment(dateValue);
   }
 
   public static getMaxDate(arrayOfDates: moment.Moment[]) {
-    return  moment.max(arrayOfDates).toDate();
+    return moment.max(arrayOfDates).toDate();
   }
 
   public static getPsvAnniversaryDate(testExpiryDate: string | Date) {
-  return moment(testExpiryDate)
-          .utc()
-          .subtract(2, "months")
-          .add(1, "days")
-          .toISOString();
+    return moment(testExpiryDate)
+      .utc()
+      .subtract(2, "months")
+      .add(1, "days")
+      .toISOString();
   }
+
   /**
    * To validate whether provided input is a date. "undefined" is validated separately because moment(undefined) = new Date(). Strict validation is performed and only two date formats are acceptable YYYY-MM-DD and YYYY-MM-DDTHH:mm:ss.SSSZ.
    * @param input The input value which is validated.
@@ -115,6 +124,34 @@ export class DateProvider {
       moment(fromDate).isAfter(compareFromDate) &&
       moment(toDate).isBefore(compareToDate)
     );
+  }
+
+  /**
+   * To compare whether dates fall between a comparison period.
+   * @param dateToCompare the input Date
+   * @param compareFromDate the start date of the period
+   * @param compareToDate the end date of the period
+   */
+  public static isOutsideTimePeriod(
+    dateToCompare: string | number | Date,
+    compareToDate: string | number | Date,
+    compareFromDate: string | number | Date
+  ) {
+    return (
+      moment(dateToCompare).isAfter(compareToDate) ||
+      moment(dateToCompare).isBefore(compareFromDate)
+    );
+  }
+  /**
+   * To compare whether a date occurs after another date
+   * @param date1 The date to compare
+   * @param date2 The date which is used to check date1
+   */
+  public static isAfterDate(
+    date1: string | number | Date,
+    date2: string | number | Date
+  ) {
+    return moment(date1).isAfter(date2);
   }
 
   public static addOneYear(inputDate: Date | string): Date {
