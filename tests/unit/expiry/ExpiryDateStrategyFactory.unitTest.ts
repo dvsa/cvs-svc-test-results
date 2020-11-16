@@ -12,6 +12,9 @@ import { PsvMostRecentExpiryStrategy } from "../../../src/handlers/expiry/strate
 import { PsvRegistrationAnniversaryStrategy } from "../../../src/handlers/expiry/strategies/PsvRegistrationAnniversaryStrategy";
 import { PsvDefaultExpiryStrategy } from "../../../src/handlers/expiry/strategies/PsvDefaultExpiryStrategy";
 import { NoImplementationStrategy } from "../../../src/handlers/expiry/strategies/NoImplementationStrategy";
+import { HgvTrlFirstTestStrategy } from "../../../src/handlers/expiry/strategies/HgvTrlFirstTestStrategy";
+import { HgvTrlAnnualTestStrategy } from "../../../src/handlers/expiry/strategies/HgvTrlAnnualTestStrategy";
+import { HgvTrlMostRecentExpiryStrategy } from "../../../src/handlers/expiry/strategies/HgvTrlMostRecentExpiryStrategy";
 
 describe("ExpiryDateStrategyFactory", () => {
   let strategyConfig: any;
@@ -83,8 +86,30 @@ describe("ExpiryDateStrategyFactory", () => {
       ${true}     |  ${true}          | ${'3'}      | ${VEHICLE_TYPE.PSV} | ${PsvMostRecentExpiryStrategy}
       ${false}    |  ${true}          | ${'3'}      | ${VEHICLE_TYPE.PSV} | ${PsvRegistrationAnniversaryStrategy}
       ${false}    |  ${false}         | ${'3'}      | ${VEHICLE_TYPE.PSV} | ${PsvDefaultExpiryStrategy}
+      
       ${true}     |  ${false}         | ${'100'}    | ${VEHICLE_TYPE.HGV} | ${NoImplementationStrategy}
-    `('for testTypeId $testTypeId  with hasHistory $hasHistory and hasRegistration $hasRegistration it should return $expectedStrategy',
+      ${true}     |  ${false}         | ${'100'}    | ${VEHICLE_TYPE.TRL} | ${NoImplementationStrategy}
+
+      ${true}     |  ${true}          | ${'146'}    | ${VEHICLE_TYPE.PSV} | ${PsvDefaultExpiryStrategy}
+      ${true}     |  ${false}         | ${'146'}    | ${VEHICLE_TYPE.PSV} | ${PsvDefaultExpiryStrategy}
+      ${false}    |  ${true}          | ${'146'}    | ${VEHICLE_TYPE.PSV} | ${PsvDefaultExpiryStrategy}
+      ${false}    |  ${false}         | ${'146'}    | ${VEHICLE_TYPE.PSV} | ${PsvDefaultExpiryStrategy}
+
+      ${false}    |  ${true}          | ${'64'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlFirstTestStrategy}
+      ${false}    |  ${false}         | ${'64'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlFirstTestStrategy}
+      ${false}    |  ${true}          | ${'54'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlAnnualTestStrategy}
+      ${false}    |  ${false}         | ${'54'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlAnnualTestStrategy}
+
+      ${false}    |  ${true}          | ${'54'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlAnnualTestStrategy}
+      ${false}    |  ${false}         | ${'54'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlAnnualTestStrategy}
+      ${true}     |  ${true}          | ${'54'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlMostRecentExpiryStrategy}
+      ${true}     |  ${false}         | ${'54'}     | ${VEHICLE_TYPE.HGV} | ${HgvTrlMostRecentExpiryStrategy}
+
+      ${false}    |  ${false}         | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlFirstTestStrategy}
+      ${false}    |  ${true}          | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlFirstTestStrategy}
+      ${true}     |  ${true}          | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
+      ${true}     |  ${false}         | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
+    `('for a $vehicleType with hasHistory $hasHistory, hasRegistration $hasRegistration and testTypeId $testTypeId it should return $expectedStrategy',
         ({ hasHistory, hasRegistration, testTypeId, vehicleType, expectedStrategy }) => {
           expect.assertions(1);
           const testTypeForExpiry: TestTypeForExpiry = {
