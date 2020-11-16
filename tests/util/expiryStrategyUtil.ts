@@ -22,7 +22,7 @@ export class StrategyMock {
       hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
       hasRegistration: DateProvider.isValidDate(StrategyMock.getRegnDateByVehicleType(testResult)),
       recentExpiry,
-      regnDate: StrategyMock.getRegnDateByVehicleType(testResult)
+      regnOrFirstUseDate: StrategyMock.getRegnDateByVehicleType(testResult)
     };
     const expiryDateStrategy = ExpiryDateStrategyFactory.GetExpiryStrategy(
       testTypeForExpiry,

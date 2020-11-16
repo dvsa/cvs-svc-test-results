@@ -121,6 +121,18 @@ export const COIF_EXPIRY_TEST_TYPES = {
     IDS: ["142", "146", "175", "177"]
 };
 
+export const LEC_TEST_TYPES = {
+  IDS: ["39", "44", "45"]
+};
+
+export const ADR_TEST_TYPES = {
+  IDS: ["50", "59", "60"]
+};
+
+export const TIR_TEST_TYPES = {
+  IDS: ["49", "56", "57"]
+};
+
 export const COUNTRY_OF_REGISTRATION: string[] = [
     "gb",
     "gba",

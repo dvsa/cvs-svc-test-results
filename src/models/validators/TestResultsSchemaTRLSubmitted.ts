@@ -19,18 +19,15 @@ const defectsSchema = defectsCommonSchema.keys({
 const testTypesSchema = testTypesCommonSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required(),
+    testExpiryDate: Joi.date().iso().allow(null),
     defects: Joi.array().items(defectsSchema).required()
 });
 
-const testResultsSchema = testResultsCommonSchema.keys({
-    vrm: Joi.string().alphanum().min(1).max(8).required(),
+export const trlSubmitted = testResultsCommonSchema.keys({
     reasonForCancellation: Joi.string().max(500).required().allow("", null),
-    odometerReading: Joi.number().required().allow(null),
-    odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     countryOfRegistration: Joi.string().required().allow("", null),
     vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
+    trailerId: Joi.string().required(),
     testTypes: Joi.array().items(testTypesSchema).required(),
-    regnDate: Joi.string().allow("", null)
+    firstUseDate: Joi.string().allow("", null)
 });
-
-export default testResultsSchema;

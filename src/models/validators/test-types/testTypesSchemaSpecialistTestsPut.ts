@@ -28,11 +28,11 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object().keys({
   testTypeClassification: Joi.string().required()
 }).required();
 
-export const testTypesSchemaSpecTestGroup1 = testTypesCommonSchemaSpecialistTests.keys({
+export const testTypesSpecialistGroup1 = testTypesCommonSchemaSpecialistTests.keys({
   certificateNumber: Joi.string().required()
 });
 
-export const testTypesSchemaSpecTestGroup2 = testTypesCommonSchemaSpecialistTests.keys({
+export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.keys({
   certificateNumber: Joi.string().required(),
   secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
   testExpiryDate: Joi.date().iso().required(),
@@ -42,15 +42,15 @@ export const testTypesSchemaSpecTestGroup2 = testTypesCommonSchemaSpecialistTest
   seatbeltInstallationCheckDate: Joi.boolean().required()
 });
 
-export const testTypesSchemaSpecTestGroup3 = testTypesCommonSchemaSpecialistTests.keys({
+export const testTypesSpecialistGroup3 = testTypesCommonSchemaSpecialistTests.keys({
   secondaryCertificateNumber: Joi.string().alphanum().max(20).required()
 });
 
-export const testTypesSchemaSpecTestGroup4 = testTypesCommonSchemaSpecialistTests.keys({
+export const testTypesSpecialistGroup4 = testTypesCommonSchemaSpecialistTests.keys({
   secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
   numberOfSeatbeltsFitted: Joi.number().required(),
   lastSeatbeltInstallationCheckDate: Joi.date().required(),
   seatbeltInstallationCheckDate: Joi.boolean().required()
 });
 
-export const testTypesSchemaSpecTestGroup5 = testTypesCommonSchemaSpecialistTests;
+export const testTypesSpecialistGroup5 = testTypesCommonSchemaSpecialistTests;

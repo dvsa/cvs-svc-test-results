@@ -6,8 +6,8 @@ export class PsvRegistrationAnniversaryStrategy implements IExpiryDateStrategy {
   constructor(public testTypeForExpiry: TestTypeForExpiry, public dateProvider: DateProvider) {}
 
   public getExpiryDate(): string {
-    const { regnDate } = this.testTypeForExpiry;
-    const registrationAnniversary = DateProvider.addOneYear(regnDate as string);
+    const { regnOrFirstUseDate } = this.testTypeForExpiry;
+    const registrationAnniversary = DateProvider.addOneYear(regnOrFirstUseDate as string);
     const testDate = this.dateProvider.getTestDate();
     console.log(`registrationAnniversary: ${registrationAnniversary}`);
     console.log(`testDate: ${testDate}`);

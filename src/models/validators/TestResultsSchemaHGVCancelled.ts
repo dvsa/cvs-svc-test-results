@@ -19,11 +19,10 @@ const defectsSchema = defectsCommonSchema.keys({
 const testTypesSchema = testTypesCommonSchema.keys({
     testResult: Joi.any().only(["fail", "pass", "prs", "abandoned"]).required().allow(null),
     testTypeEndTimestamp: Joi.date().iso().required().allow(null),
-    // testExpiryDate: Joi.date().iso().allow(null),
     defects: Joi.array().items(defectsSchema).required()
 });
 
-const testResultsSchema = testResultsCommonSchema.keys({
+export const hgvCancelled = testResultsCommonSchema.keys({
     vrm: Joi.string().alphanum().min(1).max(8).required(),
     reasonForCancellation: Joi.string().max(500).required().allow(""),
     odometerReading: Joi.number().required().allow(null),
@@ -33,5 +32,3 @@ const testResultsSchema = testResultsCommonSchema.keys({
     testTypes: Joi.array().items(testTypesSchema).required(),
     regnDate: Joi.string().allow("", null)
 });
-
-export default testResultsSchema;

@@ -6,11 +6,11 @@ export class HgvTrlAnnualTestStrategy implements IExpiryDateStrategy {
   constructor(public testTypeForExpiry: TestTypeForExpiry, public dateProvider: DateProvider) {}
 
   public getExpiryDate(): string {
-    const {regnDate} = this.testTypeForExpiry;
-    const isValidRegn = DateProvider.isValidDate(regnDate);
+    const {regnOrFirstUseDate} = this.testTypeForExpiry;
+    const isValidRegn = DateProvider.isValidDate(regnOrFirstUseDate);
     const testDate = this.dateProvider.getTestDate();
-    const regnAnniversary = DateProvider.addOneYearEndOfMonth(regnDate as string);
-    console.log(`regnDate: ${regnDate}`);
+    const regnAnniversary = DateProvider.addOneYearEndOfMonth(regnOrFirstUseDate as string);
+    console.log(`regnOrFirstUseDate: ${regnOrFirstUseDate}`);
     console.log(`regnAnniversary: ${regnAnniversary}`);
     console.log(`testDate: ${testDate}`);
     if (isValidRegn && DateProvider.isBetweenTwoMonths(regnAnniversary, testDate, "()")) {

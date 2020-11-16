@@ -1,6 +1,7 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
+import { ValidationUtil } from "../../src/utils/validationUtil";
 
 describe("TestResultsService", () => {
     let testResultsService: TestResultsService | any;
@@ -28,7 +29,7 @@ describe("TestResultsService", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             const mockData = testResultsMockDB[4];
 
-            const result = testResultsService.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(mockData);
+            const result = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(mockData);
             expect(result.result).toEqual(true);
         });
     });
