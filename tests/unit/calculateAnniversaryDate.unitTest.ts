@@ -1,6 +1,6 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 
-describe("TestResultsService calling setTestAnniversaryDate", () => {
+describe("TestResultsService calling calculateAnniversaryDate", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
 
@@ -90,7 +90,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
 
         it("should set anniversary date the same as expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(hgvTestResultWithExpiryDate);
+            const testResultWithAnniversaryDate = testResultsService.calculateAnniversaryDate(hgvTestResultWithExpiryDate);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
         });
@@ -171,7 +171,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
 
         it("should set anniversary date the same as expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(hgvTestResultWithExpiryDate);
+            const testResultWithAnniversaryDate = testResultsService.calculateAnniversaryDate(hgvTestResultWithExpiryDate);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual(testResultWithAnniversaryDate.testTypes[0].testExpiryDate);
         });
@@ -252,7 +252,7 @@ describe("TestResultsService calling setTestAnniversaryDate", () => {
 
         it("should set anniversary date two months before expiryDate", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            const testResultWithAnniversaryDate = testResultsService.setAnniversaryDate(psvTestResultWithExpiryDate);
+            const testResultWithAnniversaryDate = testResultsService.calculateAnniversaryDate(psvTestResultWithExpiryDate);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).not.toEqual(undefined);
             expect(testResultWithAnniversaryDate.testTypes[0].testAnniversaryDate).toEqual("2020-07-21T10:36:33.987Z");
         });

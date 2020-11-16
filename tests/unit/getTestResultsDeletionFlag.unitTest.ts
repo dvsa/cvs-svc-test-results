@@ -35,7 +35,7 @@ describe("getTestResults", () => {
       });
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
-      return testResultsService.getTestResults({ systemNumber: "1119", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString()})
+      return testResultsService.getTestResultBySystemNumber({ systemNumber: "1119", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString()})
         .then((returnedRecords: any) => {
           expect(returnedRecords).not.toEqual(undefined);
           expect(returnedRecords).not.toEqual({});
@@ -61,7 +61,7 @@ describe("getTestResults", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-      return testResultsService.getTestResults({ systemNumber: "1120", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResultBySystemNumber({ systemNumber: "1120", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: { length: any; }; }>) => {
           expect(returnedRecords[0].testTypes.length).toEqual(0);
         });
@@ -84,7 +84,7 @@ describe("getTestResults", () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
       expect.assertions(3);
-      return testResultsService.getTestResults({ systemNumber: "1118", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResultBySystemNumber({ systemNumber: "1118", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .catch((errorResponse: { statusCode: any; body: any; }) => {
           expect(errorResponse).toBeInstanceOf(HTTPError);
           expect(errorResponse.statusCode).toEqual(404);
@@ -108,7 +108,7 @@ describe("getTestResults", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-      return testResultsService.getTestResults({ systemNumber: "1121", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+      return testResultsService.getTestResultBySystemNumber({ systemNumber: "1121", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
         .then((returnedRecords: Array<{ testTypes: Array<{ deletionFlag: any; }>; }>) => {
           expect(returnedRecords[0].testTypes[0].deletionFlag).toEqual(false);
         });

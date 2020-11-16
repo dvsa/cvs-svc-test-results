@@ -18,7 +18,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
   context("with good event", () => {
     it("should invoke testResultService with appropriately transformed filters, and on success return 200 + data", async () => {
       const testResultsMock = jest.fn().mockResolvedValue("Success");
-      TestResultsService.prototype.getTestResults = testResultsMock;
+      TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
       const expectedFilters = {
         testerStaffId: 1,
@@ -37,7 +37,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
     });
     it("should invoke testResultService, and on failure return error details", async () => {
       const myError = new HTTPError(418, "It Broke!");
-      TestResultsService.prototype.getTestResults = jest.fn().mockRejectedValue(myError);
+      TestResultsService.prototype.getTestResultsByTesterStaffId = jest.fn().mockRejectedValue(myError);
 
       expect.assertions(3);
       const result = await getTestResultsByTesterStaffId(goodEvent);
@@ -53,7 +53,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         delete myEvent.queryStringParameters.testStatus;
 
         const testResultsMock = jest.fn().mockResolvedValue("Success");
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         const expectedFilters = {
           testerStaffId: 1,
@@ -76,7 +76,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         delete myEvent.queryStringParameters.testerStaffId;
 
         const testResultsMock = jest.fn();
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
         const result = await getTestResultsByTesterStaffId(myEvent);
@@ -92,7 +92,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         delete myEvent.queryStringParameters.testStationPNumber;
 
         const testResultsMock = jest.fn();
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
         const result = await getTestResultsByTesterStaffId(myEvent);
@@ -108,7 +108,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         delete myEvent.queryStringParameters.toDateTime;
 
         const testResultsMock = jest.fn();
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
         const result = await getTestResultsByTesterStaffId(myEvent);
@@ -124,7 +124,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         delete myEvent.queryStringParameters.fromDateTime;
 
         const testResultsMock = jest.fn();
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
         const result = await getTestResultsByTesterStaffId(myEvent);

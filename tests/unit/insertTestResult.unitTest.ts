@@ -244,6 +244,7 @@ describe("insertTestResult", () => {
             expect.assertions(3);
             return testResultsService.insertTestResult(mockData)
                 .catch((error: { statusCode: any; body: any; }) => {
+                    console.log(error);
                     expect(error).toBeInstanceOf(HTTPResponse);
                     expect(error.statusCode).toEqual(201);
                     expect(error.body).toEqual("\"" + MESSAGES.ID_ALREADY_EXISTS + "\"");

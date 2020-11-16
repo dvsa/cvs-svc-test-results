@@ -14,7 +14,7 @@ describe("getTestResultsBySystemNumber Function", () => {
   context("receiving minimal Event, and successful service call", () => {
     it("invokes testResultsService with default filters, and returns 200 + data", async () => {
       const testResultsMock = jest.fn().mockResolvedValue("Success");
-      TestResultsService.prototype.getTestResults = testResultsMock;
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
       const expectedFilters = {
         systemNumber: 1,
@@ -36,7 +36,7 @@ describe("getTestResultsBySystemNumber Function", () => {
   context("Service call fails", () => {
     it("returns Error", async () => {
       const myError = new HTTPError(418, "It Broke!");
-      TestResultsService.prototype.getTestResults = jest.fn().mockRejectedValue(myError);
+      TestResultsService.prototype.getTestResultBySystemNumber = jest.fn().mockRejectedValue(myError);
 
       expect.assertions(3);
       // @ts-ignore
@@ -82,7 +82,7 @@ describe("getTestResultsBySystemNumber Function", () => {
     context("with non-empty toDateTime", () => {
       it("invokes testResultsService with custom filters", async () => {
         const testResultsMock = jest.fn().mockResolvedValue("Success");
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
         const myEvent = {
           ...minimalEvent,
@@ -96,7 +96,7 @@ describe("getTestResultsBySystemNumber Function", () => {
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
-          fromDateTime: moment().subtract(2, "years").endOf("day").toDate()
+          fromDateTime: moment(new Date("01-01-2010")).subtract(2, "years").endOf("day").toDate()
         };
 
         expect.assertions(4);
@@ -111,7 +111,7 @@ describe("getTestResultsBySystemNumber Function", () => {
     context("with non-empty fromDateTime", () => {
       it("invokes testResultsService with custom filters", async () => {
         const testResultsMock = jest.fn().mockResolvedValue("Success");
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
         const myEvent = {
           ...minimalEvent,
@@ -140,7 +140,7 @@ describe("getTestResultsBySystemNumber Function", () => {
     context("with non-empty status", () => {
       it("invokes testResultsService with custom filters", async () => {
         const testResultsMock = jest.fn().mockResolvedValue("Success");
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
         const myEvent = {
           ...minimalEvent,
@@ -170,7 +170,7 @@ describe("getTestResultsBySystemNumber Function", () => {
     context("with non-empty test version", () => {
       it("invokes testResultsService with custom filters", async () => {
         const testResultsMock = jest.fn().mockResolvedValue("Success");
-        TestResultsService.prototype.getTestResults = testResultsMock;
+        TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
         const myEvent = {
           ...minimalEvent,

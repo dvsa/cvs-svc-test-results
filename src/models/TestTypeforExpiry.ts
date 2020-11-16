@@ -5,7 +5,7 @@ export interface TestTypeForExpiry {
     testType: TestType;
     vehicleType: VEHICLE_TYPE;
     recentExpiry: Date;
-    regnDate?: string;
+    regnOrFirstUseDate?: string;
     hasHistory: boolean;
     hasRegistration: boolean;
   }
