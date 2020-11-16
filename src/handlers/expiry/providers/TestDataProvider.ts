@@ -18,13 +18,12 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const { Count, Items } = await this.testResultsDAO.getBySystemNumber(
+      const result = await this.testResultsDAO?.getBySystemNumber(
         filters.systemNumber
       );
       const response: models.ITestResultData = {
-        Count,
-        Items,
+        Count: result?.Count,
+        Items: result?.Items,
       };
       const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
         response
@@ -43,14 +42,13 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const result = await this.testResultsDAO.getByTesterStaffId(
+      const result = await this.testResultsDAO?.getByTesterStaffId(
         filters.testerStaffId
       );
       if (result && !result.length) {
         return result;
       }
-      return TestDataProvider.applyTestResultsFilters(result, filters);
+      return TestDataProvider.applyTestResultsFilters(result as models.ITestResult[], filters);
     } catch (error) {
       console.error(
         "TestDataProvider.getTestResultBySystemNumber: error-> ",
@@ -67,8 +65,7 @@ export class TestDataProvider implements ITestDataProvider {
     const toDateTime = new Date();
     let result: models.ITestResult[] = [];
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const data = await this.testResultsDAO.getBySystemNumber(systemNumber);
+      const data = await this.testResultsDAO?.getBySystemNumber(systemNumber);
       console.log(`getTestHistory: Data Count -> ${data?.Count}`);
       if (!data?.Count) {
         return result;
@@ -102,6 +99,16 @@ export class TestDataProvider implements ITestDataProvider {
       console.log("TestDataProvider.getTestHistory: error -> ", error);
       throw error;
     }
+  }
+
+  public async getBySystemNumber(systemNumber: string) {
+    const data = (await this.testResultsDAO?.getBySystemNumber(
+      systemNumber
+    )) as models.ITestResultData;
+    const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
+      data
+    );
+    return testResults;
   }
 
   public async getMostRecentExpiryDate(systemNumber: string): Promise<Date> {
@@ -147,7 +154,7 @@ export class TestDataProvider implements ITestDataProvider {
     return enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
   }
 
-  public static applyTestResultsFilters(
+  private static applyTestResultsFilters(
     testResults: models.ITestResult[],
     filters: models.ITestResultFilters
   ): models.ITestResult[] {
@@ -228,12 +235,15 @@ export class TestDataProvider implements ITestDataProvider {
     return await this.createNewTestNumber(testTypes);
   }
 
-  private async createNewTestNumber(list: models.TestType[]) {
+  private async createNewTestNumber(list: models.TestType[]): Promise<models.TestType[]> {
     return await Promise.all(
-      list.map(
-        utils.MappingUtil.addTestNumberToTestTypes(
-          this.testResultsDAO as models.TestResultsDAO
-        )
+      list.map(async (testType) => {
+       const {testNumber} = await this.testResultsDAO?.createTestNumber();
+       return {
+         ...testType,
+         testNumber
+       } as models.TestType;
+      }
       )
     );
   }
@@ -248,6 +258,20 @@ export class TestDataProvider implements ITestDataProvider {
       console.error("TestDataProvider.insertTestResult -> ", error);
       throw error;
     }
+  }
+
+  public async updateTestResult(payload: models.ITestResult) {
+    try {
+      const result = await this.testResultsDAO?.updateTestResult(payload);
+      return result?.$response.data as models.ITestResult;
+    } catch (error) {
+      console.error("TestDataProvider.updateTestResult -> ", error);
+      throw error;
+    }
+  }
+
+  public async getActivity(params: models.ActivityParams) {
+    return this.testResultsDAO?.getActivity(params);
   }
   //#endregion
   //#region [rgba(0, 205, 30, 0.1)] Private Static functions

@@ -1,10 +1,13 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 import { HTTPError } from "../../src/models/HTTPError";
 import testResults from "../resources/test-results.json";
-import { ERRORS, MESSAGES } from "../../src/assets/Enums";
-import { cloneDeep } from "lodash";
+import {ERRORS} from "../../src/assets/Enums";
+import {cloneDeep} from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
 import { ValidationUtil } from "../../src/utils/validationUtil";
+import { VehicleTestController } from "../../src/handlers/VehicleTestController";
+import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
+import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
 
 describe("updateTestResults", () => {
   let testResultsService: TestResultsService | any;
@@ -82,7 +85,8 @@ describe("updateTestResults", () => {
 
         context("when changing an attribute that requires new testCode", () => {
           context("when changing an attribute on the test-type", () => {
-            it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", () => {
+            it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", async () => {
+              const systemNumber = testToUpdate.systemNumber;
               MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                   updateTestResult: () => {
@@ -111,27 +115,22 @@ describe("updateTestResults", () => {
                 };
               });
 
-              testResultsService = new TestResultsService(
-                new MockTestResultsDAO()
-              );
+              const testDataProvider = new TestDataProvider();
+              testDataProvider.testResultsDAO = new MockTestResultsDAO();
+              const vehicleTestController = new VehicleTestController(testDataProvider, new DateProvider());
+
               const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
               updatedPayload.testTypes[0].testTypeName =
                 "Another test type name";
               expect.assertions(4);
-              return testResultsService
-                .updateTestResult(
-                  updatedPayload.systemNumber,
-                  updatedPayload,
-                  msUserDetails
-                )
-                .then((returnedRecord: any) => {
-                  expect(returnedRecord).not.toEqual(undefined);
-                  expect(returnedRecord).not.toEqual({});
-                  expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
-                  expect(
-                    returnedRecord.testTypes[0].testTypeClassification
-                  ).toEqual("Annual With Certificate");
-                });
+              // @ts-ignore
+              const returnedRecord = await  vehicleTestController.mapOldTestResultToNew(updatedPayload.systemNumber, updatedPayload, msUserDetails)
+              expect(returnedRecord).not.toEqual(undefined);
+              expect(returnedRecord).not.toEqual({});
+              expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
+              expect(
+                returnedRecord.testTypes[0].testTypeClassification
+              ).toEqual("Annual With Certificate");
             });
           });
 
@@ -529,21 +528,19 @@ describe("updateTestResults", () => {
                   };
                 });
 
-                testResultsService = new TestResultsService(
-                  new MockTestResultsDAO()
-                );
+                const dataProvider = new TestDataProvider();
+                dataProvider.testResultsDAO = new MockTestResultsDAO();
+                const vehicleTestController = new VehicleTestController(dataProvider, new DateProvider);
                 const expectedTestTypeStartTimestamp =
                   "2020-12-28T09:26:58.477Z";
                 const expectedTestTypeEndTimestamp = "2020-12-28T18:00:00.000Z";
                 testToUpdate.testTypes[0].testTypeStartTimestamp = expectedTestTypeStartTimestamp;
                 testToUpdate.testTypes[0].testTypeEndTimestamp = expectedTestTypeEndTimestamp;
                 expect.assertions(4);
-                return testResultsService
-                  .updateTestResult(
-                    testToUpdate.systemNumber,
-                    testToUpdate,
-                    msUserDetails
-                  )
+                // @ts-ignore
+                return vehicleTestController.mapOldTestResultToNew(testToUpdate.systemNumber,
+                  testToUpdate,
+                  msUserDetails)
                   .then((returnedRecord: any) => {
                     expect(returnedRecord).not.toEqual(undefined);
                     expect(returnedRecord).not.toEqual({});
@@ -869,6 +866,7 @@ describe("updateTestResults", () => {
           testToUpdate = cloneDeep(testResultsMockDB[1]);
           for (const testTypeId of testTypeIds) {
             testToUpdate.testTypes[0].testTypeId = testTypeId;
+            // @ts-ignore
             const validationResponse = ValidationUtil.validateTestTypes(
               testToUpdate
             );
