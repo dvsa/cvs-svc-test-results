@@ -21,7 +21,6 @@ export class ValidationUtil {
   }
 
   private static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-    // TODO: Discuss date validation to add validation fromDate cannot be greater than toDate.
     return fromDateTime !== undefined && toDateTime !== undefined && isDate(new Date(fromDateTime)) && isDate(new Date(toDateTime)) && isFinite((new Date(fromDateTime)).getTime()) && isFinite((new Date(toDateTime)).getTime());
   }
 
@@ -197,9 +196,9 @@ export class ValidationUtil {
     );
   }
   public static isValidTestCodeForExpiryCalculation(
-    testCode?: string
+    testCode: string
   ): boolean {
-    return !!testCode && enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode.toUpperCase());
+    return enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
   }
 
   public static isNotAllowedVehicleTypeForExpiry(vehicleType: string) {

@@ -469,9 +469,9 @@ export class TestResultsService {
           testType.certificateNumber = testType.testNumber;
         }
       });
-    }
-    return payload;
   }
+    return payload;
+}
   private shouldGenerateCertificateNumber(testType: models.TestType, vehicleType: string): boolean {
     if (testType.testTypeClassification === enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== enums.TEST_RESULT.ABANDONED) {
       if (utils.ValidationUtil.isTestTypeAdr(testType) || utils.ValidationUtil.isTestTypeLec(testType)) {
