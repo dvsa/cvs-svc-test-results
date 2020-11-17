@@ -14,12 +14,18 @@
         },
         {
         "isHistoryRequired": true,
-        "isRegistrationRequired": null,
+        "isRegistrationRequired": false,
         "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
         "strategy": "PsvMostRecentExpiryStrategy"
         },
         {
-        "isHistoryRequired": null,
+        "isHistoryRequired": true,
+        "isRegistrationRequired": true,
+        "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
+        "strategy": "PsvMostRecentExpiryStrategy"
+        },
+        {
+        "isHistoryRequired": false,
         "isRegistrationRequired": true,
         "testTypes": ["1", "3", "4", "7", "8", "10", "14", "18", "21", "27", "28", "93"],
         "strategy": "PsvRegistrationAnniversaryStrategy"
