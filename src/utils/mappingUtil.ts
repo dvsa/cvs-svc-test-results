@@ -104,14 +104,12 @@ export class MappingUtil {
         payload.createdByName = payload.testerName;
         payload.testVersion = enums.TEST_VERSION.CURRENT;
         payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
-        if (payload.testTypes.length > 0) {
-          payload.testTypes.forEach((testType: any) => {
+        payload.testTypes.forEach((testType: any) => {
             Object.assign(testType,
               {
                 createdAt: createdAtDate, lastUpdatedAt: createdAtDate
               });
           });
-        }
         return payload;
       }
 
