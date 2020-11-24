@@ -82,12 +82,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
     it("should throw an error 404-No resources match the search criteria", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getByTesterStaffId: () => {
-            return Promise.resolve({
-              Items: [],
-              Count: 0
-            });
-          }
+          getByTesterStaffId: () => Promise.resolve([])
         };
       });
 

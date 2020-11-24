@@ -100,8 +100,8 @@ export class DateProvider {
   public static isBetweenDates(
     fromDate: string | number | Date,
     toDate: string | number | Date,
-    compareFromDate: Date,
-    compareToDate: Date
+    compareFromDate: string | number | Date,
+    compareToDate: string | number | Date
   ) {
     return (
       moment(fromDate).isAfter(compareFromDate) &&

@@ -10,7 +10,6 @@ import { VehicleTestController } from "../handlers/VehicleTestController";
 import { TestDataProvider } from "../handlers/expiry/providers/TestDataProvider";
 import { DateProvider } from "../handlers/expiry/providers/DateProvider";
 import { MappingUtil } from "../utils/mappingUtil";
-import { ValidationUtil } from "../utils/validationUtil";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -27,71 +26,20 @@ export class TestResultsService {
     this.vehicleTestController.dataProvider.testResultsDAO = this.testResultsDAO;
   }
 
-  // TODO: CVSB-18780: refactor to guard logic, handle errors via Promise.reject and destructure object where needed
-  public async getTestResultBySystemNumber(filters: models.ITestResultFilters): Promise<any> {
-    if (filters.systemNumber && ValidationUtil.validateGetTestResultFilters(filters)) {
-      try {
-          const result = await this.testResultsDAO.getBySystemNumber(filters.systemNumber);
-          const response: models.ITestResultData = { Count: result.Count, Items: result.Items };
-          return this.applyTestResultsFilters(response, filters);
-        } catch (error) {
-          if (!(error instanceof models.HTTPError)) {
-            console.error("dynamoError on getBySystemNumber", error);
-            error = new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
-          }
-          throw error;
-        }
-      } else {
-        // console.log("invalid systemNumber Filters", filters);
-        return Promise.reject(new models.HTTPError(400, enums.MESSAGES.BAD_REQUEST));
-      }
+  public async getTestResultBySystemNumber(filters: models.ITestResultFilters): Promise<models.ITestResult[]> {
+    try {
+    return await this.vehicleTestController.getTestResultBySystemNumber(filters);
+  } catch (error) {
+    return TestResultsService.handleError(error);
+  }
   }
 
-  // TODO: CVSB-18780: refactor logic, handle errors via Promise.reject and destructure object where needed
   public async getTestResultsByTesterStaffId(filters: models.ITestResultFilters): Promise<any> {
-    if (filters.testerStaffId && ValidationUtil.validateGetTestResultFilters(filters)) {
-      try {
-        const result = await this.testResultsDAO.getByTesterStaffId(filters.systemNumber);
-        const response: models.ITestResultData = { Count: result.length, Items: result };
-        return this.applyTestResultsFilters(response, filters);
-      } catch (error) {
-        if (!(error instanceof models.HTTPError)) {
-          error = new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
-        }
-        throw error;
-      }
-    } else {
-      console.log("invalid testerStaffId Filters", filters);
-      return Promise.reject(new models.HTTPError(400, enums.MESSAGES.BAD_REQUEST));
+    try {
+      return await this.vehicleTestController.getTestResultByTestStaffId(filters);
+    } catch (error) {
+      return TestResultsService.handleError(error);
     }
-  }
-
-  // TODO: CVSB-18780: relocate function to TestDataProvider, sort filters in readable format and destructure object
-  public applyTestResultsFilters(data: models.ITestResultData, filters: models.ITestResultFilters) {
-    let testResults = ValidationUtil.getTestResultItems(data);
-    testResults = utils.GetTestResults.filterTestResultByDate(testResults, filters.fromDateTime, filters.toDateTime);
-    if (filters.testStatus) {
-      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testStatus", filters.testStatus);
-    }
-    if (filters.testStationPNumber) {
-      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testStationPNumber", filters.testStationPNumber);
-    }
-    testResults = utils.GetTestResults.filterTestResultsByDeletionFlag(testResults);
-    testResults = utils.GetTestResults.filterTestTypesByDeletionFlag(testResults);
-    if (filters.testResultId) {
-      testResults = utils.GetTestResults.filterTestResultsByParam(testResults, "testResultId", filters.testResultId);
-      if (filters.testVersion) {
-        testResults = utils.GetTestResults.filterTestResultsByTestVersion(testResults, filters.testVersion);
-      }
-    } else {
-      testResults = utils.GetTestResults.filterTestResultsByTestVersion(testResults, enums.TEST_VERSION.CURRENT);
-      testResults = utils.GetTestResults.removeTestHistory(testResults);
-    }
-    // check testResults after filters
-    if (testResults.length === 0) {
-      throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
-    }
-    return testResults;
   }
 
   public async updateTestResult(systemNumber: string, payload: models.ITestResult, msUserDetails: models.IMsUserDetails) {
@@ -121,7 +69,7 @@ export class TestResultsService {
     try {
       const result = await this.testResultsDAO.getBySystemNumber(systemNumber);
       const response: models.ITestResultData = { Count: result.Count, Items: result.Items };
-      const testResults = ValidationUtil.getTestResultItems(response);
+      const testResults = utils.ValidationUtil.getTestResultItems(response);
       const oldTestResult = this.getTestResultToArchive(testResults, payload.testResultId);
       oldTestResult.testVersion = enums.TEST_VERSION.ARCHIVED;
       const newTestResult: models.ITestResult = cloneDeep(oldTestResult);
@@ -296,7 +244,7 @@ export class TestResultsService {
       return Promise.reject(new models.HTTPError(400, enums.MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT));
     }
 
-    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload);
+    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse = utils.ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(payload);
     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.result) {
       return Promise.reject(new models.HTTPError(400, fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisoryResponse.missingFields + " are null for a defect with deficiency category other than advisory"));
     }
@@ -435,10 +383,10 @@ export class TestResultsService {
         toDateTime: new Date()
       });
       const filteredTestTypeDates: any[] = [];
-      testResults.forEach((testResult: { testTypes: any; vehicleType: any; vehicleSize: any; vehicleConfiguration: any; noOfAxles: any; }) => {
-        testResult.testTypes.forEach((testType: { testExpiryDate: string; testCode: string; }) => {
+      testResults.forEach((testResult) => {
+        testResult.testTypes.forEach((testType) => {
           // prepare a list of annualTestTypes with expiry.
-          if (utils.ValidationUtil.isValidTestCodeForExpiryCalculation(testType.testCode.toUpperCase()) && DateProvider.isValidDate(testType.testExpiryDate)) {
+          if (utils.ValidationUtil.isValidTestCodeForExpiryCalculation(testType.testCode) && DateProvider.isValidDate(testType.testExpiryDate)) {
             filteredTestTypeDates.push(moment(testType.testExpiryDate));
           }
         });
@@ -523,5 +471,14 @@ export class TestResultsService {
         }
       });
     return payload;
+  }
+
+  private static handleError(error: any) {
+    console.error("TestResultsService.getTestResultBySystemNumber: error -> ", error);
+    const httpError = error as models.HTTPError;
+    if (!(httpError && [400, 404].includes(httpError.statusCode))) {
+      return Promise.reject(new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR));
+    }
+    return Promise.reject(error);
   }
 }

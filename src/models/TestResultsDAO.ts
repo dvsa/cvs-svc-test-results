@@ -45,7 +45,7 @@ export class TestResultsDAO {
         ":systemNumber": systemNumber
       }
     };
-    console.log("THESE ARE YOUR PARAMS ->", params);
+    console.log("getBySystemNumber: PARAMS ->", params);
     return TestResultsDAO.docClient.query(params).promise();
   }
 
@@ -61,7 +61,7 @@ export class TestResultsDAO {
         ":testerStaffId": testerStaffId
       }
     };
-
+    console.log("getByTesterStaffId: PARAMS ->", params);
     return this.queryAllData(params);
   }
 
