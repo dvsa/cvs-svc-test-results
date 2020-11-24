@@ -1,54 +1,104 @@
-import { HTTPError } from "../../../models/HTTPError";
+import { Service } from "../../../models/injector/ServiceDecorator";
 import * as enums from "../../../assets/Enums";
-import { ITestResult } from "../../../models/ITestResult";
-import { TestResultsDAO } from "../../../models/TestResultsDAO";
+import * as models from "../../../models";
+import * as utils from "../../../utils";
 import { DateProvider } from "./DateProvider";
 import { ITestDataProvider } from "./ITestDataProvider";
-import { Service } from "../../../models/injector/ServiceDecorator";
 
 @Service()
 export class TestDataProvider implements ITestDataProvider {
-  public testResultsDAO: TestResultsDAO | undefined;
+  public testResultsDAO: models.TestResultsDAO | undefined;
 
-  public async getTestHistory(systemNumber: string): Promise<ITestResult[]> {
+  /**
+   * To fetch test results by systemNumber
+   * @param filters filters used to search the database
+   */
+  public async getTestResultBySystemNumber(
+    filters: models.ITestResultFilters
+  ): Promise<models.ITestResult[]> {
+    try {
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const result = await this.testResultsDAO.getBySystemNumber(
+        filters.systemNumber
+      );
+      const response: models.ITestResultData = {
+        Count: result.Count,
+        Items: result.Items,
+      };
+      const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
+        response
+      );
+      return TestDataProvider.applyTestResultsFilters(testResults, filters);
+    } catch (error) {
+      console.error(
+        "TestDataProvider.getTestResultBySystemNumber: error-> ",
+        error
+      );
+      throw error;
+    }
+  }
+
+  public async getTestResultByTesterStaffId(
+    filters: models.ITestResultFilters
+  ): Promise<models.ITestResult[]> {
+    try {
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const result = await this.testResultsDAO.getByTesterStaffId(
+        filters.testerStaffId
+      );
+      if (result && !result.length) {
+        return result;
+      }
+      return TestDataProvider.applyTestResultsFilters(result, filters);
+    } catch (error) {
+      console.error(
+        "TestDataProvider.getTestResultBySystemNumber: error-> ",
+        error
+      );
+      throw error;
+    }
+  }
+
+  public async getTestHistory(
+    systemNumber: string
+  ): Promise<models.ITestResult[]> {
     const fromDateTime = new Date(1970, 1, 1);
     const toDateTime = new Date();
-    let result: ITestResult[] = [];
+    let result: models.ITestResult[] = [];
     try {
-      this.testResultsDAO = this.testResultsDAO as TestResultsDAO;
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
       const data = await this.testResultsDAO.getBySystemNumber(systemNumber);
       console.log(`getTestHistory: Data Count -> ${data?.Count}`);
-      if (data?.Count) {
-        result = data.Items as ITestResult[];
-        return result
-          .filter((test) => test.testStatus === enums.TEST_STATUS.SUBMITTED)
-          .filter(
-            (testResult: {
-              testStartTimestamp: string | number | Date;
-              testEndTimestamp: string | number | Date;
-            }) => {
-              const { testStartTimestamp, testEndTimestamp } = testResult;
-              if (
-                !DateProvider.isValidDate(testStartTimestamp) ||
-                !DateProvider.isValidDate(testEndTimestamp)
-              ) {
-                console.warn(`getTestHistory: Invalid timestamp -> systemNumber: ${systemNumber}  testStartTimestamp: ${testStartTimestamp} testEndTimestamp: ${testEndTimestamp}`);
-              }
-              return DateProvider.isBetweenDates(
-                testStartTimestamp,
-                testEndTimestamp,
-                fromDateTime,
-                toDateTime
+      if (!data?.Count) {
+        return result;
+      }
+      result = data.Items as models.ITestResult[];
+      return result
+        .filter((test) => test.testStatus === enums.TEST_STATUS.SUBMITTED)
+        .filter(
+          (testResult: {
+            testStartTimestamp: string | number | Date;
+            testEndTimestamp: string | number | Date;
+          }) => {
+            const { testStartTimestamp, testEndTimestamp } = testResult;
+            if (
+              !DateProvider.isValidDate(testStartTimestamp) ||
+              !DateProvider.isValidDate(testEndTimestamp)
+            ) {
+              console.warn(
+                `getTestHistory: Invalid timestamp -> systemNumber: ${systemNumber}  testStartTimestamp: ${testStartTimestamp} testEndTimestamp: ${testEndTimestamp}`
               );
             }
-          );
-      }
-      return result;
+            return DateProvider.isBetweenDates(
+              testStartTimestamp,
+              testEndTimestamp,
+              fromDateTime,
+              toDateTime
+            );
+          }
+        );
     } catch (error) {
-      if (!(error instanceof HTTPError)) {
-        console.log(error);
-        error = new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
-      }
+      console.log("TestDataProvider.getTestHistory: error -> ", error);
       throw error;
     }
   }
@@ -94,5 +144,142 @@ export class TestDataProvider implements ITestDataProvider {
     testCode: string
   ): boolean {
     return enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
+  }
+
+  public static applyTestResultsFilters(
+    testResults: models.ITestResult[],
+    filters: models.ITestResultFilters
+  ): models.ITestResult[] {
+    const {
+      fromDateTime,
+      toDateTime,
+      testStatus,
+      testStationPNumber,
+      testResultId,
+      testVersion,
+    } = filters;
+    testResults = this.filterTestResultsByDeletionFlag(testResults);
+    testResults = this.filterTestTypesByDeletionFlag(testResults);
+    testResults = this.filterTestResultByDate(
+      testResults,
+      fromDateTime,
+      toDateTime
+    );
+    testResults = this.filterTestResultsByParam(
+      testResults,
+      "testStatus",
+      testStatus
+    );
+
+    testResults = this.filterTestResultsByParam(
+      testResults,
+      "testStationPNumber",
+      testStationPNumber
+    );
+
+    if (!testResultId) {
+      testResults = this.filterTestResultsByTestVersion(
+        testResults,
+        enums.TEST_VERSION.CURRENT
+      );
+      testResults = this.removeTestHistory(testResults);
+      return testResults;
+    }
+
+    testResults = this.filterTestResultsByParam(
+      testResults,
+      "testResultId",
+      testResultId
+    );
+
+    testResults = this.filterTestResultsByTestVersion(testResults, testVersion);
+
+    return testResults;
+  }
+
+  public static filterTestResultsByParam(
+    testResults: models.ITestResult[],
+    filterName: string,
+    filterValue: any
+  ): models.ITestResult[] {
+    return filterValue
+      ? testResults.filter((testResult) => {
+          const k = filterName as keyof typeof testResult;
+          return testResult[k] === filterValue;
+        })
+      : testResults;
+  }
+
+  public static filterTestResultByDate(
+    testResults: models.ITestResult[],
+    fromDateTime: string | number | Date,
+    toDateTime: string | number | Date
+  ): models.ITestResult[] {
+    return testResults.filter((testResult) =>
+      DateProvider.isBetweenDates(
+        testResult.testStartTimestamp,
+        testResult.testEndTimestamp,
+        fromDateTime,
+        toDateTime
+      )
+    );
+  }
+
+  public static filterTestResultsByTestVersion(
+    testResults: models.ITestResult[],
+    testVersion: string = enums.TEST_VERSION.CURRENT
+  ): models.ITestResult[] {
+    let result: models.ITestResult[] = [];
+    if (testVersion === enums.TEST_VERSION.ALL) {
+      return testResults;
+    }
+    for (const testResult of testResults) {
+      if (
+        testVersion === enums.TEST_VERSION.CURRENT &&
+        (testResult.testVersion === enums.TEST_VERSION.CURRENT ||
+          !testResult.testVersion)
+      ) {
+        delete testResult.testHistory;
+        result.push(testResult);
+      } else if (testVersion === enums.TEST_VERSION.ARCHIVED) {
+        if (testResult.testVersion === enums.TEST_VERSION.ARCHIVED) {
+          result.push(testResult);
+          if (testResult.testHistory) {
+            result = result.concat(testResult.testHistory);
+            delete testResult.testHistory;
+          }
+        } else {
+          result = testResult.testHistory || [];
+        }
+      }
+    }
+    return result;
+  }
+
+  public static removeTestHistory(testResults: models.ITestResult[]) {
+    for (const testResult of testResults) {
+      delete testResult.testHistory;
+    }
+    return testResults;
+  }
+
+  public static filterTestResultsByDeletionFlag(
+    testResults: models.ITestResult[]
+  ) {
+    return testResults.filter((testResult) => {
+      return !testResult.deletionFlag === true;
+    });
+  }
+
+  public static filterTestTypesByDeletionFlag(
+    testResults: models.ITestResult[]
+  ) {
+    testResults.forEach((testResult) => {
+      const filteredTestTypes = testResult.testTypes.filter((testType) => {
+        return !testType.deletionFlag === true;
+      });
+      testResult.testTypes = filteredTestTypes;
+    });
+    return testResults;
   }
 }
