@@ -2,11 +2,12 @@ import {TestResultsService} from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
 import {cloneDeep} from "lodash";
-import { COIF_EXPIRY_TEST_TYPES } from "../../src/assets/Enums";
+import { COIF_EXPIRY_TEST_TYPES, MESSAGES } from "../../src/assets/Enums";
 import dateMockUtils from "../util/dateMockUtils";
 import {ITestResult} from "../../src/models/ITestResult";
 import testResults from "../resources/test-results.json";
 import moment from "moment";
+import { HTTPError } from "../../src/models/HTTPError";
 
 describe("TestResultsService calling generateExpiryDate", () => {
     let testResultsService: TestResultsService | any;
@@ -549,7 +550,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
             });
 
             describe("with only bad dates in the test history", () => {
-                it("should ignore the bad dates and set the expiry to 1 day short of a year from today", () => {
+                it("should throw error", async () => {
                     const psvTestResult = cloneDeep(testResultsMockDB[0]);
                     const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]) as ITestResult;
                     getBySystemNumberResponse.testTypes.forEach((test) => {
@@ -579,10 +580,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const expectedExpiryDate = new Date();
                     expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
                     expectedExpiryDate.setDate(new Date().getDate() - 1);
-                    return testResultsService.generateExpiryDate(psvTestResult)
-                      .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
-                          expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
-                      });
+                    const expectedError = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+                    try {
+                        await testResultsService.generateExpiryDate(psvTestResult);
+                    } catch (error) {
+                        expect(error).toEqual(expectedError);
+                    }
                 });
             });
             describe("with some bad dates in the test history, and an 'imminent' expiry date", () => {
@@ -725,7 +728,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     });
                 });
                 describe("and the previous expiry date is malformed", () => {
-                    it("should still set the expiry date to last day of current month + 1 year", () => {
+                    it("should throw an error", async () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                         const pastExpiryDate = "2020-0";
                         hgvTestResult.testTypes[0].testTypeId = "94";
@@ -753,11 +756,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         });
                         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                        const expectedExpiryDate = moment().add(1, "years").endOf("month").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
-                          .then((hgvTestResultWithExpiryDate: any) => {
-                              expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
-                          });
+                        const expectedError = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
+                        try {
+                            await testResultsService.generateExpiryDate(hgvTestResult);
+                        } catch (error) {
+                            expect(error).toEqual(expectedError);
+                        }
                     });
                 });
                 describe("First test types", () => {
