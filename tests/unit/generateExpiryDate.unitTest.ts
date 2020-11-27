@@ -8,7 +8,6 @@ import {ITestResult} from "../../src/models/ITestResult";
 import testResults from "../resources/test-results.json";
 import moment from "moment";
 
-
 describe("TestResultsService calling generateExpiryDate", () => {
     let testResultsService: TestResultsService | any;
     let MockTestResultsDAO: jest.Mock;
