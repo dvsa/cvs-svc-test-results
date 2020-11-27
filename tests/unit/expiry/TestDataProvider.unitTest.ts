@@ -215,7 +215,7 @@ describe("TestDataProvider", () => {
       });
     });
 
-    describe("when getBySystemNumber returns an array of valid and invalid recent expiry dates", () => {
+    describe("when getBySystemNumber returns an array of invalid expiry dates including undefined", () => {
       it("should return the valid most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
