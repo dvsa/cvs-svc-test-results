@@ -29,10 +29,8 @@ describe("TestDataProvider", () => {
         }
       });
     });
-    describe("when getBySystemNumber returns invalid testStartTimestamp", () => {
-      it("should throw error", async () => {
-        expect.assertions(1);
-        try {
+    describe("when getBySystemNumber returns test results with invalid testEndTimestamp", () => {
+      it("should return the filtered data", async () => {
           testDataProvider = new TestDataProvider();
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {
@@ -53,19 +51,15 @@ describe("TestDataProvider", () => {
               }
             };
           });
+          expect.assertions(2);
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
-          await testDataProvider.getTestHistory("123");
-        } catch (error) {
-          expect(error).toEqual(
-            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
-          );
-        }
+          const result = await testDataProvider.getTestHistory("123");
+          expect(result.length).toEqual(1);
+          expect(result[0].testEndTimestamp).toEqual("2019-03");
       });
     });
-    describe("when getBySystemNumber returns invalid testEndTimestamp", () => {
-      it("should throw error", async () => {
-        expect.assertions(1);
-        try {
+    describe("when getBySystemNumber returns invalid testStartTimestamp", () => {
+      it("should return the filtered data", async () => {
           testDataProvider = new TestDataProvider();
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {
@@ -86,14 +80,11 @@ describe("TestDataProvider", () => {
               }
             };
           });
+          expect.assertions(2);
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           const result = await testDataProvider.getTestHistory("123");
-          console.log(result);
-        } catch (error) {
-          expect(error).toEqual(
-            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
-          );
-        }
+          expect(result.length).toEqual(1);
+          expect(result[0].testStartTimestamp).toEqual("2019-03");
       });
     });
     describe("when getBySystemNumber returns array of valid data", () => {
@@ -110,7 +101,7 @@ describe("TestDataProvider", () => {
                       testStartTimestamp: "2019-03-10T08:47:59.269Z",
                       testEndTimestamp: "2019-03-10T09:30:59.269Z",
                       testTypes: [
-                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261009Z" }
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261Z" }
                       ],
                       testStatus: enums.TEST_STATUS.SUBMITTED
                     },
@@ -177,7 +168,7 @@ describe("TestDataProvider", () => {
       });
     });
 
-    describe("when getBySystemNumber returns an array of valid recent expiry dates", () => {
+    describe("when getBySystemNumber returns an array of valid recent expiry short dates", () => {
       it("should return the most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -225,14 +216,14 @@ describe("TestDataProvider", () => {
     });
 
     describe("when getBySystemNumber returns an array of valid and invalid recent expiry dates", () => {
-      it("should throw error", async () => {
+      it("should return the valid most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
             getBySystemNumber: () => {
               {
                 return {
-                  Count: 3,
+                  Count: 4,
                   Items: [
                     {
                       testStartTimestamp: "2019-02-10T08:47:59.269Z",
@@ -251,6 +242,14 @@ describe("TestDataProvider", () => {
                       testStatus: enums.TEST_STATUS.SUBMITTED
                     },
                     {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: undefined }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
                       testStartTimestamp: "2019-01-10T08:47:59.269Z",
                       testEndTimestamp: "2019-01-10T09:30:59.269Z",
                       testTypes: [
@@ -265,17 +264,13 @@ describe("TestDataProvider", () => {
           };
         });
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
-        const expectedError = new Error("Invalid Expiry Date: 2020-01");
         expect.assertions(1);
-        try {
-          await testDataProvider.getMostRecentExpiryDate("123");
-        } catch (error) {
-          expect(error).toEqual(expectedError);
-        }
+        const result = await testDataProvider.getMostRecentExpiryDate("123");
+        expect(result).toEqual(new Date("2020-02-15"));
       });
     });
 
-    describe("when getBySystemNumber returns an array of valid expiry dates with legacy history as well history based generated via VTA", () => {
+    describe("when getBySystemNumber returns an array of valid long dates with 6 digit milliseconds and 3 digit milliseconds in history", () => {
       it("should return the valid most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -306,6 +301,54 @@ describe("TestDataProvider", () => {
                       testEndTimestamp: "2019-01-10T09:30:59.269Z",
                       testTypes: [
                         { testCode: "rpt1", testExpiryDate: "2020-12-10T08:47:59.129000Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
+                  ]
+                };
+              }
+            }
+          };
+        });
+        expect.assertions(1);
+        testDataProvider.testResultsDAO = new MockTestResultsDAO();
+        const expiry = await testDataProvider.getMostRecentExpiryDate("123");
+        const expectedDate = new Date("2020-12-10T08:47:59.129000Z");
+        expect(expiry).toEqual(expectedDate);
+      });
+    });
+
+    describe("when getBySystemNumber returns an array of valid long dates with valid 3 digit milliseconds in history", () => {
+      it("should return the valid most recent expiry", async () => {
+        testDataProvider = new TestDataProvider();
+        MockTestResultsDAO = jest.fn().mockImplementation(() => {
+          return {
+            getBySystemNumber: () => {
+              {
+                return {
+                  Count: 3,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "aat1", testExpiryDate: "2018-02-10T08:47:59.269Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "rpt1", testExpiryDate: "2020-12-10T08:47:59.129Z" }
                       ],
                       testStatus: enums.TEST_STATUS.SUBMITTED
                     }

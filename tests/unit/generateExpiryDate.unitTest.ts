@@ -550,7 +550,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
             });
 
             describe("with only bad dates in the test history", () => {
-                it("should throw error", async () => {
+                it("should ignore the bad dates and set the expiry to 1 day short of a year from today", async () => {
                     const psvTestResult = cloneDeep(testResultsMockDB[0]);
                     const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]) as ITestResult;
                     getBySystemNumberResponse.testTypes.forEach((test) => {
@@ -580,12 +580,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     const expectedExpiryDate = new Date();
                     expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
                     expectedExpiryDate.setDate(new Date().getDate() - 1);
-                    const expectedError = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-                    try {
-                        await testResultsService.generateExpiryDate(psvTestResult);
-                    } catch (error) {
-                        expect(error).toEqual(expectedError);
-                    }
+                    return testResultsService.generateExpiryDate(psvTestResult)
+                      .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
+                          expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                      });
                 });
             });
             describe("with some bad dates in the test history, and an 'imminent' expiry date", () => {
@@ -728,7 +726,7 @@ describe("TestResultsService calling generateExpiryDate", () => {
                     });
                 });
                 describe("and the previous expiry date is malformed", () => {
-                    it("should throw an error", async () => {
+                    it("should still set the expiry date to last day of current month + 1 year", async () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                         const pastExpiryDate = "2020-0";
                         hgvTestResult.testTypes[0].testTypeId = "94";
@@ -756,12 +754,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                         });
                         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-                        const expectedError = new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
-                        try {
-                            await testResultsService.generateExpiryDate(hgvTestResult);
-                        } catch (error) {
-                            expect(error).toEqual(expectedError);
-                        }
+                        const expectedExpiryDate = moment().add(1, "years").endOf("month").toDate();
+                        return testResultsService.generateExpiryDate(hgvTestResult)
+                          .then((hgvTestResultWithExpiryDate: any) => {
+                              expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
+                          });
+
                     });
                 });
                 describe("First test types", () => {

@@ -28,8 +28,11 @@ export class TestDataProvider implements ITestDataProvider {
               testEndTimestamp: string | number | Date;
             }) => {
               const { testStartTimestamp, testEndTimestamp } = testResult;
-              if (!DateProvider.isValidDate(testStartTimestamp) || !DateProvider.isValidDate(testEndTimestamp)) {
-                throw new Error(`Invalid timestamp -> StartTimestamp: ${testStartTimestamp} EndTimeStamp: ${testEndTimestamp} `);
+              if (
+                !DateProvider.isValidDate(testStartTimestamp) ||
+                !DateProvider.isValidDate(testEndTimestamp)
+              ) {
+                console.warn(`getTestHistory: Invalid timestamp -> systemNumber: ${systemNumber}  testStartTimestamp: ${testStartTimestamp} testEndTimestamp: ${testEndTimestamp}`);
               }
               return DateProvider.isBetweenDates(
                 testStartTimestamp,
@@ -42,8 +45,10 @@ export class TestDataProvider implements ITestDataProvider {
       }
       return result;
     } catch (error) {
-      console.error("getTestHistory: Error ", error);
-      error = new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
+      if (!(error instanceof HTTPError)) {
+        console.log(error);
+        error = new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
+      }
       throw error;
     }
   }
@@ -51,22 +56,33 @@ export class TestDataProvider implements ITestDataProvider {
   public async getMostRecentExpiryDate(systemNumber: string): Promise<Date> {
     let maxDate = DateProvider.getEpoc();
     const testResults = await this.getTestHistory(systemNumber);
-    console.log( `getMostRecentExpiryDate: Filtered Data Count -> ${testResults?.length}`);
+    console.log(
+      `getMostRecentExpiryDate: Filtered Data Count -> ${testResults?.length}`
+    );
 
     const filteredTestTypeDates: any[] = [];
     testResults.forEach(({ testTypes }) => {
-        testTypes.forEach(({ testCode, testExpiryDate }) => {
-
-          if (testCode && TestDataProvider.isValidTestCodeForExpiryCalculation(testCode.toUpperCase()) && testExpiryDate) {
-            if (!DateProvider.isValidDate(testExpiryDate)) {
-                throw new Error(`Invalid Expiry Date: ${testExpiryDate}`);
-              }
-            console.log(`getMostRecentExpiryDate: Filtered Date -> ${testExpiryDate}`);
-            filteredTestTypeDates.push(DateProvider.getInstance((testExpiryDate)));
-          }
-
+      testTypes.forEach(({ testCode, testExpiryDate }) => {
+        if (
+          testCode &&
+          TestDataProvider.isValidTestCodeForExpiryCalculation(
+            testCode.toUpperCase()
+          ) &&
+          testExpiryDate &&
+          DateProvider.isValidDate(testExpiryDate)
+        ) {
+          console.log(
+            `getMostRecentExpiryDate: Filtered Date -> ${testExpiryDate}`
+          );
+          filteredTestTypeDates.push(DateProvider.getInstance(testExpiryDate));
+        }
+        if (testExpiryDate && !DateProvider.isValidDate(testExpiryDate)) {
+          console.warn(
+            `getMostRecentExpiryDate: Invalid Expiry Date -> systemNumber: ${systemNumber} testExpiryDate: ${testExpiryDate}`
+          );
+        }
       });
-        if (filteredTestTypeDates.length) {
+      if (filteredTestTypeDates.length) {
         maxDate = DateProvider.getMaxDate(filteredTestTypeDates);
       }
     });
