@@ -1,4 +1,4 @@
-import { MESSAGES, TEST_STATUS } from "../../../src/assets/Enums";
+import * as enums from "../../../src/assets/Enums";
 import { DateProvider } from "../../../src/handlers/expiry/providers/DateProvider";
 import { TestDataProvider } from "../../../src/handlers/expiry/providers/TestDataProvider";
 import { HTTPError } from "../../../src/models/HTTPError";
@@ -10,6 +10,7 @@ describe("TestDataProvider", () => {
   context("for getTestHistory", () => {
     describe("when getBySystemNumber returns error", () => {
       it("should throw error", async () => {
+        expect.assertions(1);
         try {
           testDataProvider = new TestDataProvider();
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -22,44 +23,111 @@ describe("TestDataProvider", () => {
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           await testDataProvider.getTestHistory("123");
         } catch (error) {
-          expect.assertions(1);
           expect(error).toEqual(
-            new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
+            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
           );
         }
       });
     });
-    describe("when getBySystemNumber returns invalid testEndTimestamp", () => {
-      it("should throw error", async () => {
-        try {
+    describe("when getBySystemNumber returns test results with invalid testEndTimestamp", () => {
+      it("should return the filtered data", async () => {
           testDataProvider = new TestDataProvider();
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {
               getBySystemNumber: () => {
                 return {
-                  testStartTimestamp: "2019-10-10T08:47:59.269Z",
-                  testEndTimestamp: "2019-10",
-                  testTypes: [
-                    { testCode: "aat1", testExpiryDate: "2020-10-10" }
+                  Count: 1,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261009Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
+                  ]
+                };
+              }
+            };
+          });
+          expect.assertions(2);
+          testDataProvider.testResultsDAO = new MockTestResultsDAO();
+          const result = await testDataProvider.getTestHistory("123");
+          expect(result.length).toEqual(1);
+          expect(result[0].testEndTimestamp).toEqual("2019-03");
+      });
+    });
+    describe("when getBySystemNumber returns invalid testStartTimestamp", () => {
+      it("should return the filtered data", async () => {
+          testDataProvider = new TestDataProvider();
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              getBySystemNumber: () => {
+                return {
+                  Count: 1,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-03",
+                      testEndTimestamp: "2019-03-10T08:47:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261009Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
+                  ]
+                };
+              }
+            };
+          });
+          expect.assertions(2);
+          testDataProvider.testResultsDAO = new MockTestResultsDAO();
+          const result = await testDataProvider.getTestHistory("123");
+          expect(result.length).toEqual(1);
+          expect(result[0].testStartTimestamp).toEqual("2019-03");
+      });
+    });
+    describe("when getBySystemNumber returns array of valid data", () => {
+      it("should return the filtered data", async () => {
+          expect.assertions(1);
+          testDataProvider = new TestDataProvider();
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              getBySystemNumber: () => {
+                return {
+                  Count: 2,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-01-10T08:47:59.269000Z",
+                      testEndTimestamp: "2019-01-10T09:30:59.269000Z",
+                      testTypes: [
+                        { testCode: "rpt1", testExpiryDate: "2020-12-10T08:47:59.269000Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
                   ]
                 };
               }
             };
           });
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
-          await testDataProvider.getTestHistory("123");
-        } catch (error) {
-          expect.assertions(1);
-          expect(error).toEqual(
-            new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
-          );
-        }
+          const result  = await testDataProvider.getTestHistory("123");
+          expect(result.length).toEqual(2);
       });
     });
   });
   context("for getMostRecentExpiryDate", () => {
     describe("when getBySystemNumber returns error", () => {
       it("should throw error", async () => {
+        expect.assertions(1);
         try {
           testDataProvider = new TestDataProvider();
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -72,9 +140,8 @@ describe("TestDataProvider", () => {
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           await testDataProvider.getMostRecentExpiryDate("123");
         } catch (error) {
-          expect.assertions(1);
           expect(error).toEqual(
-            new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR)
+            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
           );
         }
       });
@@ -101,7 +168,7 @@ describe("TestDataProvider", () => {
       });
     });
 
-    describe("when getBySystemNumber returns an array of valid recent expiry dates", () => {
+    describe("when getBySystemNumber returns an array of valid recent expiry short dates", () => {
       it("should return the most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -117,7 +184,7 @@ describe("TestDataProvider", () => {
                       testTypes: [
                         { testCode: "aat1", testExpiryDate: "2020-01-05" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     },
                     {
                       testStartTimestamp: "2019-03-10T08:47:59.269Z",
@@ -125,7 +192,7 @@ describe("TestDataProvider", () => {
                       testTypes: [
                         { testCode: "fft1", testExpiryDate: "2020-02-15" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     },
                     {
                       testStartTimestamp: "2019-01-10T08:47:59.269Z",
@@ -133,7 +200,7 @@ describe("TestDataProvider", () => {
                       testTypes: [
                         { testCode: "rpt1", testExpiryDate: "2020-01-04" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     }
                   ]
                 };
@@ -148,7 +215,62 @@ describe("TestDataProvider", () => {
       });
     });
 
-    describe("when getBySystemNumber returns an array of valid and invalid recent expiry dates", () => {
+    describe("when getBySystemNumber returns an array of invalid expiry dates including undefined", () => {
+      it("should return the valid most recent expiry", async () => {
+        testDataProvider = new TestDataProvider();
+        MockTestResultsDAO = jest.fn().mockImplementation(() => {
+          return {
+            getBySystemNumber: () => {
+              {
+                return {
+                  Count: 4,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "aat1", testExpiryDate: "2020-01-05" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2020-02-15" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: undefined }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "rpt1", testExpiryDate: "2020-01" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
+                  ]
+                };
+              }
+            }
+          };
+        });
+        testDataProvider.testResultsDAO = new MockTestResultsDAO();
+        expect.assertions(1);
+        const result = await testDataProvider.getMostRecentExpiryDate("123");
+        expect(result).toEqual(new Date("2020-02-15"));
+      });
+    });
+
+    describe("when getBySystemNumber returns an array of valid long dates with 6 digit milliseconds and 3 digit milliseconds in history", () => {
       it("should return the valid most recent expiry", async () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -162,25 +284,25 @@ describe("TestDataProvider", () => {
                       testStartTimestamp: "2019-02-10T08:47:59.269Z",
                       testEndTimestamp: "2019-02-10T09:30:59.269Z",
                       testTypes: [
-                        { testCode: "aat1", testExpiryDate: "2020-01-05" }
+                        { testCode: "aat1", testExpiryDate: "2018-02-10T08:47:59.269Z" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     },
                     {
                       testStartTimestamp: "2019-03-10T08:47:59.269Z",
                       testEndTimestamp: "2019-03-10T09:30:59.269Z",
                       testTypes: [
-                        { testCode: "fft1", testExpiryDate: "2020-02-15" }
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261009Z" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     },
                     {
                       testStartTimestamp: "2019-01-10T08:47:59.269Z",
                       testEndTimestamp: "2019-01-10T09:30:59.269Z",
                       testTypes: [
-                        { testCode: "rpt1", testExpiryDate: "2020-01" }
+                        { testCode: "rpt1", testExpiryDate: "2020-12-10T08:47:59.129000Z" }
                       ],
-                      testStatus: TEST_STATUS.SUBMITTED
+                      testStatus: enums.TEST_STATUS.SUBMITTED
                     }
                   ]
                 };
@@ -188,9 +310,58 @@ describe("TestDataProvider", () => {
             }
           };
         });
+        expect.assertions(1);
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
         const expiry = await testDataProvider.getMostRecentExpiryDate("123");
-        const expectedDate = new Date("2020-02-15");
+        const expectedDate = new Date("2020-12-10T08:47:59.129000Z");
+        expect(expiry).toEqual(expectedDate);
+      });
+    });
+
+    describe("when getBySystemNumber returns an array of valid long dates with valid 3 digit milliseconds in history", () => {
+      it("should return the valid most recent expiry", async () => {
+        testDataProvider = new TestDataProvider();
+        MockTestResultsDAO = jest.fn().mockImplementation(() => {
+          return {
+            getBySystemNumber: () => {
+              {
+                return {
+                  Count: 3,
+                  Items: [
+                    {
+                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "aat1", testExpiryDate: "2018-02-10T08:47:59.269Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "fft1", testExpiryDate: "2019-02-10T08:47:59.261Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    },
+                    {
+                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                      testTypes: [
+                        { testCode: "rpt1", testExpiryDate: "2020-12-10T08:47:59.129Z" }
+                      ],
+                      testStatus: enums.TEST_STATUS.SUBMITTED
+                    }
+                  ]
+                };
+              }
+            }
+          };
+        });
+        expect.assertions(1);
+        testDataProvider.testResultsDAO = new MockTestResultsDAO();
+        const expiry = await testDataProvider.getMostRecentExpiryDate("123");
+        const expectedDate = new Date("2020-12-10T08:47:59.129000Z");
         expect(expiry).toEqual(expectedDate);
       });
     });

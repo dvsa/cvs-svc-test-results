@@ -24,14 +24,22 @@ export class DateProvider {
     this.testDate = moment(date).startOf("day").toDate();
   }
 
-//#region Private Static Functions
+  //#region Static Functions
   public static getEpoc(): Date {
-  return moment(new Date(0)).startOf("day").toDate();
+    return moment(new Date(0)).startOf("day").toDate();
   }
+
   public static isSameAsEpoc(inputDate: Date): boolean {
     return moment(inputDate).isSame(DateProvider.getEpoc());
   }
 
+  public static getInstance(dateValue: string | number | Date) {
+    return moment(dateValue);
+  }
+
+  public static getMaxDate(arrayOfDates: moment.Moment[]) {
+    return  moment.max(arrayOfDates).toDate();
+  }
   /**
    * To validate whether provided input is a date. "undefined" is validated separately because moment(undefined) = new Date(). Strict validation is performed and only two date formats are acceptable YYYY-MM-DD and YYYY-MM-DDTHH:mm:ss.SSSZ.
    * @param input The input value which is validated.
@@ -41,12 +49,11 @@ export class DateProvider {
   ): boolean {
     return (
       input !== undefined &&
-      (
-        moment(input,  "YYYY-MM-DDTHH:mm:ss.SSSZ", true).isValid() ||
-        moment(input,  "YYYY-MM-DD", true).isValid()
-      ) &&
+      (moment(input, "YYYY-MM-DDTHH:mm:ss.SSSSSSZ", true).isValid() || // Legacy format
+        moment(input, "YYYY-MM-DDTHH:mm:ss.SSSZ", true).isValid() || //  Test result API format
+        moment(input, "YYYY-MM-DD", true).isValid()) && // Tech Record dates e.g. regnDate
       moment(input).isAfter(new Date(0))
-      );
+    );
   }
   /**
    * To compare whether input date is between two months of compare date. Inlcusivty parameter represents start and end of month.
@@ -59,7 +66,11 @@ export class DateProvider {
     compareDate: Date,
     inclusivity: "[]" | "()" | "[)" | "(]" | undefined
   ): boolean {
-    console.log(`compareDate+2 months: ${moment(compareDate).add(2, "months").toISOString()}`);
+    console.log(
+      `compareDate+2 months: ${moment(compareDate)
+        .add(2, "months")
+        .toISOString()}`
+    );
     return moment(inputDate).isBetween(
       moment(compareDate),
       moment(compareDate).add(2, "months"),
@@ -68,14 +79,35 @@ export class DateProvider {
     );
   }
 
+  /**
+   * To compare whether dates fall between a comparison period.
+   * @param fromDate the input from Date
+   * @param toDate the input to date
+   * @param compareFromDate the compare from Date
+   * @param compareToDate the compare to Date
+   */
+  public static isBetweenDates(
+    fromDate: string | number | Date,
+    toDate: string | number | Date,
+    compareFromDate: Date,
+    compareToDate: Date
+  ) {
+    return (
+      moment(fromDate).isAfter(compareFromDate) &&
+      moment(toDate).isBefore(compareToDate)
+    );
+  }
+
   public static addOneYear(inputDate: Date | string): Date {
-    return moment(inputDate)
-      .add(1, "years").startOf("day")
-      .toDate();
+    return moment(inputDate).add(1, "years").startOf("day").toDate();
   }
 
   public static addOneYearEndOfMonth(inputDate: Date | string): Date {
-    return moment(inputDate).add(1, "year").endOf("month").startOf("day").toDate();
+    return moment(inputDate)
+      .add(1, "year")
+      .endOf("month")
+      .startOf("day")
+      .toDate();
   }
 
   public static getEndOfMonth(inputDate: Date | string): Date {
@@ -83,19 +115,18 @@ export class DateProvider {
   }
 
   public static addOneYearISOString(inputDate: Date | string): string {
-    return moment(inputDate)
-      .add(1, "years")
-      .toISOString();
+    return moment(inputDate).add(1, "years").toISOString();
   }
 
-  public static addOneYearStartOfDayISOString(inputDate: Date | string): string {
-    return moment(inputDate)
-      .add(1, "year")
-      .startOf("day")
-      .toISOString();
+  public static addOneYearStartOfDayISOString(
+    inputDate: Date | string
+  ): string {
+    return moment(inputDate).add(1, "year").startOf("day").toISOString();
   }
 
-  public static addOneYearMinusOneDayISOString(inputDate: Date | string): string {
+  public static addOneYearMinusOneDayISOString(
+    inputDate: Date | string
+  ): string {
     return moment(inputDate)
       .add(1, "year")
       .subtract(1, "day")
@@ -103,12 +134,14 @@ export class DateProvider {
       .toISOString();
   }
 
-  public static getLastDayOfMonthInNextYearISOString(inputDate: Date | string): string {
+  public static getLastDayOfMonthInNextYearISOString(
+    inputDate: Date | string
+  ): string {
     return moment(inputDate)
       .add(1, "year")
       .endOf("month")
       .startOf("day")
       .toISOString();
   }
-//#endregion
+  //#endregion
 }

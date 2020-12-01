@@ -611,10 +611,10 @@ export class TestResultsService {
           console.log(strategy.constructor.name);
           testType.testExpiryDate = strategy.getExpiryDate();
       });
-      console.log("generateExpiryDate payload", payload.testTypes);
+      console.log("generateExpiryDate: testTypes ->", payload.testTypes);
       return Promise.resolve(payload);
     } catch (error) {
-      console.error("Error in error generateExpiryDate", error);
+      console.error("generateExpiryDate: ", error);
       throw new HTTPError(500, MESSAGES.INTERNAL_SERVER_ERROR);
     }
 
