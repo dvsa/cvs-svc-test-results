@@ -4,6 +4,7 @@ import testResults from "../resources/test-results.json";
 import {ERRORS, MESSAGES} from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
+import { ValidationUtil } from "../../src/utils/validationUtil";
 
 describe("updateTestResults", () => {
     let testResultsService: TestResultsService | any;
@@ -625,7 +626,7 @@ describe("updateTestResults", () => {
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
-                        const validationResponse = testResultsService.validateTestTypes(testToUpdate);
+                        const validationResponse = ValidationUtil.validateTestTypes(testToUpdate);
                         expect(validationResponse).toBeDefined();
                         expect(validationResponse.length).not.toEqual(0);
                     }

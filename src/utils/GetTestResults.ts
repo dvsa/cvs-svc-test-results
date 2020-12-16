@@ -1,7 +1,5 @@
-import {isDate, isFinite} from "lodash";
 import {TEST_VERSION} from "../assets/Enums";
 import {ITestResult} from "../models/ITestResult";
-import moment from "moment";
 
 
 export class GetTestResults {

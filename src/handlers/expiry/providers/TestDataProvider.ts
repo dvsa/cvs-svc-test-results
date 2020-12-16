@@ -9,6 +9,7 @@ import { ITestDataProvider } from "./ITestDataProvider";
 export class TestDataProvider implements ITestDataProvider {
   public testResultsDAO: models.TestResultsDAO | undefined;
 
+  //#region [rgba(52, 152, 219, 0.15)] Public functions
   /**
    * To fetch test results by systemNumber
    * @param filters filters used to search the database
@@ -18,12 +19,12 @@ export class TestDataProvider implements ITestDataProvider {
   ): Promise<models.ITestResult[]> {
     try {
       this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const result = await this.testResultsDAO.getBySystemNumber(
+      const {Count, Items} = await this.testResultsDAO.getBySystemNumber(
         filters.systemNumber
       );
       const response: models.ITestResultData = {
-        Count: result.Count,
-        Items: result.Items,
+        Count,
+        Items
       };
       const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
         response
@@ -160,7 +161,7 @@ export class TestDataProvider implements ITestDataProvider {
     } = filters;
     testResults = this.filterTestResultsByDeletionFlag(testResults);
     testResults = this.filterTestTypesByDeletionFlag(testResults);
-    testResults = this.filterTestResultByDate(
+    testResults = TestDataProvider.filterTestResultByDate(
       testResults,
       fromDateTime,
       toDateTime
@@ -197,7 +198,57 @@ export class TestDataProvider implements ITestDataProvider {
     return testResults;
   }
 
-  public static filterTestResultsByParam(
+  public async getTestTypesWithTestCodesAndClassification(
+    testTypes: models.TestType[] = [],
+    testTypeParams: models.TestTypeParams
+  ) {
+    testTypes.forEach(async (testType) => {
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const { testTypeId } = testType;
+      const {
+        defaultTestCode,
+        linkedTestCode,
+        testTypeClassification,
+      } = await this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(
+        testTypeId,
+        testTypeParams
+      );
+      testType.testCode =
+        testTypes.length > 1 && linkedTestCode ?
+        linkedTestCode : defaultTestCode;
+      testType.testTypeClassification = testTypeClassification;
+      return testType;
+    });
+    return Promise.resolve(testTypes);
+  }
+
+  public async setTestNumberForEachTestType(payload: models.ITestResultPayload) {
+    const {testTypes} = payload;
+    if (!testTypes) {
+      return payload;
+    }
+    payload.testTypes.forEach(async (testType: models.TestType) => {
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const result = await this.testResultsDAO.getTestNumber();
+      testType.testNumber = result.testNumber;
+    });
+
+    return payload;
+  }
+
+  public async insertTestResult(payload: models.ITestResultPayload) {
+    this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+    try {
+    const result = await this.testResultsDAO.createSingle(payload);
+    return result.Attributes as models.ITestResult[];
+    } catch (error) {
+      console.error("TestDataProvider.insertTestResult -> ", error);
+      throw error;
+    }
+  }
+  //#endregion
+  //#region [rgba(0, 205, 30, 0.1)] Private Static functions
+  private static filterTestResultsByParam(
     testResults: models.ITestResult[],
     filterName: string,
     filterValue: any
@@ -210,7 +261,7 @@ export class TestDataProvider implements ITestDataProvider {
       : testResults;
   }
 
-  public static filterTestResultByDate(
+  private static filterTestResultByDate(
     testResults: models.ITestResult[],
     fromDateTime: string | number | Date,
     toDateTime: string | number | Date
@@ -225,7 +276,7 @@ export class TestDataProvider implements ITestDataProvider {
     );
   }
 
-  public static filterTestResultsByTestVersion(
+  private static filterTestResultsByTestVersion(
     testResults: models.ITestResult[],
     testVersion: string = enums.TEST_VERSION.CURRENT
   ): models.ITestResult[] {
@@ -256,14 +307,14 @@ export class TestDataProvider implements ITestDataProvider {
     return result;
   }
 
-  public static removeTestHistory(testResults: models.ITestResult[]) {
+  private static removeTestHistory(testResults: models.ITestResult[]) {
     for (const testResult of testResults) {
       delete testResult.testHistory;
     }
     return testResults;
   }
 
-  public static filterTestResultsByDeletionFlag(
+  private static filterTestResultsByDeletionFlag(
     testResults: models.ITestResult[]
   ) {
     return testResults.filter((testResult) => {
@@ -271,7 +322,7 @@ export class TestDataProvider implements ITestDataProvider {
     });
   }
 
-  public static filterTestTypesByDeletionFlag(
+  private static filterTestTypesByDeletionFlag(
     testResults: models.ITestResult[]
   ) {
     testResults.forEach((testResult) => {
@@ -282,4 +333,5 @@ export class TestDataProvider implements ITestDataProvider {
     });
     return testResults;
   }
+  //#endregion
 }
