@@ -1,4 +1,3 @@
-import {TestResultsService} from "../../src/services/TestResultsService";
 import fs from "fs";
 import path from "path";
 import {cloneDeep} from "lodash";
@@ -7,9 +6,13 @@ import dateMockUtils from "../util/dateMockUtils";
 import {ITestResult} from "../../src/models/ITestResult";
 import testResults from "../resources/test-results.json";
 import moment from "moment";
+import { VehicleTestController } from "../../src/handlers/VehicleTestController";
+import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
+import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
+import { TestResultsDAO } from "../../src/models";
 
-describe("TestResultsService calling generateExpiryDate", () => {
-    let testResultsService: TestResultsService | any;
+describe("VehicleTestController calling generateExpiryDate", () => {
+    let vehicleTestController: VehicleTestController;
     let MockTestResultsDAO: jest.Mock;
     let testResultsMockDB: any;
     let testResultsPostMock: any;
@@ -20,12 +23,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {};
         });
-        testResultsService = new TestResultsService(new MockTestResultsDAO());
+        vehicleTestController = new VehicleTestController(new TestDataProvider(), new DateProvider());
     });
 
     afterEach(() => {
         testResultsMockDB = null;
-        testResultsService = null;
         MockTestResultsDAO.mockReset();
         dateMockUtils.restoreDateMock();
     });
@@ -58,12 +60,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                             }
                         };
                     });
-                    testResultsService = new TestResultsService(new MockTestResultsDAO());
-
                     const expectedExpiryDate = new Date();
                     expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
                     expectedExpiryDate.setDate(new Date().getDate() - 1);
-                    return testResultsService.generateExpiryDate(psvTestResult)
+                    vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                    // @ts-ignore
+                    return vehicleTestController.generateExpiryDate(psvTestResult)
                       .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                           expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                       });
@@ -106,10 +108,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-01-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -154,10 +157,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
-
                             const expectedExpiryDate = new Date("2021-01-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -202,10 +205,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-01-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -252,10 +256,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-01-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -301,10 +306,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-03-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -350,10 +356,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-01-31");
-                            return testResultsService.generateExpiryDate(psvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(psvTestResult)
                               .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                                   expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                   expect(psvTestResultWithExpiryDateAndTestNumber.testTypes[1].testExpiryDate).toBeUndefined();
@@ -390,12 +397,13 @@ describe("TestResultsService calling generateExpiryDate", () => {
                             }
                         };
                     });
-                    testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = new Date();
                     expectedExpiryDate.setFullYear(new Date().getFullYear() + 1);
                     expectedExpiryDate.setDate(new Date().getDate() - 1);
-                    return testResultsService.generateExpiryDate(psvTestResult)
+                    vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                    // @ts-ignore
+                    return vehicleTestController.generateExpiryDate(psvTestResult)
                       .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                           expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                       });
@@ -426,11 +434,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                             }
                         };
                     });
-                    testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                     const expectedExpiryDate = cloneDeep(goodExpiry);
                     expectedExpiryDate.setFullYear(goodExpiry.getFullYear() + 1);
-                    return testResultsService.generateExpiryDate(psvTestResult)
+                    vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                    // @ts-ignore
+                    return vehicleTestController.generateExpiryDate(psvTestResult)
                       .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
                           expect((psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                       });
@@ -462,10 +471,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -494,9 +504,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -532,9 +544,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -567,10 +581,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -611,10 +626,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -648,10 +664,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -688,10 +705,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -725,10 +743,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -762,10 +781,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -799,10 +819,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-05-31");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -842,10 +863,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2020-02-29");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -881,10 +903,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -920,10 +943,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -959,10 +983,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-03-31");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -998,10 +1023,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(hgvTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(hgvTestResult)
                               .then((hgvTestResultWithExpiryDate: any) => {
                                   expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1048,10 +1074,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1085,10 +1112,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1125,10 +1153,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1162,10 +1191,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1199,10 +1229,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1236,10 +1267,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-05-31");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1282,10 +1314,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1319,10 +1352,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1359,10 +1393,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1396,10 +1431,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1433,10 +1469,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1470,10 +1507,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-05-31");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((trlTestResultWithExpiryDate: any) => {
                                     expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                                 });
@@ -1507,10 +1545,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30T00:00:00.000Z");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((hgvTestResultWithExpiryDate: any) => {
                                     expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate)).toEqual(expectedExpiryDate.toISOString());
                                 });
@@ -1545,10 +1584,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30T00:00:00.000Z");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((hgvTestResultWithExpiryDate: any) => {
                                     expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate)).toEqual(expectedExpiryDate.toISOString());
                                 });
@@ -1583,10 +1623,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-06-30T00:00:00.000Z");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                                 .then((hgvTestResultWithExpiryDate: any) => {
                                     expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate)).toEqual(expectedExpiryDate.toISOString());
                                 });
@@ -1628,10 +1669,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2020-02-29");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1666,10 +1708,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-02-28");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1704,10 +1747,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1742,10 +1786,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-03-31");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1780,10 +1825,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                     }
                                 };
                             });
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                             const expectedExpiryDate = new Date("2021-04-30");
-                            return testResultsService.generateExpiryDate(trlTestResult)
+                            vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                            // @ts-ignore
+                            return vehicleTestController.generateExpiryDate(trlTestResult)
                               .then((trlTestResultWithExpiryDate: any) => {
                                   expect((trlTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                               });
@@ -1821,10 +1867,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -1858,10 +1905,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -1897,11 +1945,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const anniversaryDate = moment(hgvTestResult.regnDate).add(1, "years").toISOString();
                         const expectedExpiryDate = moment(anniversaryDate).add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -1932,9 +1981,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -1965,10 +2016,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -1999,10 +2051,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const registrationAnniversaryDate = moment(hgvTestResult.regnDate).add(1, "years").endOf("month").toISOString();
                         const expectedExpiryDate = moment(registrationAnniversaryDate).add(1, "years").hours(12);
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2040,10 +2094,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2080,10 +2135,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2121,11 +2177,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const anniversaryDate = moment(trlTestResult.firstUseDate).add(1, "years").toISOString();
                         const expectedExpiryDate = moment(anniversaryDate).add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2157,11 +2214,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const firstUseAnniversaryDate = moment(trlTestResult.firstUseDate).add(1, "years").endOf("month").toISOString();
                         const expectedExpiryDate = moment(firstUseAnniversaryDate).add(1, "years").hours(12);
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2193,10 +2251,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                           .then((hgvTestResultWithExpiryDate: any) => {
                               expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                           });
@@ -2228,10 +2287,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").hours(12);
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                             .then((generatedTestResult: any) => {
                                 expect((generatedTestResult.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2266,10 +2326,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(hgvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(hgvTestResult)
                             .then((hgvTestResultWithExpiryDate: any) => {
                                 expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2302,9 +2363,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
                         const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
-                        return testResultsService.generateExpiryDate(trlTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(trlTestResult)
                             .then((hgvTestResultWithExpiryDate: any) => {
                                 expect((hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2343,10 +2405,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2384,10 +2447,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment(psvTestResult.regnDate).add(2, "years");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2422,10 +2486,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment(psvTestResult.regnDate).add(2, "years");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2462,10 +2527,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2499,10 +2565,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2536,9 +2603,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                             });
@@ -2575,10 +2644,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
 
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -2612,9 +2682,11 @@ describe("TestResultsService calling generateExpiryDate", () => {
                                 }
                             };
                         });
-                        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
                         const expectedExpiryDate = moment().add(1, "years").subtract(1, "days");
-                        return testResultsService.generateExpiryDate(psvTestResult)
+                        vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                        // @ts-ignore
+                        return vehicleTestController.generateExpiryDate(psvTestResult)
                             .then((psvTestResultWithExpiryDate: any) => {
                                 expect((psvTestResultWithExpiryDate.testTypes[0].testExpiryDate).split("T")[0]).toEqual(expectedExpiryDate.toISOString().split("T")[0]);
                         });
@@ -2626,10 +2698,12 @@ describe("TestResultsService calling generateExpiryDate", () => {
 
         context("no testTypes", () => {
             it("should treat like non-submitted test and return original data", () => {
-                testResultsService = new TestResultsService(new MockTestResultsDAO());
+                vehicleTestController = new VehicleTestController(new TestDataProvider(), new DateProvider());
                 const mockData = {};
                 expect.assertions(1);
-                return testResultsService.generateExpiryDate(mockData)
+                vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
+                // @ts-ignore
+                return vehicleTestController.generateExpiryDate(mockData)
                   .then((data: any) => {
                       expect(data).toEqual(mockData);
                   });

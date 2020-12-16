@@ -258,9 +258,6 @@ describe("insertTestResult", () => {
             const mockData = testResultsMockDB[5];
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createMultiple: () => {
-                        return Promise.reject({});
-                    },
                     getTestNumber: () => {
                         return Promise.resolve(mockData.testNumber);
                     },
@@ -271,13 +268,11 @@ describe("insertTestResult", () => {
                             testTypeClassification: "Annual With Certificate"
                         });
                     },
-                    createSingle: () => {
-                        return Promise.reject(
+                    createSingle: () => Promise.reject(
                             {
                                 statusCode: 400,
                                 message: MESSAGES.CONDITIONAL_REQUEST_FAILED
-                            });
-                    }
+                            })
                 };
             });
             testResultsService = new TestResultsService(new MockTestResultsDAO());
@@ -309,7 +304,7 @@ describe("insertTestResult", () => {
                     },
                     getBySystemNumber: (systemNumber: any) => (Promise.resolve({})),
                     createSingle: () => {
-                        return Promise.resolve("It worked");
+                        return Promise.resolve({Attributes: "It worked"});
                     }
                 };
             });
@@ -330,9 +325,9 @@ describe("insertTestResult", () => {
             delete mockData.testTypes[0].defects[0].prohibitionIssued;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[0]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(mockData)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve(mockData.testNumber);
                     },
@@ -367,9 +362,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -401,9 +396,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -435,9 +430,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[2])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -470,9 +465,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -504,9 +499,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[2])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -541,9 +536,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -577,9 +572,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -613,9 +608,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -650,9 +645,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -691,9 +686,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -732,9 +727,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -771,9 +766,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[0])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -814,9 +809,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -848,9 +843,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -882,9 +877,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[2])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -917,9 +912,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -951,9 +946,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[2])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -988,9 +983,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () =>  Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1024,9 +1019,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1060,9 +1055,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1097,9 +1092,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1138,9 +1133,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1177,9 +1172,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[7]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[7])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1215,9 +1210,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[5]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1257,9 +1252,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1297,9 +1292,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1336,9 +1331,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[5]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1374,9 +1369,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1411,9 +1406,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[5]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[5])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1447,9 +1442,9 @@ describe("insertTestResult", () => {
             });
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[4]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[4])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1486,9 +1481,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[6]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[6])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1525,9 +1520,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[6]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[6])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1565,9 +1560,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultsPostMock[6]));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultsPostMock[6])
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1606,9 +1601,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultWithOtherTestTypeWithCertNum)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -1633,6 +1628,7 @@ describe("insertTestResult", () => {
             expect.assertions(2);
             return testResultsService.insertTestResult(testResultWithOtherTestTypeWithCertNum)
                 .then((insertedTestResult: any) => {
+                    console.log("insertedTestResult", insertedTestResult);
                     expect(insertedTestResult[0].testTypes[0].testTypeId).toEqual("95");
                     expect(insertedTestResult[0].testTypes[0].certificateNumber).toEqual("W01A00209");
                 });
@@ -1646,9 +1642,9 @@ describe("insertTestResult", () => {
             testResultWithMandatoryFields.vehicleType = VEHICLE_TYPES.PSV;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithMandatoryFields));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultWithMandatoryFields)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1685,9 +1681,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultInvalidFuelType));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultInvalidFuelType)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1722,9 +1718,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1761,9 +1757,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1801,9 +1797,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1841,9 +1837,9 @@ describe("insertTestResult", () => {
             clonedTestResult.testTypes[0].testResult = "pass";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1881,9 +1877,9 @@ describe("insertTestResult", () => {
             clonedTestResult.testTypes[0].testResult = "pass";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1921,9 +1917,9 @@ describe("insertTestResult", () => {
             clonedTestResult.testTypes[0].testResult = "pass";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -1960,9 +1956,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -2004,9 +2000,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -2050,9 +2046,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -2094,9 +2090,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -2129,9 +2125,9 @@ describe("insertTestResult", () => {
             testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "122";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultWithOtherTestTypeWithCertNum)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2168,9 +2164,9 @@ describe("insertTestResult", () => {
             testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = "91";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(testResultWithOtherTestTypeWithCertNum));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(testResultWithOtherTestTypeWithCertNum)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2212,9 +2208,9 @@ describe("insertTestResult", () => {
 
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(clonedTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(clonedTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({ testNumber: "W01A00209", id: "W01", certLetter: "A", sequenceNumber: "002" });
                     },
@@ -2244,9 +2240,9 @@ describe("insertTestResult", () => {
             const validLgvTestResult = cloneDeep(testResultsPostMock[11]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(validLgvTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(validLgvTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2280,9 +2276,9 @@ describe("insertTestResult", () => {
             const validCarTestResult = cloneDeep(testResultsPostMock[10]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(validCarTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                            Attributes: Array.of(validCarTestResult)
+                          }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2316,9 +2312,9 @@ describe("insertTestResult", () => {
             const validMotorcycleTestResult = cloneDeep(testResultsPostMock[12]);
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(validMotorcycleTestResult));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(validMotorcycleTestResult)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2352,7 +2348,9 @@ describe("insertTestResult", () => {
             const motorcycleWithoutVehicleClass = cloneDeep(testResultsPostMock[12]);
             delete motorcycleWithoutVehicleClass.vehicleClass;
 
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithoutVehicleClass)))});
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => Promise.resolve({
+                Attributes: Array.of(motorcycleWithoutVehicleClass)
+              })});
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             expect.assertions(3);
@@ -2368,7 +2366,9 @@ describe("insertTestResult", () => {
             const motorcycleWithoutVehicleClass = cloneDeep(testResultsPostMock[12]);
             motorcycleWithoutVehicleClass.vehicleClass = null;
 
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithoutVehicleClass)))});
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => Promise.resolve({
+                Attributes: Array.of(motorcycleWithoutVehicleClass)
+              })});
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             expect.assertions(3);
@@ -2387,7 +2387,9 @@ describe("insertTestResult", () => {
                 description: null
             };
 
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(motorcycleWithInvalidVehicleClass)))});
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => Promise.resolve({
+                Attributes: Array.of(motorcycleWithInvalidVehicleClass)
+              })});
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
             expect.assertions(3);
@@ -2404,7 +2406,9 @@ describe("insertTestResult", () => {
         it("should submit successfully is the vehicleClass is missing", () => {
             const validCarTestResult = cloneDeep(testResultsPostMock[10]);
             delete validCarTestResult.vehicleClass;
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validCarTestResult)))});
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => Promise.resolve({
+                Attributes: Array.of(validCarTestResult)
+              })});
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             return testResultsService.insertTestResult(validCarTestResult)
@@ -2417,7 +2421,9 @@ describe("insertTestResult", () => {
         it("should submit successfully if vehicleClass is null", () => {
             const validCarTestResult = cloneDeep(testResultsPostMock[10]);
             validCarTestResult.vehicleClass = null;
-            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => (Promise.resolve(Array.of(validCarTestResult)))});
+            MockTestResultsDAO = extendMockTestResultsDAO({createSingle: () => Promise.resolve({
+                Attributes: Array.of(validCarTestResult)
+              })});
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             return testResultsService.insertTestResult(validCarTestResult)
@@ -2435,7 +2441,9 @@ describe("insertTestResult", () => {
             };
             MockTestResultsDAO = extendMockTestResultsDAO(
                 {
-                    createSingle: () => (Promise.resolve(Array.of(validTestResult))),
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(validTestResult)
+                      }),
                     getBySystemNumber: () => (Promise.resolve({}))
                 }
             );
@@ -2455,9 +2463,9 @@ describe("insertTestResult", () => {
             motorCycleWithoutVehicleSubClass.vehicleSubclass = ["string"];
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(motorCycleWithoutVehicleSubClass));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(motorCycleWithoutVehicleSubClass)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2493,9 +2501,9 @@ describe("insertTestResult", () => {
             delete motorCycleWithoutVehicleSubClass.vehicleSubclass;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(motorCycleWithoutVehicleSubClass));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(motorCycleWithoutVehicleSubClass)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2531,9 +2539,9 @@ describe("insertTestResult", () => {
             motorCycleWithInvalidEuVehicleCategory.euVehicleCategory = "m2";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(motorCycleWithInvalidEuVehicleCategory)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2569,9 +2577,9 @@ describe("insertTestResult", () => {
             motorCycleWithInvalidEuVehicleCategory.euVehicleCategory = "m2";
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(motorCycleWithInvalidEuVehicleCategory)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",
@@ -2607,9 +2615,9 @@ describe("insertTestResult", () => {
             delete motorCycleWithInvalidEuVehicleCategory.regnDate;
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
-                    createSingle: () => {
-                        return Promise.resolve(Array.of(motorCycleWithInvalidEuVehicleCategory));
-                    },
+                    createSingle: () => Promise.resolve({
+                        Attributes: Array.of(motorCycleWithInvalidEuVehicleCategory)
+                      }),
                     getTestNumber: () => {
                         return Promise.resolve({
                             testNumber: "W01A00209",

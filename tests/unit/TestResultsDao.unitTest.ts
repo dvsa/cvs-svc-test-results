@@ -1,3 +1,4 @@
+import { TestTypeParams } from "../../src/models";
 import {TestResultsDAO} from "../../src/models/TestResultsDAO";
 import {LambdaService} from "../../src/services/LambdaService";
 jest.mock("../../src/services/LambdaService");
@@ -173,8 +174,16 @@ describe("Test Results DAO", () => {
     it("builds correct query", () => {
       const lambdaStub  = jest.fn().mockReturnValue(undefined);
       LambdaService.invoke = lambdaStub;
-
-      dao.getTestCodesAndClassificationFromTestTypes("testTypeIdVal", "vehicleTypeVal", "vehicleSizeVal", "vehicleConfigurationVal", 17, null, null, null, null);
+      const params: TestTypeParams = {vehicleType: "vehicleTypeVal",
+      vehicleSize: "vehicleSizeVal",
+       vehicleConfiguration: "vehicleConfigurationVal",
+       vehicleWheels: 17,
+       vehicleAxles: null,
+       vehicleClass: null,
+       vehicleSubclass: null,
+       euVehicleCategory: null
+      };
+      dao.getTestCodesAndClassificationFromTestTypes("testTypeIdVal", params);
 
       const callEvent = lambdaStub.mock.calls[0][1];
       expect(callEvent.path).toEqual("/test-types/testTypeIdVal");
@@ -182,11 +191,11 @@ describe("Test Results DAO", () => {
         euVehicleCategory: null,
         vehicleClass: null,
         vehicleSubclass: null,
-        vehicleWheels: null,
+        vehicleWheels: 17,
         vehicleType: "vehicleTypeVal",
         vehicleSize: "vehicleSizeVal",
         vehicleConfiguration: "vehicleConfigurationVal",
-        vehicleAxles: 17,
+        vehicleAxles: null,
         fields: "defaultTestCode,linkedTestCode,testTypeClassification"
       };
       expect(callEvent.queryStringParameters).toEqual(expectsQueryParams);

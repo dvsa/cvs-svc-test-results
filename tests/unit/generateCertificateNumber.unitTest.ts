@@ -4,6 +4,7 @@ import testResults from "../resources/test-results.json";
 import postTestResults from "../resources/test-results-post.json";
 import { TEST_TYPE_CLASSIFICATION, VEHICLE_TYPES, TEST_RESULT } from "../../src/assets/Enums";
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
+import { VehicleTestController } from "../../src/handlers/VehicleTestController";
 
 describe("TestResultsService calling generateExpiryDate", () => {
     let testResultsService: TestResultsService;
@@ -71,7 +72,8 @@ describe("TestResultsService calling generateExpiryDate", () => {
             baseTestResult.testTypes[0].testTypeId = testTypeId;
 
             expect.assertions(2);
-            const updatedResult =  testResultsService.generateCertificateNumber(baseTestResult);
+            // @ts-ignore
+            const updatedResult =  VehicleTestController.AssignCertificateNumberToTestTypes(baseTestResult);
             expect(updatedResult.testTypes[0].certificateNumber === null).not.toBe(shouldSetCertificateNumber);
             expect(updatedResult.testTypes[0].certificateNumber === "W01A00209").toBe(shouldSetCertificateNumber);
 

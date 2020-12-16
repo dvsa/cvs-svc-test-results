@@ -1,7 +1,7 @@
 import * as enums from "../../../src/assets/Enums";
 import { DateProvider } from "../../../src/handlers/expiry/providers/DateProvider";
 import { TestDataProvider } from "../../../src/handlers/expiry/providers/TestDataProvider";
-import { HTTPError } from "../../../src/models/HTTPError";
+
 
 describe("TestDataProvider", () => {
   let testDataProvider: TestDataProvider;
