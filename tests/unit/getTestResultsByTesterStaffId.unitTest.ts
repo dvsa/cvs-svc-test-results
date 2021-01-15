@@ -120,7 +120,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
         testerStaffId: "15",
         testStationPNumber: "84-926821",
         fromDateTime: "2015-02-22",
-        toDateTime: "2019-02-22",
+        toDateTime: "2020-02-22",
         testStatus: "submitted"
       })
         .then((returnedRecords: ITestResult[]) => {
