@@ -67,6 +67,7 @@ import { Injector } from "../models/injector/Injector";
 import { TestDataProvider } from "../handlers/expiry/providers/TestDataProvider";
 import { TestTypeForExpiry } from "../models/TestTypeforExpiry";
 import { DateProvider } from "../handlers/expiry/providers/DateProvider";
+import { LoggingUtil } from "../utils/LoggingUtil";
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -484,7 +485,10 @@ export class TestResultsService {
                       const payloadWithCertificateNumber = this.generateCertificateNumber(payloadWithExpiryDate);
                       const payloadWithAnniversaryDate = this.setAnniversaryDate(payloadWithCertificateNumber);
                       const payloadWithVehicleId = this.setVehicleId(payloadWithAnniversaryDate);
-                      return this.testResultsDAO.createSingle(payloadWithVehicleId);
+                      return this.testResultsDAO.createSingle(payloadWithVehicleId).then((putItemOutput) => {
+                        LoggingUtil.logDefectsReporting(payloadWithVehicleId);
+                        return putItemOutput;
+                      });
                     });
               });
         }).catch((error) => {
