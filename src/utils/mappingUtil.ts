@@ -142,10 +142,8 @@ export class MappingUtil {
         delete testResult.vin;
       }
 
-    public static mapErrorMessage(validation: ValidationResult<any> | any ) {
-        return validation.error.details.map((detail: { message: string; }) => {
-          return detail.message;
-        });
+    public static mapErrorMessage(validation: ValidationResult<any> | any ): string[] {
+        return validation.error.details.map((detail: { message: string; }) => detail.message);
       }
 
 }

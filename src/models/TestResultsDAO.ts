@@ -184,13 +184,7 @@ export class TestResultsDAO {
     );
   }
 
-  public getActivity(filters: {
-    fromStartTime: string | Date;
-    toStartTime: string | Date;
-    activityType: string;
-    testStationPNumber: string;
-    testerStaffId: string;
-  }): any {
+  public getActivity(filters: models.ActivityParams): any {
     const event = {
       path: "/activities/details",
       queryStringParameters: {

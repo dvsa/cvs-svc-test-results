@@ -1,7 +1,7 @@
+import { cloneDeep, mergeWith, differenceWith, isEqual } from "lodash";
 import * as enums from "../assets/Enums";
 import * as utils from "../utils";
 import * as models from "../models";
-
 import { IVehicleTestController } from "./IVehicleTestController";
 import { IExpiryDateStrategy } from "./expiry/IExpiryDateStrategy";
 import { ExpiryDateStrategyFactory } from "./expiry/ExpiryDateStrategyFactory";
@@ -108,21 +108,61 @@ export class VehicleTestController implements IVehicleTestController {
         payloadWithCertificateNumber
       );
       payloadWithAnniversaryDate.vehicleId = payloadWithAnniversaryDate.vrm;
-      const result = await this.dataProvider.insertTestResult(payloadWithAnniversaryDate);
+      const result = await this.dataProvider.insertTestResult(
+        payloadWithAnniversaryDate
+      );
       return result;
     } catch (error) {
-      if (error.statusCode === 400 && error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED) {
-          console.info(
-            "TestResultService.insertTestResult: Test Result id already exists",
-            error
-          );
-          error =  new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
-        }
+      if (
+        error.statusCode === 400 &&
+        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+      ) {
+        console.info(
+          "TestResultService.insertTestResult: Test Result id already exists",
+          error
+        );
+        error = new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
+      }
       throw error;
     }
   }
-//#endregion
-//#region [rgba(0, 205, 30, 0.1)] Private functions
+
+  public async updateTestResult(
+    systemNumber: string,
+    payload: models.ITestResult,
+    msUserDetails: models.IMsUserDetails
+  ) {
+    let newTestResult: models.ITestResult;
+    try {
+    const { testTypes } = payload;
+    utils.MappingUtil.removeNonEditableAttributes(payload);
+    const validationErrors = utils.ValidationUtil.validateUpdateTestResult(payload);
+    if (validationErrors && validationErrors.length) {
+      throw new models.HTTPError(400, {
+        errors: validationErrors,
+      });
+    }
+    // map testTypes back after validation
+    payload.testTypes = testTypes;
+
+    newTestResult = await this.mapOldTestResultToNew(
+        systemNumber,
+        payload,
+        msUserDetails
+      );
+    } catch (error) {
+      throw new models.HTTPError(error.statusCode, error.body);
+    }
+    try {
+        return await this.dataProvider.updateTestResult(newTestResult);
+      } catch (dynamoError) {
+        console.error("dynamoError", dynamoError);
+        throw new models.HTTPError(500, dynamoError.message);
+      }
+  }
+
+  //#endregion
+  //#region [rgba(0, 205, 30, 0.1)] Private functions
   /**
    * Note: When performing actions on a moment instance, it gets mutated
    * Note: Expiry dates on the payload should be set at the UTC start of day.
@@ -226,4 +266,213 @@ export class VehicleTestController implements IVehicleTestController {
       : payload.regnDate;
   }
  //#endregion
+  private async mapOldTestResultToNew(
+    systemNumber: string,
+    payload: models.ITestResult,
+    msUserDetails: models.IMsUserDetails
+  ) {
+    const testResults = await this.dataProvider.getBySystemNumber(systemNumber);
+    const oldTestResult = VehicleTestController.getTestResultToArchive(
+      testResults,
+      payload.testResultId
+    );
+    const newTestResult = cloneDeep(oldTestResult);
+    oldTestResult.testVersion = enums.TEST_VERSION.ARCHIVED;
+    newTestResult.testVersion = enums.TEST_VERSION.CURRENT;
+    mergeWith(newTestResult, payload, utils.MappingUtil.arrayCustomizer);
+    newTestResult.testTypes = await this.generateNewTestCode(
+      oldTestResult,
+      newTestResult
+    );
+    await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
+    utils.MappingUtil.cleanDefectsArrayForSpecialistTests(newTestResult);
+    utils.MappingUtil.setAuditDetails(
+      newTestResult,
+      oldTestResult,
+      msUserDetails
+    );
+    if (!newTestResult.testHistory) {
+      newTestResult.testHistory = [oldTestResult];
+    } else {
+      delete oldTestResult.testHistory;
+      newTestResult.testHistory.push(oldTestResult);
+    }
+    return newTestResult;
+  }
+
+  private async generateNewTestCode(
+    oldTestResult: models.ITestResult,
+    newTestResult: models.ITestResult
+  ) {
+    const {
+      vehicleType,
+      vehicleSize,
+      vehicleConfiguration,
+      euVehicleCategory,
+      testTypes,
+    } = newTestResult;
+    if (
+      !VehicleTestController.shouldGenerateNewTestCode(
+        oldTestResult,
+        newTestResult
+      )
+    ) {
+      return testTypes;
+    }
+    const vehicleSubclass =
+      newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
+        ? newTestResult.vehicleSubclass[0]
+        : undefined;
+    return await this.dataProvider.getTestTypesWithTestCodesAndClassification(
+      testTypes,
+      {
+        vehicleType,
+        vehicleSize,
+        vehicleConfiguration,
+        vehicleAxles: newTestResult.noOfAxles,
+        euVehicleCategory,
+        vehicleClass: newTestResult.vehicleClass.code,
+        vehicleSubclass,
+        vehicleWheels: newTestResult.numberOfWheelsDriven,
+      }
+    );
+  }
+  private static shouldGenerateNewTestCode(
+    oldTestResult: models.ITestResult,
+    newTestResult: models.ITestResult
+  ) {
+    const attributesToCheck = [
+      "vehicleType",
+      "euVehicleCategory",
+      "vehicleSize",
+      "vehicleConfiguration",
+      "noOfAxles",
+      "numberOfWheelsDriven",
+    ];
+    let result = false;
+    result = !!differenceWith(
+      oldTestResult.testTypes,
+      newTestResult.testTypes,
+      isEqual
+    ).length;
+    if (result) {
+      return result;
+    }
+    result = attributesToCheck.some(
+      (attributeToCheck) =>
+        oldTestResult[attributeToCheck as keyof typeof oldTestResult] !==
+        newTestResult[attributeToCheck as keyof typeof newTestResult]
+    );
+    return result;
+  }
+
+  public async checkTestTypeStartAndEndTimestamp(
+    oldTestResult: models.ITestResult,
+    newTestResult: models.ITestResult
+  ) {
+    const { testTypes } = newTestResult;
+    const {
+      testStartTimestamp,
+      testerStaffId,
+      testStationPNumber,
+    } = oldTestResult;
+    const params = {
+      fromStartTime: DateProvider.getStartOfDay(testStartTimestamp),
+      toStartTime: testStartTimestamp,
+      activityType: "visit",
+      testStationPNumber,
+      testerStaffId,
+    };
+    try {
+      const activities: [
+        { startTime: Date; endTime: Date }
+      ] = await this.dataProvider.getActivity(params);
+      if (activities.length > 1) {
+        throw new models.HTTPError(500, enums.ERRORS.NoUniqueActivityFound);
+      }
+      const activity = activities[0];
+      const { startTime, endTime } = activity;
+      const isStartTimeInvalid = testTypes.some((testType) => {
+        const { testTypeStartTimestamp } = testType;
+        console.log("testTypeStartTimestamp", testTypeStartTimestamp);
+        return DateProvider.isOutsideTimePeriod(
+          testTypeStartTimestamp,
+          endTime,
+          startTime
+        );
+      });
+      if (isStartTimeInvalid) {
+        throw new models.HTTPError(
+          400,
+          VehicleTestController.mapTimestampError(
+            "testTypeStartTimestamp",
+            startTime,
+            endTime
+          )
+        );
+      }
+      const isEndTimeInvalid = testTypes.some((testType) => {
+        const { testTypeEndTimestamp } = testType;
+        console.log("testTypeEndTimestamp", testTypeEndTimestamp);
+        return DateProvider.isOutsideTimePeriod(
+          testTypeEndTimestamp,
+          endTime,
+          startTime
+        );
+      });
+      if (isEndTimeInvalid ) {
+        throw new models.HTTPError(
+          400,
+          VehicleTestController.mapTimestampError(
+            "testTypeEndTimestamp",
+            startTime,
+            endTime
+          )
+        );
+      }
+      const isStartAfterEnd = testTypes.some((testType) => {
+        const { testTypeStartTimestamp, testTypeEndTimestamp } = testType;
+        return DateProvider.isAfterDate(
+          testTypeStartTimestamp,
+          testTypeEndTimestamp
+        );
+      });
+      if (isStartAfterEnd) {
+        throw new models.HTTPError(400, enums.ERRORS.StartTimeBeforeEndTime);
+      }
+    } catch (err) {
+      console.error("VehicleTestController -> checkTestTypeStartAndEndTimestamp", err);
+      if (err.statusCode !== 404) {
+        throw new models.HTTPError(
+          err.statusCode,
+          err.body
+        );
+      }
+    }
+  }
+
+  private static getTestResultToArchive(
+    testResults: models.ITestResult[],
+    testResultId: string
+  ): models.ITestResult {
+    testResults = testResults.filter(
+      (testResult) =>
+        testResult.testResultId === testResultId &&
+        (testResult.testVersion === enums.TEST_VERSION.CURRENT ||
+          !testResult.testVersion)
+    );
+    if (testResults.length !== 1) {
+      throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
+    }
+    return testResults[0];
+  }
+
+  private static mapTimestampError(
+    timeStampKey: string,
+    startTime: Date,
+    endTime: Date
+  ) {
+    return `The ${timeStampKey} must be within the visit, between ${startTime} and ${endTime}`;
+  }
+  //#endregion
 }

@@ -18,13 +18,12 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const {Count, Items} = await this.testResultsDAO.getBySystemNumber(
+      const result = await this.testResultsDAO?.getBySystemNumber(
         filters.systemNumber
       );
       const response: models.ITestResultData = {
-        Count,
-        Items
+        Count: result?.Count,
+        Items: result?.Items,
       };
       const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
         response
@@ -43,14 +42,13 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const result = await this.testResultsDAO.getByTesterStaffId(
+      const result = await this.testResultsDAO?.getByTesterStaffId(
         filters.testerStaffId
       );
       if (result && !result.length) {
         return result;
       }
-      return TestDataProvider.applyTestResultsFilters(result, filters);
+      return TestDataProvider.applyTestResultsFilters(result as models.ITestResult[], filters);
     } catch (error) {
       console.error(
         "TestDataProvider.getTestResultBySystemNumber: error-> ",
@@ -67,8 +65,7 @@ export class TestDataProvider implements ITestDataProvider {
     const toDateTime = new Date();
     let result: models.ITestResult[] = [];
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const data = await this.testResultsDAO.getBySystemNumber(systemNumber);
+      const data = await this.testResultsDAO?.getBySystemNumber(systemNumber);
       console.log(`getTestHistory: Data Count -> ${data?.Count}`);
       if (!data?.Count) {
         return result;
@@ -102,6 +99,16 @@ export class TestDataProvider implements ITestDataProvider {
       console.log("TestDataProvider.getTestHistory: error -> ", error);
       throw error;
     }
+  }
+
+  public async getBySystemNumber(systemNumber: string) {
+    const data = (await this.testResultsDAO?.getBySystemNumber(
+      systemNumber
+    )) as models.ITestResultData;
+    const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
+      data
+    );
+    return testResults;
   }
 
   public async getMostRecentExpiryDate(systemNumber: string): Promise<Date> {
@@ -147,7 +154,7 @@ export class TestDataProvider implements ITestDataProvider {
     return enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
   }
 
-  public static applyTestResultsFilters(
+  private static applyTestResultsFilters(
     testResults: models.ITestResult[],
     filters: models.ITestResultFilters
   ): models.ITestResult[] {
@@ -202,14 +209,13 @@ export class TestDataProvider implements ITestDataProvider {
     testTypes: models.TestType[] = [],
     testTypeParams: models.TestTypeParams
   ) {
-    testTypes.forEach(async (testType) => {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+    testTypes.map(async (testType) => {
       const { testTypeId } = testType;
       const {
         defaultTestCode,
         linkedTestCode,
         testTypeClassification,
-      } = await this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(
+      } = await this.testResultsDAO?.getTestCodesAndClassificationFromTestTypes(
         testTypeId,
         testTypeParams
       );
@@ -228,8 +234,7 @@ export class TestDataProvider implements ITestDataProvider {
       return payload;
     }
     payload.testTypes.forEach(async (testType: models.TestType) => {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const result = await this.testResultsDAO.getTestNumber();
+      const result = await this.testResultsDAO?.getTestNumber();
       testType.testNumber = result.testNumber;
     });
 
@@ -237,14 +242,27 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async insertTestResult(payload: models.ITestResultPayload) {
-    this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
     try {
-    const result = await this.testResultsDAO.createSingle(payload);
-    return result.Attributes as models.ITestResult[];
+      const result = await this.testResultsDAO?.createSingle(payload);
+      return result?.Attributes as models.ITestResult[];
     } catch (error) {
       console.error("TestDataProvider.insertTestResult -> ", error);
       throw error;
     }
+  }
+
+  public async updateTestResult(payload: models.ITestResult) {
+    try {
+      const result = await this.testResultsDAO?.updateTestResult(payload);
+      return result?.$response.data as models.ITestResult;
+    } catch (error) {
+      console.error("TestDataProvider.updateTestResult -> ", error);
+      throw error;
+    }
+  }
+
+  public async getActivity(params: models.ActivityParams) {
+    return this.testResultsDAO?.getActivity(params);
   }
   //#endregion
   //#region [rgba(0, 205, 30, 0.1)] Private Static functions

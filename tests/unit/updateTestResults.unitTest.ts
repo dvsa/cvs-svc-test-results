@@ -5,6 +5,9 @@ import {ERRORS, MESSAGES} from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
 import { ValidationUtil } from "../../src/utils/validationUtil";
+import { VehicleTestController } from "../../src/handlers/VehicleTestController";
+import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
+import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
 
 describe("updateTestResults", () => {
     let testResultsService: TestResultsService | any;
@@ -38,7 +41,9 @@ describe("updateTestResults", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             updateTestResult: () => {
-                                return Promise.resolve({});
+                                return Promise.resolve({
+                                    $response: {data: testToUpdate}
+                                });
                             },
                             getActivity: () => {
                                 return Promise.resolve([{
@@ -54,31 +59,62 @@ describe("updateTestResults", () => {
                             }
                         };
                     });
-
                     testResultsService = new TestResultsService(new MockTestResultsDAO());
-                    expect.assertions(9);
+                    expect.assertions(2);
                     return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
                         .then((returnedRecord: any) => {
                             expect(returnedRecord).not.toEqual(undefined);
                             expect(returnedRecord).not.toEqual({});
-                            expect(returnedRecord).toHaveProperty("createdAt");
-                            expect(returnedRecord).toHaveProperty("createdById");
-                            expect(returnedRecord).toHaveProperty("createdByName");
-                            expect(returnedRecord).toHaveProperty("testVersion");
-                            expect(returnedRecord.testVersion).toEqual("current");
-                            expect(returnedRecord).toHaveProperty("testHistory");
-                            expect(returnedRecord.testHistory[0].testVersion).toEqual("archived");
                         });
+                });
+
+                it("should call mapOldTestResultToNew with updated test-result", async () => {
+                    MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                        return {
+                            updateTestResult: () => {
+                                return Promise.resolve({
+                                    $response: {data: testToUpdate}
+                                });
+                            },
+                            getActivity: () => {
+                                return Promise.resolve([{
+                                    startTime: "2018-03-22",
+                                    endTime: "2020-04-22"
+                                }]);
+                            },
+                            getBySystemNumber: () => {
+                                return Promise.resolve({
+                                    Items: Array.of(cloneDeep(testToUpdate)),
+                                    Count: 1
+                                });
+                            }
+                        };
+                    });
+                    const testDataProvider = new TestDataProvider();
+                    testDataProvider.testResultsDAO = new MockTestResultsDAO();
+                    const vehicleTestController = new VehicleTestController(testDataProvider, new DateProvider());
+                    const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
+                    updatedPayload.testTypes[0].testTypeName = "Another test type name";
+                    expect.assertions(9);
+                    // @ts-ignore
+                    const returnedRecord = await vehicleTestController.mapOldTestResultToNew(updatedPayload.systemNumber, updatedPayload, msUserDetails);
+                    expect(returnedRecord).not.toEqual(undefined);
+                    expect(returnedRecord).not.toEqual({});
+                    expect(returnedRecord).toHaveProperty("createdAt");
+                    expect(returnedRecord).toHaveProperty("createdById");
+                    expect(returnedRecord).toHaveProperty("createdByName");
+                    expect(returnedRecord).toHaveProperty("testVersion");
+                    expect(returnedRecord.testVersion).toEqual("current");
+                    expect(returnedRecord).toHaveProperty("testHistory");
+                    // @ts-ignore
+                    expect(returnedRecord.testHistory[0].testVersion).toEqual("archived");
                 });
 
                 context("when changing an attribute that requires new testCode", () => {
                     context("when changing an attribute on the test-type", () => {
-                        it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", () => {
+                        it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", async () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
-                                    updateTestResult: () => {
-                                        return Promise.resolve({});
-                                    },
                                     getActivity: () => {
                                         return Promise.resolve([{
                                             startTime: "2018-03-22",
@@ -100,27 +136,26 @@ describe("updateTestResults", () => {
                                 };
                             });
 
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
+                            const testDataProvider = new TestDataProvider();
+                            testDataProvider.testResultsDAO = new MockTestResultsDAO();
+                            const vehicleTestController = new VehicleTestController(testDataProvider, new DateProvider());
                             const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
                             updatedPayload.testTypes[0].testTypeName = "Another test type name";
                             expect.assertions(4);
-                            return testResultsService.updateTestResult(updatedPayload.systemNumber, updatedPayload, msUserDetails)
-                              .then((returnedRecord: any) => {
-                                  expect(returnedRecord).not.toEqual(undefined);
-                                  expect(returnedRecord).not.toEqual({});
-                                  expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
-                                  expect(returnedRecord.testTypes[0].testTypeClassification).toEqual("Annual With Certificate");
-                              });
+                            // @ts-ignore
+                            const returnedRecord = await vehicleTestController.mapOldTestResultToNew(updatedPayload.systemNumber, updatedPayload, msUserDetails);
+                            expect(returnedRecord).not.toEqual(undefined);
+                            expect(returnedRecord).not.toEqual({});
+                            expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
+                            expect(returnedRecord.testTypes[0].testTypeClassification).toEqual("Annual With Certificate");
+                            return returnedRecord;
                         });
                     });
 
                     context("when changing an attribute on the test-result object regarding vehicle details", () => {
-                        it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", () => {
+                        it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", async () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
-                                    updateTestResult: () => {
-                                        return Promise.resolve({});
-                                    },
                                     getActivity: () => {
                                         return Promise.resolve([{
                                             startTime: "2018-03-22",
@@ -141,20 +176,21 @@ describe("updateTestResults", () => {
                                     }
                                 };
                             });
-
-                            testResultsService = new TestResultsService(new MockTestResultsDAO());
+                            const testDataProvider = new TestDataProvider();
+                            testDataProvider.testResultsDAO = new MockTestResultsDAO();
+                            const vehicleTestController = new VehicleTestController(testDataProvider, new DateProvider());
                             const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
                             updatedPayload.euVehicleCategory = "n3";
                             updatedPayload.vehicleSize = "large";
                             updatedPayload.noOfAxles = "4";
                             expect.assertions(4);
-                            return testResultsService.updateTestResult(updatedPayload.systemNumber, updatedPayload, msUserDetails)
-                              .then((returnedRecord: any) => {
-                                  expect(returnedRecord).not.toEqual(undefined);
-                                  expect(returnedRecord).not.toEqual({});
-                                  expect(returnedRecord.testTypes[0].testCode).toEqual("lbp");
-                                  expect(returnedRecord.testTypes[0].testTypeClassification).toEqual("Annual No Certificate");
-                              });
+                            // @ts-ignore
+                            const returnedRecord = await vehicleTestController.mapOldTestResultToNew(updatedPayload.systemNumber, updatedPayload, msUserDetails);
+                            expect(returnedRecord).not.toEqual(undefined);
+                            expect(returnedRecord).not.toEqual({});
+                            expect(returnedRecord.testTypes[0].testCode).toEqual("lbp");
+                            expect(returnedRecord.testTypes[0].testTypeClassification).toEqual("Annual No Certificate");
+                            return returnedRecord;
                         });
                     });
 
@@ -257,7 +293,7 @@ describe("updateTestResults", () => {
                     });
 
                     context("and the testTypeEndTimestamp is after the visit endTime", () => {
-                        it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
+                        it("should return error 400 testTypeEndTimestamp must be within the visit", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getActivity: () => {
@@ -368,7 +404,8 @@ describe("updateTestResults", () => {
                               .catch((errorResponse: { statusCode: any; body: any; }) => {
                                   expect(errorResponse).toBeInstanceOf(HTTPError);
                                   expect(errorResponse.statusCode).toEqual(400);
-                                  expect(errorResponse.body).toEqual(`Activities microservice error: ${ERRORS.EventIsEmpty}`);
+                                // FIXME: discuss whether we add the extra text to other errors or remove it
+                                  expect(errorResponse.body).toEqual(ERRORS.EventIsEmpty);
                               });
                         });
                     });
@@ -387,7 +424,9 @@ describe("updateTestResults", () => {
                                         });
                                     },
                                     updateTestResult: () => {
-                                        return Promise.resolve({});
+                                        return Promise.resolve({
+                                            $response: {data: testToUpdate}
+                                        });
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -626,6 +665,7 @@ describe("updateTestResults", () => {
                     testToUpdate = cloneDeep(testResultsMockDB[1]);
                     for (const testTypeId of testTypeIds) {
                         testToUpdate.testTypes[0].testTypeId = testTypeId;
+                        // @ts-ignore
                         const validationResponse = ValidationUtil.validateTestTypes(testToUpdate);
                         expect(validationResponse).toBeDefined();
                         expect(validationResponse.length).not.toEqual(0);
@@ -641,7 +681,8 @@ describe("updateTestResults", () => {
                     delete testToUpdate.testTypes;
                     expect.assertions(3);
                     return testResultsService.updateTestResult(testToUpdate.systemNumber, testToUpdate, msUserDetails)
-                      .catch((errorResponse: { statusCode: any; body: any; }) => {
+                        .catch((errorResponse: { statusCode: any; body: any; }) => {
+                          console.error("inside test", errorResponse);
                           expect(errorResponse).toBeInstanceOf(HTTPError);
                           expect(errorResponse.statusCode).toEqual(400);
                           expect(errorResponse.body.errors).toContain("\"testTypes\" is required");
