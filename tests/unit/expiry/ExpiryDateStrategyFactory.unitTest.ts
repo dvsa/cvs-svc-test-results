@@ -109,6 +109,11 @@ describe("ExpiryDateStrategyFactory", () => {
       ${false}    |  ${true}          | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlFirstTestStrategy}
       ${true}     |  ${true}          | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
       ${true}     |  ${false}         | ${'65'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
+
+      ${false}    |  ${false}         | ${'199'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlFirstTestStrategy}
+      ${false}    |  ${true}          | ${'199'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlFirstTestStrategy}
+      ${true}     |  ${true}          | ${'199'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
+      ${true}     |  ${false}         | ${'199'}     | ${VEHICLE_TYPE.TRL} | ${HgvTrlMostRecentExpiryStrategy}
     `('for a $vehicleType with hasHistory $hasHistory, hasRegistration $hasRegistration and testTypeId $testTypeId it should return $expectedStrategy',
         ({ hasHistory, hasRegistration, testTypeId, vehicleType, expectedStrategy }) => {
           expect.assertions(1);
