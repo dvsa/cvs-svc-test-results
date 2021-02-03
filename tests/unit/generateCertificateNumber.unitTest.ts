@@ -1,55 +1,80 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
-import fs from "fs";
-import path from "path";
 import {cloneDeep} from "lodash";
+import testResults from "../resources/test-results.json";
+import postTestResults from "../resources/test-results-post.json";
+import { TEST_TYPE_CLASSIFICATION, VEHICLE_TYPES, TEST_RESULT } from "../../src/assets/Enums";
+import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 
 describe("TestResultsService calling generateExpiryDate", () => {
-    let testResultsService: TestResultsService | any;
+    let testResultsService: TestResultsService;
     let MockTestResultsDAO: jest.Mock;
     let testResultsMockDB: any;
     let testResultsPostMock: any;
+    let baseTestResult: ITestResultPayload;
 
     beforeEach(() => {
-        testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
-        testResultsPostMock = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results-post.json"), "utf8"));
+        testResultsMockDB = testResults;
+        testResultsPostMock = postTestResults;
+        setupBaseTestResult();
+
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {};
         });
         testResultsService = new TestResultsService(new MockTestResultsDAO());
     });
 
-    afterEach(() => {
-        testResultsMockDB = null;
-        testResultsService = null;
-        MockTestResultsDAO.mockReset();
-    });
+    function setupBaseTestResult() {
+        baseTestResult = cloneDeep(testResultsPostMock[6]);
+        baseTestResult.testTypes[0].testNumber = "W01A00209";
+        baseTestResult.testTypes[0].testTypeClassification = TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE;
+        baseTestResult.testTypes[0].certificateNumber = null;
+    }
 
-    context("when inserting a testResult that is a vehicleType of hgv or trl and it contains at least one Roadworthiness test type and the test result on the Roadworthiness test type is pass", () => {
-        it("then a testNumber is generated and the inserted test result should set the testNumber as the certificateNumber.", () => {
-            const testPassedResultWithRoadworthinessTestType = cloneDeep(testResultsPostMock[6]);
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testTypeId = "122";
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testNumber = "W01A00209";
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testResult = "pass";
+    describe("When inserting a testResult with Annual With Certificate classification", () => {
+        test.each`
+        vehicleType             | testResult                 |  testTypeId      | shouldSetCertificateNumber
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PASS}         |  ${"122"}        | ${true}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PRS}          |  ${"122"}        | ${true}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.FAIL}         |  ${"122"}        | ${false}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.ABANDONED}    |  ${"122"}        | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"122"}        | ${false}
+
+        ${VEHICLE_TYPES.TRL}    |${TEST_RESULT.PASS}         |  ${"91"}         | ${true}
+        ${VEHICLE_TYPES.TRL}    |${TEST_RESULT.PRS}          |  ${"91"}         | ${true}
+        ${VEHICLE_TYPES.TRL}    |${TEST_RESULT.FAIL}         |  ${"91"}         | ${false}
+        ${VEHICLE_TYPES.TRL}    |${TEST_RESULT.ABANDONED}    |  ${"91"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"91"}         | ${false}
+
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"1"}          | ${true}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PRS}          |  ${"1"}          | ${true}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.FAIL}         |  ${"1"}          | ${true}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.ABANDONED}    |  ${"1"}          | ${false}
+
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PASS}         |  ${"94"}         | ${true}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PRS}          |  ${"94"}         | ${true}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.FAIL}         |  ${"94"}         | ${true}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.ABANDONED}    |  ${"94"}         | ${false}
+
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PASS}         |  ${"50"}         | ${false}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.PRS}          |  ${"50"}         | ${false}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.FAIL}         |  ${"50"}         | ${false}
+        ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.ABANDONED}    |  ${"50"}         | ${false}
+
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PRS}          |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.FAIL}         |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.ABANDONED}    |  ${"39"}         | ${false}
+      `("for a $vehicleType with testResult $testResult and testTypeId $testTypeId it should generate a certificate: $shouldSetCertificateNumber",
+          ({ vehicleType, testResult, testTypeId, shouldSetCertificateNumber}) => {
+            baseTestResult.vehicleType = vehicleType;
+            baseTestResult.testTypes[0].testResult = testResult;
+            baseTestResult.testTypes[0].testTypeId = testTypeId;
 
             expect.assertions(2);
-            const updatedResult =  testResultsService.generateCertificateNumber(testPassedResultWithRoadworthinessTestType);
-            expect(updatedResult.testTypes[0].testTypeId).toEqual("122");
-            expect(updatedResult.testTypes[0].certificateNumber).toEqual("W01A00209");
-        });
-    });
+            const updatedResult =  testResultsService.generateCertificateNumber(baseTestResult);
+            expect(updatedResult.testTypes[0].certificateNumber === null).not.toBe(shouldSetCertificateNumber);
+            expect(updatedResult.testTypes[0].certificateNumber === "W01A00209").toBe(shouldSetCertificateNumber);
 
-    context("when inserting a testResult that is a vehicleType of trl and it contains at least one Roadworthiness test type and the test result on the Roadworthiness test type is pass", () => {
-        it("then a testNumber is generated and the inserted test result should set the testNumber as the certificateNumber.", () => {
-            const testPassedResultWithRoadworthinessTestType = cloneDeep(testResultsPostMock[6]);
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testTypeId = "91";
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testNumber = "W01A00209";
-            testPassedResultWithRoadworthinessTestType.testTypes[0].testResult = "pass";
-
-            expect.assertions(2);
-            const updatedResult =  testResultsService.generateCertificateNumber(testPassedResultWithRoadworthinessTestType);
-            expect(updatedResult.testTypes[0].testTypeId).toEqual("91");
-            expect(updatedResult.testTypes[0].certificateNumber).toEqual("W01A00209");
-        });
-    });
-
+          });
+      });
 });
