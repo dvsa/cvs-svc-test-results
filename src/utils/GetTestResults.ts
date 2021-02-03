@@ -5,20 +5,10 @@ import moment from "moment";
 
 
 export class GetTestResults {
-  public static validateDates(fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-    return isDate(new Date(fromDateTime)) && isDate(new Date(toDateTime)) && isFinite((new Date(fromDateTime)).getTime()) && isFinite((new Date(toDateTime)).getTime());
-  }
 
   public static filterTestResultsByParam(testResults: { filter: (arg0: (testResult: any) => boolean) => void; }, filterName: string | number, filterValue: any) {
     return testResults.filter((testResult) => {
       return testResult[filterName] === filterValue;
-    });
-  }
-
-  public static filterTestResultByDate(testResults: any, fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-
-    return testResults.filter((testResult: { testStartTimestamp: string | number | Date; testEndTimestamp: string | number | Date; }) => {
-      return moment(testResult.testStartTimestamp).isAfter(fromDateTime) && moment(testResult.testEndTimestamp).isBefore(toDateTime);
     });
   }
 

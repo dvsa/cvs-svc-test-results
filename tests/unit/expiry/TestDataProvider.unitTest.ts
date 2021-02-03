@@ -23,9 +23,8 @@ describe("TestDataProvider", () => {
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           await testDataProvider.getTestHistory("123");
         } catch (error) {
-          expect(error).toEqual(
-            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
-          );
+          expect.assertions(1);
+          expect(error).toEqual( new Error("some error"));
         }
       });
     });
@@ -140,9 +139,8 @@ describe("TestDataProvider", () => {
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           await testDataProvider.getMostRecentExpiryDate("123");
         } catch (error) {
-          expect(error).toEqual(
-            new HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
-          );
+          expect.assertions(1);
+          expect(error).toEqual(new Error("some error"));
         }
       });
     });
