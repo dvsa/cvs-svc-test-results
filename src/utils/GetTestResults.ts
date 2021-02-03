@@ -12,13 +12,6 @@ export class GetTestResults {
     });
   }
 
-  public static filterTestResultByDate(testResults: any, fromDateTime: string | number | Date, toDateTime: string | number | Date) {
-
-    return testResults.filter((testResult: { testStartTimestamp: string | number | Date; testEndTimestamp: string | number | Date; }) => {
-      return moment(testResult.testStartTimestamp).isAfter(fromDateTime) && moment(testResult.testEndTimestamp).isBefore(toDateTime);
-    });
-  }
-
   public static filterTestResultsByTestVersion(testResults: ITestResult[], testVersion: string = TEST_VERSION.CURRENT): ITestResult[] {
     let result: ITestResult[] = [];
     if (testVersion === TEST_VERSION.ALL) {

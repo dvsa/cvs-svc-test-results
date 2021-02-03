@@ -47,7 +47,7 @@ export interface ITestResult {
 
 export interface TestType {
   prohibitionIssued: boolean;
-  testCode: string | null; // Not sent from FE, calculated in the BE.
+  testCode?: string; // Not sent from FE, calculated in the BE.
   testNumber: string | null; // Not sent from FE, calculated in the BE.
   lastUpdatedAt: string | Date;
   testAnniversaryDate: string | Date | null; // Not sent from FE, calculated in the BE.
@@ -68,7 +68,7 @@ export interface TestType {
   testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
   testResult: string;
   certificateNumber?: string | null;
-  testExpiryDate?: string | Date | null; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
+  testExpiryDate?: string | Date; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
   deletionFlag?: boolean | null; // Not sent from FE, calculated in the BE.
 
   // Used only for LEC tests.
