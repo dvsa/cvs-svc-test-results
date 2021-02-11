@@ -19,12 +19,12 @@ export class TestDataProvider implements ITestDataProvider {
   ): Promise<models.ITestResult[]> {
     try {
       this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const {Count, Items} = await this.testResultsDAO.getBySystemNumber(
+      const { Count, Items } = await this.testResultsDAO.getBySystemNumber(
         filters.systemNumber
       );
       const response: models.ITestResultData = {
         Count,
-        Items
+        Items,
       };
       const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
         response
@@ -202,45 +202,47 @@ export class TestDataProvider implements ITestDataProvider {
     testTypes: models.TestType[] = [],
     testTypeParams: models.TestTypeParams
   ) {
-    testTypes.forEach(async (testType) => {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const { testTypeId } = testType;
-      const {
-        defaultTestCode,
-        linkedTestCode,
-        testTypeClassification,
-      } = await this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(
-        testTypeId,
-        testTypeParams
-      );
-      testType.testCode =
-        testTypes.length > 1 && linkedTestCode ?
-        linkedTestCode : defaultTestCode;
-      testType.testTypeClassification = testTypeClassification;
-      return testType;
-    });
-    return Promise.resolve(testTypes);
+    return await this.createNewTestTypes(testTypes, testTypeParams);
   }
 
-  public async setTestNumberForEachTestType(payload: models.ITestResultPayload) {
-    const {testTypes} = payload;
+  private async createNewTestTypes(list: any, params: any) {
+    return await Promise.all(
+      list.map(
+        utils.MappingUtil.addTestcodeToTestTypes(
+          this.testResultsDAO as models.TestResultsDAO,
+          params
+        )
+      )
+    );
+  }
+
+  public async setTestNumberForEachTestType(
+    payload: models.ITestResultPayload
+  ) {
+    const { testTypes } = payload;
+
     if (!testTypes) {
       return payload;
     }
-    payload.testTypes.forEach(async (testType: models.TestType) => {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
-      const result = await this.testResultsDAO.getTestNumber();
-      testType.testNumber = result.testNumber;
-    });
 
-    return payload;
+    return await this.createNewTestNumber(testTypes);
+  }
+
+  private async createNewTestNumber(list: models.TestType[]) {
+    return await Promise.all(
+      list.map(
+        utils.MappingUtil.addTestNumberToTestTypes(
+          this.testResultsDAO as models.TestResultsDAO
+        )
+      )
+    );
   }
 
   public async insertTestResult(payload: models.ITestResultPayload) {
     this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
     try {
-    const result = await this.testResultsDAO.createSingle(payload);
-    return result.Attributes as models.ITestResult[];
+      const result = await this.testResultsDAO.createSingle(payload);
+      return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error("TestDataProvider.insertTestResult -> ", error);
       throw error;

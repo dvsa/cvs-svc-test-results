@@ -129,7 +129,7 @@ export class TestResultsDAO {
     };
   }
 
-  public getTestCodesAndClassificationFromTestTypes(
+  public async getTestCodesAndClassificationFromTestTypes(
     testTypeId: string,
     testTypeParams: models.TestTypeParams
   ) {
@@ -164,24 +164,53 @@ export class TestResultsDAO {
       resource: "/test-types/{id}",
     };
 
-    console.log("queryString for get Test: ", event);
-    return LambdaService.invoke(
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name,
-      event
-    );
+    const lambdaName =
+      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
+    try {
+      console.log("queryString for get Test: ", event);
+      const lambdaResult = LambdaService.invoke(lambdaName, event);
+
+      return lambdaResult;
+    } catch (error) {
+      console.error(
+        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`
+      );
+    }
+
+    // TODO Add Mocks CVSB-19153
+    // return Promise.resolve({
+    //   testTypeClassification: "foo",
+    //   linkedTestCode: "linkedTestCode",
+    //   defaultTestCode: "defaultTestCode",
+    // });
   }
 
-  public getTestNumber(): any {
+  public async createTestNumber(): Promise<any> {
     const event = {
       path: "/test-number/",
       httpMethod: "POST",
       resource: "/test-number/",
     };
 
-    return LambdaService.invoke(
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name,
-      event
-    );
+    const lambdaName =
+      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name;
+    try {
+      const lambdaResult = LambdaService.invoke(lambdaName, event);
+      return lambdaResult;
+    } catch (error) {
+      console.error(
+        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`
+      );
+    }
+
+    // TODO Add Mocks CVSB-19153
+    // return Promise.resolve({
+    //   id: "W01",
+    //   certLetter: "A",
+    //   sequenceNumber: "003",
+    //   testNumber: "W01A00330",
+    //   testNumberKey: 1,
+    // });
   }
 
   public getActivity(filters: {
@@ -208,6 +237,26 @@ export class TestResultsDAO {
       TestResultsDAO.lambdaInvokeEndpoints.functions.getActivity.name,
       event
     );
+    // TODO Add Mocks - CVSB-19153
+    // return [
+    //   {
+    //     testerStaffId: "62ef-ccd-4f-9-b72",
+    //     testerName: "mail@mail.com",
+    //     testStationName: "Name",
+    //     activityDay: "2021-02-22",
+    //     parentId: "db1c62a8-43c3-469e-ae9a-19a43583d127",
+    //     testStationPNumber: "09-4129632",
+    //     testStationType: "gvts",
+    //     startTime: new Date(Date.now() - 1000000).toISOString(),
+    //     activityType: "unaccountable time",
+    //     // endTime: new Date(Date.now() + 1000000).toISOString(),
+    //     endTime: null,
+    //     waitReason: [],
+    //     notes: null,
+    //     testStationEmail: "mail@mail.com",
+    //     id: "d015f-c4646-49877-bc559-11d0f6dd8",
+    //   },
+    // ];
   }
 
   public updateTestResult(

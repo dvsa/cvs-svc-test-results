@@ -54,7 +54,6 @@ export class VehicleTestController implements IVehicleTestController {
     const result = await this.dataProvider.getTestResultByTesterStaffId(
       filters
     );
-    console.log("testResults inside controller:", result);
     if (result.length === 0) {
       throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
     }
@@ -95,12 +94,14 @@ export class VehicleTestController implements IVehicleTestController {
         testTypeParams
       );
       payload.testTypes = testTypesWithTestCodesAndClassification;
+
       const payloadWithTestNumber = await this.dataProvider.setTestNumberForEachTestType(
         payload
       );
-      const payloadWithExpiryDate = await this.generateExpiryDate(
-        payloadWithTestNumber
-      );
+      // @ts-ignore
+      payload.testTypes = payloadWithTestNumber;
+
+      const payloadWithExpiryDate = await this.generateExpiryDate(payload);
       const payloadWithCertificateNumber = VehicleTestController.AssignCertificateNumberToTestTypes(
         payloadWithExpiryDate
       );
@@ -108,21 +109,26 @@ export class VehicleTestController implements IVehicleTestController {
         payloadWithCertificateNumber
       );
       payloadWithAnniversaryDate.vehicleId = payloadWithAnniversaryDate.vrm;
-      const result = await this.dataProvider.insertTestResult(payloadWithAnniversaryDate);
+      const result = await this.dataProvider.insertTestResult(
+        payloadWithAnniversaryDate
+      );
       return result;
     } catch (error) {
-      if (error.statusCode === 400 && error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED) {
-          console.info(
-            "TestResultService.insertTestResult: Test Result id already exists",
-            error
-          );
-          error =  new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
-        }
+      if (
+        error.statusCode === 400 &&
+        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+      ) {
+        console.info(
+          "TestResultService.insertTestResult: Test Result id already exists",
+          error
+        );
+        error = new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
+      }
       throw error;
     }
   }
-//#endregion
-//#region [rgba(0, 205, 30, 0.1)] Private functions
+  //#endregion
+  //#region [rgba(0, 205, 30, 0.1)] Private functions
   /**
    * Note: When performing actions on a moment instance, it gets mutated
    * Note: Expiry dates on the payload should be set at the UTC start of day.
@@ -157,7 +163,9 @@ export class VehicleTestController implements IVehicleTestController {
               payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
             ],
           recentExpiry,
-          regnOrFirstUseDate: VehicleTestController.getRegistrationOrFirstUseDate(payload),
+          regnOrFirstUseDate: VehicleTestController.getRegistrationOrFirstUseDate(
+            payload
+          ),
           hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
           hasRegistration: DateProvider.isValidDate(
             VehicleTestController.getRegistrationOrFirstUseDate(payload)
@@ -186,13 +194,12 @@ export class VehicleTestController implements IVehicleTestController {
       return payload;
     }
     payload.testTypes.forEach((testType) => {
-        if (this.shouldGenerateCertificateNumber(testType, payload.vehicleType)) {
-          testType.certificateNumber = testType.testNumber;
-        }
-      });
+      if (this.shouldGenerateCertificateNumber(testType, payload.vehicleType)) {
+        testType.certificateNumber = testType.testNumber;
+      }
+    });
     return payload;
   }
-
 
   private static calculateAnniversaryDate(payload: models.ITestResultPayload) {
     const { vehicleType } = payload;
@@ -209,24 +216,40 @@ export class VehicleTestController implements IVehicleTestController {
     return payload;
   }
 
-  private static getRegistrationOrFirstUseDate(payload: models.ITestResultPayload) {
+  private static getRegistrationOrFirstUseDate(
+    payload: models.ITestResultPayload
+  ) {
     return payload.vehicleType === enums.VEHICLE_TYPES.TRL
       ? payload.firstUseDate
       : payload.regnDate;
   }
 
-
-  private static shouldGenerateCertificateNumber(testType: models.TestType, vehicleType: string): boolean {
-    if (testType.testTypeClassification === enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE && testType.testResult !== enums.TEST_RESULT.ABANDONED) {
-      if (utils.ValidationUtil.isTestTypeAdr(testType) || utils.ValidationUtil.isTestTypeLec(testType)) {
+  private static shouldGenerateCertificateNumber(
+    testType: models.TestType,
+    vehicleType: string
+  ): boolean {
+    if (
+      testType.testTypeClassification ===
+        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+      testType.testResult !== enums.TEST_RESULT.ABANDONED
+    ) {
+      if (
+        utils.ValidationUtil.isTestTypeAdr(testType) ||
+        utils.ValidationUtil.isTestTypeLec(testType)
+      ) {
         return false;
       }
-      if (utils.ValidationUtil.isHGVTRLRoadworthinessTest(testType.testTypeId)) {
-        return (utils.ValidationUtil.isHgvOrTrl(vehicleType) && testType.testResult !== enums.TEST_RESULT.FAIL);
+      if (
+        utils.ValidationUtil.isHGVTRLRoadworthinessTest(testType.testTypeId)
+      ) {
+        return (
+          utils.ValidationUtil.isHgvOrTrl(vehicleType) &&
+          testType.testResult !== enums.TEST_RESULT.FAIL
+        );
       }
       return true;
     }
     return false;
   }
- //#endregion
+  //#endregion
 }

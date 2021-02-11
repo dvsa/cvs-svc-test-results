@@ -16,10 +16,9 @@ export class ValidationUtil {
   public static validateGetTestResultFilters(
     filters: models.ITestResultFilters
   ) {
-    const result = (
+    const result =
       filters &&
-      ValidationUtil.validateDates(filters.fromDateTime, filters.toDateTime)
-    );
+      ValidationUtil.validateDates(filters.fromDateTime, filters.toDateTime);
     if (!result) {
       console.log(
         "ValidationUtil.validateGetTestResultFilters: Invalid Filter -> ",
@@ -281,13 +280,14 @@ export class ValidationUtil {
         if (stdForProhibition === null) {
           missingFieldsString = missingFieldsString + "/stdForProhibition";
         }
-
       });
     });
 
-    return missingFieldsString ? missingFieldsString.concat(
-      " are null for a defect with deficiency category other than advisory"
-    ) : missingFieldsString;
+    return missingFieldsString
+      ? missingFieldsString.concat(
+          " are null for a defect with deficiency category other than advisory"
+        )
+      : missingFieldsString;
   }
 
   public static reasonForAbandoningPresentOnAllAbandonedTests(
@@ -318,19 +318,18 @@ export class ValidationUtil {
   public static validateInsertTestResultPayload(
     payload: models.ITestResultPayload
   ) {
-     if (Object.keys(payload).length === 0) {
-       throw new models.HTTPError(400, enums.ERRORS.PayloadCannotBeEmpty);
-     }
-     const validationSchema = ValidationUtil.getValidationSchema(
+    if (Object.keys(payload).length === 0) {
+      throw new models.HTTPError(400, enums.ERRORS.PayloadCannotBeEmpty);
+    }
+    const validationSchema = ValidationUtil.getValidationSchema(
       payload.vehicleType,
       payload.testStatus
     );
-     const validation: ValidationResult<any> | any | null = validationSchema ? validate(
-      payload,
-      validationSchema
-    ) : null;
+    const validation: ValidationResult<any> | any | null = validationSchema
+      ? validate(payload, validationSchema)
+      : null;
 
-     if (
+    if (
       !ValidationUtil.reasonForAbandoningPresentOnAllAbandonedTests(payload)
     ) {
       throw new models.HTTPError(
@@ -339,41 +338,41 @@ export class ValidationUtil {
       );
     }
 
-     const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(
+    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(
       payload
     );
-     if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory) {
+    if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory) {
       throw new models.HTTPError(
         400,
         fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory
       );
     }
-     const missingFieldsForLecTestType: string[] = ValidationUtil.validateLecTestTypeFields(
+    const missingFieldsForLecTestType: string[] = ValidationUtil.validateLecTestTypeFields(
       payload
     );
-     if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
+    if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
       throw new models.HTTPError(400, { errors: missingFieldsForLecTestType });
     }
-     if (ValidationUtil.isMissingRequiredCertificateNumberOnAdr(payload)) {
+    if (ValidationUtil.isMissingRequiredCertificateNumberOnAdr(payload)) {
       throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnAdr);
     }
-     if (ValidationUtil.isMissingRequiredCertificateNumberOnTir(payload)) {
+    if (ValidationUtil.isMissingRequiredCertificateNumberOnTir(payload)) {
       throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnTir);
     }
-     if (ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
+    if (ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       throw new models.HTTPError(400, enums.ERRORS.NoExpiryDate);
     }
 
-     const missingMandatoryTestResultFields: string[] = ValidationUtil.validateMandatoryTestResultFields(
+    const missingMandatoryTestResultFields: string[] = ValidationUtil.validateMandatoryTestResultFields(
       payload
     );
-     if (missingMandatoryTestResultFields.length > 0) {
+    if (missingMandatoryTestResultFields.length > 0) {
       throw new models.HTTPError(400, {
         errors: missingMandatoryTestResultFields,
       });
     }
 
-     if (validation !== null && validation.error) {
+    if (validation !== null && validation.error) {
       throw new models.HTTPError(400, {
         errors: MappingUtil.mapErrorMessage(validation),
       });
@@ -403,7 +402,7 @@ export class ValidationUtil {
         validation = validators.testTypesGroup2.validate(testType, options);
       } else if (enums.TEST_TYPES_GROUP3_4_8.includes(testType.testTypeId)) {
         // Notifiable alteration and voluntary tests for HGV, PSV and TRL
-        validation = validators.testTypesGroup5And13.validate(
+        validation = validators.testTypesGroup3And4And8.validate(
           testType,
           options
         );

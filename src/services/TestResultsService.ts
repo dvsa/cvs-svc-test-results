@@ -110,25 +110,26 @@ export class TestResultsService {
       const newTestResult: models.ITestResult = cloneDeep(oldTestResult);
       newTestResult.testVersion = enums.TEST_VERSION.CURRENT;
       mergeWith(newTestResult, payload, MappingUtil.arrayCustomizer);
-      if (this.shouldGenerateNewTestCodeRe(oldTestResult, newTestResult)) {
-        const vehicleSubclass =
-          newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
-            ? newTestResult.vehicleSubclass[0]
-            : undefined;
-        await this.vehicleTestController.dataProvider.getTestTypesWithTestCodesAndClassification(
-          newTestResult.testTypes as any[],
-          {
-            vehicleType: newTestResult.vehicleType,
-            vehicleSize: newTestResult.vehicleSize,
-            vehicleConfiguration: newTestResult.vehicleConfiguration,
-            vehicleAxles: newTestResult.noOfAxles,
-            euVehicleCategory: newTestResult.euVehicleCategory,
-            vehicleClass: newTestResult.vehicleClass.code,
-            vehicleSubclass,
-            vehicleWheels: newTestResult.numberOfWheelsDriven,
-          }
-        );
-      }
+      const vehicleSubclass =
+        newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
+          ? newTestResult.vehicleSubclass[0]
+          : undefined;
+      const newTestTypes = await this.vehicleTestController.dataProvider.getTestTypesWithTestCodesAndClassification(
+        newTestResult.testTypes as any[],
+        {
+          vehicleType: newTestResult.vehicleType,
+          vehicleSize: newTestResult.vehicleSize,
+          vehicleConfiguration: newTestResult.vehicleConfiguration,
+          vehicleAxles: newTestResult.noOfAxles,
+          euVehicleCategory: newTestResult.euVehicleCategory,
+          vehicleClass: newTestResult.vehicleClass.code,
+          vehicleSubclass,
+          vehicleWheels: newTestResult.numberOfWheelsDriven,
+        }
+      );
+      // @ts-ignore
+      newTestResult.testTypes = newTestTypes;
+
       await this.checkTestTypeStartAndEndTimestamp(
         oldTestResult,
         newTestResult
@@ -150,35 +151,6 @@ export class TestResultsService {
     } catch (error) {
       throw new models.HTTPError(error.statusCode, error.body);
     }
-  }
-
-  public shouldGenerateNewTestCodeRe(
-    oldTestResult: models.ITestResult,
-    newTestResult: models.ITestResult
-  ) {
-    const attributesToCheck = [
-      "vehicleType",
-      "euVehicleCategory",
-      "vehicleSize",
-      "vehicleConfiguration",
-      "noOfAxles",
-      "numberOfWheelsDriven",
-    ];
-    if (
-      differenceWith(oldTestResult.testTypes, newTestResult.testTypes, isEqual)
-        .length
-    ) {
-      return true;
-    }
-    for (const attributeToCheck of attributesToCheck) {
-      if (
-        oldTestResult[attributeToCheck as keyof typeof oldTestResult] !==
-        newTestResult[attributeToCheck as keyof typeof newTestResult]
-      ) {
-        return true;
-      }
-    }
-    return false;
   }
 
   public async checkTestTypeStartAndEndTimestamp(
@@ -265,7 +237,7 @@ export class TestResultsService {
 
   public async insertTestResult(payload: models.ITestResultPayload) {
     try {
-      const result =  await this.vehicleTestController.insertTestResult(payload);
+      const result = await this.vehicleTestController.insertTestResult(payload);
       return result;
     } catch (error) {
       console.error("TestResultService.insertTestResult ->", error);
