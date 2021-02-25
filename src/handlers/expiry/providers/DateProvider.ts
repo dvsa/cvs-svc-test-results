@@ -51,6 +51,14 @@ export class DateProvider {
   public static getMaxDate(arrayOfDates: moment.Moment[]) {
     return  moment.max(arrayOfDates).toDate();
   }
+
+  public static getPsvAnniversaryDate(testExpiryDate: string | Date) {
+  return moment(testExpiryDate)
+          .utc()
+          .subtract(2, "months")
+          .add(1, "days")
+          .toISOString();
+  }
   /**
    * To validate whether provided input is a date. "undefined" is validated separately because moment(undefined) = new Date(). Strict validation is performed and only two date formats are acceptable YYYY-MM-DD and YYYY-MM-DDTHH:mm:ss.SSSZ.
    * @param input The input value which is validated.
