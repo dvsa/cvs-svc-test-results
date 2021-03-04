@@ -1,12 +1,13 @@
-import { ValidationResult, validate } from "joi";
-import { filter, isDate } from "lodash";
+import { ValidationResult, validate, string, any } from "joi";
+import { isDate } from "lodash";
 import { MappingUtil } from "./mappingUtil";
 import * as validators from "../models/validators";
 import * as enums from "../assets/Enums";
 import * as models from "../models/";
 
 export class ValidationUtil {
-  public static getTestResultItems(data: models.ITestResultData) {
+  // #region [rgba(52, 152, 219, 0.15)]  Public Functions
+  public static getTestResultItems(data?: models.ITestResultData) {
     if (!data || !data.Count) {
       throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
     }
@@ -28,11 +29,160 @@ export class ValidationUtil {
     return result;
   }
 
+  public static validateInsertTestResultPayload(
+    payload: models.ITestResultPayload
+  ) {
+    if (!Object.keys(payload).length) {
+      throw new models.HTTPError(400, enums.ERRORS.PayloadCannotBeEmpty);
+    }
+    const validationSchema = ValidationUtil.getValidationSchema(
+      payload.vehicleType,
+      payload.testStatus
+    );
+    const validation: ValidationResult<any> | any | null = validationSchema
+      ? validate(payload, validationSchema)
+      : null;
+
+    if (
+      !ValidationUtil.reasonForAbandoningPresentOnAllAbandonedTests(payload)
+    ) {
+      throw new models.HTTPError(
+        400,
+        enums.MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT
+      );
+    }
+
+    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(
+      payload
+    );
+    if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory) {
+      throw new models.HTTPError(
+        400,
+        fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory
+      );
+    }
+    const missingFieldsForLecTestType: string[] = ValidationUtil.validateLecTestTypeFields(
+      payload
+    );
+    if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
+      throw new models.HTTPError(400, { errors: missingFieldsForLecTestType });
+    }
+    if (ValidationUtil.isMissingRequiredCertificateNumberOnAdr(payload)) {
+      throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnAdr);
+    }
+    if (ValidationUtil.isMissingRequiredCertificateNumberOnTir(payload)) {
+      throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnTir);
+    }
+    if (ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
+      throw new models.HTTPError(400, enums.ERRORS.NoExpiryDate);
+    }
+
+    const missingMandatoryTestResultFields: string[] = ValidationUtil.validateMandatoryTestResultFields(
+      payload
+    );
+    if (missingMandatoryTestResultFields.length > 0) {
+      throw new models.HTTPError(400, {
+        errors: missingMandatoryTestResultFields,
+      });
+    }
+
+    if (validation !== null && validation.error) {
+      throw new models.HTTPError(400, {
+        errors: MappingUtil.mapErrorMessage(validation),
+      });
+    }
+  }
+
+  public static validateUpdateTestResult(payload: models.ITestResult) {
+    const validationErrors = this.validateTestTypes(payload);
+    // to testTypes are deleted to avoid validation on testTypes again
+    delete payload.testTypes;
+    // validate all other attributes except test types
+    validationErrors.push(...this.validateTestResultAttributes(payload));
+    return validationErrors;
+  }
+
+  public static isAnnualTestTypeClassificationWithoutAbandonedResult(
+    testTypeClassification: string,
+    testResult: string
+  ): boolean {
+    return (
+      testTypeClassification ===
+        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+      testResult !== enums.TEST_RESULT.ABANDONED
+    );
+  }
+  public static isValidTestCodeForExpiryCalculation(
+    testCode?: string
+  ): boolean {
+    return (
+      !!testCode &&
+      enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(
+        testCode.toUpperCase()
+      )
+    );
+  }
+
+  public static isNotAllowedVehicleTypeForExpiry(vehicleType: string) {
+    return [
+      enums.VEHICLE_TYPES.CAR,
+      enums.VEHICLE_TYPES.LGV,
+      enums.VEHICLE_TYPES.MOTORCYCLE,
+    ].includes(vehicleType);
+  }
+
+  public static isAllowedTestTypeForExpiry(testType: models.TestType) {
+    const { testTypeClassification, testResult, testTypeId } = testType;
+    return (
+      testTypeClassification ===
+        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+      [enums.TEST_RESULT.PASS, enums.TEST_RESULT.PRS].includes(testResult) &&
+      !ValidationUtil.isHGVTRLRoadworthinessTest(testTypeId)
+    );
+  }
+
+  public static isTestTypeLec(testType: any): boolean {
+    return enums.LEC_TEST_TYPES.IDS.includes(testType.testTypeId);
+  }
+
+  public static isTestTypeAdr(testType: models.TestType): boolean {
+    return enums.ADR_TEST_TYPES.IDS.includes(testType.testTypeId);
+  }
+  //#endregion
+  private static validateTestResultAttributes(payload: models.ITestResult) {
+    // all other attributes except test types
+    const validationErrors: string[] = [];
+    let validationSchema = this.getValidationSchema(
+      payload.vehicleType,
+      payload.testStatus
+    );
+    validationSchema = validationSchema!.keys({
+      countryOfRegistration: string()
+        .valid(enums.COUNTRY_OF_REGISTRATION)
+        .required(),
+      testTypes: any().forbidden(),
+    });
+    validationSchema = validationSchema.optionalKeys([
+      "testEndTimestamp",
+      "systemNumber",
+      "vin",
+    ]);
+    const validation: ValidationResult<any> | any | null = validate(
+      payload,
+      validationSchema
+    );
+
+    if (validation !== null && validation.error) {
+      validationErrors.push(...MappingUtil.mapErrorMessage(validation));
+    }
+
+    return validationErrors;
+  }
+
   private static validateDates(
     fromDateTime: string | number | Date,
     toDateTime: string | number | Date
   ) {
-    // TODO: Discuss date validation to add validation fromDate cannot be greater than toDate.
     return (
       fromDateTime !== undefined &&
       toDateTime !== undefined &&
@@ -43,56 +193,7 @@ export class ValidationUtil {
     );
   }
 
-  public static isMissingRequiredCertificateNumberOnAdr(
-    payload: models.ITestResultPayload
-  ): boolean {
-    return ValidationUtil.isMissingRequiredCertificateNumber(
-      ValidationUtil.isTestTypeAdr,
-      payload
-    );
-  }
-
-  public static isMissingRequiredCertificateNumberOnTir(
-    payload: models.ITestResultPayload
-  ): boolean {
-    return ValidationUtil.isMissingRequiredCertificateNumber(
-      ValidationUtil.isTestTypeTir,
-      payload
-    );
-  }
-
-  public static isMissingRequiredCertificateNumber(
-    typeFunc: (testType: models.TestType) => boolean,
-    payload: models.ITestResultPayload
-  ): boolean {
-    const { testTypes, testStatus } = payload;
-    return testTypes
-      ? testTypes.some(
-          (testType) =>
-            typeFunc(testType) &&
-            testType.testResult === enums.TEST_RESULT.PASS &&
-            !testType.certificateNumber &&
-            testStatus === enums.TEST_STATUS.SUBMITTED
-        )
-      : false;
-  }
-
-  public static isPassAdrTestTypeWithoutExpiryDate(
-    payload: models.ITestResultPayload
-  ): boolean {
-    const { testTypes, testStatus } = payload;
-    return testTypes
-      ? testTypes.some(
-          (testType) =>
-            ValidationUtil.isTestTypeAdr(testType) &&
-            testType.testResult === enums.TEST_RESULT.PASS &&
-            !testType.testExpiryDate &&
-            testStatus === enums.TEST_STATUS.SUBMITTED
-        )
-      : false;
-  }
-
-  public static validateLecTestTypeFields(
+  private static validateLecTestTypeFields(
     payload: models.ITestResultPayload
   ): string[] {
     const missingFields: string[] = [];
@@ -131,7 +232,7 @@ export class ValidationUtil {
     return missingFields;
   }
 
-  public static validateMandatoryTestResultFields(
+  private static validateMandatoryTestResultFields(
     payload: models.ITestResultPayload
   ): string[] {
     const missingMandatoryFields: string[] = [];
@@ -197,54 +298,56 @@ export class ValidationUtil {
     );
   }
 
-  public static isAnnualTestTypeClassificationWithoutAbandonedResult(
-    testTypeClassification: string,
-    testResult: string
+  private static isMissingRequiredCertificateNumberOnAdr(
+    payload: models.ITestResultPayload
   ): boolean {
-    return (
-      testTypeClassification ===
-        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-      testResult !== enums.TEST_RESULT.ABANDONED
+    return ValidationUtil.isMissingRequiredCertificateNumber(
+      ValidationUtil.isTestTypeAdr,
+      payload
     );
   }
-  public static isValidTestCodeForExpiryCalculation(
-    testCode?: string
+
+  private static isMissingRequiredCertificateNumberOnTir(
+    payload: models.ITestResultPayload
   ): boolean {
-    return (
-      !!testCode &&
-      enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(
-        testCode.toUpperCase()
-      )
+    return ValidationUtil.isMissingRequiredCertificateNumber(
+      ValidationUtil.isTestTypeTir,
+      payload
     );
   }
 
-  public static isNotAllowedVehicleTypeForExpiry(vehicleType: string) {
-    return [
-      enums.VEHICLE_TYPES.CAR,
-      enums.VEHICLE_TYPES.LGV,
-      enums.VEHICLE_TYPES.MOTORCYCLE,
-    ].includes(vehicleType);
+  private static isMissingRequiredCertificateNumber(
+    typeFunc: (testType: models.TestType) => boolean,
+    payload: models.ITestResultPayload
+  ): boolean {
+    const { testTypes, testStatus } = payload;
+    return testTypes
+      ? testTypes.some(
+          (testType) =>
+            typeFunc(testType) &&
+            testType.testResult === enums.TEST_RESULT.PASS &&
+            !testType.certificateNumber &&
+            testStatus === enums.TEST_STATUS.SUBMITTED
+        )
+      : false;
   }
 
-  public static isAllowedTestTypeForExpiry(testType: models.TestType) {
-    const { testTypeClassification, testResult, testTypeId } = testType;
-    return (
-      testTypeClassification ===
-        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-      [enums.TEST_RESULT.PASS, enums.TEST_RESULT.PRS].includes(testResult) &&
-      !ValidationUtil.isHGVTRLRoadworthinessTest(testTypeId)
-    );
+  private static isPassAdrTestTypeWithoutExpiryDate(
+    payload: models.ITestResultPayload
+  ): boolean {
+    const { testTypes, testStatus } = payload;
+    return testTypes
+      ? testTypes.some(
+          (testType) =>
+            ValidationUtil.isTestTypeAdr(testType) &&
+            testType.testResult === enums.TEST_RESULT.PASS &&
+            !testType.testExpiryDate &&
+            testStatus === enums.TEST_STATUS.SUBMITTED
+        )
+      : false;
   }
 
-  public static isTestTypeLec(testType: any): boolean {
-    return enums.LEC_TEST_TYPES.IDS.includes(testType.testTypeId);
-  }
-
-  public static isTestTypeAdr(testType: models.TestType): boolean {
-    return enums.ADR_TEST_TYPES.IDS.includes(testType.testTypeId);
-  }
-
-  public static isTestTypeTir(testType: models.TestType): boolean {
+  private static isTestTypeTir(testType: models.TestType): boolean {
     return enums.TIR_TEST_TYPES.IDS.includes(testType.testTypeId);
   }
 
@@ -313,70 +416,6 @@ export class ValidationUtil {
       return validators[validator as keyof typeof validators];
     }
     return null;
-  }
-
-  public static validateInsertTestResultPayload(
-    payload: models.ITestResultPayload
-  ) {
-    if (Object.keys(payload).length === 0) {
-      throw new models.HTTPError(400, enums.ERRORS.PayloadCannotBeEmpty);
-    }
-    const validationSchema = ValidationUtil.getValidationSchema(
-      payload.vehicleType,
-      payload.testStatus
-    );
-    const validation: ValidationResult<any> | any | null = validationSchema
-      ? validate(payload, validationSchema)
-      : null;
-
-    if (
-      !ValidationUtil.reasonForAbandoningPresentOnAllAbandonedTests(payload)
-    ) {
-      throw new models.HTTPError(
-        400,
-        enums.MESSAGES.REASON_FOR_ABANDONING_NOT_PRESENT
-      );
-    }
-
-    const fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory = ValidationUtil.fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory(
-      payload
-    );
-    if (fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory) {
-      throw new models.HTTPError(
-        400,
-        fieldsNullWhenDeficiencyCategoryIsOtherThanAdvisory
-      );
-    }
-    const missingFieldsForLecTestType: string[] = ValidationUtil.validateLecTestTypeFields(
-      payload
-    );
-    if (missingFieldsForLecTestType && missingFieldsForLecTestType.length > 0) {
-      throw new models.HTTPError(400, { errors: missingFieldsForLecTestType });
-    }
-    if (ValidationUtil.isMissingRequiredCertificateNumberOnAdr(payload)) {
-      throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnAdr);
-    }
-    if (ValidationUtil.isMissingRequiredCertificateNumberOnTir(payload)) {
-      throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnTir);
-    }
-    if (ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
-      throw new models.HTTPError(400, enums.ERRORS.NoExpiryDate);
-    }
-
-    const missingMandatoryTestResultFields: string[] = ValidationUtil.validateMandatoryTestResultFields(
-      payload
-    );
-    if (missingMandatoryTestResultFields.length > 0) {
-      throw new models.HTTPError(400, {
-        errors: missingMandatoryTestResultFields,
-      });
-    }
-
-    if (validation !== null && validation.error) {
-      throw new models.HTTPError(400, {
-        errors: MappingUtil.mapErrorMessage(validation),
-      });
-    }
   }
 
   public static validateTestTypes(testResult: models.ITestResult) {

@@ -5,6 +5,9 @@ import { ERRORS, MESSAGES } from "../../src/assets/Enums";
 import { cloneDeep } from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
 import { ValidationUtil } from "../../src/utils/validationUtil";
+import { VehicleTestController } from "../../src/handlers/VehicleTestController";
+import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
+import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
 
 describe("updateTestResults", () => {
   let testResultsService: TestResultsService | any;
