@@ -242,6 +242,7 @@ export class TestDataProvider implements ITestDataProvider {
     this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
     try {
       const result = await this.testResultsDAO.createSingle(payload);
+      utils.LoggingUtil.logDefectsReporting(payload);
       return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error("TestDataProvider.insertTestResult -> ", error);
