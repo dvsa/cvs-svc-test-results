@@ -13,6 +13,7 @@ import {
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import { cloneDeep } from "lodash";
+import { ValidationUtil } from "../../src/utils/validationUtil";
 
 describe("insertTestResult", () => {
   const baseMockTestResultsDAO = {
@@ -3264,44 +3265,14 @@ describe("insertTestResult", () => {
   );
 
   context(
-    "when inserting an PSV test result with odometer reading as 0",
+    "when inserting an PSV test result with odometer reading as 0 and validating the object",
     () => {
       it("should not throw an error", () => {
         const testResult = cloneDeep(testResultsPostMock[8]);
         testResult.vehicleType = VEHICLE_TYPES.PSV;
         testResult.odometerReading = 0;
-        MockTestResultsDAO = jest.fn().mockImplementation(() => {
-          return {
-            createSingle: () =>
-              Promise.resolve({
-                Attributes: Array.of(testResult),
-              }),
-            createTestNumber: () => {
-              return Promise.resolve({
-                testNumber: "W01A00209",
-                id: "W01",
-                certLetter: "A",
-                sequenceNumber: "002",
-              });
-            },
-            getTestCodesAndClassificationFromTestTypes: () => {
-              return Promise.resolve({
-                linkedTestCode: "lcp",
-                defaultTestCode: "lbp",
-                testTypeClassification: "NON ANNUAL",
-              });
-            },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
-          };
-        });
-
-        testResultsService = new TestResultsService(new MockTestResultsDAO());
         expect.assertions(1);
-        return testResultsService
-          .insertTestResult(testResult)
-          .then((data: any) => {
-            expect(data).not.toEqual(undefined);
-          });
+        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
       });
     }
   );
@@ -3315,40 +3286,8 @@ describe("insertTestResult", () => {
           type.testTypeId = "95";
         });
         testResult.odometerReading = 0;
-
-        MockTestResultsDAO = jest.fn().mockImplementation(() => {
-          return {
-            createSingle: () =>
-              Promise.resolve({
-                Attributes: Array.of(testResultsPostMock[4]),
-              }),
-            createTestNumber: () => {
-              return Promise.resolve({
-                testNumber: "W01A00209",
-                id: "W01",
-                certLetter: "A",
-                sequenceNumber: "002",
-              });
-            },
-            getTestCodesAndClassificationFromTestTypes: () => {
-              return Promise.resolve({
-                linkedTestCode: "wde",
-                defaultTestCode: "bde",
-                testTypeClassification: "Annual With Certificate",
-              });
-            },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({})
-          };
-        });
-
-        testResultsService = new TestResultsService(new MockTestResultsDAO());
-
         expect.assertions(1);
-        return testResultsService
-          .insertTestResult(testResult)
-          .then((data: any) => {
-            expect(data).not.toEqual(undefined);
-          });
+        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
       });
     }
   );
