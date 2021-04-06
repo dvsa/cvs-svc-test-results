@@ -1,0 +1,78 @@
+{
+  "msUserDetails": {
+    "msUser": "catalin",
+    "msOid": "123243424-234234245"
+  },
+  "testResult": {
+    "testerStaffId": "133",
+    "createdByName": "Gica",
+    "testStartTimestamp": "2021-02-22T15:04:48.125Z",
+    "odometerReadingUnits": "kilometres",
+    "createdAt": "2021-02-22T15:04:48.532Z",
+    "testEndTimestamp": "2021-02-22T16:04:48.125Z",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "testCode": "aal",
+        "lastUpdatedAt": "2021-02-22T15:04:48.532Z",
+        "testNumber": "W01A75958",
+        "testAnniversaryDate": "2021-12-22T00:00:00.000Z",
+        "testTypeClassification": "Annual With Certificate",
+        "customDefects": [
+          {
+            "defectNotes": "custom defects 1 notes",
+            "referenceNumber": "1",
+            "defectName": "custom defect 1"
+          }
+        ],
+        "numberOfSeatbeltsFitted": 2,
+        "createdAt": "2021-02-22T15:04:48.532Z",
+        "testTypeId": "1",
+        "testTypeName": "Annual test",
+        "seatbeltInstallationCheckDate": true,
+        "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
+        "additionalCommentsForAbandon": "none",
+        "testTypeEndTimestamp": "2021-02-22T16:04:48.125Z",
+        "reasonForAbandoning": "none",
+        "lastSeatbeltInstallationCheckDate": "2019-01-14",
+        "testExpiryDate": "2022-02-21T00:00:00.000Z",
+        "secondaryCertificateNumber": "123456",
+        "testTypeStartTimestamp": "2021-02-22T15:04:48.125Z",
+        "certificateNumber": "W01A75958",
+        "defects": [],
+        "name": "Annual test",
+        "testResult": "pass"
+      }
+    ],
+    "vehicleClass": {
+      "code": "l",
+      "description": "large psv(ie: greater than 23 seats)"
+    },
+    "systemNumber": "10000290",
+    "testResultId": "cd9353bc-a67b-4b91-8ff5-bbd8da1d6a57",
+    "vehicleSize": "small",
+    "vin": "UUY7K8W1TI7VMI442762",
+    "vehicleId": "1VRUDG8",
+    "testStationName": "Rowe, Wunsch and Wisoky",
+    "noOfAxles": 2,
+    "createdById": "133",
+    "vehicleType": "psv",
+    "countryOfRegistration": "ro",
+    "preparerId": "BL5545",
+    "preparerName": "Durrell Vehicles Limited",
+    "odometerReading": 55000,
+    "vehicleConfiguration": "rigid",
+    "testStationType": "gvts",
+    "regnDate": "1995-01-01",
+    "testVersion": "current",
+    "reasonForCancellation": null,
+    "testerName": "Gica",
+    "vrm": "1VRUDG8",
+    "testStationPNumber": "87-1369561",
+    "numberOfSeats": 45,
+    "reasonForCreation": "Test conducted",
+    "testerEmailAddress": "someone@email.com",
+    "euVehicleCategory": "m2",
+    "numberOfWheelsDriven": 4
+  }
+}

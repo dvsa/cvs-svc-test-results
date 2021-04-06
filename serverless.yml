@@ -1,11 +1,13 @@
 service: cvs-svc-test-results
 
-openapi: 3.0.0
-
 provider:
   name: aws
-  runtime: nodejs8.10
-  tracing: true # enable tracing
+  runtime: nodejs10.x
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+  tracing:
+    apiGateway: true
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -71,7 +73,6 @@ functions:
           path: test-results/getTestResultsByTesterStaffId
           method: get
 
-
 resources:
   Resources:
     Users:
@@ -111,8 +112,8 @@ resources:
                 - testStatus
               ProjectionType: INCLUDE
             ProvisionedThroughput:
-              ReadCapacityUnits: '1'
-              WriteCapacityUnits: '1'
+              ReadCapacityUnits: "1"
+              WriteCapacityUnits: "1"
           - IndexName: SysNumIndex
             KeySchema:
               - AttributeName: systemNumber
@@ -120,8 +121,8 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: '1'
-              WriteCapacityUnits: '1'
+              ReadCapacityUnits: "1"
+              WriteCapacityUnits: "1"
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
