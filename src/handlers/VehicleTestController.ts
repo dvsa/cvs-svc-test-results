@@ -154,7 +154,8 @@ export class VehicleTestController implements IVehicleTestController {
       throw new models.HTTPError(error.statusCode, error.body);
     }
     try {
-        return await this.dataProvider.updateTestResult(newTestResult);
+        await this.dataProvider.updateTestResult(newTestResult);
+        return newTestResult;
       } catch (dynamoError) {
         console.error("dynamoError", dynamoError);
         throw new models.HTTPError(500, dynamoError.message);
