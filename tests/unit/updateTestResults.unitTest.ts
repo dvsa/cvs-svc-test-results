@@ -1,7 +1,7 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 import { HTTPError } from "../../src/models/HTTPError";
 import testResults from "../resources/test-results.json";
-import {ERRORS} from "../../src/assets/Enums";
+import {ERRORS, MESSAGES} from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
 import { ValidationUtil } from "../../src/utils/validationUtil";
@@ -37,51 +37,51 @@ describe("updateTestResults", () => {
   context("when trying to update a test-result", () => {
     context("and the payload is valid", () => {
       context("and the test-result is found", () => {
-        // it("should return the updated test-result", () => {
-        //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-        //     return {
-        //       updateTestResult: () => {
-        //         return Promise.resolve({});
-        //       },
-        //       getActivity: () => {
-        //         return Promise.resolve([
-        //           {
-        //             startTime: "2018-03-22",
-        //             endTime: "2020-04-22",
-        //           },
-        //         ]);
-        //       },
-        //       getBySystemNumber: () => {
-        //         return Promise.resolve({
-        //           Items: Array.of(cloneDeep(testToUpdate)),
-        //           Count: 1,
-        //         });
-        //       },
-        //     };
-        //   });
+        it("should return the updated test-result", () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.resolve({});
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2020-04-22",
+                  },
+                ]);
+              },
+              getBySystemNumber: () => {
+                return Promise.resolve({
+                  Items: Array.of(cloneDeep(testToUpdate)),
+                  Count: 1,
+                });
+              },
+            };
+          });
 
-        //   testResultsService = new TestResultsService(new MockTestResultsDAO());
-        //   expect.assertions(9);
-        //   return testResultsService
-        //     .updateTestResult(
-        //       testToUpdate.systemNumber,
-        //       testToUpdate,
-        //       msUserDetails
-        //     )
-        //     .then((returnedRecord: any) => {
-        //       expect(returnedRecord).not.toEqual(undefined);
-        //       expect(returnedRecord).not.toEqual({});
-        //       expect(returnedRecord).toHaveProperty("createdAt");
-        //       expect(returnedRecord).toHaveProperty("createdById");
-        //       expect(returnedRecord).toHaveProperty("createdByName");
-        //       expect(returnedRecord).toHaveProperty("testVersion");
-        //       expect(returnedRecord.testVersion).toEqual("current");
-        //       expect(returnedRecord).toHaveProperty("testHistory");
-        //       expect(returnedRecord.testHistory[0].testVersion).toEqual(
-        //         "archived"
-        //       );
-        //     });
-        // });
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+          expect.assertions(9);
+          return testResultsService
+            .updateTestResult(
+              testToUpdate.systemNumber,
+              testToUpdate,
+              msUserDetails
+            )
+            .then((returnedRecord: any) => {
+              expect(returnedRecord).not.toEqual(undefined);
+              expect(returnedRecord).not.toEqual({});
+              expect(returnedRecord).toHaveProperty("createdAt");
+              expect(returnedRecord).toHaveProperty("createdById");
+              expect(returnedRecord).toHaveProperty("createdByName");
+              expect(returnedRecord).toHaveProperty("testVersion");
+              expect(returnedRecord.testVersion).toEqual("current");
+              expect(returnedRecord).toHaveProperty("testHistory");
+              expect(returnedRecord.testHistory[0].testVersion).toEqual(
+                "archived"
+              );
+            });
+        });
 
         context("when changing an attribute that requires new testCode", () => {
           context("when changing an attribute on the test-type", () => {
@@ -200,303 +200,303 @@ describe("updateTestResults", () => {
           context(
             "and the testTypeStartTimestamp is before the visit startTime",
             () => {
-              // it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           {
-              //             startTime: "2019-01-14T10:36:33.987Z",
-              //             endTime: "2019-01-14T20:00:33.987Z",
-              //           },
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   testToUpdate.testTypes[0].testTypeStartTimestamp =
-              //     "2019-01-13T08:36:33.987Z";
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(errorMessageStartTime);
-              //     });
-              // });
+              it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        {
+                          startTime: "2019-01-14T10:36:33.987Z",
+                          endTime: "2019-01-14T20:00:33.987Z",
+                        },
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                testToUpdate.testTypes[0].testTypeStartTimestamp =
+                  "2019-01-13T08:36:33.987Z";
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(errorMessageStartTime);
+                  });
+              });
             }
           );
 
           context(
             "and the testTypeStartTimestamp is after the visit endTime",
             () => {
-              // it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           {
-              //             startTime: "2019-01-14T10:36:33.987Z",
-              //             endTime: "2019-01-14T20:00:33.987Z",
-              //           },
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   testToUpdate.testTypes[0].testTypeStartTimestamp =
-              //     "2019-01-14T21:00:33.987Z";
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(errorMessageStartTime);
-              //     });
-              // });
+              it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        {
+                          startTime: "2019-01-14T10:36:33.987Z",
+                          endTime: "2019-01-14T20:00:33.987Z",
+                        },
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                testToUpdate.testTypes[0].testTypeStartTimestamp =
+                  "2019-01-14T21:00:33.987Z";
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(errorMessageStartTime);
+                  });
+              });
             }
           );
 
           context(
             "and the testTypeEndTimestamp is before the visit startTime",
             () => {
-              // it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           {
-              //             startTime: "2019-01-14T10:36:33.987Z",
-              //             endTime: "2019-01-14T20:00:33.987Z",
-              //           },
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   testToUpdate.testTypes[0].testTypeEndTimestamp =
-              //     "2019-01-13T18:00:33.987Z";
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(errorMessageEndTime);
-              //     });
-              // });
+              it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        {
+                          startTime: "2019-01-14T10:36:33.987Z",
+                          endTime: "2019-01-14T20:00:33.987Z",
+                        },
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                testToUpdate.testTypes[0].testTypeEndTimestamp =
+                  "2019-01-13T18:00:33.987Z";
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(errorMessageEndTime);
+                  });
+              });
             }
           );
 
           context(
             "and the testTypeEndTimestamp is after the visit endTime",
             () => {
-              // it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           {
-              //             startTime: "2019-01-14T10:36:33.987Z",
-              //             endTime: "2019-01-14T20:00:33.987Z",
-              //           },
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   testToUpdate.testTypes[0].testTypeEndTimestamp =
-              //     "2019-01-15T18:00:33.987Z";
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(errorMessageEndTime);
-              //     });
-              // });
+              it("should return error 400 testTypeStartTimestamp must be within the visit", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        {
+                          startTime: "2019-01-14T10:36:33.987Z",
+                          endTime: "2019-01-14T20:00:33.987Z",
+                        },
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                testToUpdate.testTypes[0].testTypeEndTimestamp =
+                  "2019-01-15T18:00:33.987Z";
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(errorMessageEndTime);
+                  });
+              });
             }
           );
 
           context(
             "and the testTypeStartTimestamp is after the testTypeStartTimestamp",
             () => {
-              // it("should return error 400 testTypeStartTimestamp must be before testTypeEndTimestamp", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           {
-              //             startTime: "2019-01-14T10:36:33.987Z",
-              //             endTime: "2019-01-14T20:00:33.987Z",
-              //           },
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   testToUpdate.testTypes[0].testTypeEndTimestamp =
-              //     "2019-01-14T16:00:33.987Z";
-              //   testToUpdate.testTypes[0].testTypeStartTimestamp =
-              //     "2019-01-14T18:00:33.987Z";
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(
-              //         ERRORS.StartTimeBeforeEndTime
-              //       );
-              //     });
-              // });
+              it("should return error 400 testTypeStartTimestamp must be before testTypeEndTimestamp", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        {
+                          startTime: "2019-01-14T10:36:33.987Z",
+                          endTime: "2019-01-14T20:00:33.987Z",
+                        },
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                testToUpdate.testTypes[0].testTypeEndTimestamp =
+                  "2019-01-14T16:00:33.987Z";
+                testToUpdate.testTypes[0].testTypeStartTimestamp =
+                  "2019-01-14T18:00:33.987Z";
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(
+                      ERRORS.StartTimeBeforeEndTime
+                    );
+                  });
+              });
             }
           );
 
           context(
             "and the getActivity function returns more than one activity",
             () => {
-              // it("should return error 500 No unique activity found", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.resolve([
-              //           "firstActivity",
-              //           "secondActivity",
-              //         ]);
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(500);
-              //       expect(errorResponse.body).toEqual(
-              //         ERRORS.NoUniqueActivityFound
-              //       );
-              //     });
-              // });
+              it("should return error 500 No unique activity found", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.resolve([
+                        "firstActivity",
+                        "secondActivity",
+                      ]);
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve({
+                        Items: Array.of(cloneDeep(testToUpdate)),
+                        Count: 1,
+                      });
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(500);
+                    expect(errorResponse.body).toEqual(
+                      ERRORS.NoUniqueActivityFound
+                    );
+                  });
+              });
             }
           );
 
-          context(
-            "and the getActivity function throws an error different from 404",
-            () => {
-              // it("should return Error Activities microservice error", () => {
-              //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              //     return {
-              //       getActivity: () => {
-              //         return Promise.reject({
-              //           statusCode: 400,
-              //           body: ERRORS.EventIsEmpty,
-              //         });
-              //       },
-              //       getBySystemNumber: () => {
-              //         return Promise.resolve({
-              //           Items: Array.of(cloneDeep(testToUpdate)),
-              //           Count: 1,
-              //         });
-              //       },
-              //     };
-              //   });
-              //   testResultsService = new TestResultsService(
-              //     new MockTestResultsDAO()
-              //   );
-              //   expect.assertions(3);
-              //   return testResultsService
-              //     .updateTestResult(
-              //       testToUpdate.systemNumber,
-              //       testToUpdate,
-              //       msUserDetails
-              //     )
-              //     .catch((errorResponse: { statusCode: any; body: any }) => {
-              //       expect(errorResponse).toBeInstanceOf(HTTPError);
-              //       expect(errorResponse.statusCode).toEqual(400);
-              //       expect(errorResponse.body).toEqual(
-              //         `Activities microservice error: ${ERRORS.EventIsEmpty}`
-              //       );
-              //     });
-              // });
-            }
-          );
+          // context(
+          //   "and the getActivity function throws an error different from 404",
+          //   () => {
+          //     it("should return Error Activities microservice error", () => {
+          //       MockTestResultsDAO = jest.fn().mockImplementation(() => {
+          //         return {
+          //           getActivity: () => {
+          //             return Promise.reject({
+          //               statusCode: 400,
+          //               body: ERRORS.EventIsEmpty,
+          //             });
+          //           },
+          //           getBySystemNumber: () => {
+          //             return Promise.resolve({
+          //               Items: Array.of(cloneDeep(testToUpdate)),
+          //               Count: 1,
+          //             });
+          //           },
+          //         };
+          //       });
+          //       testResultsService = new TestResultsService(
+          //         new MockTestResultsDAO()
+          //       );
+          //       expect.assertions(3);
+          //       return testResultsService
+          //         .updateTestResult(
+          //           testToUpdate.systemNumber,
+          //           testToUpdate,
+          //           msUserDetails
+          //         )
+          //         .catch((errorResponse: { statusCode: any; body: any }) => {
+          //           expect(errorResponse).toBeInstanceOf(HTTPError);
+          //           expect(errorResponse.statusCode).toEqual(400);
+          //           expect(errorResponse.body).toEqual(
+          //             `Activities microservice error: ${ERRORS.EventIsEmpty}`
+          //           );
+          //         });
+          //     });
+          //   }
+          // );
 
           context(
             "and the getActivity function throws a 404 Not Found error",
@@ -558,49 +558,49 @@ describe("updateTestResults", () => {
       });
 
       context("when updateTestResultDAO throws error", () => {
-        // it("should throw an error 500-Internal Error", () => {
-        //   const existingTest = cloneDeep(testToUpdate);
-        //   existingTest.testHistory = ["previously archived test"];
-        //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
-        //     return {
-        //       updateTestResult: () => {
-        //         return Promise.reject({
-        //           statusCode: 500,
-        //           message: MESSAGES.INTERNAL_SERVER_ERROR,
-        //         });
-        //       },
-        //       getActivity: () => {
-        //         return Promise.resolve([
-        //           {
-        //             startTime: "2018-03-22",
-        //             endTime: "2020-04-22",
-        //           },
-        //         ]);
-        //       },
-        //       getBySystemNumber: () => {
-        //         return Promise.resolve({
-        //           Items: Array.of(existingTest),
-        //           Count: 1,
-        //         });
-        //       },
-        //     };
-        //   });
-        //   testResultsService = new TestResultsService(new MockTestResultsDAO());
-        //   expect.assertions(3);
-        //   return testResultsService
-        //     .updateTestResult(
-        //       testToUpdate.systemNumber,
-        //       testToUpdate,
-        //       msUserDetails
-        //     )
-        //     .catch((errorResponse: { statusCode: any; body: any }) => {
-        //       expect(errorResponse).toBeInstanceOf(HTTPError);
-        //       expect(errorResponse.statusCode).toEqual(500);
-        //       expect(errorResponse.body).toEqual(
-        //         MESSAGES.INTERNAL_SERVER_ERROR
-        //       );
-        //     });
-        // });
+        it("should throw an error 500-Internal Error", () => {
+          const existingTest = cloneDeep(testToUpdate);
+          existingTest.testHistory = ["previously archived test"];
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.reject({
+                  statusCode: 500,
+                  message: MESSAGES.INTERNAL_SERVER_ERROR,
+                });
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2020-04-22",
+                  },
+                ]);
+              },
+              getBySystemNumber: () => {
+                return Promise.resolve({
+                  Items: Array.of(existingTest),
+                  Count: 1,
+                });
+              },
+            };
+          });
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+          expect.assertions(3);
+          return testResultsService
+            .updateTestResult(
+              testToUpdate.systemNumber,
+              testToUpdate,
+              msUserDetails
+            )
+            .catch((errorResponse: { statusCode: any; body: any }) => {
+              expect(errorResponse).toBeInstanceOf(HTTPError);
+              expect(errorResponse.statusCode).toEqual(500);
+              expect(errorResponse.body).toEqual(
+                MESSAGES.INTERNAL_SERVER_ERROR
+              );
+            });
+        });
       });
 
       context("when no data was found", () => {

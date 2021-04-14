@@ -262,8 +262,7 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async updateTestResult(payload: models.ITestResult) {
     try {
-      const result = await this.testResultsDAO?.updateTestResult(payload);
-      return result?.$response.data as models.ITestResult;
+      return this.testResultsDAO?.updateTestResult(payload);
     } catch (error) {
       console.error("TestDataProvider.updateTestResult -> ", error);
       throw error;
