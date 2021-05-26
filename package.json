@@ -81,7 +81,7 @@
     "aws-xray-sdk": "^2.5.0",
     "joi": "^14.3.1",
     "moment": "^2.25.3",
-    "moment-timezone": "^0.5.28",
+    "moment-timezone": "^0.5.33",
     "lodash": "^4.17.21",
     "node-yaml": "^3.2.0",
     "path-parser": "^4.2.0",
