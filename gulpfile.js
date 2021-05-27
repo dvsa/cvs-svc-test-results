@@ -3,7 +3,7 @@ const exec = require('child_process').exec
 const process = require('process')
 
 gulp.task('start-serverless', function (done) {
-  const instance = exec('node_modules/serverless/bin/serverless offline start &')
+  const instance = exec('serverless offline start &')
 
   instance.stdout.on('data', function (output) {
     process.stdout.write(output)
