@@ -167,7 +167,7 @@ export class ValidationUtil {
       return missingMandatoryFields;
     }
     // odometerReading and odoMeterReadingUnits are required only for HGV and PSV
-    if (odometerReading === null) {
+    if (odometerReading === undefined || odometerReading === null) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingMandatory);
     }
     if (!odometerReadingUnits) {
