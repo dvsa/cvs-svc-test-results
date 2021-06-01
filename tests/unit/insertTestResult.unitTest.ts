@@ -13,6 +13,7 @@ import {
 import { ITestResultPayload } from "../../src/models/ITestResultPayload";
 import { HTTPResponse } from "../../src/models/HTTPResponse";
 import { cloneDeep } from "lodash";
+import { ValidationUtil } from "../../src/utils/validationUtil";
 
 describe("insertTestResult", () => {
   const baseMockTestResultsDAO = {
@@ -3262,4 +3263,75 @@ describe("insertTestResult", () => {
       });
     }
   );
+
+  context(
+    "when inserting an PSV test result with odometer reading as 0 and validating the object",
+    () => {
+      it("should not throw an error", () => {
+        const testResult = cloneDeep(testResultsPostMock[8]);
+        testResult.vehicleType = VEHICLE_TYPES.PSV;
+        testResult.odometerReading = 0;
+        expect.assertions(1);
+        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
+      });
+    }
+  );
+
+  context(
+    "when inserting a submitted HGV that has 0 in odometer reading then",
+    () => {
+      it("should not throw an error", () => {
+        const testResult = testResultsPostMock[4];
+        testResult.testTypes.forEach((type: any) => {
+          type.testTypeId = "95";
+        });
+        testResult.odometerReading = 0;
+        expect.assertions(1);
+        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
+      });
+    }
+  );
+
+  context(
+    "when inserting a submitted HGV that has null in odometer reading then",
+    () => {
+      it("should throw an error", () => {
+        const testResult = testResultsPostMock[4];
+        testResult.testTypes.forEach((type: any) => {
+          type.testTypeId = "95";
+        });
+        testResult.odometerReading = null;
+        expect.assertions(2);
+        try {
+        ValidationUtil.validateInsertTestResultPayload(testResult);
+        } catch (err) {
+          expect(err.statusCode).toEqual(400);
+          console.log(err);
+          expect(err.body.errors[0]).toEqual(ERRORS.OdometerReadingMandatory);
+        }
+      });
+    }
+  );
+
+  context(
+    "when inserting a submitted HGV that has null in odometer reading then",
+    () => {
+      it("should throw an error", () => {
+        const testResult = testResultsPostMock[4];
+        testResult.testTypes.forEach((type: any) => {
+          type.testTypeId = "95";
+        });
+        delete testResult.odometerReading;
+        expect.assertions(2);
+        try {
+        ValidationUtil.validateInsertTestResultPayload(testResult);
+        } catch (err) {
+          expect(err.statusCode).toEqual(400);
+          console.log(err);
+          expect(err.body.errors[0]).toEqual(ERRORS.OdometerReadingMandatory);
+        }
+      });
+    }
+  );
+
 });
