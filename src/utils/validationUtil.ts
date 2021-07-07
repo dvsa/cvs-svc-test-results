@@ -92,6 +92,7 @@ export class ValidationUtil {
         errors: MappingUtil.mapErrorMessage(validation),
       });
     }
+    return true;
   }
 
   public static validateUpdateTestResult(payload: models.ITestResult) {
