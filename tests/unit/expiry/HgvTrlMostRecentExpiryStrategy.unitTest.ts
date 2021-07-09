@@ -25,6 +25,12 @@ describe("HgvTrlMostRecentExpiryStrategy", () => {
       ${"2020-07-01"}       | ${"2020-05-01"} | ${"2021-05-31"}
       ${"2020-05-01"}       | ${"2020-05-01"} | ${"2021-05-31"}
       ${"2020-02-29"}       | ${"2020-02-29"} | ${"2021-02-28"}
+      ${"2020-07-31"}       | ${"2020-05-01"} | ${"2021-05-31"}
+      ${"2020-05-31"}       | ${"2020-05-01"} | ${"2021-05-31"}
+      ${"2020-01-31"}       | ${"2019-12-15"} | ${"2021-01-31"}
+      ${"2020-01-31"}       | ${"2019-12-14"} | ${"2021-01-31"}
+      ${"2020-"}            | ${"2020-05-30"} | ${"2021-05-31"}
+      ${undefined}          | ${"2020-05-30"} | ${"2021-05-31"}
 
       `("The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a recent expiry date of $inputRecentExpiryDate",
        ({inputRecentExpiryDate, inputTestDate, ExpectedExpiryDate}) => {
