@@ -1,0 +1,5 @@
+.build
+.dynamodb
+.reports
+coverage
+node_modules
