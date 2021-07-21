@@ -36,6 +36,18 @@ More information about technical designs can be found under the [Test Results Mi
 Set up your nodejs environment running `nvm use` and once the dependencies are installed using `npm i`, you can run the scripts from `package.json` to build your project.
 This code repository uses [serverless framework](https://www.serverless.com/framework/docs/) to mock AWS capabilities for local development.
 You will also require to install dynamodb serverless to run your project with by running the following command `npm run tools-setup` in your preferred shell.
+Once dynamoDB is installed, you will need a local serverless profile to be created so that you can start developping locally.
+The profiles are stored under `~/.aws/credentials`.
+```sh
+# ~/.aws/credentials
+
+# Please not only serverless is used to develop locally, not deployment of services are done with this framework
+# It might look like this
+[default]
+aws_access_key_id=<yourDummyAccesskey>
+aws_secret_access_key=<yourDummySecret>
+
+```
 Please refer to the local development section to [configure your project locally](#developing-locally).
 
 ### Environmental variables
