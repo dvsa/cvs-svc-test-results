@@ -9,6 +9,7 @@ import { TestTypeForExpiry } from "../models/TestTypeforExpiry";
 import { Service } from "../models/injector/ServiceDecorator";
 import { TestDataProvider } from "./expiry/providers/TestDataProvider";
 import { DateProvider } from "./expiry/providers/DateProvider";
+import { EPROTONOSUPPORT } from "constants";
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -89,24 +90,26 @@ export class VehicleTestController implements IVehicleTestController {
         vehicleSubclass: payload.vehicleSubclass?.[0],
         vehicleWheels: payload.numberOfWheelsDriven,
       };
-      const testTypesWithTestCodesAndClassification = await this.dataProvider.getTestTypesWithTestCodesAndClassification(
-        payload.testTypes,
-        testTypeParams
-      );
+      const testTypesWithTestCodesAndClassification =
+        await this.dataProvider.getTestTypesWithTestCodesAndClassification(
+          payload.testTypes,
+          testTypeParams
+        );
       payload.testTypes = testTypesWithTestCodesAndClassification;
 
-      const payloadWithTestNumber = await this.dataProvider.setTestNumberForEachTestType(
-        payload
-      );
+      const payloadWithTestNumber =
+        await this.dataProvider.setTestNumberForEachTestType(payload);
       payload.testTypes = payloadWithTestNumber as models.TestType[];
 
       const payloadWithExpiryDate = await this.generateExpiryDate(payload);
-      const payloadWithCertificateNumber = VehicleTestController.AssignCertificateNumberToTestTypes(
-        payloadWithExpiryDate
-      );
-      const payloadWithAnniversaryDate = VehicleTestController.calculateAnniversaryDate(
-        payloadWithCertificateNumber
-      );
+      const payloadWithCertificateNumber =
+        VehicleTestController.AssignCertificateNumberToTestTypes(
+          payloadWithExpiryDate
+        );
+      const payloadWithAnniversaryDate =
+        VehicleTestController.calculateAnniversaryDate(
+          payloadWithCertificateNumber
+        );
       payloadWithAnniversaryDate.vehicleId = payloadWithAnniversaryDate.vrm;
       const result = await this.dataProvider.insertTestResult(
         payloadWithAnniversaryDate
@@ -134,32 +137,34 @@ export class VehicleTestController implements IVehicleTestController {
   ) {
     let newTestResult: models.ITestResult;
     try {
-    const { testTypes } = payload;
-    utils.MappingUtil.removeNonEditableAttributes(payload);
-    const validationErrors = utils.ValidationUtil.validateUpdateTestResult(payload);
-    if (validationErrors && validationErrors.length) {
-      throw new models.HTTPError(400, {
-        errors: validationErrors,
-      });
-    }
-    // map testTypes back after validation
-    payload.testTypes = testTypes;
+      const { testTypes } = payload;
+      utils.MappingUtil.removeNonEditableAttributes(payload);
+      const validationErrors =
+        utils.ValidationUtil.validateUpdateTestResult(payload);
+      if (validationErrors && validationErrors.length) {
+        throw new models.HTTPError(400, {
+          errors: validationErrors,
+        });
+      }
+      // map testTypes back after validation
+      payload.testTypes = testTypes;
 
-    newTestResult = await this.mapOldTestResultToNew(
+      newTestResult = await this.mapOldTestResultToNew(
         systemNumber,
         payload,
         msUserDetails
       );
     } catch (error) {
+      console.error("Error on update test result", error);
       throw new models.HTTPError(error.statusCode, error.body);
     }
     try {
-        await this.dataProvider.updateTestResult(newTestResult);
-        return newTestResult;
-      } catch (dynamoError) {
-        console.error("dynamoError", dynamoError);
-        throw new models.HTTPError(500, dynamoError.message);
-      }
+      await this.dataProvider.updateTestResult(newTestResult);
+      return newTestResult;
+    } catch (dynamoError) {
+      console.error("dynamoError", dynamoError);
+      throw new models.HTTPError(500, dynamoError.message);
+    }
   }
 
   //#endregion
@@ -198,9 +203,8 @@ export class VehicleTestController implements IVehicleTestController {
               payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
             ],
           recentExpiry,
-          regnOrFirstUseDate: VehicleTestController.getRegistrationOrFirstUseDate(
-            payload
-          ),
+          regnOrFirstUseDate:
+            VehicleTestController.getRegistrationOrFirstUseDate(payload),
           hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
           hasRegistration: DateProvider.isValidDate(
             VehicleTestController.getRegistrationOrFirstUseDate(payload)
@@ -222,7 +226,7 @@ export class VehicleTestController implements IVehicleTestController {
   /**
    * This function will not remove the certificate number on the test types which already have it set
    */
-   private static AssignCertificateNumberToTestTypes(
+  private static AssignCertificateNumberToTestTypes(
     payload: models.ITestResultPayload
   ) {
     if (payload.testStatus !== enums.TEST_STATUS.SUBMITTED) {
@@ -258,7 +262,7 @@ export class VehicleTestController implements IVehicleTestController {
       ? payload.firstUseDate
       : payload.regnDate;
   }
- //#endregion
+  //#endregion
   private async mapOldTestResultToNew(
     systemNumber: string,
     payload: models.ITestResult,
@@ -365,11 +369,8 @@ export class VehicleTestController implements IVehicleTestController {
     newTestResult: models.ITestResult
   ) {
     const { testTypes } = newTestResult;
-    const {
-      testStartTimestamp,
-      testerStaffId,
-      testStationPNumber,
-    } = oldTestResult;
+    const { testStartTimestamp, testerStaffId, testStationPNumber } =
+      oldTestResult;
     const params = {
       fromStartTime: DateProvider.getStartOfDay(testStartTimestamp),
       toStartTime: testStartTimestamp,
@@ -378,9 +379,8 @@ export class VehicleTestController implements IVehicleTestController {
       testerStaffId,
     };
     try {
-      const activities: [
-        { startTime: Date; endTime: Date }
-      ] = await this.dataProvider.getActivity(params);
+      const activities: [{ startTime: Date; endTime: Date }] =
+        await this.dataProvider.getActivity(params);
       if (activities.length > 1) {
         throw new models.HTTPError(500, enums.ERRORS.NoUniqueActivityFound);
       }
@@ -414,7 +414,7 @@ export class VehicleTestController implements IVehicleTestController {
           startTime
         );
       });
-      if (isEndTimeInvalid ) {
+      if (isEndTimeInvalid) {
         throw new models.HTTPError(
           400,
           VehicleTestController.mapTimestampError(
@@ -435,12 +435,12 @@ export class VehicleTestController implements IVehicleTestController {
         throw new models.HTTPError(400, enums.ERRORS.StartTimeBeforeEndTime);
       }
     } catch (err) {
-      console.error("VehicleTestController -> checkTestTypeStartAndEndTimestamp", err);
+      console.error(
+        "VehicleTestController -> checkTestTypeStartAndEndTimestamp",
+        err
+      );
       if (err.statusCode !== 404) {
-        throw new models.HTTPError(
-          err.statusCode,
-          err.body
-        );
+        throw new models.HTTPError(err.statusCode, err.body);
       }
     }
   }

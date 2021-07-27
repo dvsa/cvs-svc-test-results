@@ -18,7 +18,8 @@ export class TestResultsService {
       VehicleTestController,
       [TestDataProvider, DateProvider]
     );
-    this.vehicleTestController.dataProvider.testResultsDAO = this.testResultsDAO;
+    this.vehicleTestController.dataProvider.testResultsDAO =
+      this.testResultsDAO;
   }
 
   //#region [rgba(52, 152, 219, 0.15)] Public functions
@@ -53,7 +54,11 @@ export class TestResultsService {
     msUserDetails: models.IMsUserDetails
   ) {
     try {
-      const result = await this.vehicleTestController.updateTestResult(systemNumber, payload, msUserDetails);
+      const result = await this.vehicleTestController.updateTestResult(
+        systemNumber,
+        payload,
+        msUserDetails
+      );
       return result;
     } catch (error) {
       console.error("TestResultService.updateTestResult ->", error);
@@ -63,7 +68,7 @@ export class TestResultsService {
 
   public async insertTestResult(payload: models.ITestResultPayload) {
     try {
-      const result =  await this.vehicleTestController.insertTestResult(payload);
+      const result = await this.vehicleTestController.insertTestResult(payload);
       return result;
     } catch (error) {
       console.error("TestResultService.insertTestResult ->", error);
@@ -73,7 +78,7 @@ export class TestResultsService {
       return Promise.reject(rejection);
     }
   }
-// #endregion
+  // #endregion
 
   private static handleError(error: any) {
     console.error(error);

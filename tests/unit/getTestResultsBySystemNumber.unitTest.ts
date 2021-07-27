@@ -28,10 +28,7 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: Array.of(testResultsMockDB[0]),
-                            Count: 1
-                        });
+                        return Promise.resolve(Array.of(testResultsMockDB[0]));
                     }
                 };
             });
@@ -55,10 +52,7 @@ describe("getTestResultBySystemNumber", () => {
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
                         getBySystemNumber: () => {
-                            return Promise.resolve({
-                                Items: Array.of(testResult),
-                                Count: 1
-                            });
+                            return Promise.resolve(Array.of(testResult));
                         }
                     };
                 });
@@ -87,10 +81,7 @@ describe("getTestResultBySystemNumber", () => {
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
                         getBySystemNumber: () => {
-                            return Promise.resolve({
-                                Items: Array.of(testResult),
-                                Count: 1
-                            });
+                            return Promise.resolve(Array.of(testResult));
                         }
                     };
                 });
@@ -120,10 +111,7 @@ describe("getTestResultBySystemNumber", () => {
                 MockTestResultsDAO = jest.fn().mockImplementation(() => {
                     return {
                         getBySystemNumber: () => {
-                            return Promise.resolve({
-                                Items: Array.of(testResult),
-                                Count: 2
-                            });
+                            return Promise.resolve(Array.of(testResult));
                         }
                     };
                 });
@@ -151,10 +139,7 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: null,
-                            Count: 0
-                        });
+                        return Promise.resolve([]);
                     }
                 };
             });
@@ -175,10 +160,7 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: [],
-                            Count: 0
-                        });
+                        return Promise.resolve([]);
                     }
                 };
             });
@@ -200,10 +182,7 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: Array.of(testResultsMockDB[0]),
-                            Count: 1
-                        });
+                        return Promise.resolve( Array.of(testResultsMockDB[0]));
                     }
                 };
             });
@@ -225,10 +204,7 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: Array.of(testResultsMockDB[0]),
-                            Count: 1
-                        });
+                        return Promise.resolve(Array.of(testResultsMockDB[0]));
                     }
                 };
             });
@@ -236,7 +212,7 @@ describe("getTestResultBySystemNumber", () => {
             testResultsService = new TestResultsService(new MockTestResultsDAO());
 
             expect.assertions(3);
-            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "qwerty", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1111", status: "submitted", fromDateTime: "20", toDateTime: new Date().toString() })
                 .catch((errorResponse: { statusCode: any; body: any; }) => {
                   expect(errorResponse).toBeInstanceOf(HTTPError);
                   expect(errorResponse.statusCode).toEqual(400);
@@ -251,16 +227,13 @@ describe("getTestResultBySystemNumber", () => {
             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                 return {
                     getBySystemNumber: () => {
-                        return Promise.resolve({
-                            Items: Array.of(testResultsMockDB[19]),
-                            Count: 1
-                        });
+                        return Promise.resolve(Array.of(testResultsMockDB[19]));
                     }
                 };
             });
 
             testResultsService = new TestResultsService(new MockTestResultsDAO());
-            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1130", status: "submitted", fromDateTime: "2017-01-01", toDateTime: new Date().toString() })
+            return testResultsService.getTestResultBySystemNumber({ systemNumber: "1130", status: "submitted", fromDateTime: new Date("2017-01-01"), toDateTime: new Date() })
                 .then((returnedRecords: any) => {
                     expect(returnedRecords.length).toEqual(1);
                     expect(returnedRecords[0].systemNumber).toEqual("1130");

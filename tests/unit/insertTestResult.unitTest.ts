@@ -98,10 +98,7 @@ describe("insertTestResult", () => {
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
             insertTestResult: () => {
-              return Promise.resolve({
-                Items: Array.of(mockData),
-                Count: 1,
-              });
+              return Promise.resolve(Array.of(mockData));
             },
             getTestCodesAndClassificationFromTestTypes: () => {
               return Promise.resolve({
@@ -267,7 +264,7 @@ describe("insertTestResult", () => {
               testTypeClassification: "Annual With Certificate",
             });
           },
-          getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           createSingle: () => {
             return Promise.reject({
               statusCode: 400,
@@ -295,7 +292,6 @@ describe("insertTestResult", () => {
       return testResultsService
         .insertTestResult(mockData)
         .catch((error: { statusCode: any; body: any }) => {
-          console.log(error);
           expect(error).toBeInstanceOf(HTTPResponse);
           expect(error.statusCode).toEqual(201);
           expect(error.body).toEqual('"' + MESSAGES.ID_ALREADY_EXISTS + '"');
@@ -362,7 +358,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
             createSingle: () => {
               return Promise.resolve({ Attributes: "It worked" });
             },
@@ -587,7 +583,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -905,7 +901,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1041,7 +1037,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1127,7 +1123,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1441,7 +1437,7 @@ describe("insertTestResult", () => {
               testTypeClassification: "Annual With Certificate",
             });
           },
-          getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         };
       });
 
@@ -1486,7 +1482,7 @@ describe("insertTestResult", () => {
               testTypeClassification: "Annual With Certificate",
             });
           },
-          getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         };
       });
 
@@ -1530,7 +1526,7 @@ describe("insertTestResult", () => {
               testTypeClassification: "Annual With Certificate",
             });
           },
-          getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         };
       });
 
@@ -1579,7 +1575,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1628,7 +1624,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1767,7 +1763,7 @@ describe("insertTestResult", () => {
               testTypeClassification: "Annual With Certificate",
             });
           },
-          getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         };
       });
 
@@ -1810,7 +1806,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual NO CERTIFICATE",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -1955,7 +1951,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -2003,7 +1999,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "NON ANNUAL",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -2539,7 +2535,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -2643,7 +2639,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -2693,7 +2689,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -2742,7 +2738,7 @@ describe("insertTestResult", () => {
                 testTypeClassification: "Annual With Certificate",
               });
             },
-            getBySystemNumber: (systemNumber: any) => Promise.resolve({}),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
           };
         });
 
@@ -3012,7 +3008,7 @@ describe("insertTestResult", () => {
             Promise.resolve({
               Attributes: Array.of(validTestResult),
             }),
-          getBySystemNumber: () => Promise.resolve({}),
+          getBySystemNumber: () => Promise.resolve([]),
         });
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 

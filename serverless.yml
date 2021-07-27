@@ -90,6 +90,8 @@ resources:
             AttributeType: S
           - AttributeName: systemNumber
             AttributeType: S
+          - AttributeName: testStartTimestamp
+            AttributeType: S
         KeySchema:
           - AttributeName: vin
             KeyType: HASH
@@ -100,9 +102,10 @@ resources:
             KeySchema:
               - AttributeName: testerStaffId
                 KeyType: HASH
+              - AttributeName: testStartTimestamp
+                KeyType: RANGE
             Projection:
               NonKeyAttributes:
-                - testStartTimestamp
                 - testEndTimestamp
                 - testTypes
                 - vrm

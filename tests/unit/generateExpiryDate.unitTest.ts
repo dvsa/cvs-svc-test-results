@@ -9,7 +9,6 @@ import moment from "moment";
 import { VehicleTestController } from "../../src/handlers/VehicleTestController";
 import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
 import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
-import { TestResultsDAO } from "../../src/models";
 
 describe("VehicleTestController calling generateExpiryDate", () => {
     let vehicleTestController: VehicleTestController;
@@ -45,11 +44,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getBySystemNumber: () => {
-                                return Promise.resolve({
-                                    Items: Array.of(getBySystemNumberResponse),
-                                    Count: 1,
-                                    ScannedCount: 1
-                                });
+                                return Promise.resolve(Array.of(getBySystemNumberResponse));
                             },
                             getTestCodesAndClassificationFromTestTypes: () => {
                                 return Promise.resolve({
@@ -93,11 +88,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -142,11 +133,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -190,11 +177,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -241,11 +224,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -291,11 +270,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -341,11 +316,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: Array.of(getBySystemNumberResponse),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve( Array.of(getBySystemNumberResponse));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -382,11 +353,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getBySystemNumber: () => {
-                                return Promise.resolve({
-                                    Items: Array.of(getBySystemNumberResponse),
-                                    Count: 1,
-                                    ScannedCount: 1
-                                });
+                                return Promise.resolve(Array.of(getBySystemNumberResponse));
                             },
                             getTestCodesAndClassificationFromTestTypes: () => {
                                 return Promise.resolve({
@@ -419,11 +386,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                     MockTestResultsDAO = jest.fn().mockImplementation(() => {
                         return {
                             getBySystemNumber: () => {
-                                return Promise.resolve({
-                                    Items: Array.of(getBySystemNumberResponse),
-                                    Count: 1,
-                                    ScannedCount: 1
-                                });
+                                return Promise.resolve(Array.of(getBySystemNumberResponse));
                             },
                             getTestCodesAndClassificationFromTestTypes: () => {
                                 return Promise.resolve({
@@ -456,11 +419,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: () => {
-                                    return Promise.resolve({
-                                        Items: [],
-                                        Count: 0,
-                                        ScannedCount: 0
-                                    });
+                                    return Promise.resolve([]);
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -489,11 +448,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: () => {
-                                    return Promise.resolve({
-                                        Items: [],
-                                        Count: 0,
-                                        ScannedCount: 0
-                                    });
+                                    return Promise.resolve([]);
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -529,11 +484,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(testResultExpiredCertificateWithSameSystemNumber),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(testResultExpiredCertificateWithSameSystemNumber));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -566,11 +517,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(testResultExpiredCertificateWithSameSystemNumber),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(testResultExpiredCertificateWithSameSystemNumber));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -611,11 +558,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -649,11 +592,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -690,11 +629,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -728,11 +663,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -766,11 +697,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -804,11 +731,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -848,11 +771,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [hgvTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(hgvTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -888,11 +807,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [hgvTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(hgvTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -928,11 +843,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [hgvTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(hgvTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -968,11 +879,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [hgvTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(hgvTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1008,11 +915,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [hgvTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(hgvTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1059,11 +962,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1097,11 +996,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1138,11 +1033,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1176,11 +1067,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1214,11 +1101,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1252,11 +1135,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1299,11 +1178,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1337,11 +1212,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1378,11 +1249,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1416,11 +1283,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1454,11 +1317,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1492,11 +1351,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1530,11 +1385,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1569,11 +1420,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1608,11 +1455,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [],
-                                            Count: 0,
-                                            ScannedCount: 0
-                                        });
+                                        return Promise.resolve([]);
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1654,11 +1497,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [trlTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1693,11 +1532,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [trlTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1732,11 +1567,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [trlTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1771,11 +1602,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [trlTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1810,11 +1637,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             MockTestResultsDAO = jest.fn().mockImplementation(() => {
                                 return {
                                     getBySystemNumber: () => {
-                                        return Promise.resolve({
-                                            Items: [trlTestResult],
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                     getTestCodesAndClassificationFromTestTypes: () => {
                                         return Promise.resolve({
@@ -1852,11 +1675,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -1890,11 +1709,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -1930,11 +1745,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -1966,11 +1777,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2001,11 +1808,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2036,11 +1839,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2079,11 +1878,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2120,11 +1915,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2162,11 +1953,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2199,11 +1986,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2236,11 +2019,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2272,11 +2051,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (vin: any) => {
-                                        return Promise.resolve({
-                                            Items: Array.of(trlTestResult),
-                                            Count: 1,
-                                            ScannedCount: 1
-                                        });
+                                        return Promise.resolve(Array.of(trlTestResult));
                                     },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2311,11 +2086,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(hgvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(hgvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2348,11 +2119,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(trlTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(trlTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2390,11 +2157,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2432,11 +2195,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2471,11 +2230,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2512,11 +2267,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2550,11 +2301,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2588,11 +2335,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2629,11 +2372,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({
@@ -2667,11 +2406,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
                                 getBySystemNumber: (systemNumber: any) => {
-                                    return Promise.resolve({
-                                        Items: Array.of(psvTestResult),
-                                        Count: 1,
-                                        ScannedCount: 1
-                                    });
+                                    return Promise.resolve(Array.of(psvTestResult));
                                 },
                                 getTestCodesAndClassificationFromTestTypes: () => {
                                     return Promise.resolve({

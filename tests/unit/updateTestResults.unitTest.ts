@@ -1,8 +1,8 @@
 import { TestResultsService } from "../../src/services/TestResultsService";
 import { HTTPError } from "../../src/models/HTTPError";
 import testResults from "../resources/test-results.json";
-import {ERRORS, MESSAGES} from "../../src/assets/Enums";
-import {cloneDeep} from "lodash";
+import { ERRORS, MESSAGES } from "../../src/assets/Enums";
+import { cloneDeep } from "lodash";
 import { MappingUtil } from "../../src/utils/mappingUtil";
 import { ValidationUtil } from "../../src/utils/validationUtil";
 import { VehicleTestController } from "../../src/handlers/VehicleTestController";
@@ -51,12 +51,8 @@ describe("updateTestResults", () => {
                   },
                 ]);
               },
-              getBySystemNumber: () => {
-                return Promise.resolve({
-                  Items: Array.of(cloneDeep(testToUpdate)),
-                  Count: 1,
-                });
-              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(cloneDeep(testToUpdate))),
             };
           });
 
@@ -100,12 +96,8 @@ describe("updateTestResults", () => {
                       },
                     ]);
                   },
-                  getBySystemNumber: () => {
-                    return Promise.resolve({
-                      Items: Array.of(cloneDeep(testToUpdate)),
-                      Count: 1,
-                    });
-                  },
+                  getBySystemNumber: () =>
+                    Promise.resolve(Array.of(cloneDeep(testToUpdate))),
                   getTestCodesAndClassificationFromTestTypes: () => {
                     return Promise.resolve({
                       defaultTestCode: "bde",
@@ -117,14 +109,22 @@ describe("updateTestResults", () => {
 
               const testDataProvider = new TestDataProvider();
               testDataProvider.testResultsDAO = new MockTestResultsDAO();
-              const vehicleTestController = new VehicleTestController(testDataProvider, new DateProvider());
+              const vehicleTestController = new VehicleTestController(
+                testDataProvider,
+                new DateProvider()
+              );
 
               const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
               updatedPayload.testTypes[0].testTypeName =
                 "Another test type name";
               expect.assertions(4);
               // @ts-ignore
-              const returnedRecord = await  vehicleTestController.mapOldTestResultToNew(updatedPayload.systemNumber, updatedPayload, msUserDetails)
+              const returnedRecord =
+                await vehicleTestController.mapOldTestResultToNew(
+                  updatedPayload.systemNumber,
+                  updatedPayload,
+                  msUserDetails
+                );
               expect(returnedRecord).not.toEqual(undefined);
               expect(returnedRecord).not.toEqual({});
               expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
@@ -212,10 +212,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -255,10 +252,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -298,10 +292,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -341,10 +332,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -384,10 +372,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -429,10 +414,7 @@ describe("updateTestResults", () => {
                       ]);
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                   };
                 });
@@ -457,46 +439,41 @@ describe("updateTestResults", () => {
             }
           );
 
-          // context(
-          //   "and the getActivity function throws an error different from 404",
-          //   () => {
-          //     it("should return Error Activities microservice error", () => {
-          //       MockTestResultsDAO = jest.fn().mockImplementation(() => {
-          //         return {
-          //           getActivity: () => {
-          //             return Promise.reject({
-          //               statusCode: 400,
-          //               body: ERRORS.EventIsEmpty,
-          //             });
-          //           },
-          //           getBySystemNumber: () => {
-          //             return Promise.resolve({
-          //               Items: Array.of(cloneDeep(testToUpdate)),
-          //               Count: 1,
-          //             });
-          //           },
-          //         };
-          //       });
-          //       testResultsService = new TestResultsService(
-          //         new MockTestResultsDAO()
-          //       );
-          //       expect.assertions(3);
-          //       return testResultsService
-          //         .updateTestResult(
-          //           testToUpdate.systemNumber,
-          //           testToUpdate,
-          //           msUserDetails
-          //         )
-          //         .catch((errorResponse: { statusCode: any; body: any }) => {
-          //           expect(errorResponse).toBeInstanceOf(HTTPError);
-          //           expect(errorResponse.statusCode).toEqual(400);
-          //           expect(errorResponse.body).toEqual(
-          //             `Activities microservice error: ${ERRORS.EventIsEmpty}`
-          //           );
-          //         });
-          //     });
-          //   }
-          // );
+          context(
+            "and the getActivity function throws an error different from 404",
+            () => {
+              it("should return Error Activities microservice error", () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => {
+                  return {
+                    getActivity: () => {
+                      return Promise.reject({
+                        statusCode: 400,
+                        body: ERRORS.EventIsEmpty,
+                      });
+                    },
+                    getBySystemNumber: () => {
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
+                    },
+                  };
+                });
+                testResultsService = new TestResultsService(
+                  new MockTestResultsDAO()
+                );
+                expect.assertions(3);
+                return testResultsService
+                  .updateTestResult(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
+                  .catch((errorResponse: { statusCode: any; body: any }) => {
+                    expect(errorResponse).toBeInstanceOf(HTTPError);
+                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.body).toEqual(ERRORS.EventIsEmpty);
+                  });
+              });
+            }
+          );
 
           context(
             "and the getActivity function throws a 404 Not Found error",
@@ -511,10 +488,7 @@ describe("updateTestResults", () => {
                       });
                     },
                     getBySystemNumber: () => {
-                      return Promise.resolve({
-                        Items: Array.of(cloneDeep(testToUpdate)),
-                        Count: 1,
-                      });
+                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
                     },
                     updateTestResult: () => {
                       return Promise.resolve({});
@@ -530,17 +504,25 @@ describe("updateTestResults", () => {
 
                 const dataProvider = new TestDataProvider();
                 dataProvider.testResultsDAO = new MockTestResultsDAO();
-                const vehicleTestController = new VehicleTestController(dataProvider, new DateProvider);
+                const vehicleTestController = new VehicleTestController(
+                  dataProvider,
+                  new DateProvider()
+                );
                 const expectedTestTypeStartTimestamp =
                   "2020-12-28T09:26:58.477Z";
                 const expectedTestTypeEndTimestamp = "2020-12-28T18:00:00.000Z";
-                testToUpdate.testTypes[0].testTypeStartTimestamp = expectedTestTypeStartTimestamp;
-                testToUpdate.testTypes[0].testTypeEndTimestamp = expectedTestTypeEndTimestamp;
+                testToUpdate.testTypes[0].testTypeStartTimestamp =
+                  expectedTestTypeStartTimestamp;
+                testToUpdate.testTypes[0].testTypeEndTimestamp =
+                  expectedTestTypeEndTimestamp;
                 expect.assertions(4);
                 // @ts-ignore
-                return vehicleTestController.mapOldTestResultToNew(testToUpdate.systemNumber,
-                  testToUpdate,
-                  msUserDetails)
+                return vehicleTestController
+                  .mapOldTestResultToNew(
+                    testToUpdate.systemNumber,
+                    testToUpdate,
+                    msUserDetails
+                  )
                   .then((returnedRecord: any) => {
                     expect(returnedRecord).not.toEqual(undefined);
                     expect(returnedRecord).not.toEqual({});
@@ -577,12 +559,7 @@ describe("updateTestResults", () => {
                   },
                 ]);
               },
-              getBySystemNumber: () => {
-                return Promise.resolve({
-                  Items: Array.of(existingTest),
-                  Count: 1,
-                });
-              },
+              getBySystemNumber: () => Promise.resolve(Array.of(existingTest)),
             };
           });
           testResultsService = new TestResultsService(new MockTestResultsDAO());
@@ -607,12 +584,7 @@ describe("updateTestResults", () => {
         it("should throw an error 404-No resources match the search criteria", () => {
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {
-              getBySystemNumber: () => {
-                return Promise.resolve({
-                  Items: [],
-                  Count: 0,
-                });
-              },
+              getBySystemNumber: () => Promise.resolve([]),
             };
           });
 
@@ -638,12 +610,8 @@ describe("updateTestResults", () => {
         it("should throw an error 404-No resources match the search criteria", () => {
           MockTestResultsDAO = jest.fn().mockImplementation(() => {
             return {
-              getBySystemNumber: () => {
-                return Promise.resolve({
-                  Items: Array.of(testResultsMockDB[0]),
-                  Count: 1,
-                });
-              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(testResultsMockDB[0])),
             };
           });
 
@@ -676,12 +644,8 @@ describe("updateTestResults", () => {
                 updateTestResult: () => {
                   return Promise.resolve({});
                 },
-                getBySystemNumber: () => {
-                  return Promise.resolve({
-                    Items: Array.of(testToUpdate),
-                    Count: 1,
-                  });
-                },
+                getBySystemNumber: () =>
+                  Promise.resolve(Array.of(testToUpdate)),
               };
             });
 
@@ -714,12 +678,8 @@ describe("updateTestResults", () => {
                 updateTestResult: () => {
                   return Promise.resolve({});
                 },
-                getBySystemNumber: () => {
-                  return Promise.resolve({
-                    Items: Array.of(testToUpdate),
-                    Count: 1,
-                  });
-                },
+                getBySystemNumber: () =>
+                  Promise.resolve(Array.of(testToUpdate)),
               };
             });
 
@@ -754,12 +714,8 @@ describe("updateTestResults", () => {
                 updateTestResult: () => {
                   return Promise.resolve({});
                 },
-                getBySystemNumber: () => {
-                  return Promise.resolve({
-                    Items: Array.of(testToUpdate),
-                    Count: 1,
-                  });
-                },
+                getBySystemNumber: () =>
+                  Promise.resolve(Array.of(testToUpdate)),
               };
             });
 
@@ -867,9 +823,8 @@ describe("updateTestResults", () => {
           for (const testTypeId of testTypeIds) {
             testToUpdate.testTypes[0].testTypeId = testTypeId;
             // @ts-ignore
-            const validationResponse = ValidationUtil.validateTestTypes(
-              testToUpdate
-            );
+            const validationResponse =
+              ValidationUtil.validateTestTypes(testToUpdate);
             expect(validationResponse).toBeDefined();
             expect(validationResponse.length).not.toEqual(0);
           }

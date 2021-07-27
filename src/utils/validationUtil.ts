@@ -20,7 +20,7 @@ export class ValidationUtil {
   ) {
     const result =
       filters &&
-      ValidationUtil.validateDates(filters.fromDateTime, filters.toDateTime);
+      ValidationUtil.validateDates(filters.fromDateTime as Date, filters.toDateTime as Date);
     if (!result) {
       console.log(
         "ValidationUtil.validateGetTestResultFilters: Invalid Filter -> ",

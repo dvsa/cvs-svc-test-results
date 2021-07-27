@@ -1,9 +1,10 @@
 export interface ITestResultFilters {
-    systemNumber?: any; testStatus?: string;
+    systemNumber?: string;
+    testStatus?: string;
     fromDateTime?: any;
     toDateTime?: any;
-    testerStaffId?: any;
-    testStationPNumber?: any;
+    testerStaffId?: string;
+    testStationPNumber?: string;
     status?: string;
     testVersion?: string;
     testResultId?: string;

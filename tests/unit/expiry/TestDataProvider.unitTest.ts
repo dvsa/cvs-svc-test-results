@@ -35,24 +35,19 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
-              return {
-                Count: 1,
-                Items: [
+            getBySystemNumber: () => Promise.resolve([
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03",
+                testTypes: [
                   {
-                    testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                    testEndTimestamp: "2019-03",
-                    testTypes: [
-                      {
-                        testCode: "fft1",
-                        testExpiryDate: "2019-02-10T08:47:59.261009Z",
-                      },
-                    ],
-                    testStatus: enums.TEST_STATUS.SUBMITTED,
+                    testCode: "fft1",
+                    testExpiryDate: "2019-02-10T08:47:59.261009Z",
                   },
                 ],
-              };
-            },
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         expect.assertions(2);
@@ -67,24 +62,19 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
-              return {
-                Count: 1,
-                Items: [
+            getBySystemNumber: () => Promise.resolve([
+              {
+                testStartTimestamp: "2019-03",
+                testEndTimestamp: "2019-03-10T08:47:59.269Z",
+                testTypes: [
                   {
-                    testStartTimestamp: "2019-03",
-                    testEndTimestamp: "2019-03-10T08:47:59.269Z",
-                    testTypes: [
-                      {
-                        testCode: "fft1",
-                        testExpiryDate: "2019-02-10T08:47:59.261009Z",
-                      },
-                    ],
-                    testStatus: enums.TEST_STATUS.SUBMITTED,
+                    testCode: "fft1",
+                    testExpiryDate: "2019-02-10T08:47:59.261009Z",
                   },
                 ],
-              };
-            },
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         expect.assertions(2);
@@ -100,35 +90,30 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
-              return {
-                Count: 2,
-                Items: [
+            getBySystemNumber: () => Promise.resolve([
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
                   {
-                    testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                    testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                    testTypes: [
-                      {
-                        testCode: "fft1",
-                        testExpiryDate: "2019-02-10T08:47:59.261Z",
-                      },
-                    ],
-                    testStatus: enums.TEST_STATUS.SUBMITTED,
-                  },
-                  {
-                    testStartTimestamp: "2019-01-10T08:47:59.269000Z",
-                    testEndTimestamp: "2019-01-10T09:30:59.269000Z",
-                    testTypes: [
-                      {
-                        testCode: "rpt1",
-                        testExpiryDate: "2020-12-10T08:47:59.269000Z",
-                      },
-                    ],
-                    testStatus: enums.TEST_STATUS.SUBMITTED,
+                    testCode: "fft1",
+                    testExpiryDate: "2019-02-10T08:47:59.261Z",
                   },
                 ],
-              };
-            },
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-01-10T08:47:59.269000Z",
+                testEndTimestamp: "2019-01-10T09:30:59.269000Z",
+                testTypes: [
+                  {
+                    testCode: "rpt1",
+                    testExpiryDate: "2020-12-10T08:47:59.269000Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
@@ -163,15 +148,11 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
-              {
-                return {
-                  testStartTimestamp: "2019-10-10T08:47:59.269Z",
-                  testEndTimestamp: "2019-10-10T09:30:59.269Z",
-                  testTypes: [{ testCode: "aat1", testExpiryDate: "2020-01" }],
-                };
-              }
-            },
+            getBySystemNumber: () => Promise.resolve([ {
+              testStartTimestamp: "2019-10-10T08:47:59.269Z",
+              testEndTimestamp: "2019-10-10T09:30:59.269Z",
+              testTypes: [{ testCode: "aat1", testExpiryDate: "2020-01" }],
+            }]),
           };
         });
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
@@ -185,39 +166,32 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
+            getBySystemNumber: () => Promise.resolve([
               {
-                return {
-                  Count: 3,
-                  Items: [
-                    {
-                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "aat1", testExpiryDate: "2020-01-05" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "fft1", testExpiryDate: "2020-02-15" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "rpt1", testExpiryDate: "2020-01-04" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                  ],
-                };
-              }
-            },
+                testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "aat1", testExpiryDate: "2020-01-05" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "fft1", testExpiryDate: "2020-02-15" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "rpt1", testExpiryDate: "2020-01-04" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
@@ -232,47 +206,40 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
+            getBySystemNumber: () => Promise.resolve([
               {
-                return {
-                  Count: 4,
-                  Items: [
-                    {
-                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "aat1", testExpiryDate: "2020-01-05" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "fft1", testExpiryDate: "2020-02-15" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "fft1", testExpiryDate: undefined },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
-                      testTypes: [
-                        { testCode: "rpt1", testExpiryDate: "2020-01" },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                  ],
-                };
-              }
-            },
+                testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "aat1", testExpiryDate: "2020-01-05" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "fft1", testExpiryDate: "2020-02-15" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "fft1", testExpiryDate: undefined },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                testTypes: [
+                  { testCode: "rpt1", testExpiryDate: "2020-01" },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         testDataProvider.testResultsDAO = new MockTestResultsDAO();
@@ -287,48 +254,41 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
+            getBySystemNumber: () => Promise.resolve( [
               {
-                return {
-                  Count: 3,
-                  Items: [
-                    {
-                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "aat1",
-                          testExpiryDate: "2018-02-10T08:47:59.269Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "fft1",
-                          testExpiryDate: "2019-02-10T08:47:59.261009Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "rpt1",
-                          testExpiryDate: "2020-12-10T08:47:59.129000Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                  ],
-                };
-              }
-            },
+                testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "aat1",
+                    testExpiryDate: "2018-02-10T08:47:59.269Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "fft1",
+                    testExpiryDate: "2019-02-10T08:47:59.261009Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "rpt1",
+                    testExpiryDate: "2020-12-10T08:47:59.129000Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         expect.assertions(1);
@@ -344,48 +304,41 @@ describe("TestDataProvider", () => {
         testDataProvider = new TestDataProvider();
         MockTestResultsDAO = jest.fn().mockImplementation(() => {
           return {
-            getBySystemNumber: () => {
+            getBySystemNumber: () => Promise.resolve([
               {
-                return {
-                  Count: 3,
-                  Items: [
-                    {
-                      testStartTimestamp: "2019-02-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-02-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "aat1",
-                          testExpiryDate: "2018-02-10T08:47:59.269Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-03-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-03-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "fft1",
-                          testExpiryDate: "2019-02-10T08:47:59.261Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                    {
-                      testStartTimestamp: "2019-01-10T08:47:59.269Z",
-                      testEndTimestamp: "2019-01-10T09:30:59.269Z",
-                      testTypes: [
-                        {
-                          testCode: "rpt1",
-                          testExpiryDate: "2020-12-10T08:47:59.129Z",
-                        },
-                      ],
-                      testStatus: enums.TEST_STATUS.SUBMITTED,
-                    },
-                  ],
-                };
-              }
-            },
+                testStartTimestamp: "2019-02-10T08:47:59.269Z",
+                testEndTimestamp: "2019-02-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "aat1",
+                    testExpiryDate: "2018-02-10T08:47:59.269Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-03-10T08:47:59.269Z",
+                testEndTimestamp: "2019-03-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "fft1",
+                    testExpiryDate: "2019-02-10T08:47:59.261Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+              {
+                testStartTimestamp: "2019-01-10T08:47:59.269Z",
+                testEndTimestamp: "2019-01-10T09:30:59.269Z",
+                testTypes: [
+                  {
+                    testCode: "rpt1",
+                    testExpiryDate: "2020-12-10T08:47:59.129Z",
+                  },
+                ],
+                testStatus: enums.TEST_STATUS.SUBMITTED,
+              },
+            ]),
           };
         });
         expect.assertions(1);
@@ -397,7 +350,7 @@ describe("TestDataProvider", () => {
     });
   });
   context("for insertTestResult", () => {
-    it(`should call the 'testResultDAO.createSingle' method and 'logDefectsReporting'`, async () => {
+    it("should call the 'testResultDAO.createSingle' method and 'logDefectsReporting'", async () => {
       testDataProvider = new TestDataProvider();
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
