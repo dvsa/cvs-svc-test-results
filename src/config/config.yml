@@ -36,6 +36,11 @@ dynamodb:
     params:
       convertEmptyValues: true
     table: cvs-${BRANCH}-test-results
+  localstack:
+    params:
+      region: eu-west-1
+      endpoint: http://${LOCALSTACK_HOSTNAME}:4566
+    table: cvs-localstack-test-results
 serverless:
   basePath: /${BRANCH}
   port: 3006
@@ -52,6 +57,8 @@ endpoints:
         name: cvs-svc-global-dev-generateTestNumber
       getActivity:
         name: cvs-svc-activities-dev-main
+  # TODO: add config for for localstack here
+  
   remote:
     params:
       apiVersion: '2015-03-31'

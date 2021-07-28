@@ -22,6 +22,7 @@ export class TestResultsDAO {
 
   constructor() {
     const config: models.IDBConfig = Configuration.getInstance().getDynamoDBConfig();
+    console.log("TestResultsDAO config:\n", config)
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
@@ -168,8 +169,9 @@ export class TestResultsDAO {
       TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
     try {
       console.log("queryString for get Test: ", event);
+      console.log("getTestCodesAndClassificationFromTestTypes()")
+      console.log("lambdaName called is:\n", lambdaName)
       const lambdaResult = LambdaService.invoke(lambdaName, event);
-
       return lambdaResult;
     } catch (error) {
       console.error(
@@ -195,6 +197,8 @@ export class TestResultsDAO {
     const lambdaName =
       TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name;
     try {
+      console.log("createTestNumber()")
+      console.log("lambdaName called is:\n", lambdaName)
       const lambdaResult = LambdaService.invoke(lambdaName, event);
       return lambdaResult;
     } catch (error) {
@@ -233,10 +237,20 @@ export class TestResultsDAO {
       resource: "/activities/details",
     };
 
-    return LambdaService.invoke(
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getActivity.name,
-      event
-    );
+    const lambdaName = TestResultsDAO.lambdaInvokeEndpoints.functions.getActivity.name
+    try {
+      console.log("getActivity()")
+      console.log("lambdaName called is:\n", lambdaName)
+      const lambdaResult = LambdaService.invoke(
+        lambdaName,
+        event
+      );
+      return lambdaResult
+    } catch (error) {
+      console.error(
+        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`
+      );
+    }
     // TODO Add Mocks - CVSB-19153
     // return [
     //   {
