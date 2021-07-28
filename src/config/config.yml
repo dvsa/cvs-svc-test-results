@@ -57,7 +57,22 @@ endpoints:
         name: cvs-svc-global-dev-generateTestNumber
       getActivity:
         name: cvs-svc-activities-dev-main
-  # TODO: add config for for localstack here
+  localstack:
+    params:
+      apiVersion: '2015-03-31'
+      endpoint: http://127.0.0.1:3001
+      sslEnabled: false
+      region: eu-west-1
+      accessKeyId: 'any'
+      secretAccessKey: 'any'
+    functions:
+      getTestTypesById:
+        # TODO: find localstack functions exposed
+        name: cvs-svc-global-dev-getTestTypesById
+      getTestNumber:
+        name: cvs-svc-global-dev-generateTestNumber
+      getActivity:
+        name: cvs-svc-activities-dev-main
   
   remote:
     params:

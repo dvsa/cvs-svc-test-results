@@ -21,6 +21,7 @@ export class LambdaService {
     console.log("LambdaService")
     console.log("LAMBDA created is:\n", lambdaInvokeEndpoints.params)
 
+    // TODO: Change cfg for localstack and develop locally local-global should go away in fact
     const lambda = new AWS.Lambda(lambdaInvokeEndpoints.params);
     console.log("FunctionName to be invoked:\n", lambdaName)
     console.log("Payload: \n", JSON.stringify(lambdaEvent))
