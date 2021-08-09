@@ -1,0 +1,741 @@
+openapi: 3.0.0
+info:
+  description: >-
+    This is the API spec for capturing test results. These test result will be
+    stored in the AWS DynamoDB database. Authorization details will be updated
+    once we have confirmed the security scheme we are using.
+  version: 1.0.0
+  title: Test Results Microservice
+  termsOfService: 'http://test.com'
+  contact:
+    email: test@test.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: Test results
+    description: >-
+      Endpoint to retrieve  information about a test records. Other attributes
+      may be added in the future like the test certificate
+    externalDocs:
+      description: Find out more
+      url: 'https://wiki.i-env.net/display/HVT/Epic%3A+Capture+test+results'
+paths:
+  /test-results:
+    post:
+      summary: Submitting a new test records
+      requestBody:
+        description: Post the test results
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/completeTestResults'
+      responses:
+        '201':
+          description: Test records created
+        '401':
+          description: Not authenticated
+        '403':
+          description: Unauthorised Access
+        '404':
+          description: Operation not supported
+  '/test-results/{testResultId}':
+    put:
+      summary: 'Update a test result, for a particular testResultId'
+      tags:
+        - updateTestResults
+      parameters:
+        - in: path
+          name: testResultId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: The test result to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/completeTestResults'
+      responses:
+        '200':
+          description: The updated test-result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/testResults'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Unauthorised Access
+        '404':
+          description: Operation not supported
+  '/test-results/archive/{testResultId}':
+    put:
+      summary: 'Archive a specific test-type, for a particular testResultId'
+      tags:
+        - archiveTestResults
+      parameters:
+        - in: path
+          name: testResultId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: The test result containing the test-type to be archived (marked with statusUpdatedFlag set to true)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/completeTestResults'
+      responses:
+        '200':
+          description: The updated test-result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/testResults'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Unauthorised Access
+        '404':
+          description: Operation not supported
+  '/test-results/{systemNumber}':
+    get:
+      summary: 'Get a test results, for a particular Vin with status specified.'
+      tags:
+        - getTestResults
+      parameters:
+        - in: path
+          name: systemNumber
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: status
+          schema:
+            type: string
+            default: submitted
+            enum:
+              - submitted
+              - cancelled
+          description: The test result status
+        - in: query
+          name: fromDateTime
+          schema:
+            type: string
+            format: date-time
+          description: >-
+            The UTC ISO Date Time filter, if the fromDate and ToDate not
+            specified by default to 2 years of data for now.
+        - in: query
+          name: toDateTime
+          schema:
+            type: string
+            format: date-time
+          description: The UTC ISO DateTime filter.
+        - in: query
+          name: testResultId
+          schema:
+            type: string
+          description: Query param to filter the test-results based on testResultId.
+        - in: query
+          name: version
+          schema:
+            type: string
+            default: current
+            enum:
+              - current
+              - archived
+              - all
+          description: Query param to filter the test-results based on testVersion. If not present then GET will return the current test-result.
+            Can be used only with testResultId query param, otherwise it is not taken into account.
+      responses:
+        '200':
+          description: Test results returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/testResults'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Unauthorised Access
+        '404':
+          description: Operation not supported
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: 'https://example.com/oauth/authorize'
+          tokenUrl: 'https://example.com/oauth/token'
+          scopes:
+            read: Grants read access
+            write: Grants write access
+  schemas:
+    testResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/completeTestResults'
+    completeTestResults:
+      type: object
+      additionalProperties: false
+      properties:
+        systemNumber:
+          type: string
+          description: It defines the link between a test and the vehicle, by uniqeuly identifing the vehicle.
+        vrm:
+          type: string
+          minLength: 1
+          maxLength: 8
+          description: Mandatory for PSV and HGV, not applicable to TRL
+        trailerId:
+          type: string
+          description: Mandatory for TRL, not applicable to PSV and HGV
+        vin:
+          type: string
+          minLength: 1
+          maxLength: 21
+        vehicleId:
+          type: string
+          nullable: true
+          description: >-
+            Not sent from FE, calculated in the BE. When the test result is
+            submitted, in BE, the VRM of the vehicle will be copied into
+            vehicleId also.
+        deletionFlag:
+          type: boolean
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        testHistory:
+          type: array
+          items:
+            $ref: '#/components/schemas/completeTestResults'
+          nullable: true
+          description: Array of archived test-results. The test-results in this array won't have the testHistory attribute and testVersion will always be archived. Should not be sent when performing an update
+        testVersion:
+          type: string
+          nullable: true
+          description: Tests submitted from the mobile app won't have this attribute. Tests updated/created by VTM will do.
+          enum:
+            - current
+            - archived
+        reasonForCreation:
+          type: string
+          nullable: true
+          maxLength: 500
+          description: 'Applicable only when updating/creating a test from VTM'
+        createdAt:
+          type: string
+          format: date-time
+          description: 'Not sent from FE, calculated in the BE.'
+        createdByName:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
+        createdById:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          description: 'Not sent from FE, calculated in the BE.'
+        lastUpdatedByName:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
+        lastUpdatedById:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
+        shouldEmailCertificate:
+          type: string
+          description: 'Not sent from FE, calculated in BE. Applicable only when updating a test from VTM. Used to determine if a certificate should be emailed or not after an update.'
+        testStationName:
+          type: string
+          maxLength: 999
+        testStationPNumber:
+          type: string
+          maxLength: 20
+        testStationType:
+          type: string
+          enum:
+            - atf
+            - gvts
+            - hq
+        testerName:
+          type: string
+          maxLength: 60
+        testerStaffId:
+          type: string
+          maxLength: 36
+        testResultId:
+          type: string
+          maxLength: 36
+        testerEmailAddress:
+          type: string
+          maxLength: 60
+        testStartTimestamp:
+          type: string
+          format: date-time
+        testEndTimestamp:
+          type: string
+          format: date-time
+        testStatus:
+          type: string
+          enum:
+            - submitted
+            - cancelled
+        reasonForCancellation:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: >-
+            Required for Cancelled tests. Nullable only for Submitted and
+            Abandoned tests.
+        vehicleClass:
+          type: object
+          nullable: true
+          properties:
+            code:
+              type: string
+              nullable: true
+              enum:
+                - '2'
+                - 'n'
+                - 's'
+                - '1'
+                - 't'
+                - 'l'
+                - '3'
+                - 'v'
+                - '4'
+                - '7'
+                - '5'
+                - 'p'
+                - 'u'
+            description:
+              type: string
+              nullable: true
+              enum:
+                - 'motorbikes over 200cc or with a sidecar'
+                - 'not applicable'
+                - 'small psv (ie: less than or equal to 22 seats)'
+                - 'motorbikes up to 200cc'
+                - 'trailer'
+                - 'large psv(ie: greater than 23 seats)'
+                - '3 wheelers'
+                - 'heavy goods vehicle'
+                - 'MOT class 4'
+                - 'MOT class 7'
+                - 'MOT class 5'
+                - 'PSV of unknown or unspecified size'
+                - 'Not Known'
+          description: Mandatory only for motorcycles. 2 = MotorBikes over 200cc or with a sidecar, N = Not Applicable, S =
+            Small PSV i.e less than or equal to 22 seats, 1 = Motorbikes upto
+            200cc, T = Trailer, L = LARGE PSV (ie. greater than 23 seats), 3 =
+            3 wheelers, V = Heavy Goods Vehicle
+        vehicleSubclass:
+          type: array
+          items:
+            type: string
+          nullable: true
+          description: Used for car and lgv.
+        vehicleType:
+          type: string
+          enum:
+            - psv
+            - hgv
+            - trl
+            - car
+            - lgv
+            - motorcycle
+        numberOfSeats:
+          type: number
+          description: mandatory for PSV only, not applicable for HGV and TRL
+        vehicleConfiguration:
+          type: string
+          enum:
+            - rigid
+            - articulated
+            - centre axle drawbar
+            - semi-car transporter
+            - semi-trailer
+            - low loader
+            - other
+            - drawbar
+            - four-in-line
+            - dolly
+            - full drawbar
+        odometerReading:
+          type: number
+          nullable: true
+          description: Nullable only for Cancelled tests & not applicable to TRL
+        odometerReadingUnits:
+          type: string
+          enum:
+            - kilometres
+            - miles
+          nullable: true
+          description: Nullable only for Cancelled tests & not applicable to TRL
+        preparerId:
+          type: string
+        preparerName:
+          type: string
+          nullable: true
+        numberOfWheelsDriven:
+          type: number
+          maximum: 9999
+          nullable: true
+        euVehicleCategory:
+          type: string
+          enum:
+            - m1
+            - m2
+            - m3
+            - n1
+            - n2
+            - n3
+            - o1
+            - o2
+            - o3
+            - o4
+            - l1e-a
+            - l1e
+            - l2e
+            - l3e
+            - l4e
+            - l5e
+            - l6e
+            - l7e
+          nullable: true
+          description: Nullable only for Cancelled tests.
+        countryOfRegistration:
+          type: string
+          nullable: true
+          description: Nullable only for Cancelled tests.
+        vehicleSize:
+          type: string
+          enum:
+            - large
+            - small
+          description: Mandatory for PSV only & not applicable to HGV and TRL
+        noOfAxles:
+          type: number
+          maximum: 99
+        regnDate:
+          type: string
+          format: date
+          description: Used only for PSV and HGV
+          nullable: true
+        firstUseDate:
+          type: string
+          format: date
+          description: Used only for TRL
+          nullable: true
+        testTypes:
+          $ref: '#/components/schemas/testTypes'
+    testTypes:
+      type: array
+      nullable: true
+      description: Nullable only for Cancelled tests.
+      items:
+        $ref: '#/components/schemas/testTypeRecords'
+    testTypeRecords:
+      $ref: '#/components/schemas/testTypeResults'
+    testTypeResults:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        lastUpdatedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        deletionFlag:
+          type: boolean
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        testCode:
+          type: string
+          maxLength: 4
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        testTypeName:
+          type: string
+        name:
+          type: string
+        testTypeId:
+          type: string
+        testNumber:
+          type: string
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        certificateNumber:
+          type: string
+          nullable: true
+        secondaryCertificateNumber:
+          type: string
+          nullable: true
+        certificateLink:
+          type: string
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        testExpiryDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.'
+        testAnniversaryDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: 'Not sent from FE, calculated in the BE.'
+        testTypeStartTimestamp:
+          type: string
+          format: date-time
+        testTypeEndTimestamp:
+          type: string
+          format: date-time
+          nullable: true
+          description: Nullable only for Cancelled tests.
+        statusUpdatedFlag:
+          type: boolean
+          nullable: true
+          description: 'Sent from FE. Used to determine which test-type was updated/archived'
+        numberOfSeatbeltsFitted:
+          type: number
+          nullable: true
+          description: mandatory for PSV only, not applicable for HGV and TRL
+        lastSeatbeltInstallationCheckDate:
+          type: string
+          format: date
+          nullable: true
+          description: mandatory for PSV only, not applicable for HGV and TRL
+        seatbeltInstallationCheckDate:
+          type: boolean
+          nullable: true
+          description: mandatory for PSV only, not applicable for HGV and TRL
+        testResult:
+          type: string
+          enum:
+            - fail
+            - pass
+            - prs
+            - abandoned
+          nullable: true
+          description: Nullable only for Cancelled tests.
+        prohibitionIssued:
+          type: boolean
+          nullable: true
+        reasonForAbandoning:
+          type: string
+          nullable: true
+          description: Required for Abandoned tests.
+        additionalNotesRecorded:
+          type: string
+          maxLength: 500
+          nullable: true
+        additionalCommentsForAbandon:
+          type: string
+          maxLength: 500
+          nullable: true
+        modType:
+          type: object
+          properties:
+            code:
+              type: string
+              enum:
+                - p
+                - m
+                - g
+            description:
+              type: string
+              enum:
+                - particulate trap
+                - modification or change of engine
+                - gas engine
+          description: Used only for LEC tests. p = particulate trap, m = modification or change of engine, g = gas engine.
+          nullable: true
+        emissionStandard:
+          type: string
+          enum:
+            - 0.10 g/kWh Euro 3 PM
+            - 0.03 g/kWh Euro IV PM
+            - Euro 3
+            - Euro 4
+            - Euro 6
+            - Euro VI
+            - Full Electric
+          description: Used only for LEC tests.
+          nullable: true
+
+        fuelType:
+          type: string
+          enum:
+            - diesel
+            - gas-cng
+            - gas-lng
+            - gas-lpg
+            - fuel cell
+            - petrol
+            - full electric
+          description: Used only for LEC tests.
+          nullable: true
+
+        particulateTrapFitted:
+          type: string
+          maxLength: 100
+          description: Used only for LEC tests.
+          nullable: true
+
+        particulateTrapSerialNumber:
+          type: string
+          maxLength: 100
+          description: Used only for LEC tests.
+          nullable: true
+
+        modificationTypeUsed:
+          type: string
+          maxLength: 100
+          description: Used only for LEC tests.
+          nullable: true
+
+        smokeTestKLimitApplied:
+          type: string
+          maxLength: 100
+          description: Used only for LEC tests.
+          nullable: true
+
+        defects:
+          $ref: '#/components/schemas/defects'
+        customDefects:
+          $ref: '#/components/schemas/customDefects'
+    defects:
+      type: array
+      nullable: true
+      items:
+        $ref: '#/components/schemas/defect'
+    defect:
+      type: object
+      properties:
+        imNumber:
+          type: number
+        imDescription:
+          type: string
+        additionalInformation:
+          type: object
+          nullable: true
+          properties:
+            location:
+              type: object
+              nullable: true
+              properties:
+                vertical:
+                  type: string
+                  nullable: true
+                  enum:
+                    - upper
+                    - lower
+                horizontal:
+                  type: string
+                  nullable: true
+                  enum:
+                    - inner
+                    - outer
+                lateral:
+                  type: string
+                  nullable: true
+                  enum:
+                    - nearside
+                    - centre
+                    - offside
+                longitudinal:
+                  type: string
+                  nullable: true
+                  enum:
+                    - front
+                    - rear
+                rowNumber:
+                  type: number
+                  nullable: true
+                  maximum: 20
+                seatNumber:
+                  type: number
+                  nullable: true
+                  maximum: 6
+                axleNumber:
+                  type: number
+                  nullable: true
+                  maximum: 10
+            notes:
+              type: string
+              maxLength: 500
+              nullable: true
+        itemNumber:
+          type: number
+        itemDescription:
+          type: string
+        deficiencyRef:
+          type: string
+        deficiencyId:
+          type: string
+          nullable: true
+          pattern: '[a-z]'
+          maxLength: 1
+        deficiencySubId:
+          type: string
+          nullable: true
+          pattern: '^[mdclxvi]+$'
+        deficiencyCategory:
+          type: string
+          enum:
+            - advisory
+            - dangerous
+            - major
+            - minor
+          nullable: true
+          description: >-
+            It is mandatory for both Submitted or Cancelled tests. It is only
+            nullable in the DB for the migration purposes.
+        deficiencyText:
+          type: string
+          nullable: true
+        stdForProhibition:
+          type: boolean
+          nullable: true
+        prs:
+          type: boolean
+          nullable: true
+        prohibitionIssued:
+          type: boolean
+          nullable: true
+    customDefects:
+      type: array
+      nullable: true
+      items:
+        $ref: '#/components/schemas/customDefect'
+    customDefect:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          maxLength: 10
+        defectName:
+          type: string
+          maxLength: 200
+        defectNotes:
+          type: string
+          maxLength: 200
+          nullable: true
+security:
+  - OAuth2:
+      - read
+      - write
+servers:
+  - url: 'https://url/api/v1'

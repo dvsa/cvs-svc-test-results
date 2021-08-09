@@ -23,6 +23,8 @@ These will be run as part of your projects hooks so you don't accidentally intro
 
 ## Architecture
 
+Please refer to the the [docs](./docs/README.md) for the API specification and samples of postman requests.
+
 ### End to end design
 
 [All in one view](https://wiki.dvsacloud.uk/pages/viewpage.action?pageId=79254695)
