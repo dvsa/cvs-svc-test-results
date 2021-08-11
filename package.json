@@ -104,7 +104,7 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "npm run security-checks && npm run audit && npm run lint",
-      "pre-prush": "npm run prepush"
+      "pre-push": "npm run prepush"
     }
   }
 }
