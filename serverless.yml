@@ -2,19 +2,21 @@ service: cvs-svc-test-results
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
   tracing:
     apiGateway: true
-  iamRoleStatements:
-    - Effect: "Allow"
-      Action:
-        - "xray:PutTraceSegments"
-        - "xray:PutTelemetryRecords"
-      Resource:
-        - "*"
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "xray:PutTraceSegments"
+            - "xray:PutTelemetryRecords"
+          Resource:
+            - "*"
 
 plugins:
   - serverless-dynamodb-local
@@ -29,9 +31,9 @@ custom:
     start:
       port: 8004
       inMemory: true
-      migrate: false
-      seed: false
-      noStart: true
+      migrate: true
+      seed: true
+      noStart: false
     seed:
       test-results:
         sources:

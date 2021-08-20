@@ -1,0 +1,85 @@
+{
+	"info": {
+		"_postman_id": "15b39214-5abf-4cda-98ef-c5f682928245",
+		"name": "test-results",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "submit test results",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"testResultId\": \"sdff34eadrt2-q3q29-4294-acde-89cc3fa29545\",\n    \"testStationName\": \"Abshire-Kub\",\n    \"testStationPNumber\": \"09-4129632\",\n    \"testStationType\": \"gvts\",\n    \"testerName\": \"Deepika Singh\",\n    \"testerStaffId\": \"d0b09235-7234-4bed-b628-e4c2a1fcb414\",\n    \"testerEmailAddress\": \"deepikasingh@dvsagov.onmicrosoft.com\",\n    \"testStartTimestamp\": \"2019-12-12T14:14:26.088Z\",\n    \"testEndTimestamp\": \"2019-12-12T14:15:36.920Z\",\n    \"testStatus\": \"submitted\",\n    \"reasonForCancellation\": null,\n    \"vrm\": \"CT70VRL\",\n    \"odometerReading\": 1234,\n    \"odometerReadingUnits\": \"kilometres\",\n    \"vin\": \"P01234567890\",\n    \"vehicleClass\": {\n        \"description\": \"heavy goods vehicle\",\n        \"code\": \"v\"\n    },\n    \"vehicleType\": \"hgv\",\n    \"vehicleConfiguration\": \"semi-car transporter\",\n    \"preparerId\": \"No preparer ID given\",\n    \"preparerName\": \"name\",\n    \"euVehicleCategory\": \"n2\",\n    \"countryOfRegistration\": \"gb\",\n    \"noOfAxles\": 2,\n    \"numberOfWheelsDriven\": 4,\n    \"testTypes\": [\n        {\n            \"name\": \"Voluntary test\",\n            \"testTypeName\": \"Voluntary roadworthiness test\",\n            \"testTypeId\": \"122\",\n            \"certificateNumber\": null,\n            \"testTypeStartTimestamp\": \"2019-12-12T14:15:06.792Z\",\n            \"testTypeEndTimestamp\": \"2019-12-12T14:15:36.921Z\",\n            \"modType\": null,\n            \"emissionStandard\": null,\n            \"fuelType\": null,\n            \"smokeTestKLimitApplied\": null,\n            \"particulateTrapFitted\": null,\n            \"particulateTrapSerialNumber\": null,\n            \"modificationTypeUsed\": null,\n            \"testExpiryDate\": null,\n            \"testResult\": \"fail\",\n            \"prohibitionIssued\": false,\n            \"reasonForAbandoning\": null,\n            \"additionalCommentsForAbandon\": null,\n            \"additionalNotesRecorded\": null,\n            \"defects\": [\n                {\n                    \"deficiencyRef\": \"1.1.a\",\n                    \"deficiencyCategory\": \"major\",\n                    \"deficiencyId\": \"a\",\n                    \"deficiencySubId\": null,\n                    \"deficiencyText\": \"missing.\",\n                    \"imNumber\": 1,\n                    \"imDescription\": \"Registration Plate\",\n                    \"itemNumber\": 1,\n                    \"itemDescription\": \"A registration plate:\",\n                    \"additionalInformation\": {\n                        \"notes\": null,\n                        \"location\": {\n                            \"vertical\": null,\n                            \"horizontal\": null,\n                            \"lateral\": null,\n                            \"longitudinal\": \"rear\",\n                            \"rowNumber\": null,\n                            \"seatNumber\": null,\n                            \"axleNumber\": null\n                        }\n                    },\n                    \"stdForProhibition\": false,\n                    \"prs\": false,\n                    \"prohibitionIssued\": false\n                }\n            ],\n            \"customDefects\": [\n               \n            ],\n            \"secondaryCertificateNumber\": \"1234567890\"\n        }\n    ],\n    \"systemNumber\": \"01234567890\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/test-results",
+					"protocol": "https",
+					"host": [
+						"api",
+						"{{api}}",
+						"cvs",
+						"dvsacloud",
+						"uk"
+					],
+					"path": [
+						"{{branch}}",
+						"test-results"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get test results",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{bearer_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.{{api}}.cvs.dvsacloud.uk/{{branch}}/test-results/01234567890",
+					"protocol": "https",
+					"host": [
+						"api",
+						"{{api}}",
+						"cvs",
+						"dvsacloud",
+						"uk"
+					],
+					"path": [
+						"{{branch}}",
+						"test-results",
+						"01234567890"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
