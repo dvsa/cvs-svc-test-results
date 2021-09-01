@@ -10,3 +10,4 @@ export { Injector } from "../models/injector/Injector";
 export { HTTPError } from "../models/HTTPError";
 export { TestResultsDAO } from "../models/TestResultsDAO";
 export {TestTypeParams} from "./TestTypeParams";
+export {ActivityParams} from "./ActivityParams";

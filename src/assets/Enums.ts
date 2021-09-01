@@ -303,3 +303,19 @@ export const SPECIALIST_TEST_TYPE_IDS: string[] = [
   "142", "146", "175", "177", "143", "144", "148", "176", "178", "179", "147", "153", "190", "191", "154", "184", "196", "197", "185"
 ];
 
+export const TEST_TYPES = {
+  testTypesGroup1: TEST_TYPES_GROUP1,
+  testTypesGroup2: TEST_TYPES_GROUP2,
+  testTypesGroup3And4And8: TEST_TYPES_GROUP3_4_8,
+  testTypesGroup7: TEST_TYPES_GROUP7,
+  testTypesGroup9And10: TEST_TYPES_GROUP9_10,
+  testTypesGroup6And11: TEST_TYPES_GROUP6_11,
+  testTypesGroup12And14: TEST_TYPES_GROUP12_14,
+  testTypesGroup5And13: TEST_TYPES_GROUP5_13,
+  testTypesGroup15And16: TEST_TYPES_GROUP15_16,
+  testTypesSpecialistGroup1: TEST_TYPES_GROUP1_SPEC_TEST,
+  testTypesSpecialistGroup2: TEST_TYPES_GROUP2_SPEC_TEST,
+  testTypesSpecialistGroup3: TEST_TYPES_GROUP3_SPEC_TEST,
+  testTypesSpecialistGroup4: TEST_TYPES_GROUP4_SPEC_TEST,
+  testTypesSpecialistGroup5: TEST_TYPES_GROUP5_SPEC_TEST,
+};

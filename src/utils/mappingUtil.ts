@@ -205,13 +205,4 @@ export class MappingUtil {
     };
   };
 
-  public static addTestNumberToTestTypes = (
-    service: models.TestResultsDAO
-  ) => async (testType: models.TestType) => {
-    const { testNumber } = await service.createTestNumber();
-    return {
-      ...testType,
-      testNumber,
-    };
-  };
 }
