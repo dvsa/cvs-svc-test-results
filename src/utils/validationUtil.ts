@@ -303,7 +303,7 @@ private static validateDates(
     return null;
   }
 
-  private static validateTestTypes(testResult: models.ITestResult) {
+  public static validateTestTypes(testResult: models.ITestResult) {
     const validationErrors: string[] = [];
     let validation: ValidationResult<any> | any;
     const invalidTestType = {

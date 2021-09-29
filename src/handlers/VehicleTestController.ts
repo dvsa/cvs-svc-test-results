@@ -263,7 +263,7 @@ export class VehicleTestController implements IVehicleTestController {
       : payload.regnDate;
   }
   //#endregion
-  private async mapOldTestResultToNew(
+  public async mapOldTestResultToNew(
     systemNumber: string,
     payload: models.ITestResult,
     msUserDetails: models.IMsUserDetails

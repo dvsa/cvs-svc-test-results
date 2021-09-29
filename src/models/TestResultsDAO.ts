@@ -21,14 +21,16 @@ export class TestResultsDAO {
   private static lambdaInvokeEndpoints: any;
 
   constructor() {
-    const config: models.IDBConfig = Configuration.getInstance().getDynamoDBConfig();
+    const config: models.IDBConfig =
+      Configuration.getInstance().getDynamoDBConfig();
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
       TestResultsDAO.docClient = new AWS.DynamoDB.DocumentClient(config.params);
     }
     if (!TestResultsDAO.lambdaInvokeEndpoints) {
-      TestResultsDAO.lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints();
+      TestResultsDAO.lambdaInvokeEndpoints =
+        Configuration.getInstance().getEndpoints();
     }
   }
 
@@ -36,19 +38,24 @@ export class TestResultsDAO {
     const { systemNumber, fromDateTime, toDateTime } = filters;
     const keyCondition = "systemNumber = :systemNumber";
     let filterExpression = "";
-    if(fromDateTime && toDateTime){
-    filterExpression = "testStartTimestamp > :testStartTimestamp AND  testEndTimestamp < :testEndTimestamp";
-    filterExpression = this.getOptionalFilters(filterExpression, filters);
+    if (fromDateTime && toDateTime) {
+      filterExpression =
+        "testStartTimestamp > :testStartTimestamp AND  testEndTimestamp < :testEndTimestamp";
+      filterExpression = this.getOptionalFilters(filterExpression, filters);
     }
-    const keyExpressionAttribute = {":systemNumber" : systemNumber};
-    const expressionAttributeValues = Object.assign({}, keyExpressionAttribute, ...this.mapFilterValues(filters))
+    const keyExpressionAttribute = { ":systemNumber": systemNumber };
+    const expressionAttributeValues = Object.assign(
+      {},
+      keyExpressionAttribute,
+      ...this.mapFilterValues(filters)
+    );
     const params = {
       TableName: this.tableName,
       IndexName: "SysNumIndex",
       KeyConditionExpression: keyCondition,
       FilterExpression: filterExpression ? filterExpression : undefined,
       ExpressionAttributeValues: {
-        ...expressionAttributeValues
+        ...expressionAttributeValues,
       },
     };
     console.log("getBySystemNumber: PARAMS ->", params);
@@ -59,18 +66,23 @@ export class TestResultsDAO {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     const { testerStaffId } = filters;
-    const keyCondition = "testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp";
+    const keyCondition =
+      "testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp";
     let filterExpression = "testEndTimestamp < :testEndTimestamp";
     filterExpression = this.getOptionalFilters(filterExpression, filters);
-    const keyExpressionAttribute = {[":testerStaffId"] : testerStaffId};
-    const expressionAttributeValues = Object.assign({}, keyExpressionAttribute, ...this.mapFilterValues(filters))
+    const keyExpressionAttribute = { [":testerStaffId"]: testerStaffId };
+    const expressionAttributeValues = Object.assign(
+      {},
+      keyExpressionAttribute,
+      ...this.mapFilterValues(filters)
+    );
     const params = {
       TableName: this.tableName,
       IndexName: "TesterStaffIdIndex",
       KeyConditionExpression: keyCondition,
       FilterExpression: filterExpression,
       ExpressionAttributeValues: {
-       ...expressionAttributeValues
+        ...expressionAttributeValues,
       },
     };
     console.log("getByTesterStaffId: PARAMS ->", params);
@@ -297,10 +309,8 @@ export class TestResultsDAO {
     params: any,
     allData: models.ITestResult[] = []
   ): Promise<models.ITestResult[]> {
-    const data: PromiseResult<
-      DocumentClient.QueryOutput,
-      AWSError
-    > = await TestResultsDAO.docClient.query(params).promise();
+    const data: PromiseResult<DocumentClient.QueryOutput, AWSError> =
+      await TestResultsDAO.docClient.query(params).promise();
 
     if (data.Items && data.Items.length > 0) {
       allData = [...allData, ...(data.Items as models.ITestResult[])];
@@ -314,20 +324,25 @@ export class TestResultsDAO {
     }
   }
 
-  private getOptionalFilters(filterExpress: string, filters: models.ITestResultFilters): string {
-    const {testStationPNumber} = filters;
-    filterExpress = testStationPNumber ? filterExpress.concat(" AND testStationPNumber= :testStationPNumber") : filterExpress;
+  private getOptionalFilters(
+    filterExpress: string,
+    filters: models.ITestResultFilters
+  ): string {
+    const { testStationPNumber } = filters;
+    filterExpress = testStationPNumber
+      ? filterExpress.concat(" AND testStationPNumber= :testStationPNumber")
+      : filterExpress;
     return filterExpress;
   }
 
   private mapFilterValues(filters: models.ITestResultFilters) {
     const filterValues: models.FilterValue[] = [];
-    const {fromDateTime, toDateTime, testStationPNumber} = filters;
-    filterValues.push({[":testStartTimestamp"] : fromDateTime.toISOString()});
-    filterValues.push({[":testEndTimestamp"] : toDateTime.toISOString()});
+    const { fromDateTime, toDateTime, testStationPNumber } = filters;
+    filterValues.push({ [":testStartTimestamp"]: fromDateTime.toISOString() });
+    filterValues.push({ [":testEndTimestamp"]: toDateTime.toISOString() });
 
     if (testStationPNumber) {
-      filterValues.push({[":testStationPNumber"] : testStationPNumber});
+      filterValues.push({ [":testStationPNumber"]: testStationPNumber });
     }
     return filterValues;
   }
