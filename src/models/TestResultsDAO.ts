@@ -337,10 +337,14 @@ export class TestResultsDAO {
 
   private mapFilterValues(filters: models.ITestResultFilters) {
     const filterValues: models.FilterValue[] = [];
-    const { fromDateTime, toDateTime, testStationPNumber } = filters;
-    filterValues.push({ [":testStartTimestamp"]: fromDateTime.toISOString() });
-    filterValues.push({ [":testEndTimestamp"]: toDateTime.toISOString() });
+    const {fromDateTime, toDateTime, testStationPNumber} = filters;
 
+    if (fromDateTime) {
+      filterValues.push({[":testStartTimestamp"]: fromDateTime.toISOString()});
+    }
+    if (toDateTime) {
+      filterValues.push({[":testEndTimestamp"]: toDateTime.toISOString()});
+    }
     if (testStationPNumber) {
       filterValues.push({ [":testStationPNumber"]: testStationPNumber });
     }
