@@ -31,38 +31,45 @@ export class MappingUtil {
     let testStatus = enums.TEST_STATUS.SUBMITTED;
     let testVersion = enums.TEST_VERSION.CURRENT;
     let resultId;
-    if (event.queryStringParameters) {
-      const {
+    if (!event.queryStringParameters) {
+      return {
+        systemNumber: event.pathParameters.systemNumber,
+        testStatus,
+        toDateTime: toDate,
+        fromDateTime: fromDate,
+        testVersion,
+      } as models.ITestResultFilters;
+    }
+    const {
         toDateTime,
         fromDateTime,
         status,
         testResultId,
         version,
+        testStationPNumber
       } = event.queryStringParameters;
-      if (toDateTime === "" || fromDateTime === "") {
+    if (toDateTime === "" || fromDateTime === "") {
         const errorDate = toDateTime === "" ? "toDate" : "fromDate";
         if (subSegment) {
           subSegment.addError(`Bad Request - ${errorDate} empty`);
         }
-        console.log(
+        console.error(
           `Bad Request in getTestResultsBySystemNumber - ${errorDate} empty`
         );
         throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
       }
-      toDate = toDateTime ? new Date(toDateTime) : DateProvider.getEndOfDay();
-      fromDate = fromDateTime
-        ? new Date(fromDateTime)
-        : DateProvider.getTwoYearsFromDate(toDateTime);
-      if (status) {
+    toDate = toDateTime ? new Date(toDateTime) : toDate;
+    fromDate = fromDateTime ? new Date(fromDateTime) :  DateProvider.getTwoYearsFromDate(toDate);
+    if (status) {
         testStatus = status;
       }
-      if (testResultId) {
+    if (testResultId) {
         resultId = testResultId;
       }
-      if (version) {
+    if (version) {
         testVersion = version;
       }
-    }
+
     const filters: models.ITestResultFilters = {
       systemNumber: event.pathParameters.systemNumber,
       testStatus,
@@ -70,6 +77,7 @@ export class MappingUtil {
       fromDateTime: fromDate,
       testResultId: resultId,
       testVersion,
+      testStationPNumber
     };
     return filters;
   }

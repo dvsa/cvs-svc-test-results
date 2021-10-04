@@ -18,16 +18,11 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      const result = await this.testResultsDAO?.getBySystemNumber(
-        filters.systemNumber
-      );
-      const response: models.ITestResultData = {
-        Count: result?.Count,
-        Items: result?.Items,
-      };
-      const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
-        response
-      );
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const testResults = await this.testResultsDAO.getBySystemNumber(filters);
+      if (!testResults.length) {
+        throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
+      }
       return TestDataProvider.applyTestResultsFilters(testResults, filters);
     } catch (error) {
       console.error(
@@ -42,13 +37,15 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters
   ): Promise<models.ITestResult[]> {
     try {
-      const result = await this.testResultsDAO?.getByTesterStaffId(
-        filters.testerStaffId
-      );
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const result = await this.testResultsDAO.getByTesterStaffId(filters);
       if (result && !result.length) {
         return result;
       }
-      return TestDataProvider.applyTestResultsFilters(result as models.ITestResult[], filters);
+      return TestDataProvider.applyTestResultsFilters(
+        result as models.ITestResult[],
+        filters
+      );
     } catch (error) {
       console.error(
         "TestDataProvider.getTestResultBySystemNumber: error-> ",
@@ -65,36 +62,20 @@ export class TestDataProvider implements ITestDataProvider {
     const toDateTime = new Date();
     let result: models.ITestResult[] = [];
     try {
-      const data = await this.testResultsDAO?.getBySystemNumber(systemNumber);
-      console.log(`getTestHistory: Data Count -> ${data?.Count}`);
-      if (!data?.Count) {
+      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
+      const filters: models.ITestResultFilters = {
+        systemNumber,
+        fromDateTime,
+        toDateTime,
+      };
+      result = await this.testResultsDAO.getBySystemNumber(filters);
+      console.log(`getTestHistory: Data Count -> ${result.length}`);
+      if (!result.length) {
         return result;
       }
-      result = data.Items as models.ITestResult[];
-      return result
-        .filter((test) => test.testStatus === enums.TEST_STATUS.SUBMITTED)
-        .filter(
-          (testResult: {
-            testStartTimestamp: string | number | Date;
-            testEndTimestamp: string | number | Date;
-          }) => {
-            const { testStartTimestamp, testEndTimestamp } = testResult;
-            if (
-              !DateProvider.isValidDate(testStartTimestamp) ||
-              !DateProvider.isValidDate(testEndTimestamp)
-            ) {
-              console.warn(
-                `getTestHistory: Invalid timestamp -> systemNumber: ${systemNumber}  testStartTimestamp: ${testStartTimestamp} testEndTimestamp: ${testEndTimestamp}`
-              );
-            }
-            return DateProvider.isBetweenDates(
-              testStartTimestamp,
-              testEndTimestamp,
-              fromDateTime,
-              toDateTime
-            );
-          }
-        );
+      return result.filter(
+        (test) => test.testStatus === enums.TEST_STATUS.SUBMITTED
+      );
     } catch (error) {
       console.log("TestDataProvider.getTestHistory: error -> ", error);
       throw error;
@@ -102,13 +83,12 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async getBySystemNumber(systemNumber: string) {
+    const filters: models.ITestResultFilters = { systemNumber };
     const data = (await this.testResultsDAO?.getBySystemNumber(
-      systemNumber
-    )) as models.ITestResultData;
-    const testResults: models.ITestResult[] = utils.ValidationUtil.getTestResultItems(
-      data
-    );
-    return testResults;
+      filters
+    )) as models.ITestResult[];
+    console.log(data);
+    return data;
   }
 
   public async getMostRecentExpiryDate(systemNumber: string): Promise<Date> {
@@ -158,31 +138,13 @@ export class TestDataProvider implements ITestDataProvider {
     testResults: models.ITestResult[],
     filters: models.ITestResultFilters
   ): models.ITestResult[] {
-    const {
-      fromDateTime,
-      toDateTime,
-      testStatus,
-      testStationPNumber,
-      testResultId,
-      testVersion,
-    } = filters;
+    const { testStatus, testResultId, testVersion } = filters;
     testResults = this.filterTestResultsByDeletionFlag(testResults);
     testResults = this.filterTestTypesByDeletionFlag(testResults);
-    testResults = TestDataProvider.filterTestResultByDate(
-      testResults,
-      fromDateTime,
-      toDateTime
-    );
     testResults = this.filterTestResultsByParam(
       testResults,
       "testStatus",
       testStatus
-    );
-
-    testResults = this.filterTestResultsByParam(
-      testResults,
-      "testStationPNumber",
-      testStationPNumber
     );
 
     if (!testResultId) {
@@ -235,16 +197,17 @@ export class TestDataProvider implements ITestDataProvider {
     return await this.createNewTestNumber(testTypes);
   }
 
-  private async createNewTestNumber(list: models.TestType[]): Promise<models.TestType[]> {
+  private async createNewTestNumber(
+    list: models.TestType[]
+  ): Promise<models.TestType[]> {
     return await Promise.all(
       list.map(async (testType) => {
-       const {testNumber} = await this.testResultsDAO?.createTestNumber();
-       return {
-         ...testType,
-         testNumber
-       } as models.TestType;
-      }
-      )
+        const { testNumber } = await this.testResultsDAO?.createTestNumber();
+        return {
+          ...testType,
+          testNumber,
+        } as models.TestType;
+      })
     );
   }
 

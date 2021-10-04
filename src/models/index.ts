@@ -11,3 +11,4 @@ export { HTTPError } from "../models/HTTPError";
 export { TestResultsDAO } from "../models/TestResultsDAO";
 export {TestTypeParams} from "./TestTypeParams";
 export {ActivityParams} from "./ActivityParams";
+export { FilterValue } from "./FilterValue";

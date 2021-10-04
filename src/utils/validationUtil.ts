@@ -20,7 +20,7 @@ export class ValidationUtil {
   ) {
     const result =
       filters &&
-      ValidationUtil.validateDates(filters.fromDateTime, filters.toDateTime);
+      ValidationUtil.validateDates(filters.fromDateTime as Date, filters.toDateTime as Date);
     if (!result) {
       console.log(
         "ValidationUtil.validateGetTestResultFilters: Invalid Filter -> ",
@@ -303,7 +303,7 @@ private static validateDates(
     return null;
   }
 
-  private static validateTestTypes(testResult: models.ITestResult) {
+  public static validateTestTypes(testResult: models.ITestResult) {
     const validationErrors: string[] = [];
     let validation: ValidationResult<any> | any;
     const invalidTestType = {

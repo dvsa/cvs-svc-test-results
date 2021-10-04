@@ -1,14 +1,13 @@
 import {TestResultsService} from "../../src/services/TestResultsService";
-import fs from "fs";
-import path from "path";
 import { HTTPError } from "../../src/models/HTTPError";
+import testResults from "../resources/test-results.json";
 
 describe("getTestResults", () => {
   let testResultsService: TestResultsService | any;
   let MockTestResultsDAO: jest.Mock;
   let testResultsMockDB: any;
   beforeEach(() => {
-    testResultsMockDB = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../resources/test-results.json"), "utf8"));
+    testResultsMockDB = testResults;
     MockTestResultsDAO = jest.fn().mockImplementation(() => {
       return {};
     });
@@ -25,12 +24,7 @@ describe("getTestResults", () => {
     it("should return a populated response and status code 200", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getBySystemNumber: () => {
-            return Promise.resolve({
-              Items: Array.of(testResultsMockDB[8]),
-              Count: 1
-            });
-          }
+          getBySystemNumber: () => Array.of(testResultsMockDB[8])
         };
       });
 
@@ -50,12 +44,7 @@ describe("getTestResults", () => {
     it("should not return that test type", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getBySystemNumber: () => {
-            return Promise.resolve({
-              Items: Array.of(testResultsMockDB[9]),
-              Count: 1
-            });
-          }
+          getBySystemNumber: () => Array.of(testResultsMockDB[9])
         };
       });
 
@@ -72,12 +61,7 @@ describe("getTestResults", () => {
     it("should return a 404 error", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getBySystemNumber: () => {
-            return Promise.resolve({
-              Items: Array.of(testResultsMockDB[7]),
-              Count: 1
-            });
-          }
+          getBySystemNumber: () => Array.of(testResultsMockDB[7])
         };
       });
 
@@ -97,12 +81,7 @@ describe("getTestResults", () => {
     it("should return a populated response", () => {
       MockTestResultsDAO = jest.fn().mockImplementation(() => {
         return {
-          getBySystemNumber: () => {
-            return Promise.resolve({
-              Items: Array.of(testResultsMockDB[10]),
-              Count: 1
-            });
-          }
+          getBySystemNumber: () => Array.of(testResultsMockDB[10])
         };
       });
 

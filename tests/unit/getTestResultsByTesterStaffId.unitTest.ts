@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import { MESSAGES } from "../../src/assets/Enums";
 import {cloneDeep} from "lodash";
-import {ITestResult} from "../../src/models/ITestResult";
+import * as models from "../../src/models";
 
 describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
   let testResultsService: TestResultsService | any;
@@ -99,7 +99,15 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
 
   context("when using testStatus filter)", () => {
     it("should only return submitted tests, not cancelled", () => {
-      const filteredTestResults = cloneDeep(testResultsMockDB).filter((test: ITestResult) => test.testerStaffId === "15");
+      const filters: models.ITestResultFilters = {
+        testerStaffId: "15",
+        testStationPNumber: "84-926821",
+        fromDateTime: "2015-02-22",
+        toDateTime: "2020-02-22",
+        testStatus: "submitted"
+      };
+      const filteredTestResults = cloneDeep(testResultsMockDB).filter((test: models.ITestResult) =>
+      test.testerStaffId === "15" && test.testStationPNumber === filters.testStationPNumber && test.testStartTimestamp > filters.fromDateTime && test.testEndTimestamp < filters.toDateTime);
       MockTestResultsDAO = jest.fn().mockImplementation((testerStaffId) => {
         return {
           getByTesterStaffId: () => {
@@ -111,14 +119,8 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       expect.assertions(4);
-      return testResultsService.getTestResultsByTesterStaffId({
-        testerStaffId: "15",
-        testStationPNumber: "84-926821",
-        fromDateTime: "2015-02-22",
-        toDateTime: "2020-02-22",
-        testStatus: "submitted"
-      })
-        .then((returnedRecords: ITestResult[]) => {
+      return testResultsService.getTestResultsByTesterStaffId(filters)
+        .then((returnedRecords: models.ITestResult[]) => {
           expect(returnedRecords).not.toEqual(undefined);
           expect(returnedRecords).not.toEqual({});
           expect(returnedRecords[0]).toEqual(expectedResult);

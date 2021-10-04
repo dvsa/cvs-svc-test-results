@@ -1,6 +1,7 @@
 import { TestTypeParams } from "../../src/models";
 import { TestResultsDAO } from "../../src/models/TestResultsDAO";
 import { LambdaService } from "../../src/services/LambdaService";
+import { ITestResultFilters } from "../../src/models/ITestResultFilter";
 jest.mock("../../src/services/LambdaService");
 
 describe("Test Results DAO", () => {
@@ -20,12 +21,21 @@ describe("Test Results DAO", () => {
         };
       });
       (TestResultsDAO as any).docClient.query = daoStub;
-
-      dao.getBySystemNumber("abc123");
+      const filter: ITestResultFilters = { systemNumber: "abc123", fromDateTime: new Date("2021-02-01"), toDateTime: new Date("2021-09-01"), testStationPNumber: "123QWE" }
+      dao.getBySystemNumber(filter);
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[":systemNumber"]
       ).toEqual("abc123");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testStartTimestamp"]
+      ).toEqual("2021-02-01T00:00:00.000Z");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testEndTimestamp"]
+      ).toEqual("2021-09-01T00:00:00.000Z");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testStationPNumber"]
+      ).toEqual("123QWE");
     });
   });
 
@@ -40,11 +50,21 @@ describe("Test Results DAO", () => {
       });
       (TestResultsDAO as any).docClient.query = daoStub;
 
-      dao.getByTesterStaffId("abc123");
+      const filter: ITestResultFilters = { testerStaffId: "abc123", fromDateTime: new Date("2021-02-01"), toDateTime: new Date("2021-09-01"), testStationPNumber: "123QWE" }
+      dao.getByTesterStaffId(filter);
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[":testerStaffId"]
       ).toEqual("abc123");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testStartTimestamp"]
+      ).toEqual("2021-02-01T00:00:00.000Z");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testEndTimestamp"]
+      ).toEqual("2021-09-01T00:00:00.000Z");
+      expect(
+        daoStub.mock.calls[0][0].ExpressionAttributeValues[":testStationPNumber"]
+      ).toEqual("123QWE");
     });
 
     it("will query dynamodb using the pagination until there are no more results left", async () => {
@@ -67,7 +87,8 @@ describe("Test Results DAO", () => {
       });
       (TestResultsDAO as any).docClient.query = queryStub;
 
-      const results = await dao.getByTesterStaffId("abc123");
+      const filter: ITestResultFilters = { testerStaffId: "abc123", fromDateTime: new Date("2021-02-01"), toDateTime: new Date("2021-09-01"), testStationPNumber: "123QWE" }
+      const results = await dao.getByTesterStaffId(filter);
       expect(results.length).toBe(4);
       expect(queryStub).toHaveBeenCalledTimes(2);
     });
@@ -100,7 +121,8 @@ describe("Test Results DAO", () => {
       });
       (TestResultsDAO as any).docClient.query = queryStub;
 
-      const results = await dao.getByTesterStaffId("abc123");
+      const filter: ITestResultFilters = { testerStaffId: "abc123", fromDateTime: new Date("2021-02-01"), toDateTime: new Date("2021-09-01"), testStationPNumber: "123QWE" }
+      const results = await dao.getByTesterStaffId(filter);
       expect(results.length).toBe(4);
       expect(results[0]).toEqual(complexObject);
       expect(results[1]).toEqual(simpleObject);
