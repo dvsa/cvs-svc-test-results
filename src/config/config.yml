@@ -40,6 +40,29 @@ serverless:
   basePath: /${BRANCH}
   port: 3006
 endpoints:
+  local:
+    testTypes:
+      params:
+        apiVersion: '2015-03-31'
+        region: eu-west-1
+        endpoint: http://localhost:3003
+    testNumber:
+      params:
+        apiVersion: '2015-03-31'
+        region: eu-west-1
+        endpoint: http://localhost:3009
+    activities:
+      params:
+        apiVersion: '2015-03-31'
+        region: eu-west-1
+        endpoint: http://localhost:3008
+    functions:
+      getTestTypes:
+        name: cvs-svc-test-types-dev-getTestTypes
+      getTestNumber:
+        name: cvs-svc-test-number-dev-generateTestNumber
+      getActivity:
+        name: cvs-svc-activities-dev-main
   local-global:
     params:
       apiVersion: '2015-03-31'

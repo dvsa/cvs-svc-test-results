@@ -107,6 +107,9 @@ class Configuration {
     // Not defining BRANCH will default to local-global
     let env;
     switch (process.env.BRANCH) {
+      case "local":
+        env = "local";
+        break;
       case "local-global":
         env = "local-global";
         break;
