@@ -57,7 +57,7 @@ endpoints:
         region: eu-west-1
         endpoint: http://localhost:3008
     functions:
-      getTestTypes:
+      getTestTypesById:
         name: cvs-svc-test-types-dev-getTestTypes
       getTestNumber:
         name: cvs-svc-test-number-dev-generateTestNumber

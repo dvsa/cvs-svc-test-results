@@ -188,7 +188,7 @@ export class TestResultsDAO {
     };
 
     const lambdaName =
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypes.name;
+      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
     try {
       console.log("queryString for get Test: ", event);
       const lambdaResult = LambdaService.invoke(lambdaName, event);

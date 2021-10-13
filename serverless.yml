@@ -65,7 +65,7 @@ functions:
             parameters:
               paths:
                 systemNumber: true
-              query:
+              querystrings:
                 status: false
                 fromDateTime: false
                 toDateTime: false
