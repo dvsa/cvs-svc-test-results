@@ -45,17 +45,17 @@ endpoints:
       params:
         apiVersion: '2015-03-31'
         region: eu-west-1
-        endpoint: http://localhost:3003
+        endpoint: http://localhost:3002
     testNumber:
       params:
         apiVersion: '2015-03-31'
         region: eu-west-1
-        endpoint: http://localhost:3009
+        endpoint: http://localhost:3008
     activities:
       params:
         apiVersion: '2015-03-31'
         region: eu-west-1
-        endpoint: http://localhost:3008
+        endpoint: http://localhost:3007
     functions:
       getTestTypesById:
         name: cvs-svc-test-types-dev-getTestTypes

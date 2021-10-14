@@ -26,8 +26,7 @@ plugins:
 
 custom:
   serverless-offline:
-    httpPort: 3006
-    lambdaPort: 3005
+    port: 3006
   dynamodb:
     start:
       port: 8004
@@ -65,7 +64,7 @@ functions:
             parameters:
               paths:
                 systemNumber: true
-              querystrings:
+              query:
                 status: false
                 fromDateTime: false
                 toDateTime: false
