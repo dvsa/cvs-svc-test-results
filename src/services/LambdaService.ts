@@ -25,7 +25,11 @@ export class LambdaService {
     } else if (lambdaName.toString().includes("activities")) {
       lambda = new AWS.Lambda(lambdaInvokeEndpoints.activities.params)
     }
-    console.log(lambdaName)
+
+    // const lambda = new AWS.Lambda(lambdaInvokeEndpoints.params);
+
+
+
     return lambda
       .invoke({
         FunctionName: lambdaName,
