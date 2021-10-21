@@ -26,10 +26,6 @@ export class LambdaService {
       lambda = new AWS.Lambda(lambdaInvokeEndpoints.activities.params)
     }
 
-    // const lambda = new AWS.Lambda(lambdaInvokeEndpoints.params);
-
-
-
     return lambda
       .invoke({
         FunctionName: lambdaName,
