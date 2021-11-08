@@ -18,12 +18,16 @@ const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints();
 export class LambdaService {
   public static invoke(lambdaName: any, lambdaEvent: any) {
     let lambda: any;
-    if (lambdaName.toString().includes("test-type")) {
-      lambda = new AWS.Lambda(lambdaInvokeEndpoints.testTypes.params)
-    } else if (lambdaName.toString().includes("test-number")) {
-      lambda = new AWS.Lambda(lambdaInvokeEndpoints.testNumber.params)
-    } else if (lambdaName.toString().includes("activities")) {
-      lambda = new AWS.Lambda(lambdaInvokeEndpoints.activities.params)
+    if (process.env.BRANCH === "local") {
+      if (lambdaName.toString().includes("test-type")) {
+        lambda = new AWS.Lambda(lambdaInvokeEndpoints.testTypes.params)
+      } else if (lambdaName.toString().includes("test-number")) {
+        lambda = new AWS.Lambda(lambdaInvokeEndpoints.testNumber.params)
+      } else if (lambdaName.toString().includes("activities")) {
+        lambda = new AWS.Lambda(lambdaInvokeEndpoints.activities.params)
+      }
+    } else {
+      lambda = new AWS.lambda(lambdaInvokeEndpoints.params)
     }
 
     return lambda
