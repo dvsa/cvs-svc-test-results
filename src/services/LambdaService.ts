@@ -27,7 +27,7 @@ export class LambdaService {
         lambda = new AWS.Lambda(lambdaInvokeEndpoints.activities.params)
       }
     } else {
-      lambda = new AWS.lambda(lambdaInvokeEndpoints.params)
+      lambda = new AWS.Lambda(lambdaInvokeEndpoints.params);
     }
 
     return lambda
