@@ -22,8 +22,17 @@ describe("For PsvMostRecentExpiryStrategy", () => {
     describe("test psvMostRecentExpiryStrategy with multiple scenarios", () => {
       test.each`
       inputRecentExpiryDate | inputTestDate   | ExpectedExpiryDate
+      ${"2019-02-28"}       | ${"2020-05-28"} | ${"2021-05-27"}
+      ${"2019-07-28"}       | ${"2020-05-29"} | ${"2021-05-28"}
+      ${"2018-05-01"}       | ${"2020-11-05"} | ${"2021-11-04"}
       ${"2020-07-28"}       | ${"2020-05-28"} | ${"2021-05-27"}
       ${"2020-07-28"}       | ${"2020-05-29"} | ${"2021-07-28"}
+      ${"2019-02-05"}       | ${"2020-02-29"} | ${"2021-02-28"}
+      ${"2019-02-05"}       | ${"2020-03-01"} | ${"2021-02-28"}
+      ${"2020-01-01"}       | ${"2020-01-01"} | ${"2021-01-01"}
+      ${"2019-12-02"}       | ${"2020-10-05"} | ${"2021-10-04"}
+      ${"2019"}             | ${"2020-03-06"} | ${"2021-03-05"}
+      ${undefined}          | ${"2020-06-28"} | ${"2021-06-27"}
 
       `("The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a recent expiry date of $inputRecentExpiryDate",
        ({inputRecentExpiryDate, inputTestDate, ExpectedExpiryDate}) => {
