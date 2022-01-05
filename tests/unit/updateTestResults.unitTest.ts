@@ -47,7 +47,7 @@ describe("updateTestResults", () => {
                 return Promise.resolve([
                   {
                     startTime: "2018-03-22",
-                    endTime: "2020-04-22",
+                    endTime: "2021-04-22",
                   },
                 ]);
               },
@@ -92,7 +92,7 @@ describe("updateTestResults", () => {
                     return Promise.resolve([
                       {
                         startTime: "2018-03-22",
-                        endTime: "2020-04-22",
+                        endTime: "2021-04-22",
                       },
                     ]);
                   },
@@ -147,7 +147,7 @@ describe("updateTestResults", () => {
               //         return Promise.resolve([
               //           {
               //             startTime: "2018-03-22",
-              //             endTime: "2020-04-22",
+              //             endTime: "2021-04-22",
               //           },
               //         ]);
               //       },
@@ -194,9 +194,9 @@ describe("updateTestResults", () => {
 
         context("and when changing testTypeStartTimestamp", () => {
           const errorMessageEndTime =
-            "The testTypeEndTimestamp must be within the visit, between 2019-01-14T10:36:33.987Z and 2019-01-14T20:00:33.987Z";
+            "The testTypeEndTimestamp must be within the visit, between 2021-01-14T10:36:33.987Z and 2021-01-14T20:00:33.987Z";
           const errorMessageStartTime =
-            "The testTypeStartTimestamp must be within the visit, between 2019-01-14T10:36:33.987Z and 2019-01-14T20:00:33.987Z";
+            "The testTypeStartTimestamp must be within the visit, between 2021-01-14T10:36:33.987Z and 2021-01-14T20:00:33.987Z";
           context(
             "and the testTypeStartTimestamp is before the visit startTime",
             () => {
@@ -206,8 +206,8 @@ describe("updateTestResults", () => {
                     getActivity: () => {
                       return Promise.resolve([
                         {
-                          startTime: "2019-01-14T10:36:33.987Z",
-                          endTime: "2019-01-14T20:00:33.987Z",
+                          startTime: "2021-01-14T10:36:33.987Z",
+                          endTime: "2021-01-14T20:00:33.987Z",
                         },
                       ]);
                     },
@@ -220,7 +220,7 @@ describe("updateTestResults", () => {
                   new MockTestResultsDAO()
                 );
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
-                  "2019-01-13T08:36:33.987Z";
+                  "2021-01-13T08:36:33.987Z";
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
@@ -246,8 +246,8 @@ describe("updateTestResults", () => {
                     getActivity: () => {
                       return Promise.resolve([
                         {
-                          startTime: "2019-01-14T10:36:33.987Z",
-                          endTime: "2019-01-14T20:00:33.987Z",
+                          startTime: "2021-01-14T10:36:33.987Z",
+                          endTime: "2021-01-14T20:00:33.987Z",
                         },
                       ]);
                     },
@@ -260,7 +260,7 @@ describe("updateTestResults", () => {
                   new MockTestResultsDAO()
                 );
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
-                  "2019-01-14T21:00:33.987Z";
+                  "2021-01-14T21:00:33.987Z";
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
@@ -286,8 +286,8 @@ describe("updateTestResults", () => {
                     getActivity: () => {
                       return Promise.resolve([
                         {
-                          startTime: "2019-01-14T10:36:33.987Z",
-                          endTime: "2019-01-14T20:00:33.987Z",
+                          startTime: "2021-01-14T10:36:33.987Z",
+                          endTime: "2021-01-14T20:00:33.987Z",
                         },
                       ]);
                     },
@@ -300,7 +300,7 @@ describe("updateTestResults", () => {
                   new MockTestResultsDAO()
                 );
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
-                  "2019-01-13T18:00:33.987Z";
+                  "2021-01-13T18:00:33.987Z";
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
@@ -326,8 +326,8 @@ describe("updateTestResults", () => {
                     getActivity: () => {
                       return Promise.resolve([
                         {
-                          startTime: "2019-01-14T10:36:33.987Z",
-                          endTime: "2019-01-14T20:00:33.987Z",
+                          startTime: "2021-01-14T10:36:33.987Z",
+                          endTime: "2021-01-14T20:00:33.987Z",
                         },
                       ]);
                     },
@@ -340,7 +340,7 @@ describe("updateTestResults", () => {
                   new MockTestResultsDAO()
                 );
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
-                  "2019-01-15T18:00:33.987Z";
+                  "2021-01-15T18:00:33.987Z";
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
@@ -366,8 +366,8 @@ describe("updateTestResults", () => {
                     getActivity: () => {
                       return Promise.resolve([
                         {
-                          startTime: "2019-01-14T10:36:33.987Z",
-                          endTime: "2019-01-14T20:00:33.987Z",
+                          startTime: "2021-01-14T10:36:33.987Z",
+                          endTime: "2021-01-14T20:00:33.987Z",
                         },
                       ]);
                     },
@@ -380,9 +380,9 @@ describe("updateTestResults", () => {
                   new MockTestResultsDAO()
                 );
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
-                  "2019-01-14T16:00:33.987Z";
+                  "2021-01-14T16:00:33.987Z";
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
-                  "2019-01-14T18:00:33.987Z";
+                  "2021-01-14T18:00:33.987Z";
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
@@ -509,8 +509,8 @@ describe("updateTestResults", () => {
                   new DateProvider()
                 );
                 const expectedTestTypeStartTimestamp =
-                  "2020-12-28T09:26:58.477Z";
-                const expectedTestTypeEndTimestamp = "2020-12-28T18:00:00.000Z";
+                  "2021-12-28T09:26:58.477Z";
+                const expectedTestTypeEndTimestamp = "2021-12-28T18:00:00.000Z";
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
                   expectedTestTypeStartTimestamp;
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
@@ -555,7 +555,7 @@ describe("updateTestResults", () => {
                 return Promise.resolve([
                   {
                     startTime: "2018-03-22",
-                    endTime: "2020-04-22",
+                    endTime: "2021-04-22",
                   },
                 ]);
               },

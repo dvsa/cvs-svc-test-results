@@ -237,7 +237,7 @@ describe("getTestResultBySystemNumber", () => {
                 .then((returnedRecords: any) => {
                     expect(returnedRecords.length).toEqual(1);
                     expect(returnedRecords[0].systemNumber).toEqual("1130");
-                    expect(returnedRecords[0].testTypes[0].testExpiryDate).toEqual("2020-10-24");
+                    expect(returnedRecords[0].testTypes[0].testExpiryDate).toEqual("2021-10-24");
                     expect(returnedRecords[0].testTypes[0].emissionStandard).toEqual("0.08 g/kWh Euro 3 PM");
                 });
         });
