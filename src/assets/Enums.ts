@@ -122,7 +122,7 @@ export const COIF_EXPIRY_TEST_TYPES = {
 };
 
 export const LEC_TEST_TYPES = {
-  IDS: ["39", "44", "45"]
+  IDS: ["44", "45", "200", "201"]
 };
 
 export const ADR_TEST_TYPES = {
@@ -266,7 +266,7 @@ export const TEST_TYPES_GROUP12_14: string[] = [
 
 // 39 - LEC with annual test for PSV, 45 - LEC without annual test for HGV, 44 - LEC with annual test for HGV
 export const TEST_TYPES_GROUP15_16: string[] = [
-  "39", "45", "44"
+  "45", "44", "200", "201"
 ];
 
 // CVSB-10372 - the following constants are based on the grouping of the test-types for specialist tests in the excel "specialist test fields mapping"
