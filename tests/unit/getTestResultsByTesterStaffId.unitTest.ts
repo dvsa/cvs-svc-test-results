@@ -47,7 +47,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
       });
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
-      return testResultsService.getTestResultsByTesterStaffId({ testerStaffId: "1", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
+      return testResultsService.getTestResultsByTesterStaffId({ testerStaffId: "1", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2021-02-22" })
         .then((returnedRecords: any) => {
           expect(returnedRecords).not.toEqual(undefined);
           expect(returnedRecords).not.toEqual({});
@@ -69,7 +69,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
     const testResultsServiceMock = new TestResultsService(new MockTestResultsDAO());
     it("should throw an error 500-Internal Error", () => {
       expect.assertions(3);
-      return testResultsServiceMock.getTestResultsByTesterStaffId({ testerStaffId: "5", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
+      return testResultsServiceMock.getTestResultsByTesterStaffId({ testerStaffId: "5", testStationPNumber: "87-1369569", fromDateTime: "2015-02-22", toDateTime: "2021-02-22" })
         .catch((errorResponse: { statusCode: any; body: any; }) => {
           expect(errorResponse).toBeInstanceOf(HTTPError);
           expect(errorResponse.statusCode).toEqual(500);
@@ -88,7 +88,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       expect.assertions(3);
-      return testResultsService.getTestResultsByTesterStaffId({ testerStaffId: "1", testStationPNumber: "87-13695", fromDateTime: "2015-02-22", toDateTime: "2019-02-22" })
+      return testResultsService.getTestResultsByTesterStaffId({ testerStaffId: "1", testStationPNumber: "87-13695", fromDateTime: "2015-02-22", toDateTime: "2021-02-22" })
         .catch((errorResponse: { statusCode: any; body: any; }) => {
           expect(errorResponse).toBeInstanceOf(HTTPError);
           expect(errorResponse.statusCode).toEqual(404);
@@ -103,7 +103,7 @@ describe("getTestResultsByTesterStaffId path of TestResultsService", () => {
         testerStaffId: "15",
         testStationPNumber: "84-926821",
         fromDateTime: "2015-02-22",
-        toDateTime: "2020-02-22",
+        toDateTime: "2021-02-22",
         testStatus: "submitted"
       };
       const filteredTestResults = cloneDeep(testResultsMockDB).filter((test: models.ITestResult) =>

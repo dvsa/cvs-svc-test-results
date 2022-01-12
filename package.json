@@ -21,7 +21,7 @@
     "lint": "tslint src/**/*.ts tests/**/*.ts",
     "format": "prettier --write .",
     "sonar-scanner": "sonar-scanner",
-    "audit": "npm audit",
+    "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "tools-setup": "node_modules/.bin/sls dynamodb install"
   },

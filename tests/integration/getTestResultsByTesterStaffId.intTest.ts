@@ -10,7 +10,7 @@ describe("getTestResultsByTesterStaffId", () => {
         context("and when a search by testerStaffId is done", () => {
                     context("and there are test results for that testerStaffId that have status 'submitted' and testStartTimestamp > fromDateTime and testEndTimestamp < toDateTime and testStaionPNumber exists", () => {
                         it("should return the test results for that testerStaffId and the provided parameters", async () => {
-                            const res = await request.get("test-results/getTestResultsByTesterStaffId?testerStaffId=15&fromDateTime=2019-01-13&toDateTime=2019-01-15&testStationPNumber=84-926821&testStatus=submitted");
+                            const res = await request.get("test-results/getTestResultsByTesterStaffId?testerStaffId=15&fromDateTime=2021-01-13&toDateTime=2021-01-15&testStationPNumber=84-926821&testStatus=submitted");
                             const expectedResponse = Array.of(testResultsMockDB[19]);
                             expect(res.status).toEqual(200);
                             expect(res.header["access-control-allow-origin"]).toEqual("*");
