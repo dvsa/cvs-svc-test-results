@@ -183,11 +183,20 @@ export class DateProvider {
   public static addOneYearMinusOneDayISOString(
     inputDate: Date | string
   ): string {
-    return moment(inputDate)
-      .add(1, "year")
-      .subtract(1, "day")
-      .startOf("day")
-      .toISOString();
+
+    const generateExpiryDate = (day: number = 1): string => {
+      return moment(inputDate)
+          .add(1, "year")
+          .subtract(day, "day")
+          .startOf("day")
+          .toISOString();
+    }
+
+    const isLeapYear = moment(inputDate).isLeapYear();
+
+    return (isLeapYear && moment(inputDate).month() === 1 && moment(inputDate).date() === 29)
+        ? generateExpiryDate(0)
+        : generateExpiryDate();
   }
 
   public static getLastDayOfMonthInNextYearISOString(
