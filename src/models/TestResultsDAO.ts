@@ -52,6 +52,7 @@ export class TestResultsDAO {
     const params = {
       TableName: this.tableName,
       IndexName: "SysNumIndex",
+      ConsistentRead: true,
       KeyConditionExpression: keyCondition,
       FilterExpression: filterExpression ? filterExpression : undefined,
       ExpressionAttributeValues: {
@@ -80,6 +81,7 @@ export class TestResultsDAO {
       TableName: this.tableName,
       IndexName: "TesterStaffIdIndex",
       KeyConditionExpression: keyCondition,
+      ConsistentRead: true,
       FilterExpression: filterExpression,
       ExpressionAttributeValues: {
         ...expressionAttributeValues,
