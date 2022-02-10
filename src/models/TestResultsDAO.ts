@@ -98,7 +98,10 @@ export class TestResultsDAO {
         ":testResultIdVal": payload.testResultId,
       },
     };
-    return TestResultsDAO.docClient.put(query).promise();
+
+    const test = TestResultsDAO.docClient.put(query).promise();
+    this.getBySystemNumber(payload);
+    return test
   }
 
   public createMultiple(
@@ -114,7 +117,9 @@ export class TestResultsDAO {
       });
     });
 
-    return TestResultsDAO.docClient.batchWrite(params).promise();
+    const test = TestResultsDAO.docClient.batchWrite(params).promise();
+    this.getBySystemNumber(testResultsItems[0]);
+    return test;
   }
 
   public deleteMultiple(
@@ -302,7 +307,10 @@ export class TestResultsDAO {
         },
       ],
     };
-    return TestResultsDAO.docClient.transactWrite(query).promise();
+
+    const test = TestResultsDAO.docClient.transactWrite(query).promise();
+    this.getBySystemNumber(updatedTestResult);
+    return test;
   }
 
   private async queryAllData(
