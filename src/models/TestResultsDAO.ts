@@ -68,7 +68,7 @@ export class TestResultsDAO {
     const { testerStaffId } = filters;
     const keyCondition =
       "testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp";
-    let filterExpression = "testEndTimestamp < :testEndTimestamp";
+    let filterExpression = "testEndTimestamp <= :testEndTimestamp";
     filterExpression = this.getOptionalFilters(filterExpression, filters);
     const keyExpressionAttribute = { [":testerStaffId"]: testerStaffId };
     const expressionAttributeValues = Object.assign(
