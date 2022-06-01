@@ -87,7 +87,7 @@
     "path-parser": "^4.2.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
-    "request-promise": "^4.2.5"
+    "request-promise": "^4.2.6"
   },
   "jestSonar": {
     "reportPath": ".reports",
