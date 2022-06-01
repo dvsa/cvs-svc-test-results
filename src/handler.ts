@@ -4,6 +4,7 @@ import Path from "path-parser";
 import { Configuration } from "./utils/Configuration";
 import { IFunctionEvent } from "./utils/IFunctionEvent";
 import { HTTPResponse } from "./models/HTTPResponse";
+import {ILogMessage} from "./models/ILogMessage";
 
 
 const handler: Handler = async (event: any, context: Context, callback: Callback): Promise<APIGatewayProxyResult> => {
@@ -48,7 +49,6 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
       matchingLambdaEvents = exactMatch
     }
   }
-
   // Exactly one λ should match the above filtering.
   if (matchingLambdaEvents.length === 1) {
     const lambdaEvent: IFunctionEvent = matchingLambdaEvents[0];
@@ -61,8 +61,13 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
 
     Object.assign(event, { pathParameters: lambdaPathParams });
 
-    console.log(`HTTP ${event.httpMethod} ${event.path} -> λ ${lambdaEvent.name}`);
+    const logMessage: ILogMessage = {
+      HTTP: `${event.httpMethod} ${event.path} -> λ ${lambdaEvent.name}`,
+      PATH_PARAMS: `${JSON.stringify(event.pathParameters)}`,
+      QUERY_PARAMS: `${JSON.stringify(event.queryStringParameters)}`
+    };
 
+    console.log(logMessage);
     // Explicit conversion because typescript can't figure it out
     return lambdaFn(event, context, callback) as Promise<APIGatewayProxyResult>;
   }
