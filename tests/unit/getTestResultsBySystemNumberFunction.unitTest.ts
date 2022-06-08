@@ -197,4 +197,48 @@ describe("getTestResultsBySystemNumber Function", () => {
       });
     });
   });
+
+  context("receiving event with", () => {
+    it("undefined system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: undefined
+        },
+        queryStringParameters: {
+          toDateTime: "01-01-2010"
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPError);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual("Request missing system number")
+    });
+
+    it("null system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: null
+        },
+        queryStringParameters: {
+          toDateTime: "01-01-2010"
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPError);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual("Request missing system number");
+    });
+  });
 });

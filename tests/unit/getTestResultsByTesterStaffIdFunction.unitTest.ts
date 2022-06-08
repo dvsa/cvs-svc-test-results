@@ -134,5 +134,18 @@ describe("getTestResultsByTesterStaffId Function", () => {
         expect(result.body).toEqual(JSON.stringify(MESSAGES.BAD_REQUEST));
       });
     });
+    context("Should throw an error", () => {
+      it("when query string paramters are mmissing", async () => {
+        const testResultsMock = jest.fn();
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
+
+        expect.assertions(4);
+        const result = await getTestResultsByTesterStaffId({});
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPError);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual("Request missing query parameters");
+      });
+    });
   });
 });
