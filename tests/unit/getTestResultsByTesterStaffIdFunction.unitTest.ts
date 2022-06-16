@@ -149,14 +149,18 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
-        expect.assertions(4);
-        const result = await getTestResultsByTesterStaffId(myEvent);
-        expect(testResultsMock).not.toBeCalled();
-        expect(result).toBeInstanceOf(HTTPResponse);
-        expect(result.statusCode).toEqual(400);
-        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+        try {
+          await getTestResultsByTesterStaffId(myEvent);
+        } catch (e) {
+          expect.assertions(4);
+          expect(testResultsMock).not.toBeCalled();
+          expect(e).toBeInstanceOf(HTTPError);
+          expect(e.statusCode).toEqual(400);
+          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
+        }
       });
-      it("should trigger validation and throw 400 error when testerStaffId is null", async () => {
+
+      it("should trigger validation and throw 400 error when testerStaffId is undefined", async () => {
         const myEvent = {
           queryStringParameters: {
             testerStaffId: undefined,
@@ -170,14 +174,18 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
-        expect.assertions(4);
-        const result = await getTestResultsByTesterStaffId(myEvent);
-        expect(testResultsMock).not.toBeCalled();
-        expect(result).toBeInstanceOf(HTTPResponse);
-        expect(result.statusCode).toEqual(400);
-        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+        try {
+          await getTestResultsByTesterStaffId(myEvent);
+        } catch (e) {
+          expect.assertions(4);
+          expect(testResultsMock).not.toBeCalled();
+          expect(e).toBeInstanceOf(HTTPError);
+          expect(e.statusCode).toEqual(400);
+          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
+        }
       });
-      it("should trigger validation and throw 400 error when testerStaffId is null", async () => {
+
+      it("should trigger validation and throw 400 error when testerStaffId is an empty string", async () => {
         const myEvent = {
           queryStringParameters: {
             testerStaffId: " ",
@@ -191,12 +199,15 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
-        expect.assertions(4);
-        const result = await getTestResultsByTesterStaffId(myEvent);
-        expect(testResultsMock).not.toBeCalled();
-        expect(result).toBeInstanceOf(HTTPResponse);
-        expect(result.statusCode).toEqual(400);
-        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+        try {
+          await getTestResultsByTesterStaffId(myEvent);
+        } catch (e) {
+          expect.assertions(4);
+          expect(testResultsMock).not.toBeCalled();
+          expect(e).toBeInstanceOf(HTTPError);
+          expect(e.statusCode).toEqual(400);
+          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
+        }
       });
     })
   });

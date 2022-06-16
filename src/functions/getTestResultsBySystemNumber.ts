@@ -13,7 +13,7 @@ export async function getTestResultsBySystemNumber(event: any) {
   const check: Validator = new Validator();
 
   if (!check.parametersAreValid(event.pathParameters)) {
-    return new models.HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS);
+    return new models.HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
   }
 
   try {

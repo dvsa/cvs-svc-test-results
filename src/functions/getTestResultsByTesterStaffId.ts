@@ -3,8 +3,8 @@ import {TestResultsService} from "../services/TestResultsService";
 import {HTTPResponse} from "../models/HTTPResponse";
 import { MappingUtil } from "../utils/mappingUtil";
 import {Validator} from "../utils/Validator";
-import * as models from "../models";
 import {HTTPRESPONSE} from "../assets/Enums";
+import {HTTPError} from "../models";
 
 export async function getTestResultsByTesterStaffId(event: any) {
 
@@ -13,8 +13,12 @@ export async function getTestResultsByTesterStaffId(event: any) {
   const testResultsService = new TestResultsService(testResultsDAO);
   const check: Validator = new Validator();
 
-  if (!check.parametersAreValid(event.queryStringParameters)) {
-    return new models.HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS);
+  if (event.queryStringParameters) {
+    if (!check.parametersAreValid(event.queryStringParameters)) {
+      return Promise.reject(new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS));
+    }
+  } else {
+    return Promise.reject(new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS));
   }
 
   try {

@@ -212,9 +212,9 @@ describe("getTestResultsBySystemNumber Function", () => {
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result).toBeInstanceOf(HTTPError);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual(JSON.stringify("Missing parameter value."));
+      expect(result.body).toEqual("Missing parameter value.");
     });
 
     it("null system number, should return bad request", async () => {
@@ -230,9 +230,9 @@ describe("getTestResultsBySystemNumber Function", () => {
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result).toBeInstanceOf(HTTPError);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual(JSON.stringify("Missing parameter value."));
+      expect(result.body).toEqual("Missing parameter value.");
     });
   });
 });
