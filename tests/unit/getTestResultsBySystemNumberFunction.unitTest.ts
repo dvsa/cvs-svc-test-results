@@ -8,7 +8,7 @@ import moment from "moment";
 describe("getTestResultsBySystemNumber Function", () => {
   const minimalEvent =  {
     pathParameters: {
-      systemNumber: 1
+      systemNumber: "1"
     }
   };
   context("receiving minimal Event, and successful service call", () => {
@@ -17,7 +17,7 @@ describe("getTestResultsBySystemNumber Function", () => {
       TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
       const expectedFilters = {
-        systemNumber: 1,
+        systemNumber: "1",
         testVersion: "current",
         testStatus: "submitted",
         toDateTime: moment().endOf("day").toDate(),
@@ -92,7 +92,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
@@ -121,7 +121,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: moment().endOf("day").toDate(),
@@ -150,7 +150,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "cheese",
           toDateTime: moment().endOf("day").toDate(),
@@ -180,7 +180,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "archived",
           testStatus: "submitted",
           toDateTime: moment().endOf("day").toDate(),
@@ -206,18 +206,15 @@ describe("getTestResultsBySystemNumber Function", () => {
       const myEvent = {
         pathParameters: {
           systemNumber: undefined
-        },
-        queryStringParameters: {
-          toDateTime: "01-01-2010"
         }
       };
 
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPError);
+      expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual("Request missing system number")
+      expect(result.body).toEqual(JSON.stringify("Missing parameter value."));
     });
 
     it("null system number, should return bad request", async () => {
@@ -227,18 +224,15 @@ describe("getTestResultsBySystemNumber Function", () => {
       const myEvent = {
         pathParameters: {
           systemNumber: null
-        },
-        queryStringParameters: {
-          toDateTime: "01-01-2010"
         }
       };
 
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPError);
+      expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual("Request missing system number");
+      expect(result.body).toEqual(JSON.stringify("Missing parameter value."));
     });
   });
 });

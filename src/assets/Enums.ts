@@ -44,6 +44,7 @@ export enum TESTING_ERRORS {
 export enum HTTPRESPONSE {
     AWS_EVENT_EMPTY = "AWS event is empty. Check your test event.",
     NOT_VALID_JSON = "Body is not a valid JSON.",
+    MISSING_PARAMETERS = "Missing parameter value."
 }
 
 export enum HTTPMethods {

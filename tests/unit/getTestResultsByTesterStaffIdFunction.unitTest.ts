@@ -2,13 +2,13 @@ import {getTestResultsByTesterStaffId} from "../../src/functions/getTestResultsB
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
 import {HTTPError} from "../../src/models/HTTPError";
-import {MESSAGES} from "../../src/assets/Enums";
+import {HTTPRESPONSE, MESSAGES} from "../../src/assets/Enums";
 jest.mock("../../src/services/TestResultsService");
 
 describe("getTestResultsByTesterStaffId Function", () => {
   const goodEvent = {
     queryStringParameters: {
-      testerStaffId: 1,
+      testerStaffId: "1",
       testStationPNumber: "abc123",
       toDateTime: "01-01-2010",
       fromDateTime: "01-01-2009",
@@ -21,7 +21,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
       TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
       const expectedFilters = {
-        testerStaffId: 1,
+        testerStaffId: "1",
         testStationPNumber: "abc123",
         toDateTime: new Date("01-01-2010"),
         fromDateTime: new Date("01-01-2009"),
@@ -56,7 +56,7 @@ describe("getTestResultsByTesterStaffId Function", () => {
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         const expectedFilters = {
-          testerStaffId: 1,
+          testerStaffId: "1",
           testStationPNumber: "abc123",
           toDateTime: new Date("01-01-2010"),
           fromDateTime: new Date("01-01-2009"),
@@ -134,18 +134,70 @@ describe("getTestResultsByTesterStaffId Function", () => {
         expect(result.body).toEqual(JSON.stringify(MESSAGES.BAD_REQUEST));
       });
     });
-    context("Should throw an error", () => {
-      it("when query string paramters are mmissing", async () => {
+    context("with good event", () => {
+      it("should trigger validation and throw 400 error when testerStaffId is null", async () => {
+        const myEvent = {
+          queryStringParameters: {
+            testerStaffId: null,
+            testStationPNumber: "abc123",
+            toDateTime: "01-01-2010",
+            fromDateTime: "01-01-2009",
+            testStatus: "active"
+          }
+        }
+
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
-        const result = await getTestResultsByTesterStaffId({});
+        const result = await getTestResultsByTesterStaffId(myEvent);
         expect(testResultsMock).not.toBeCalled();
-        expect(result).toBeInstanceOf(HTTPError);
+        expect(result).toBeInstanceOf(HTTPResponse);
         expect(result.statusCode).toEqual(400);
-        expect(result.body).toEqual("Request missing query parameters");
+        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
       });
-    });
+      it("should trigger validation and throw 400 error when testerStaffId is null", async () => {
+        const myEvent = {
+          queryStringParameters: {
+            testerStaffId: undefined,
+            testStationPNumber: "abc123",
+            toDateTime: "01-01-2010",
+            fromDateTime: "01-01-2009",
+            testStatus: "active"
+          }
+        }
+
+        const testResultsMock = jest.fn();
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
+
+        expect.assertions(4);
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPResponse);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+      });
+      it("should trigger validation and throw 400 error when testerStaffId is null", async () => {
+        const myEvent = {
+          queryStringParameters: {
+            testerStaffId: " ",
+            testStationPNumber: "abc123",
+            toDateTime: "01-01-2010",
+            fromDateTime: "01-01-2009",
+            testStatus: "active"
+          }
+        }
+
+        const testResultsMock = jest.fn();
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
+
+        expect.assertions(4);
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPResponse);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+      });
+    })
   });
 });

@@ -4,6 +4,7 @@ import {HTTPResponse} from "../models/HTTPResponse";
 import { MappingUtil } from "../utils/mappingUtil";
 import {Validator} from "../utils/Validator";
 import * as models from "../models";
+import {HTTPRESPONSE} from "../assets/Enums";
 
 export async function getTestResultsByTesterStaffId(event: any) {
 
@@ -12,8 +13,8 @@ export async function getTestResultsByTesterStaffId(event: any) {
   const testResultsService = new TestResultsService(testResultsDAO);
   const check: Validator = new Validator();
 
-  if (!check.parameterIsValid(event.queryStringParameters)) {
-    return new models.HTTPError(400, "Request missing query parameters");
+  if (!check.parametersAreValid(event.queryStringParameters)) {
+    return new models.HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS);
   }
 
   try {
