@@ -149,10 +149,10 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
+        expect.assertions(4);
         try {
           await getTestResultsByTesterStaffId(myEvent);
         } catch (e) {
-          expect.assertions(4);
           expect(testResultsMock).not.toBeCalled();
           expect(e).toBeInstanceOf(HTTPError);
           expect(e.statusCode).toEqual(400);
@@ -174,10 +174,10 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
+        expect.assertions(4);
         try {
           await getTestResultsByTesterStaffId(myEvent);
         } catch (e) {
-          expect.assertions(4);
           expect(testResultsMock).not.toBeCalled();
           expect(e).toBeInstanceOf(HTTPError);
           expect(e.statusCode).toEqual(400);
@@ -199,10 +199,10 @@ describe("getTestResultsByTesterStaffId Function", () => {
         const testResultsMock = jest.fn();
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
+        expect.assertions(4);
         try {
           await getTestResultsByTesterStaffId(myEvent);
         } catch (e) {
-          expect.assertions(4);
           expect(testResultsMock).not.toBeCalled();
           expect(e).toBeInstanceOf(HTTPError);
           expect(e.statusCode).toEqual(400);
