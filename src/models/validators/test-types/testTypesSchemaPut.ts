@@ -5,7 +5,7 @@ const additionalInformationSchema = Joi.object().keys({
   location: Joi.object().keys({
     vertical: Joi.any().only(["upper", "lower"]).allow(null),
     horizontal: Joi.any().only(["inner", "outer"]).allow(null),
-    lateral: Joi.any().only(["nearside", "centre", "offside"]).allow(null),
+    lateral: Joi.any().only(["nearside", "centre", "offside", "rear"]).allow(null),
     longitudinal: Joi.any().only(["front", "rear"]).allow(null),
     rowNumber: Joi.number().max(20).allow(null),
     seatNumber: Joi.number().max(6).allow(null),
