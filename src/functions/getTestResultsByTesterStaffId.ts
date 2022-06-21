@@ -15,10 +15,10 @@ export async function getTestResultsByTesterStaffId(event: any) {
 
   if (event.queryStringParameters) {
     if (!check.parametersAreValid(event.queryStringParameters)) {
-      return Promise.reject(new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS));
+      return new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
     }
   } else {
-    return Promise.reject(new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS));
+    return new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
   }
 
   try {

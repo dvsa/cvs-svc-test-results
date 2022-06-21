@@ -150,14 +150,11 @@ describe("getTestResultsByTesterStaffId Function", () => {
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
-        try {
-          await getTestResultsByTesterStaffId(myEvent);
-        } catch (e) {
-          expect(testResultsMock).not.toBeCalled();
-          expect(e).toBeInstanceOf(HTTPError);
-          expect(e.statusCode).toEqual(400);
-          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
-        }
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPError);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
       });
 
       it("should trigger validation and throw 400 error when testerStaffId is undefined", async () => {
@@ -175,14 +172,11 @@ describe("getTestResultsByTesterStaffId Function", () => {
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
-        try {
-          await getTestResultsByTesterStaffId(myEvent);
-        } catch (e) {
-          expect(testResultsMock).not.toBeCalled();
-          expect(e).toBeInstanceOf(HTTPError);
-          expect(e.statusCode).toEqual(400);
-          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
-        }
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPError);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
       });
 
       it("should trigger validation and throw 400 error when testerStaffId is an empty string", async () => {
@@ -200,14 +194,11 @@ describe("getTestResultsByTesterStaffId Function", () => {
         TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
 
         expect.assertions(4);
-        try {
-          await getTestResultsByTesterStaffId(myEvent);
-        } catch (e) {
-          expect(testResultsMock).not.toBeCalled();
-          expect(e).toBeInstanceOf(HTTPError);
-          expect(e.statusCode).toEqual(400);
-          expect(e.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
-        }
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPError);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(HTTPRESPONSE.MISSING_PARAMETERS);
       });
     })
   });
