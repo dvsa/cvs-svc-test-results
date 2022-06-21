@@ -6,7 +6,7 @@ export const defectsCommonSchemaSpecialistTestsSubmitted = defectsCommonSchema.k
         location: Joi.object().keys({
             vertical: Joi.any().only(["upper", "lower"]).required().allow(null),
             horizontal: Joi.any().only(["inner", "outer"]).required().allow(null),
-            lateral: Joi.any().only(["nearside", "centre", "offside"]).required().allow(null),
+            lateral: Joi.any().only(["nearside", "centre", "offside", "rear"]).required().allow(null),
             longitudinal: Joi.any().only(["front", "rear"]).required().allow(null),
             rowNumber: Joi.number().max(20).required().allow(null),
             seatNumber: Joi.number().max(6).required().allow(null),
