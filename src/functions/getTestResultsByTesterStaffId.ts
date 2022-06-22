@@ -4,7 +4,6 @@ import {HTTPResponse} from "../models/HTTPResponse";
 import { MappingUtil } from "../utils/mappingUtil";
 import {Validator} from "../utils/Validator";
 import {HTTPRESPONSE} from "../assets/Enums";
-import {HTTPError} from "../models";
 
 export async function getTestResultsByTesterStaffId(event: any) {
 
@@ -15,10 +14,10 @@ export async function getTestResultsByTesterStaffId(event: any) {
 
   if (event.queryStringParameters) {
     if (!check.parametersAreValid(event.queryStringParameters)) {
-      return new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
+      return Promise.resolve(new HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS));
     }
   } else {
-    return new HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
+    return Promise.resolve(new HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS));
   }
 
   try {
