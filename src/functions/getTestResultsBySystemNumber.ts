@@ -3,7 +3,6 @@ import { TestResultsService } from "../services/TestResultsService";
 import { HTTPResponse } from "../models/HTTPResponse";
 import { MappingUtil } from "../utils/mappingUtil";
 import {Validator} from "../utils/Validator";
-import * as models from "../models";
 import {HTTPRESPONSE} from "../assets/Enums";
 
 export async function getTestResultsBySystemNumber(event: any) {
@@ -12,8 +11,12 @@ export async function getTestResultsBySystemNumber(event: any) {
   const testResultsService = new TestResultsService(testResultsDAO);
   const check: Validator = new Validator();
 
-  if (!check.parametersAreValid(event.pathParameters)) {
-    return new models.HTTPError(400, HTTPRESPONSE.MISSING_PARAMETERS);
+  if (event.pathParameters) {
+    if (!check.parametersAreValid(event.pathParameters)) {
+      return Promise.resolve(new HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS));
+    }
+  } else {
+    return Promise.resolve(new HTTPResponse(400, HTTPRESPONSE.MISSING_PARAMETERS));
   }
 
   try {

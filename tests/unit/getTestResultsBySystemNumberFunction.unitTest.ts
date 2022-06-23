@@ -1,7 +1,7 @@
 import {getTestResultsBySystemNumber} from "../../src/functions/getTestResultsBySystemNumber";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
-import {MESSAGES} from "../../src/assets/Enums";
+import {HTTPRESPONSE, MESSAGES} from "../../src/assets/Enums";
 import {HTTPError} from "../../src/models/HTTPError";
 import moment from "moment";
 
@@ -212,9 +212,9 @@ describe("getTestResultsBySystemNumber Function", () => {
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPError);
+      expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual("Missing parameter value.");
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
     });
 
     it("null system number, should return bad request", async () => {
@@ -230,9 +230,27 @@ describe("getTestResultsBySystemNumber Function", () => {
       expect.assertions(3);
       // @ts-ignore
       const result = await getTestResultsBySystemNumber(myEvent);
-      expect(result).toBeInstanceOf(HTTPError);
+      expect(result).toBeInstanceOf(HTTPResponse);
       expect(result.statusCode).toEqual(400);
-      expect(result.body).toEqual("Missing parameter value.");
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+    });
+
+    it("empty string system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: " "
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
     });
   });
 });
