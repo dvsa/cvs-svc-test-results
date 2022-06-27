@@ -2,8 +2,8 @@ import { TestResultsDAO } from "../models/TestResultsDAO";
 import { TestResultsService } from "../services/TestResultsService";
 import { HTTPResponse } from "../models/HTTPResponse";
 import { MappingUtil } from "../utils/mappingUtil";
-import {Validator} from "../utils/Validator";
-import {HTTPRESPONSE} from "../assets/Enums";
+import { Validator } from "../utils/Validator";
+import { HTTPRESPONSE } from "../assets/Enums";
 
 export async function getTestResultsBySystemNumber(event: any) {
   const subSegment = MappingUtil.getSubSegment("getTestResultsBySystemNumber");
