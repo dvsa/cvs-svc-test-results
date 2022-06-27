@@ -49,6 +49,7 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
       matchingLambdaEvents = exactMatch
     }
   }
+
   // Exactly one λ should match the above filtering.
   if (matchingLambdaEvents.length === 1) {
     const lambdaEvent: IFunctionEvent = matchingLambdaEvents[0];

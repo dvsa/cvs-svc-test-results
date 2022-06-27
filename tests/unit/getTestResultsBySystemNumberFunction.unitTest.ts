@@ -252,5 +252,20 @@ describe("getTestResultsBySystemNumber Function", () => {
       expect(result.statusCode).toEqual(400);
       expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
     });
+    it("null path parameter, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: null
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+    });
   });
 });

@@ -200,6 +200,22 @@ describe("getTestResultsByTesterStaffId Function", () => {
         expect(result.statusCode).toEqual(400);
         expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
       });
+
+      it("should trigger validation and throw 400 error when event query parameter is null", async () => {
+        const myEvent = {
+          queryStringParameters: null
+        }
+
+        const testResultsMock = jest.fn();
+        TestResultsService.prototype.getTestResultsByTesterStaffId = testResultsMock;
+
+        expect.assertions(4);
+        const result = await getTestResultsByTesterStaffId(myEvent);
+        expect(testResultsMock).not.toBeCalled();
+        expect(result).toBeInstanceOf(HTTPResponse);
+        expect(result.statusCode).toEqual(400);
+        expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+      });
     })
   });
 });
