@@ -1,10 +1,10 @@
 import { HTTPRESPONSE } from "./assets/Enums";
-import {APIGatewayProxyResult, Callback, Context, Handler} from "aws-lambda";
+import { APIGatewayProxyResult, Callback, Context, Handler } from "aws-lambda";
 import Path from "path-parser";
 import { Configuration } from "./utils/Configuration";
 import { IFunctionEvent } from "./utils/IFunctionEvent";
 import { HTTPResponse } from "./models/HTTPResponse";
-import {ILogMessage} from "./models/ILogMessage";
+import { ILogMessage } from "./models/ILogMessage";
 
 
 const handler: Handler = async (event: any, context: Context, callback: Callback): Promise<APIGatewayProxyResult> => {
