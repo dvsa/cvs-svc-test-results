@@ -264,6 +264,7 @@ components:
             - atf
             - gvts
             - hq
+            - potf
         testerName:
           type: string
           maxLength: 60
