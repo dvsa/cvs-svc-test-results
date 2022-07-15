@@ -40,37 +40,6 @@ paths:
           description: Unauthorised Access
         '404':
           description: Operation not supported
-  '/test-results/{testResultId}':
-    put:
-      summary: 'Update a test result, for a particular testResultId'
-      tags:
-        - updateTestResults
-      parameters:
-        - in: path
-          name: testResultId
-          schema:
-            type: string
-          required: true
-      requestBody:
-        description: The test result to be updated
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/completeTestResults'
-      responses:
-        '200':
-          description: The updated test-result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/testResults'
-        '401':
-          description: Not authenticated
-        '403':
-          description: Unauthorised Access
-        '404':
-          description: Operation not supported
   '/test-results/archive/{testResultId}':
     put:
       summary: 'Archive a specific test-type, for a particular testResultId'
@@ -150,7 +119,8 @@ paths:
               - current
               - archived
               - all
-          description: Query param to filter the test-results based on testVersion. If not present then GET will return the current test-result.
+          description:
+            Query param to filter the test-results based on testVersion. If not present then GET will return the current test-result.
             Can be used only with testResultId query param, otherwise it is not taken into account.
       responses:
         '200':
@@ -159,6 +129,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/testResults'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Unauthorised Access
+        '404':
+          description: Operation not supported
+    put:
+      summary: 'Update a test result using the systemNumber and testResultId as unique identifiers.'
+      tags:
+        - updateTestResults
+      parameters:
+        - in: path
+          name: systemNumber
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: The test result to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/completeTestResults'
+      responses:
+        '200':
+          description: The updated test-result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/completeTestResults'
         '401':
           description: Not authenticated
         '403':
