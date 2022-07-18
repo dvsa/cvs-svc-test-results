@@ -159,6 +159,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/completeTestResults'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+               $ref: '#/components/schemas/putBadRequest'
         '401':
           description: Not authenticated
         '403':
@@ -733,6 +739,15 @@ components:
           type: string
           maxLength: 200
           nullable: true
+    putBadRequest:
+      type: object
+      properties:
+        errors:
+          $ref: '#/components/schemas/validationErrors'
+    validationErrors:
+      type: array
+      items:
+        type: string
 security:
   - OAuth2:
       - read
