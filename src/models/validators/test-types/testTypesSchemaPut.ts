@@ -106,7 +106,7 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
   fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).required().allow(null),
   particulateTrapSerialNumber: Joi.string().max(100).allow(null),
   modificationTypeUsed: Joi.string().max(100).allow(null),
-  particulateTrapFitted: Joi.string().max(100)().allow(null),
+  particulateTrapFitted: Joi.string().max(100).allow(null),
   smokeTestKLimitApplied: Joi.string().max(100).required().allow(null),
   prohibitionIssued: Joi.boolean().required().required().allow(null)
 });
