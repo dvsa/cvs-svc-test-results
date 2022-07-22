@@ -104,9 +104,9 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
   }).required().allow(null),
   emissionStandard: Joi.any().only(["0.10 g/kWh Euro 3 PM", "0.03 g/kWh Euro IV PM", "Euro 3", "Euro 4", "Euro 6", "Euro VI", "Full Electric"]).required().allow(null),
   fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).required().allow(null),
-  particulateTrapSerialNumber: Joi.string().max(100).required().allow(null),
-  modificationTypeUsed: Joi.string().max(100).required().allow(null),
-  particulateTrapFitted: Joi.string().max(100).required().allow(null),
+  particulateTrapSerialNumber: Joi.string().max(100).allow(null),
+  modificationTypeUsed: Joi.string().max(100).allow(null),
+  particulateTrapFitted: Joi.string().max(100)().allow(null),
   smokeTestKLimitApplied: Joi.string().max(100).required().allow(null),
   prohibitionIssued: Joi.boolean().required().required().allow(null)
 });
