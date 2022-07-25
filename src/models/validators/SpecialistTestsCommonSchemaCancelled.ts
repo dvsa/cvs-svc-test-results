@@ -27,7 +27,7 @@ export const testResultsCommonSchemaSpecialistTestsCancelled = testResultsCommon
     countryOfRegistration: Joi.string().required().allow("", null),
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
-    reasonForCancellation: Joi.string().max(500).required().allow(""),
+    reasonForCancellation: Joi.string().max(500).required().allow("", null),
     vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required().allow(null),
     testTypes: Joi.array().items(testTypesCommonSchemaSpecialistTestsCancelled).required()
 });
