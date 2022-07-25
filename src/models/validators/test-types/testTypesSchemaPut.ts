@@ -118,41 +118,12 @@ export const testTypesGroup12And14 = testTypesCommonSchema.keys({
 export const testTypesGroup15And16 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow("", null),
   testExpiryDate: Joi.date().iso().allow(null),
-  modType: Joi.object()
-    .keys({
-      code: Joi.any().only(["p", "m", "g"]),
-      description: Joi.any().only([
-        "particulate trap",
-        "modification or change of engine",
-        "gas engine",
-      ]),
-    })
-    .required()
-    .allow(null),
-  emissionStandard: Joi.any()
-    .only([
-      "0.10 g/kWh Euro 3 PM",
-      "0.03 g/kWh Euro IV PM",
-      "Euro 3",
-      "Euro 4",
-      "Euro 6",
-      "Euro VI",
-      "Full Electric",
-    ])
-    .required()
-    .allow(null),
-  fuelType: Joi.any()
-    .only([
-      "diesel",
-      "gas-cng",
-      "gas-lng",
-      "gas-lpg",
-      "petrol",
-      "fuel cell",
-      "full electric",
-    ])
-    .required()
-    .allow(null),
+  modType: Joi.object().keys({
+    code: Joi.any().only(["p", "m", "g"]),
+    description: Joi.any().only(["particulate trap", "modification or change of engine", "gas engine"])
+  }).required().allow(null),
+  emissionStandard: Joi.any().only(["0.10 g/kWh Euro 3 PM", "0.03 g/kWh Euro IV PM", "Euro 3", "Euro 4", "Euro 6", "Euro VI", "Full Electric"]).required().allow(null),
+  fuelType: Joi.any().only(["diesel", "gas-cng", "gas-lng", "gas-lpg", "petrol", "fuel cell", "full electric"]).required().allow(null),
   particulateTrapSerialNumber: Joi.string().max(100).allow(null),
   modificationTypeUsed: Joi.string().max(100).allow(null),
   particulateTrapFitted: Joi.string().max(100).allow(null),
