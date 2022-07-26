@@ -860,8 +860,12 @@ describe("insertTestResult", () => {
 
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-
-        expect(testResultsService.insertTestResult(testResult)).resolves.toBe(200);
+        expect.assertions(1);
+        return testResultsService
+          .insertTestResult(testResult)
+          .then((data: any) => {
+            expect(data).not.toEqual(undefined);
+          });
       });
     }
   );
@@ -1395,7 +1399,12 @@ describe("insertTestResult", () => {
 
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-        expect(testResultsService.insertTestResult(testResult)).resolves.toBe(200);
+        expect.assertions(1);
+        return testResultsService
+          .insertTestResult(testResult)
+          .then((data: any) => {
+            expect(data).not.toEqual(undefined);
+          });
       });
     }
   );
