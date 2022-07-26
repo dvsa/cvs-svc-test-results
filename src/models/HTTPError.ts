@@ -14,5 +14,7 @@ export class HTTPError extends Error {
     super();
     this.statusCode = statusCode;
     this.body = body;
+
+    console.log(`HTTP STATUS CODE RETURNED: ${this.statusCode}`);
   }
 }

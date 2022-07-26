@@ -1,14 +1,14 @@
 import {getTestResultsBySystemNumber} from "../../src/functions/getTestResultsBySystemNumber";
 import {TestResultsService} from "../../src/services/TestResultsService";
 import {HTTPResponse} from "../../src/models/HTTPResponse";
-import {MESSAGES} from "../../src/assets/Enums";
+import {HTTPRESPONSE, MESSAGES} from "../../src/assets/Enums";
 import {HTTPError} from "../../src/models/HTTPError";
 import moment from "moment";
 
 describe("getTestResultsBySystemNumber Function", () => {
   const minimalEvent =  {
     pathParameters: {
-      systemNumber: 1
+      systemNumber: "1"
     }
   };
   context("receiving minimal Event, and successful service call", () => {
@@ -17,7 +17,7 @@ describe("getTestResultsBySystemNumber Function", () => {
       TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
 
       const expectedFilters = {
-        systemNumber: 1,
+        systemNumber: "1",
         testVersion: "current",
         testStatus: "submitted",
         toDateTime: moment().endOf("day").toDate(),
@@ -92,7 +92,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: new Date("01-01-2010"),
@@ -121,7 +121,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "submitted",
           toDateTime: moment().endOf("day").toDate(),
@@ -150,7 +150,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "current",
           testStatus: "cheese",
           toDateTime: moment().endOf("day").toDate(),
@@ -180,7 +180,7 @@ describe("getTestResultsBySystemNumber Function", () => {
         };
 
         const expectedFilters = {
-          systemNumber: 1,
+          systemNumber: "1",
           testVersion: "archived",
           testStatus: "submitted",
           toDateTime: moment().endOf("day").toDate(),
@@ -195,6 +195,77 @@ describe("getTestResultsBySystemNumber Function", () => {
         expect(result.statusCode).toEqual(200);
         expect(result.body).toEqual(JSON.stringify("Success"));
       });
+    });
+  });
+
+  context("receiving event with", () => {
+    it("undefined system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: undefined
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+    });
+
+    it("null system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: null
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+    });
+
+    it("empty string system number, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: {
+          systemNumber: " "
+        }
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
+    });
+    it("null path parameter, should return bad request", async () => {
+      const testResultsMock = jest.fn().mockResolvedValue("Success");
+      TestResultsService.prototype.getTestResultBySystemNumber = testResultsMock;
+
+      const myEvent = {
+        pathParameters: null
+      };
+
+      expect.assertions(3);
+      // @ts-ignore
+      const result = await getTestResultsBySystemNumber(myEvent);
+      expect(result).toBeInstanceOf(HTTPResponse);
+      expect(result.statusCode).toEqual(400);
+      expect(result.body).toEqual(JSON.stringify(HTTPRESPONSE.MISSING_PARAMETERS));
     });
   });
 });
