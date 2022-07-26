@@ -1,9 +1,10 @@
 import { HTTPRESPONSE } from "./assets/Enums";
-import {APIGatewayProxyResult, Callback, Context, Handler} from "aws-lambda";
+import { APIGatewayProxyResult, Callback, Context, Handler } from "aws-lambda";
 import Path from "path-parser";
 import { Configuration } from "./utils/Configuration";
 import { IFunctionEvent } from "./utils/IFunctionEvent";
 import { HTTPResponse } from "./models/HTTPResponse";
+import { ILogMessage } from "./models/ILogMessage";
 
 
 const handler: Handler = async (event: any, context: Context, callback: Callback): Promise<APIGatewayProxyResult> => {
@@ -61,8 +62,13 @@ const handler: Handler = async (event: any, context: Context, callback: Callback
 
     Object.assign(event, { pathParameters: lambdaPathParams });
 
-    console.log(`HTTP ${event.httpMethod} ${event.path} -> λ ${lambdaEvent.name}`);
+    const logMessage: ILogMessage = {
+      HTTP: `${event.httpMethod} ${event.path} -> λ ${lambdaEvent.name}`,
+      PATH_PARAMS: `${JSON.stringify(event.pathParameters)}`,
+      QUERY_PARAMS: `${JSON.stringify(event.queryStringParameters)}`
+    };
 
+    console.log(logMessage);
     // Explicit conversion because typescript can't figure it out
     return lambdaFn(event, context, callback) as Promise<APIGatewayProxyResult>;
   }
