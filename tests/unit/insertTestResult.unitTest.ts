@@ -829,7 +829,7 @@ describe("insertTestResult", () => {
   context(
     "when inserting a cancelled TRL with fields corresponding to a submitted TRL(reasonForCancelletion = null)",
     () => {
-      it("should return 200", () => {
+      it("should throw 400", () => {
         const testResult = { ...testResultsPostMock[5] };
         testResult.testStatus = "cancelled";
         testResult.reasonForCancellation = null;
@@ -860,11 +860,12 @@ describe("insertTestResult", () => {
 
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-        expect.assertions(1);
+        expect.assertions(2);
         return testResultsService
           .insertTestResult(testResult)
-          .then((data: any) => {
-            expect(data).not.toEqual(undefined);
+          .catch((error: any) => {
+            expect(error).toBeInstanceOf(HTTPError);
+            expect(error.statusCode).toEqual(400);
           });
       });
     }
@@ -1368,7 +1369,7 @@ describe("insertTestResult", () => {
   context(
     "when inserting a cancelled TRL with fields corresponding to a submitted TRL(reasonForCancelletion = null)",
     () => {
-      it("should return 200", () => {
+      it("should throw 400", () => {
         const testResult = { ...testResultsPostMock[5] };
         testResult.testStatus = "cancelled";
         testResult.reasonForCancellation = null;
@@ -1399,11 +1400,12 @@ describe("insertTestResult", () => {
 
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-        expect.assertions(1);
+        expect.assertions(2);
         return testResultsService
           .insertTestResult(testResult)
-          .then((data: any) => {
-            expect(data).not.toEqual(undefined);
+          .catch((error: { statusCode: any; body: any }) => {
+            expect(error).toBeInstanceOf(HTTPError);
+            expect(error.statusCode).toEqual(400);
           });
       });
     }

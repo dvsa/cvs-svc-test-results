@@ -40,9 +40,9 @@ export const testTypesCommonSchema = Joi.object().keys({
   })).required().allow(null),
   testCode: Joi.string().required(),
   testNumber: Joi.string().required(),
-  createdAt: Joi.string().optional().allow(null),
-  lastUpdatedAt: Joi.string().optional().allow(null),
-  certificateLink: Joi.string().optional().allow(null),
+  createdAt: Joi.string().optional(),
+  lastUpdatedAt: Joi.string().optional(),
+  certificateLink: Joi.string().optional(),
   testTypeClassification: Joi.string().required(),
   deletionFlag: Joi.boolean().optional()
 }).required();

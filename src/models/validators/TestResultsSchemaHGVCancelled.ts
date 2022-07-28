@@ -24,7 +24,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
 
 export const hgvCancelled = testResultsCommonSchema.keys({
     vrm: Joi.string().alphanum().min(1).max(8).required(),
-    reasonForCancellation: Joi.string().max(500).required().allow("", null),
+    reasonForCancellation: Joi.string().max(500).required().allow(""),
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     countryOfRegistration: Joi.string().required().allow("", null),
