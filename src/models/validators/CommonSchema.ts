@@ -18,7 +18,7 @@ export const defectsCommonSchema = Joi.object().keys({
 export const testTypesCommonSchema = Joi.object().keys({
     name: Joi.string().required(),
     testTypeName: Joi.string().required().allow("", null),
-    testTypeId: Joi.string().required().allow("", null),
+    testTypeId: Joi.string().required().allow(""),
     testTypeStartTimestamp: Joi.date().iso().required(),
     certificateNumber: Joi.string().required().allow("", null),
     prohibitionIssued: Joi.boolean().required().allow(null),
@@ -57,7 +57,7 @@ export const testResultsCommonSchema = Joi.object().keys({
     testStationType: Joi.any().only(["atf", "gvts", "hq", "potf"]).required(),
     testerName: Joi.string().max(60).required().allow("", null),
     testerEmailAddress: Joi.string().max(60).required().allow("", null),
-    testerStaffId: Joi.string().max(36).required().allow("", null),
+    testerStaffId: Joi.string().max(36).required().allow(""),
     testStartTimestamp: Joi.date().iso().required(),
     testEndTimestamp: Joi.date().iso().required(),
     testStatus: Joi.any().only(["submitted", "cancelled"]).required(),
