@@ -321,7 +321,7 @@ export class VehicleTestController implements IVehicleTestController {
       newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
         ? newTestResult.vehicleSubclass[0]
         : undefined;
-    return await this.dataProvider.getTestTypesWithTestCodesAndClassification(
+    return await this.dataProvider.updateTestTypeDetails(
       testTypes,
       {
         vehicleType,
