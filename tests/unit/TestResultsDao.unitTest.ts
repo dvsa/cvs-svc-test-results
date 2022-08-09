@@ -230,7 +230,7 @@ describe("Test Results DAO", () => {
         vehicleSize: "vehicleSizeVal",
         vehicleConfiguration: "vehicleConfigurationVal",
         vehicleAxles: null,
-        fields: "defaultTestCode,linkedTestCode,testTypeClassification",
+        fields: "defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName",
       };
       expect(callEvent.queryStringParameters).toEqual(expectsQueryParams);
       expect(callEvent.pathParameters.id).toEqual("testTypeIdVal");

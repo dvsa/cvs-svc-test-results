@@ -17,8 +17,6 @@ Please install and run the following securiy programs as part of your developmen
 - [git-secrets](https://github.com/awslabs/git-secrets)
   After installing, do a one-time set up with `git secrets --register-aws`. Run with `git secrets --scan`.
 
-- [repo-security-scanner](https://github.com/UKHomeOffice/repo-security-scanner)
-
 These will be run as part of your projects hooks so you don't accidentally introduce any new security vulnerabilities.
 
 ## Architecture

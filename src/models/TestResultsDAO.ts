@@ -156,7 +156,7 @@ export class TestResultsDAO {
     testTypeId: string,
     testTypeParams: models.TestTypeParams
   ) {
-    const fields = "defaultTestCode,linkedTestCode,testTypeClassification";
+    const fields = "defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName";
     const {
       vehicleType,
       vehicleSize,

@@ -199,6 +199,8 @@ export class MappingUtil {
       defaultTestCode,
       linkedTestCode,
       testTypeClassification,
+      name,
+      testTypeName
     } = await service.getTestCodesAndClassificationFromTestTypes(
       testTypeId,
       params
@@ -210,6 +212,8 @@ export class MappingUtil {
         testTypes.length > 1 && linkedTestCode
           ? linkedTestCode
           : defaultTestCode,
+      name,
+      testTypeName
     };
   };
 
