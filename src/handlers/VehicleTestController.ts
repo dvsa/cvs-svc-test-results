@@ -321,6 +321,7 @@ export class VehicleTestController implements IVehicleTestController {
       newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
         ? newTestResult.vehicleSubclass[0]
         : undefined;
+    const fields = "defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName"
     return await this.dataProvider.getTestTypesWithTestCodesAndClassification(
       testTypes,
       {
@@ -332,7 +333,8 @@ export class VehicleTestController implements IVehicleTestController {
         vehicleClass: newTestResult.vehicleClass.code,
         vehicleSubclass,
         vehicleWheels: newTestResult.numberOfWheelsDriven,
-      }
+      },
+      fields
     );
   }
   private static shouldGenerateNewTestCode(

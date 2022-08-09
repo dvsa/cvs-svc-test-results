@@ -169,17 +169,19 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async getTestTypesWithTestCodesAndClassification(
     testTypes: models.TestType[] = [],
-    testTypeParams: models.TestTypeParams
+    testTypeParams: models.TestTypeParams,
+    fields: string = "defaultTestCode,linkedTestCode,testTypeClassification"
   ) {
-    return await this.createNewTestTypes(testTypes, testTypeParams);
+    return await this.createNewTestTypes(testTypes, testTypeParams, fields);
   }
 
-  private async createNewTestTypes(list: any, params: any) {
+  private async createNewTestTypes(list: any, params: any, fields: string) {
     return await Promise.all(
       list.map(
         utils.MappingUtil.addTestcodeToTestTypes(
           this.testResultsDAO as models.TestResultsDAO,
-          params
+          params,
+          fields
         )
       )
     );
