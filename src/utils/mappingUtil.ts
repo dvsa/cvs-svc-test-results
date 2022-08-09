@@ -187,8 +187,7 @@ export class MappingUtil {
 
   public static addTestcodeToTestTypes = (
     service: models.TestResultsDAO,
-    params: models.TestTypeParams,
-    fields: string
+    params: models.TestTypeParams
     // not sure why Ts complains as TestType has testTypeClassification key...
   ) => async (
     testType: any,
@@ -204,8 +203,7 @@ export class MappingUtil {
       testTypeName
     } = await service.getTestCodesAndClassificationFromTestTypes(
       testTypeId,
-      params,
-      fields
+      params
     );
     return {
       ...testType,
