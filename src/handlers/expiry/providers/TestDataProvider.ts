@@ -185,6 +185,33 @@ export class TestDataProvider implements ITestDataProvider {
     );
   }
 
+  public async updateTestTypeDetails(testTypes: models.TestType[], testTypeParams: models.TestTypeParams): Promise<models.TestType[]> {
+    return await Promise.all(
+      testTypes.map(async (testType) => {
+        const { testTypeId } =  testType
+        const fields = "defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName"
+        const {
+          defaultTestCode,
+          linkedTestCode,
+          testTypeClassification,
+          name,
+          testTypeName
+        } = await this.testResultsDAO?.getTestCodesAndClassificationFromTestTypes(testTypeId, testTypeParams, fields)
+        return {
+          ...testType,
+          testTypeClassification,
+          testCode:
+            testTypes.length > 1 && linkedTestCode
+              ? linkedTestCode
+              : defaultTestCode,
+          name,
+          testTypeName
+        };
+      }
+      )
+    )
+  }
+
   public async setTestNumberForEachTestType(
     payload: models.ITestResultPayload
   ) {
