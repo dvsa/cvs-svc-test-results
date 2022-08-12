@@ -102,6 +102,8 @@ describe("updateTestResults", () => {
                     return Promise.resolve({
                       defaultTestCode: "bde",
                       testTypeClassification: "Annual With Certificate",
+                      name: "foo",
+                      testTypeName: "bar"
                     });
                   },
                 };
@@ -117,7 +119,7 @@ describe("updateTestResults", () => {
               const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
               updatedPayload.testTypes[0].testTypeName =
                 "Another test type name";
-              expect.assertions(4);
+              expect.assertions(6);
               // @ts-ignore
               const returnedRecord =
                 await vehicleTestController.mapOldTestResultToNew(
@@ -131,6 +133,8 @@ describe("updateTestResults", () => {
               expect(
                 returnedRecord.testTypes[0].testTypeClassification
               ).toEqual("Annual With Certificate");
+              expect(returnedRecord.testTypes[0].name).toEqual("foo")
+              expect(returnedRecord.testTypes[0].testTypeName).toEqual("bar")
             });
           });
 

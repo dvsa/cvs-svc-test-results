@@ -154,9 +154,9 @@ export class TestResultsDAO {
 
   public async getTestCodesAndClassificationFromTestTypes(
     testTypeId: string,
-    testTypeParams: models.TestTypeParams
+    testTypeParams: models.TestTypeParams,
+    fields: string = "defaultTestCode,linkedTestCode,testTypeClassification"
   ) {
-    const fields = "defaultTestCode,linkedTestCode,testTypeClassification";
     const {
       vehicleType,
       vehicleSize,

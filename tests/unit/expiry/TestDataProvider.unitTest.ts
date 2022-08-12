@@ -388,4 +388,23 @@ describe("TestDataProvider", () => {
       }
     });
   });
+
+context("for updateTestResult", () => {
+  it("should update the test code, the test name and the name", async() => {
+    testDataProvider = new TestDataProvider();
+    testDataProvider.testResultsDAO = {} as models.TestResultsDAO
+      testDataProvider.testResultsDAO.getTestCodesAndClassificationFromTestTypes = jest.fn(() => Promise.resolve({defaultTestCode: 'foo',
+              linkedTestCode: 'bar',
+              testTypeClassification: 'foobar',
+              name: 'baz',
+              testTypeName: 'barfoo'})
+      )
+      const output = await testDataProvider.updateTestTypeDetails([{} as models.TestType],{} as models.TestTypeParams)
+      expect(output[0].testCode).toEqual("foo")
+      expect(output[0].testTypeClassification).toEqual("foobar")
+      expect(output[0].name).toEqual("baz")
+      expect(output[0].testTypeName).toEqual("barfoo")
+  })
+})
+
 });
