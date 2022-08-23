@@ -5934,5 +5934,579 @@
     "vehicleSize": "large",
     "vehicleType": "psv",
     "vrm": "Y926OJL"
+  },
+  {
+    "vin": "JM1BF2325G0V37585",
+    "testResultId": "10e2a02d-fd20-4f4e-9e2d-6d4415b00928",
+    "vtmComment": "Annual Test: PASS, Test Type ID = 94, Vehicle = HGV",
+    "createdAt": "2022-08-19T12:51:52.917Z",
+    "euVehicleCategory": "m1",
+    "noOfAxles": 2,
+    "numberOfWheelsDriven": "4",
+    "preparerId": "No preparer ID given",
+    "reasonForCancellation": null,
+    "systemNumber": "2789832",
+    "testEndTimestamp": "2022-08-19T12:51:51.911Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T12:50:43.859Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W99A12345",
+        "createdAt": "2022-08-19T12:51:52.917Z",
+        "customDefects": null,
+        "defects": [],
+        "emissionStandard": null,
+        "fuelType": null,
+        "lastUpdatedAt": "2022-08-19T12:51:52.917Z",
+        "modificationTypeUsed": null,
+        "modType": null,
+        "name": "Annual test",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "smokeTestKLimitApplied": null,
+        "testAnniversaryDate": "2023-08-31T00:00:00.000Z",
+        "testCode": "aav2",
+        "testExpiryDate": "2023-08-31T00:00:00.000Z",
+        "testNumber": "W99A12345",
+        "testResult": "pass",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T12:51:52.457Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T12:51:34.430Z"
+      }
+    ],
+    "vehicleConfiguration": "rigid",
+    "vehicleType": "hgv",
+    "vrm": "AA02AAW"
+  },
+  {
+    "vin": "7903094",
+    "testResultId": "d2caa583-7a54-4e54-aff0-7e48585ef1cf",
+    "vtmComment": "Annual Test: FAIL with defects, Test Type ID = 94, Vehicle = HGV",
+    "noOfAxles": 4,
+    "preparerId": "No preparer ID given",
+    "systemNumber": "3982236",
+    "testEndTimestamp": "2022-08-19T12:55:28.397Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T12:52:21.091Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W99D54321",
+        "createdAt": "2022-08-19T12:55:30.178Z",
+        "customDefects": null,
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 2,
+                "horizontal": "inner",
+                "lateral": "nearside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "dangerous",
+            "deficiencyId": "a",
+            "deficiencyRef": "7.1.a.ii",
+            "deficiencySubId": "ii",
+            "deficiencyText": "of which the nominal size, ply rating, load index or speed rating of any tyre is below that appropriate for the plated axle weight and is loaded in excess of the tyre load index/ply rating.",
+            "imDescription": "Size and Type of Tyres",
+            "imNumber": 7,
+            "itemDescription": "A tyre:",
+            "itemNumber": 1,
+            "prohibitionIssued": true,
+            "prs": false,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 2,
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "c",
+            "deficiencyRef": "48.2.c",
+            "deficiencySubId": null,
+            "deficiencyText": "with excessive movement in a spring fixing pin",
+            "imDescription": "Suspension",
+            "imNumber": 48,
+            "itemDescription": "Leaf springs and fixings:",
+            "itemNumber": 2,
+            "prohibitionIssued": false,
+            "prs": false,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": null,
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": "Nearside of engine"
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": null,
+            "deficiencyRef": "44.1.i",
+            "deficiencySubId": "i",
+            "deficiencyText": "oil at a rate in excess of a 75mm diameter pool in 5 minutes or a number of leaks which collectively would deposit oil in excess of this.",
+            "imDescription": "Oil and Waste Leaks",
+            "imNumber": 44,
+            "itemDescription": "Any oil leak which can deposit",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": false,
+            "stdForProhibition": false
+          }
+        ],
+        "emissionStandard": null,
+        "fuelType": null,
+        "lastUpdatedAt": "2022-08-19T12:55:30.178Z",
+        "modificationTypeUsed": null,
+        "modType": null,
+        "name": "Annual test",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "smokeTestKLimitApplied": null,
+        "testCode": "aav4",
+        "testExpiryDate": null,
+        "testNumber": "W99D54321",
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T12:55:29.461Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T12:52:52.830Z"
+      }
+    ],
+    "vehicleType": "hgv",
+    "vrm": "AA08AAK"
+  },
+
+  {
+    "vin": "1GCHK23D07F136336",
+    "testResultId": "37c5d8ea-0ab5-43d3-9f69-dc11ec051ab2",
+    "vtmComment": "Annual Test: PRS with defects, Test Type Id = 94, Vehicle = HGV",
+    "noOfAxles": 2,
+    "preparerId": "No preparer ID given",
+    "systemNumber": "2563833",
+    "testEndTimestamp": "2022-08-19T12:57:54.468Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T12:55:40.981Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W01D21136",
+        "createdAt": "2022-08-19T12:57:55.601Z",
+        "customDefects": null,
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": null,
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "a",
+            "deficiencyRef": "27.1.a",
+            "deficiencySubId": null,
+            "deficiencyText": "missing.",
+            "imDescription": "Horn",
+            "imNumber": 27,
+            "itemDescription": "Horn control:",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": true,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 2,
+                "horizontal": "inner",
+                "lateral": "offside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "a",
+            "deficiencyRef": "7.1.a.i",
+            "deficiencySubId": "i",
+            "deficiencyText": "of which the nominal size, ply rating, load index or speed rating of any tyre is below that appropriate for the plated axle weight.",
+            "imDescription": "Size and Type of Tyres",
+            "imNumber": 7,
+            "itemDescription": "A tyre:",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": true,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "front",
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "minor",
+            "deficiencyId": "a",
+            "deficiencyRef": "23.1.a.i",
+            "deficiencySubId": "i",
+            "deficiencyText": "with an obstruction, damage or discolouration which materially affects view to the front or the sides through the area of windscreen not swept by the wipers (zone C).",
+            "imDescription": "Glass and View of the Road",
+            "imNumber": 23,
+            "itemDescription": "A Windscreen:",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": null,
+            "stdForProhibition": false
+          }
+        ],
+        "emissionStandard": null,
+        "fuelType": null,
+        "lastUpdatedAt": "2022-08-19T12:57:55.601Z",
+        "modificationTypeUsed": null,
+        "modType": null,
+        "name": "Annual test",
+        "particulateTrapFitted": null,
+        "particulateTrapSerialNumber": null,
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "smokeTestKLimitApplied": null,
+        "testAnniversaryDate": "2023-08-31T00:00:00.000Z",
+        "testCode": "aav2",
+        "testExpiryDate": "2023-08-31T00:00:00.000Z",
+        "testNumber": "W01D21136",
+        "testResult": "prs",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T12:57:55.081Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T12:56:18.463Z"
+      }
+    ],
+    "vehicleType": "hgv",
+    "vrm": "X123AAP"
+  },
+  {
+    "vin": "2202162",
+    "testResultId": "1532ea02-ed0c-41ea-a0ae-49c7796a58fe",
+    "vtmComment": "Annual Test: PASS, Test Type Id = 94, Vehicle = TRL",
+    "noOfAxles": 3,
+    "preparerId": "No preparer ID given",
+    "systemNumber": "2509676",
+    "testEndTimestamp": "2022-08-19T12:59:18.813Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T12:58:17.586Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W01D21237",
+        "createdAt": "2022-08-19T12:59:19.632Z",
+        "customDefects": null,
+        "defects": [],
+        "lastUpdatedAt": "2022-08-19T12:59:19.632Z",
+        "name": "Annual test",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "testAnniversaryDate": "2023-08-31T00:00:00.000Z",
+        "testCode": "aat3",
+        "testExpiryDate": "2023-08-31T00:00:00.000Z",
+        "testNumber": "W01D21237",
+        "testResult": "pass",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T12:59:19.364Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T12:59:12.203Z"
+      }
+    ],
+    "trailerId": "C789740",
+    "vehicleType": "trl"
+  },
+
+  {
+    "vin": "7897",
+    "testResultId": "0a4e342a-98e5-41b7-9ab4-50ae1bc26b8b",
+    "vtmComment": "Annual Test: FAIL with defects, Test Type Id = 94, Vehicle = TRL",
+    "noOfAxles": 3,
+    "preparerId": "No preparer ID given",
+    "systemNumber": "1793365",
+    "testEndTimestamp": "2022-08-19T13:02:07.302Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T12:59:28.751Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W01D21338",
+        "createdAt": "2022-08-19T13:02:09.347Z",
+        "customDefects": null,
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 2,
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "b",
+            "deficiencyRef": "48.4.b",
+            "deficiencySubId": null,
+            "deficiencyText": "fouled by other parts.",
+            "imDescription": "Suspension",
+            "imNumber": 48,
+            "itemDescription": "Air/Fluid Suspension System Valves, pipes, Valve linkage, Bellows and Displacer/Accumulator Unit:",
+            "itemNumber": 4,
+            "prohibitionIssued": false,
+            "prs": false,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": "front",
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "a",
+            "deficiencyRef": "41.1.a.i",
+            "deficiencySubId": "i",
+            "deficiencyText": "fractured, cracked, corroded, or deformed.",
+            "imDescription": "Condition of Chassis",
+            "imNumber": 41,
+            "itemDescription": "Any main or cross member or outrigger which has a load restraining device attached:",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": false,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 1,
+                "horizontal": "inner",
+                "lateral": "offside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "dangerous",
+            "deficiencyId": "d",
+            "deficiencyRef": "7.1.d",
+            "deficiencySubId": null,
+            "deficiencyText": "of a different structure to another on the same axle.",
+            "imDescription": "Size and Type of Tyres",
+            "imNumber": 7,
+            "itemDescription": "A tyre:",
+            "itemNumber": 1,
+            "prohibitionIssued": true,
+            "prs": false,
+            "stdForProhibition": true
+          }
+        ],
+        "lastUpdatedAt": "2022-08-19T13:02:09.347Z",
+        "name": "Annual test",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "testCode": "aat3",
+        "testExpiryDate": null,
+        "testNumber": "W01D21338",
+        "testResult": "fail",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T13:02:08.224Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T13:00:02.805Z"
+      }
+    ],
+    "trailerId": "A229567",
+    "vehicleType": "trl"
+  },
+  {
+    "vin": "014645",
+    "testResultId": "ac641061-9d89-48d9-9f78-fbcd88f7fed1",
+    "vtmComment": "Annual Test: PRS with defects, Test Type Id = 94, Vehicle = TRL",
+    "noOfAxles": 2,
+    "preparerId": "No preparer ID given",
+    "systemNumber": "1378942",
+    "testEndTimestamp": "2022-08-19T13:07:06.442Z",
+    "testerStaffId": "1341758d-9108-4cc9-854d-a0f339212a14",
+    "testStartTimestamp": "2022-08-19T13:03:40.946Z",
+    "testStationPNumber": "P00003",
+    "testStatus": "submitted",
+    "testTypes": [
+      {
+        "additionalCommentsForAbandon": null,
+        "additionalNotesRecorded": null,
+        "certificateNumber": "W01D21439",
+        "createdAt": "2022-08-19T13:07:07.651Z",
+        "customDefects": null,
+        "defects": [
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 2,
+                "horizontal": null,
+                "lateral": "nearside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "dangerous",
+            "deficiencyId": "c",
+            "deficiencyRef": "6.3.c.ii",
+            "deficiencySubId": "ii",
+            "deficiencyText": "with multiple wheel retaining nuts or studs missing or loose or obviously not fulfilling the function of clamping the wheel to the hub.",
+            "imDescription": "Road Wheels and Hubs",
+            "imNumber": 6,
+            "itemDescription": "A hub:",
+            "itemNumber": 3,
+            "prohibitionIssued": true,
+            "prs": true,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": {
+                "axleNumber": 1,
+                "horizontal": "inner",
+                "lateral": "offside",
+                "longitudinal": null,
+                "rowNumber": null,
+                "seatNumber": null,
+                "vertical": null
+              },
+              "notes": null
+            },
+            "deficiencyCategory": "major",
+            "deficiencyId": "b",
+            "deficiencyRef": "7.1.b",
+            "deficiencySubId": null,
+            "deficiencyText": "which has a tyre use marking inappropriate for the type of axle or vehicle to which it is fitted.",
+            "imDescription": "Size and Type of Tyres",
+            "imNumber": 7,
+            "itemDescription": "A tyre:",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": true,
+            "stdForProhibition": false
+          },
+          {
+            "additionalInformation": {
+              "location": null,
+              "notes": "Nearside"
+            },
+            "deficiencyCategory": "advisory",
+            "deficiencyId": null,
+            "deficiencyRef": "13.1",
+            "deficiencySubId": null,
+            "deficiencyText": null,
+            "imDescription": "Trailer Landing Legs",
+            "imNumber": 13,
+            "itemDescription": "A landing leg or any component part",
+            "itemNumber": 1,
+            "prohibitionIssued": false,
+            "prs": null,
+            "stdForProhibition": null
+          }
+        ],
+        "lastUpdatedAt": "2022-08-19T13:07:07.651Z",
+        "name": "Annual test",
+        "prohibitionIssued": false,
+        "reasonForAbandoning": null,
+        "secondaryCertificateNumber": null,
+        "testAnniversaryDate": "2023-08-31T00:00:00.000Z",
+        "testCode": "aat2",
+        "testExpiryDate": "2023-08-31T00:00:00.000Z",
+        "testNumber": "W01D21439",
+        "testResult": "prs",
+        "testTypeClassification": "Annual With Certificate",
+        "testTypeEndTimestamp": "2022-08-19T13:07:07.352Z",
+        "testTypeId": "94",
+        "testTypeName": "Annual test",
+        "testTypeStartTimestamp": "2022-08-19T13:04:51.765Z"
+      }
+    ],
+    "trailerId": "A250708",
+    "vehicleType": "trl"
   }
 ]
