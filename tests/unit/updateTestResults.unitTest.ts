@@ -78,6 +78,150 @@ describe("updateTestResults", () => {
               );
             });
         });
+        it("should add the old test types onto the new test type if there is only one testType", async () => {
+          const testResultMockDBWithUniqueTestNumbers = cloneDeep(testResultsMockDB[0])
+          testResultMockDBWithUniqueTestNumbers.testTypes[2].testNumber = "3"
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.resolve({});
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2021-04-22",
+                  },
+                ]);
+              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(testResultMockDBWithUniqueTestNumbers)),
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  defaultTestCode: "bde",
+                  testTypeClassification: "Annual With Certificate",
+                  name: "foo",
+                  testTypeName: "bar"
+                });
+              },
+            };
+          });
+
+          const testDataProvider = new TestDataProvider();
+          testDataProvider.testResultsDAO = new MockTestResultsDAO();
+          const vehicleTestController = new VehicleTestController(
+            testDataProvider,
+            new DateProvider()
+          );
+
+          const updatedPayload: any = cloneDeep(testResultMockDBWithUniqueTestNumbers);
+          expect(updatedPayload.testTypes.length).toBe(3)
+          updatedPayload.testTypes = updatedPayload.testTypes.slice(0, 1)
+          expect(updatedPayload.testTypes.length).toBe(1)
+          const returnedRecord =
+            await vehicleTestController.mapOldTestResultToNew(
+              updatedPayload.systemNumber,
+              updatedPayload,
+              msUserDetails
+            );
+          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).not.toEqual({});
+          expect(returnedRecord.testTypes.length).toBe(3)
+        });
+
+        it("should not add any test types onto the new test type if there is only one testType in payload and DB", async () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.resolve({});
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2021-04-22",
+                  },
+                ]);
+              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(cloneDeep(testResultsMockDB[30]))),
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  defaultTestCode: "bde",
+                  testTypeClassification: "Annual With Certificate",
+                  name: "foo",
+                  testTypeName: "bar"
+                });
+              },
+            };
+          });
+
+          const testDataProvider = new TestDataProvider();
+          testDataProvider.testResultsDAO = new MockTestResultsDAO();
+          const vehicleTestController = new VehicleTestController(
+            testDataProvider,
+            new DateProvider()
+          );
+
+          const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
+          expect(updatedPayload.testTypes.length).toBe(1)
+          const returnedRecord =
+            await vehicleTestController.mapOldTestResultToNew(
+              updatedPayload.systemNumber,
+              updatedPayload,
+              msUserDetails
+            );
+          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).not.toEqual({});
+          expect(returnedRecord.testTypes.length).toBe(1)
+        });
+
+        it("should add the old test types onto the new test type if there is only one testType", async () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.resolve({});
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2021-04-22",
+                  },
+                ]);
+              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(cloneDeep(testResultsMockDB[0]))),
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  defaultTestCode: "bde",
+                  testTypeClassification: "Annual With Certificate",
+                  name: "foo",
+                  testTypeName: "bar"
+                });
+              },
+            };
+          });
+
+          const testDataProvider = new TestDataProvider();
+          testDataProvider.testResultsDAO = new MockTestResultsDAO();
+          const vehicleTestController = new VehicleTestController(
+            testDataProvider,
+            new DateProvider()
+          );
+
+          const updatedPayload: any = cloneDeep(testResultsMockDB[0]);
+          expect(updatedPayload.testTypes.length).toBe(3)
+          const returnedRecord =
+            await vehicleTestController.mapOldTestResultToNew(
+              updatedPayload.systemNumber,
+              updatedPayload,
+              msUserDetails
+            );
+          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).not.toEqual({});
+          expect(returnedRecord.testTypes.length).toBe(3)
+        });
 
         context("when changing an attribute that requires new testCode", () => {
           context("when changing an attribute on the test-type", () => {
