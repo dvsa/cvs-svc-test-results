@@ -413,6 +413,12 @@ describe("VehicleTestController calling generateExpiryDate", () => {
         context("for hgv and trl vehicle types", () => {
             context("when there is no certificate issued for this vehicle", () => {
                 describe("with good regn/first use date strings", () => {
+                    beforeAll(() => {
+                        dateMockUtils.setupDateMock("2022-08-26T10:00:00.000Z");
+                    });
+                    afterAll(() => {
+                        dateMockUtils.restoreDateMock();
+                    });
                     it("should set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
                         hgvTestResult.testTypes[0].testTypeId = "94";
@@ -431,7 +437,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             };
                         });
 
-                        const expectedExpiryDate = moment().add(1, "years").endOf("month").endOf("day").toDate();
+                        const expectedExpiryDate = moment("2022-08-26T10:00:00.000Z").add(1, "years").endOf("month").endOf("day").toDate();
                         vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
                         // @ts-ignore
                         return vehicleTestController.generateExpiryDate(hgvTestResult)
@@ -506,9 +512,16 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                     });
                 });
                 describe("and the previous expiry date is malformed", () => {
+
+                    beforeAll(() => {
+                        dateMockUtils.setupDateMock("2022-08-26T10:00:00.000Z");
+                    });
+                    afterAll(() => {
+                        dateMockUtils.restoreDateMock();
+                    });
                     it("should still set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
-                        const pastExpiryDate = "2020-0";
+                        const pastExpiryDate = "2021-0";
                         hgvTestResult.testTypes[0].testTypeId = "94";
                         const testResultExpiredCertificateWithSameSystemNumber = cloneDeep(testResultsMockDB[15]);
                         testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
@@ -529,7 +542,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                             };
                         });
 
-                        const expectedExpiryDate = moment().add(1, "years").endOf("month").toDate();
+                        const expectedExpiryDate = moment("2022-08-26T10:00:00.000Z").add(1, "years").endOf("month").toDate();
                         vehicleTestController.dataProvider.testResultsDAO = new MockTestResultsDAO();
                         // @ts-ignore
                         return vehicleTestController.generateExpiryDate(hgvTestResult)
