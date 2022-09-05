@@ -521,7 +521,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                     });
                     it("should still set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
-                        const pastExpiryDate = "2021-0";
+                        const pastExpiryDate = "2020-0";
                         hgvTestResult.testTypes[0].testTypeId = "94";
                         const testResultExpiredCertificateWithSameSystemNumber = cloneDeep(testResultsMockDB[15]);
                         testResultExpiredCertificateWithSameSystemNumber.testTypes[0].testExpiryDate = pastExpiryDate;
