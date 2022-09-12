@@ -698,7 +698,7 @@
       {
         "name": "LEC",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeId": "39",
+        "testTypeId": "200",
         "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
         "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
         "numberOfSeatbeltsFitted": 2,
