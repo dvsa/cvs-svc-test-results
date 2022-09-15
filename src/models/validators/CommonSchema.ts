@@ -45,9 +45,7 @@ export const testTypesCommonSchema = Joi.object().keys({
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
     modificationTypeUsed: Joi.string().max(100).allow(null),
-    particulateTrapFitted: Joi.string().max(100).allow(null),
-    contingencyTestNumber: Joi.string().max(100),
-    typeOfTest: Joi.string().only("contingency", "desk-based")
+    particulateTrapFitted: Joi.string().max(100).allow(null)
 });
 
 export const testResultsCommonSchema = Joi.object().keys({
@@ -96,6 +94,8 @@ export const testResultsCommonSchema = Joi.object().keys({
     lastUpdatedAt: Joi.string().optional().allow(null),
     lastUpdatedByName: Joi.string().optional(),
     lastUpdatedById: Joi.string().optional(),
-    shouldEmailCertificate: Joi.string().optional()
+    shouldEmailCertificate: Joi.string().optional(),
+    contingencyTestNumber: Joi.string().regex(/^\d+$/).max(8).optional(),
+    typeOfTest: Joi.string().only("contingency", "desk-based").optional()
 });
 
