@@ -132,7 +132,7 @@ export class MappingUtil {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
-    if (!(payload.typeOfTest === "contingency" || payload.typeOfTest === "desk-based")) {
+    if (payload.typeOfTest !== "contingency") {
       payload.createdById = payload.testerStaffId;
       payload.createdByName = payload.testerName;
       payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
