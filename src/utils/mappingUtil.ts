@@ -131,10 +131,12 @@ export class MappingUtil {
   ): models.ITestResultPayload {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
-    payload.createdById = payload.testerStaffId;
-    payload.createdByName = payload.testerName;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
-    payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+    if (!(payload.typeOfTest === "contingency" || payload.typeOfTest === "desk-based")) {
+      payload.createdById = payload.testerStaffId;
+      payload.createdByName = payload.testerName;
+      payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+    }
     payload.testTypes.forEach((testType: any) => {
       Object.assign(testType, {
         createdAt: createdAtDate,
