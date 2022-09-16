@@ -271,7 +271,7 @@ export const TEST_TYPES_GROUP12_14: string[] = [
   "117", "108", "109", "110", "114", "71", "72", "73", "77", "80"
 ];
 
-// 39 - LEC with annual test for PSV, 45 - LEC without annual test for HGV, 44 - LEC with annual test for HGV
+// 45 - LEC without annual test for HGV, 44 - LEC with annual test for HGV, 200 - LEC with annual test for PSV, 201 - LEC without annual test for PSV
 export const TEST_TYPES_GROUP15_16: string[] = [
   "45", "44", "200", "201"
 ];
