@@ -96,7 +96,7 @@ export const testResultsCommonSchema = Joi.object().keys({
     lastUpdatedById: Joi.string().optional(),
     shouldEmailCertificate: Joi.string().optional(),
     contingencyTestNumber: Joi.string().max(8).min(6).regex(/^\d{6,8}$/).optional(),
-    typeOfTest: Joi.string().only("contingency", "desk-based", "other").optional(),
+    typeOfTest: Joi.string().only("contingency", "desk-based", "completion").optional(),
     source: Joi.string().max(10).only("vta","vtm").optional()
 });
 
