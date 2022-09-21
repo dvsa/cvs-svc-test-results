@@ -20,13 +20,13 @@ describe("For PsvRegistrationAnniversaryStrategy", () => {
   });
 
   context("for psv vehicle type", () => {
-    describe("test hgvTrlMostRecentExpiryStrategy with multiple scenarios", () => {
+    describe("test PsvRegistrationAnniversaryStrategy with multiple scenarios", () => {
       test.each`
       inputRegistrationDate | inputTestDate   | ExpectedExpiryDate
       ${"2019-07-28"}       | ${"2020-05-28"} | ${"2021-05-27"}
       ${"2019-07-28"}       | ${"2020-05-29"} | ${"2021-07-28"}
 
-      `("The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRecentExpiryDate",
+      `("The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRegistrationDate",
        ({inputRegistrationDate, inputTestDate, ExpectedExpiryDate}) => {
         const psvTestResult = cloneDeep(testResultsMockDB[4]);
         psvTestResult.testTypes.forEach((type: TestType) => {
