@@ -61,10 +61,10 @@ describe("TestResultsService calling generateExpiryDate", () => {
         ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.FAIL}         |  ${"50"}         | ${false}
         ${VEHICLE_TYPES.HGV}    |${TEST_RESULT.ABANDONED}    |  ${"50"}         | ${false}
 
-        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"200"}         | ${false}
-        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PRS}          |  ${"200"}         | ${false}
-        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.FAIL}         |  ${"200"}         | ${false}
-        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.ABANDONED}    |  ${"200"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PASS}         |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.PRS}          |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.FAIL}         |  ${"39"}         | ${false}
+        ${VEHICLE_TYPES.PSV}    |${TEST_RESULT.ABANDONED}    |  ${"39"}         | ${false}
       `("for a $vehicleType with testResult $testResult and testTypeId $testTypeId it should generate a certificate: $shouldSetCertificateNumber",
           ({ vehicleType, testResult, testTypeId, shouldSetCertificateNumber}) => {
             baseTestResult.vehicleType = vehicleType;
