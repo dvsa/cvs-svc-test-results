@@ -61,7 +61,7 @@
     "lambda-tester": "^4.0.1",
     "lodash": "^4.17.21",
     "prettier": "^2.3.2",
-    "serverless": "^2.43.1",
+    "serverless": "^3.22.0",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "5.12.0",
     "serverless-plugin-tracing": "^2.0.0",
