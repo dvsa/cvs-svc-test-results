@@ -28,7 +28,7 @@ export const hgvCancelled = testResultsCommonSchema.keys({
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any().only(["kilometres", "miles"]).required().allow(null),
     countryOfRegistration: Joi.string().required().allow("", null),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "long semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
     testTypes: Joi.array().items(testTypesSchema).required(),
     regnDate: Joi.string().allow("", null)
 });

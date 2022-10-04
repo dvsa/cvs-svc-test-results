@@ -26,4 +26,7 @@ export interface ITestResultPayload {
     testerName: string;
     testVersion?: string;
     reasonForCreation?: string;
+    contingencyTestNumber?: string
+    typeOfTest?: string;
+    source?: string
 }
