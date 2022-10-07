@@ -34,7 +34,7 @@ export const testTypesSpecialistGroup1 = testTypesCommonSchemaSpecialistTests.ke
 
 export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.keys({
   certificateNumber: Joi.string().required(),
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
+  secondaryCertificateNumber: Joi.string().alphanum().max(20).allow("", null),
   testExpiryDate: Joi.date().iso().required(),
   testAnniversaryDate: Joi.date().iso().required(),
   numberOfSeatbeltsFitted: Joi.number().required(),
@@ -43,11 +43,11 @@ export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.ke
 });
 
 export const testTypesSpecialistGroup3 = testTypesCommonSchemaSpecialistTests.keys({
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required()
+  secondaryCertificateNumber: Joi.string().alphanum().max(20).allow("", null)
 });
 
 export const testTypesSpecialistGroup4 = testTypesCommonSchemaSpecialistTests.keys({
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
+  secondaryCertificateNumber: Joi.string().alphanum().max(20).allow("", null),
   numberOfSeatbeltsFitted: Joi.number().required(),
   lastSeatbeltInstallationCheckDate: Joi.date().required(),
   seatbeltInstallationCheckDate: Joi.boolean().required()
