@@ -26,7 +26,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
 export const trlSubmitted = testResultsCommonSchema.keys({
     reasonForCancellation: Joi.string().max(500).required().allow("", null),
     countryOfRegistration: Joi.string().required().allow("", null),
-    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
+    vehicleConfiguration: Joi.any().only(["rigid", "articulated", "centre axle drawbar", "semi-car transporter", "semi-trailer", "long semi-trailer", "low loader", "other", "drawbar", "four-in-line", "dolly", "full drawbar"]).required(),
     trailerId: Joi.string().required(),
     testTypes: Joi.array().items(testTypesSchema).required(),
     firstUseDate: Joi.string().allow("", null)

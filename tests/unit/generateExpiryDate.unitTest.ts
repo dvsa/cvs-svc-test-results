@@ -415,6 +415,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                 describe("with good regn/first use date strings", () => {
                     it("should set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+                        hgvTestResult.regnDate = "2020-10-10";
                         hgvTestResult.testTypes[0].testTypeId = "94";
                         MockTestResultsDAO = jest.fn().mockImplementation(() => {
                             return {
@@ -508,6 +509,7 @@ describe("VehicleTestController calling generateExpiryDate", () => {
                 describe("and the previous expiry date is malformed", () => {
                     it("should still set the expiry date to last day of current month + 1 year", () => {
                         const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+                        hgvTestResult.regnDate = "2020-10-10";
                         const pastExpiryDate = "2020-0";
                         hgvTestResult.testTypes[0].testTypeId = "94";
                         const testResultExpiredCertificateWithSameSystemNumber = cloneDeep(testResultsMockDB[15]);

@@ -204,7 +204,7 @@ describe("Test Results DAO", () => {
   });
 
   describe("getTestCodesAndClassificationFromTestTypes function", () => {
-    it("builds correct query", () => {
+    it("builds default query if fields are not passed in", () => {
       const lambdaStub = jest.fn().mockReturnValue(undefined);
       LambdaService.invoke = lambdaStub;
       const params: TestTypeParams = {
@@ -231,6 +231,32 @@ describe("Test Results DAO", () => {
         vehicleConfiguration: "vehicleConfigurationVal",
         vehicleAxles: null,
         fields: "defaultTestCode,linkedTestCode,testTypeClassification",
+      };
+      expect(callEvent.queryStringParameters).toEqual(expectsQueryParams);
+      expect(callEvent.pathParameters.id).toEqual("testTypeIdVal");
+    });
+
+    it("builds custom query if fields are passed in", () => {
+      const lambdaStub = jest.fn().mockReturnValue(undefined);
+      LambdaService.invoke = lambdaStub;
+      const params: TestTypeParams = {
+        vehicleType: "vehicleTypeVal",
+        vehicleSize: "vehicleSizeVal",
+        vehicleConfiguration: "vehicleConfigurationVal",
+        vehicleWheels: 17,
+        vehicleAxles: null,
+        vehicleClass: null,
+        vehicleSubclass: null,
+        euVehicleCategory: null,
+      };
+      const fields = "defaultTestCode,name,linkedTestCode,testTypeClassification,testTypeName"
+      dao.getTestCodesAndClassificationFromTestTypes("testTypeIdVal", params, fields);
+
+      const callEvent = lambdaStub.mock.calls[0][1];
+      expect(callEvent.path).toEqual("/test-types/testTypeIdVal");
+      const expectsQueryParams = {
+        ...params,
+        fields
       };
       expect(callEvent.queryStringParameters).toEqual(expectsQueryParams);
       expect(callEvent.pathParameters.id).toEqual("testTypeIdVal");

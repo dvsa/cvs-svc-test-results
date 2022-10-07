@@ -113,6 +113,12 @@ export const REASON_FOR_CREATION = {
   TEST_CONDUCTED: "Test conducted"
 };
 
+export const TYPE_OF_TEST = {
+  CONTINGENCY: "contingency",
+  DESK_BASE: "desk-based",
+  COMPLETION: "completion"
+}
+
 export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
     IDS: ["122", "91", "101", "62", "63"]
 };
