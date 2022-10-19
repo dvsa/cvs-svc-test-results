@@ -41,9 +41,9 @@ export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.ke
   }),
   testExpiryDate: Joi.date().iso().required(),
   testAnniversaryDate: Joi.date().iso().required(),
-  numberOfSeatbeltsFitted: Joi.number().required(),
-  lastSeatbeltInstallationCheckDate: Joi.date().required(),
-  seatbeltInstallationCheckDate: Joi.boolean().required()
+  numberOfSeatbeltsFitted: Joi.number().required().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
+  seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
 });
 
 export const testTypesSpecialistGroup3 = testTypesCommonSchemaSpecialistTests.keys({
@@ -60,9 +60,9 @@ export const testTypesSpecialistGroup4 = testTypesCommonSchemaSpecialistTests.ke
     then:  Joi.string().alphanum().max(20).required(),
     otherwise: Joi.string().allow("", null)
   }),
-  numberOfSeatbeltsFitted: Joi.number().required(),
-  lastSeatbeltInstallationCheckDate: Joi.date().required(),
-  seatbeltInstallationCheckDate: Joi.boolean().required()
+  numberOfSeatbeltsFitted: Joi.number().required().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
+  seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
 });
 
 export const testTypesSpecialistGroup5 = testTypesCommonSchemaSpecialistTests;
