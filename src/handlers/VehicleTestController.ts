@@ -278,10 +278,10 @@ export class VehicleTestController implements IVehicleTestController {
     newTestResult.testVersion = enums.TEST_VERSION.CURRENT;
     if (payload.testTypes.length === 1) {
       const { testNumber } = payload.testTypes[0];
-      const testTypes = newTestResult.testTypes.filter(
+      const testTypesNotInPayload = newTestResult.testTypes.filter(
         (testType) => testType.testNumber !== testNumber
       );
-      payload.testTypes = testTypes.length ? [...payload.testTypes, ...testTypes] : payload.testTypes
+      payload.testTypes = testTypesNotInPayload.length ? [...payload.testTypes, ...testTypesNotInPayload] : payload.testTypes
     }
     mergeWith(newTestResult, payload, utils.MappingUtil.arrayCustomizer);
     // @ts-ignore
