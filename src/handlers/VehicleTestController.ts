@@ -289,7 +289,7 @@ export class VehicleTestController implements IVehicleTestController {
       oldTestResult,
       newTestResult
     );
-    await this.checkTestTypeStartAndEndTimestamp(oldTestResult, newTestResult);
+    await this.checkTestTypeStartAndEndTimestamp(newTestResult);
     utils.MappingUtil.cleanDefectsArrayForSpecialistTests(newTestResult);
     utils.MappingUtil.setAuditDetails(
       newTestResult,
@@ -372,84 +372,20 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   public async checkTestTypeStartAndEndTimestamp(
-    oldTestResult: models.ITestResult,
     newTestResult: models.ITestResult
   ) {
     const { testTypes } = newTestResult;
-    const { testStartTimestamp, testerStaffId, testStationPNumber } =
-      oldTestResult;
-    const params = {
-      fromStartTime: DateProvider.getStartOfDay(testStartTimestamp),
-      toStartTime: testStartTimestamp,
-      activityType: "visit",
-      testStationPNumber,
-      testerStaffId,
-    };
-    try {
-      const activities: [{ startTime: Date; endTime: Date }] =
-        await this.dataProvider.getActivity(params);
-      if (activities.length > 1) {
-        throw new models.HTTPError(500, enums.ERRORS.NoUniqueActivityFound);
-      }
-      const activity = activities[0];
-      const { startTime, endTime } = activity;
-      const isStartTimeInvalid = testTypes.some((testType) => {
-        const { testTypeStartTimestamp } = testType;
-        console.log("testTypeStartTimestamp", testTypeStartTimestamp);
-        return DateProvider.isOutsideTimePeriod(
-          testTypeStartTimestamp,
-          endTime,
-          startTime
-        );
-      });
-      if (isStartTimeInvalid) {
-        throw new models.HTTPError(
-          400,
-          VehicleTestController.mapTimestampError(
-            "testTypeStartTimestamp",
-            startTime,
-            endTime
-          )
-        );
-      }
-      const isEndTimeInvalid = testTypes.some((testType) => {
-        const { testTypeEndTimestamp } = testType;
-        console.log("testTypeEndTimestamp", testTypeEndTimestamp);
-        return DateProvider.isOutsideTimePeriod(
-          testTypeEndTimestamp,
-          endTime,
-          startTime
-        );
-      });
-      if (isEndTimeInvalid) {
-        throw new models.HTTPError(
-          400,
-          VehicleTestController.mapTimestampError(
-            "testTypeEndTimestamp",
-            startTime,
-            endTime
-          )
-        );
-      }
-      const isStartAfterEnd = testTypes.some((testType) => {
-        const { testTypeStartTimestamp, testTypeEndTimestamp } = testType;
-        return DateProvider.isAfterDate(
-          testTypeStartTimestamp,
-          testTypeEndTimestamp
-        );
-      });
-      if (isStartAfterEnd) {
-        throw new models.HTTPError(400, enums.ERRORS.StartTimeBeforeEndTime);
-      }
-    } catch (err) {
-      console.error(
-        "VehicleTestController -> checkTestTypeStartAndEndTimestamp",
-        err
+    const isStartAfterEnd = testTypes.some((testType) => {
+      const { testTypeStartTimestamp, testTypeEndTimestamp } = testType;
+      return DateProvider.isAfterDate(
+        testTypeStartTimestamp,
+        testTypeEndTimestamp
       );
-      if (err.statusCode !== 404) {
-        throw new models.HTTPError(err.statusCode, err.body);
-      }
+    });
+    if (isStartAfterEnd) {
+      throw new models.HTTPError(400, enums.ERRORS.StartTimeBeforeEndTime);
     }
+
   }
 
   private static getTestResultToArchive(
@@ -468,13 +404,6 @@ export class VehicleTestController implements IVehicleTestController {
     return testResults[0];
   }
 
-  private static mapTimestampError(
-    timeStampKey: string,
-    startTime: Date,
-    endTime: Date
-  ) {
-    return `The ${timeStampKey} must be within the visit, between ${startTime} and ${endTime}`;
-  }
   private static shouldGenerateCertificateNumber(
     testType: models.TestType,
     vehicleType: string

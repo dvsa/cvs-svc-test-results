@@ -236,51 +236,6 @@ export class TestResultsDAO {
     // });
   }
 
-  public getActivity(filters: {
-    fromStartTime: string | Date;
-    toStartTime: string | Date;
-    activityType: string;
-    testStationPNumber: string;
-    testerStaffId: string;
-  }): any {
-    const event = {
-      path: "/activities/details",
-      queryStringParameters: {
-        fromStartTime: filters.fromStartTime,
-        toStartTime: filters.toStartTime,
-        activityType: filters.activityType,
-        testStationPNumber: filters.testStationPNumber,
-        testerStaffId: filters.testerStaffId,
-      },
-      httpMethod: "GET",
-      resource: "/activities/details",
-    };
-
-    return LambdaService.invoke(
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getActivity.name,
-      event
-    );
-    // TODO Add Mocks - CVSB-19153
-    // return [
-    //   {
-    //     testerStaffId: "62ef-ccd-4f-9-b72",
-    //     testerName: "mail@mail.com",
-    //     testStationName: "Name",
-    //     activityDay: "2021-02-22",
-    //     parentId: "db1c62a8-43c3-469e-ae9a-19a43583d127",
-    //     testStationPNumber: "09-4129632",
-    //     testStationType: "gvts",
-    //     startTime: new Date(Date.now() - 1000000).toISOString(),
-    //     activityType: "unaccountable time",
-    //     // endTime: new Date(Date.now() + 1000000).toISOString(),
-    //     endTime: null,
-    //     waitReason: [],
-    //     notes: null,
-    //     testStationEmail: "mail@mail.com",
-    //     id: "d015f-c4646-49877-bc559-11d0f6dd8",
-    //   },
-    // ];
-  }
 
   public updateTestResult(
     updatedTestResult: models.ITestResult

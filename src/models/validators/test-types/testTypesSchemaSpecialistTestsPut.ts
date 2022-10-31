@@ -34,23 +34,35 @@ export const testTypesSpecialistGroup1 = testTypesCommonSchemaSpecialistTests.ke
 
 export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.keys({
   certificateNumber: Joi.string().required(),
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
+  secondaryCertificateNumber: Joi.string().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.string().alphanum().max(20).required(),
+    otherwise: Joi.string().allow("", null)
+  }),
   testExpiryDate: Joi.date().iso().required(),
   testAnniversaryDate: Joi.date().iso().required(),
-  numberOfSeatbeltsFitted: Joi.number().required(),
-  lastSeatbeltInstallationCheckDate: Joi.date().required(),
-  seatbeltInstallationCheckDate: Joi.boolean().required()
+  numberOfSeatbeltsFitted: Joi.number().required().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
+  seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
 });
 
 export const testTypesSpecialistGroup3 = testTypesCommonSchemaSpecialistTests.keys({
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required()
+  secondaryCertificateNumber: Joi.string().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.string().alphanum().max(20).required(),
+    otherwise: Joi.string().allow("", null)
+  }),
 });
 
 export const testTypesSpecialistGroup4 = testTypesCommonSchemaSpecialistTests.keys({
-  secondaryCertificateNumber: Joi.string().alphanum().max(20).required(),
-  numberOfSeatbeltsFitted: Joi.number().required(),
-  lastSeatbeltInstallationCheckDate: Joi.date().required(),
-  seatbeltInstallationCheckDate: Joi.boolean().required()
+  secondaryCertificateNumber: Joi.string().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.string().alphanum().max(20).required(),
+    otherwise: Joi.string().allow("", null)
+  }),
+  numberOfSeatbeltsFitted: Joi.number().required().allow(null),
+  lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
+  seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
 });
 
 export const testTypesSpecialistGroup5 = testTypesCommonSchemaSpecialistTests;

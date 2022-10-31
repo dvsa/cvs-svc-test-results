@@ -258,10 +258,6 @@ export class TestDataProvider implements ITestDataProvider {
       throw error;
     }
   }
-
-  public async getActivity(params: models.ActivityParams) {
-    return this.testResultsDAO?.getActivity(params);
-  }
   //#endregion
   //#region [rgba(0, 205, 30, 0.1)] Private Static functions
   private static filterTestResultsByParam(
