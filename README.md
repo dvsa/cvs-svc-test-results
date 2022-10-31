@@ -38,6 +38,7 @@ This code repository uses [serverless framework](https://www.serverless.com/fram
 You will also require to install dynamodb serverless to run your project with by running the following command `npm run tools-setup` in your preferred shell.
 Once dynamoDB is installed, you will need a local serverless profile to be created so that you can start developping locally.
 The profiles are stored under `~/.aws/credentials`.
+
 ```sh
 # ~/.aws/credentials
 
@@ -48,6 +49,7 @@ aws_access_key_id=<yourDummyAccesskey>
 aws_secret_access_key=<yourDummySecret>
 
 ```
+
 Please refer to the local development section to [configure your project locally](#developing-locally).
 
 ### Environmental variables
@@ -153,6 +155,10 @@ For the CI/CD and automation please refer to the following pages for further det
 
 - [Development process](https://wiki.dvsacloud.uk/display/HVT/CVS+Pipeline+Infrastructure)
 - [Pipeline](https://wiki.dvsacloud.uk/pages/viewpage.action?pageId=36870584)
+
+## Note on the `PUT` endpoint
+
+If the record being amended only contains one item in the `testTypes` array, the default behaviour is to map the test types in the database which were not amended back onto the record. This behaviour was introduced as part of https://github.com/dvsa/cvs-svc-test-results/pull/268.
 
 ## Contributing
 
