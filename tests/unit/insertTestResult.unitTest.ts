@@ -2081,6 +2081,7 @@ describe("insertTestResult", () => {
       it("should throw error", () => {
         const testResult = testResultsPostMock[9];
         const clonedTestResult = cloneDeep(testResult);
+        clonedTestResult.testTypes[0].certificateNumber = "123456";
         // Update the emissionStandard to an unacceptable value
         clonedTestResult.testTypes[0].emissionStandard = "testing";
 
@@ -2134,6 +2135,7 @@ describe("insertTestResult", () => {
       it("should throw error", () => {
         const testResult = testResultsPostMock[9];
         const clonedTestResult = cloneDeep(testResult);
+        clonedTestResult.testTypes[0].certificateNumber = "123456";
         // Update the modType description to an unacceptable value
         clonedTestResult.testTypes[0].modType.description = "engine change";
 
@@ -2188,6 +2190,7 @@ describe("insertTestResult", () => {
       it("should throw error", () => {
         const testResult = testResultsPostMock[9];
         const clonedTestResult = cloneDeep(testResult);
+        clonedTestResult.testTypes[0].certificateNumber = "123456";
         // Update the modType code to an unacceptable value
         clonedTestResult.testTypes[0].modType.code = "e";
 
@@ -2231,6 +2234,54 @@ describe("insertTestResult", () => {
           });
       });
     }
+  );
+
+  context(
+      "when inserting a cancelled LEC with null expiry and null certificateNumber",
+      () => {
+        it("should not throw error", () => {
+          const testResult = testResultsPostMock[8];
+          const clonedTestResult = cloneDeep(testResult);
+          clonedTestResult.testTypes[0].testExpiryDate = null;
+          clonedTestResult.testTypes[0].certificateNumber = null;
+          clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
+          clonedTestResult.testStatus = TEST_STATUS.CANCELLED;
+          delete clonedTestResult.testTypes[0].testStatus;
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              createSingle: () =>
+                  Promise.resolve({
+                    Attributes: Array.of(clonedTestResult),
+                  }),
+              createTestNumber: () => {
+                return Promise.resolve({
+                  testNumber: "W01A00209",
+                  id: "W01",
+                  certLetter: "A",
+                  sequenceNumber: "002",
+                });
+              },
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  linkedTestCode: "lcp",
+                  defaultTestCode: "lbp",
+                  testTypeClassification: "NON ANNUAL",
+                });
+              },
+            };
+          });
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+          expect.assertions(2);
+          return testResultsService
+              .insertTestResult(clonedTestResult)
+              .then((insertedTestResult: any) => {
+                expect(insertedTestResult[0].vehicleType).toEqual("psv");
+                expect(insertedTestResult[0].testResultId).toEqual("5");
+              })
+        });
+      }
   );
 
   // CVSB-7964: AC5.1- LEC testType without sending a testExpiryDate
@@ -2283,6 +2334,57 @@ describe("insertTestResult", () => {
         );
       });
     }
+  );
+
+  context(
+      "when inserting a test result for LEC test code without sending a certificateNumber and the test status is 'pass'",
+      () => {
+        it("should throw error", () => {
+          const testResult = testResultsPostMock[8];
+          const clonedTestResult = cloneDeep(testResult);
+          // Marking testExpiryDate field null for a LEC TestType
+          clonedTestResult.testTypes[0].certificateNumber = null;
+          clonedTestResult.testTypes[0].testResult = "pass";
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              createSingle: () =>
+                  Promise.resolve({
+                    Attributes: Array.of(clonedTestResult),
+                  }),
+              createTestNumber: () => {
+                return Promise.resolve({
+                  testNumber: "W01A00209",
+                  id: "W01",
+                  certLetter: "A",
+                  sequenceNumber: "002",
+                });
+              },
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  linkedTestCode: "lcp",
+                  defaultTestCode: "lbp",
+                  testTypeClassification: "NON ANNUAL",
+                });
+              },
+            };
+          });
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+          expect.assertions(3);
+          return (
+              testResultsService
+                  .insertTestResult(clonedTestResult)
+                  // tslint:disable-next-line: no-empty
+                  .then((insertedTestResult: any) => {})
+                  .catch((error: { statusCode: any; body: { errors: string[] } }) => {
+                    expect(error).toBeInstanceOf(HTTPError);
+                    expect(error.statusCode).toEqual(400);
+                    expect(error.body.errors[0]).toEqual(ERRORS.NoCertificateNumberOnLec);
+                  })
+          );
+        });
+      }
   );
 
   // CVSB-7964: AC5.3- LEC testType without sending a modType
@@ -2496,6 +2598,56 @@ describe("insertTestResult", () => {
           });
       });
     }
+  );
+
+  context(
+      "when inserting a test result for LEC test code without sending a certificateNumber and the test status is 'fail'",
+      () => {
+        it("should throw error", () => {
+          const testResult = testResultsPostMock[8];
+          const clonedTestResult = cloneDeep(testResult);
+          clonedTestResult.testTypes[0].certificateNumber = null;
+          clonedTestResult.testTypes[0].testResult = "fail";
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              createSingle: () =>
+                  Promise.resolve({
+                    Attributes: Array.of(clonedTestResult),
+                  }),
+              createTestNumber: () => {
+                return Promise.resolve({
+                  testNumber: "W01A00209",
+                  id: "W01",
+                  certLetter: "A",
+                  sequenceNumber: "002",
+                });
+              },
+              getTestCodesAndClassificationFromTestTypes: () => {
+                return Promise.resolve({
+                  linkedTestCode: "lcp",
+                  defaultTestCode: "lbp",
+                  testTypeClassification: "NON ANNUAL",
+                });
+              },
+            };
+          });
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+          expect.assertions(3);
+          return (
+            testResultsService
+              .insertTestResult(clonedTestResult)
+                // tslint:disable-next-line: no-empty
+              .then((insertedTestResult: any) => {})
+              .catch((error: { statusCode: any; body: { errors: string[] } }) => {
+                 expect(error).toBeInstanceOf(HTTPError);
+                 expect(error.statusCode).toEqual(400);
+                 expect(error.body).toEqual(ERRORS.NoCertificateNumberOnLec);
+               })
+          );
+        });
+      }
   );
 
   context(
