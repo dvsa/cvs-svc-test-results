@@ -276,6 +276,13 @@ export class VehicleTestController implements IVehicleTestController {
     const newTestResult = cloneDeep(oldTestResult);
     oldTestResult.testVersion = enums.TEST_VERSION.ARCHIVED;
     newTestResult.testVersion = enums.TEST_VERSION.CURRENT;
+    if (payload.testTypes.length === 1) {
+      const { testNumber } = payload.testTypes[0];
+      const testTypesNotInPayload = newTestResult.testTypes.filter(
+        (testType) => testType.testNumber !== testNumber
+      );
+      payload.testTypes = testTypesNotInPayload.length ? [...payload.testTypes, ...testTypesNotInPayload] : payload.testTypes
+    }
     mergeWith(newTestResult, payload, utils.MappingUtil.arrayCustomizer);
     // @ts-ignore
     newTestResult.testTypes = await this.generateNewTestCode(
