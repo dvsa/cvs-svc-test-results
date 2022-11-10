@@ -77,6 +77,9 @@ export class ValidationUtil {
     if (ValidationUtil.isPassAdrTestTypeWithoutExpiryDate(payload)) {
       throw new models.HTTPError(400, enums.ERRORS.NoExpiryDate);
     }
+    if (ValidationUtil.isFailLecTestTypeWithoutCertificateNumber(payload)) {
+      throw new models.HTTPError(400, enums.ERRORS.NoCertificateNumberOnLec);
+    }
 
     const missingMandatoryTestResultFields: string[] = ValidationUtil.validateMandatoryTestResultFields(
       payload
@@ -222,6 +225,7 @@ private static validateDates(
       .forEach((testType) => {
         const {
           testExpiryDate,
+          certificateNumber,
           modType,
           emissionStandard,
           fuelType,
@@ -229,6 +233,9 @@ private static validateDates(
         } = testType;
         if (!testExpiryDate) {
           missingFields.push(enums.ERRORS.NoLECExpiryDate);
+        }
+        if (!certificateNumber) {
+          missingFields.push(enums.ERRORS.NoCertificateNumberOnLec);
         }
         if (!modType) {
           missingFields.push(enums.ERRORS.NoModificationType);
@@ -388,6 +395,21 @@ private static validateDates(
             ValidationUtil.isTestTypeAdr(testType) &&
             testType.testResult === enums.TEST_RESULT.PASS &&
             !testType.testExpiryDate &&
+            testStatus === enums.TEST_STATUS.SUBMITTED
+        )
+      : false;
+  }
+
+  private static isFailLecTestTypeWithoutCertificateNumber(
+    payload: models.ITestResultPayload
+  ): boolean {
+    const { testTypes, testStatus } = payload;
+    return testTypes
+      ? testTypes.some(
+          (testType) =>
+            ValidationUtil.isTestTypeLec(testType) &&
+            testType.testResult === enums.TEST_RESULT.FAIL &&
+            !testType.certificateNumber &&
             testStatus === enums.TEST_STATUS.SUBMITTED
         )
       : false;

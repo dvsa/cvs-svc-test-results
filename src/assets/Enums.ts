@@ -9,6 +9,7 @@ export enum ERRORS {
     WrongVehicleTypeOnLEC = "Wrong vehicle type for conducting a LEC test",
     NoCertificateNumberOnAdr = "Certificate number not present on ADR test type",
     NoCertificateNumberOnTir = "Certificate number not present on TIR test type",
+    NoCertificateNumberOnLec = "Certificate number not present on LEC test type",
     NoExpiryDate = "Expiry date not present on ADR test type",
     IncorrectTestStatus = '"testStatus" should be one of ["submitted", "cancelled"]',
     PayloadCannotBeEmpty = "Payload cannot be empty",
