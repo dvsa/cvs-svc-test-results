@@ -20,7 +20,12 @@ export const testTypesCommonSchema = Joi.object().keys({
     testTypeName: Joi.string().required().allow("", null),
     testTypeId: Joi.string().required().allow(""),
     testTypeStartTimestamp: Joi.date().iso().required(),
-    certificateNumber: Joi.string().required().allow("", null),
+    certificateNumber:   Joi.string().when("testResult", {
+        is: "pass",
+        then: Joi.string().required().allow("", null),
+        otherwise: Joi.string().optional().allow("", null),
+    }).allow(null),
+    
     prohibitionIssued: Joi.boolean().required().allow(null),
     reasonForAbandoning: Joi.string().required().allow("", null),
     additionalNotesRecorded: Joi.string().max(500).required().allow("", null),

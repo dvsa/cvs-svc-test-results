@@ -5934,5 +5934,72 @@
     "vehicleSize": "large",
     "vehicleType": "psv",
     "vrm": "Y926OJL"
+  },
+  {
+    "vin": "1B7GG36N12S678410",
+    "vrm": "BQ91YHQ",
+    "countryOfRegistration": "gb",
+    "euVehicleCategory": "m2",
+    "odometerReading": 22222,
+    "odometerReadingUnits": "kilometres",
+    "preparerName": null,
+    "preparerId": "No preparer ID given",
+    "createdAt": "2022-11-11T00:52:16.000",
+    "testStartTimestamp": "2022-11-11T00:51:39.000",
+    "testTypes": [
+        {
+            "testCode": "cks",
+            "testResult": "fail",
+            "reasonForAbandoning": null,
+            "additionalCommentsForAbandon": null,
+            "testTypeName": "COIF retest with annual test",
+            "secondaryCertificateNumber": null,
+            "testNumber": "W01A92749",
+            "testTypeStartTimestamp": "2022-11-11T00:51:39.000",
+            "testTypeEndTimestamp": "2022-11-11T00:52:15.000",
+            "prohibitionIssued": false,
+            "seatbeltInstallationCheckDate": true,
+            "numberOfSeatbeltsFitted": 8,
+            "lastSeatbeltInstallationCheckDate": "2022-10-10T00:00:00.000",
+            "additionalNotesRecorded": null,
+            "testTypeId": "175",
+            "name": "Specialist test",
+            "createdAt": "2022-11-11T00:52:16.203Z",
+            "lastUpdatedAt": "2022-11-11T00:52:16.203Z",
+            "testTypeClassification": "Annual With Certificate",
+            "customDefects": [
+                {
+                    "referenceNumber": "ref",
+                    "defectName": "name",
+                    "defectNotes": "notes"
+                }
+            ]
+        }
+    ],
+    "testStationName": "Abshire-Kub",
+    "testStationPNumber": "09-4129632",
+    "testStationType": "gvts",
+    "testerStaffId": "10000009",
+    "testerName": "CVS Automation9",
+    "testerEmailAddress": "CVS.Automation9@dvsatest-cloud.uk",
+    "reasonForCreation": "reasonb",
+    "testResultId": "7c968a55-5da5-414d-863a-ba5997a327fc",
+    "vehicleType": "psv",
+    "testStatus": "submitted",
+    "systemNumber": "11000002",
+    "testEndTimestamp": "2022-11-11T00:52:14.616Z",
+    "vehicleClass": {
+        "code": "s",
+        "description": "small psv (ie: less than or equal to 22 seats)"
+    },
+    "noOfAxles": 2,
+    "numberOfWheelsDriven": null,
+    "regnDate": "2011-01-05",
+    "createdByName": "CVS Automation9",
+    "createdById": "10000009",
+    "numberOfSeats": 50,
+    "vehicleConfiguration": "rigid",
+    "vehicleSize": "small",
+    "reasonForCancellation": null
   }
 ]

@@ -29,18 +29,39 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object().keys({
 }).required();
 
 export const testTypesSpecialistGroup1 = testTypesCommonSchemaSpecialistTests.keys({
-  certificateNumber: Joi.string().required()
+  certificateNumber: Joi.string().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.string().required(),
+    otherwise: Joi.string().optional().allow("", null)
+  }),
 });
 
 export const testTypesSpecialistGroup2 = testTypesCommonSchemaSpecialistTests.keys({
-  certificateNumber: Joi.string().required(),
+
+  certificateNumber: Joi.string().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.string().required(),
+    otherwise: Joi.string().optional().allow("", null)
+  }),
+
   secondaryCertificateNumber: Joi.string().when("$hasTestResult", {
     is: "pass",
     then:  Joi.string().alphanum().max(20).required(),
     otherwise: Joi.string().allow("", null)
   }),
-  testExpiryDate: Joi.date().iso().required(),
-  testAnniversaryDate: Joi.date().iso().required(),
+
+  testExpiryDate: Joi.date().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.date().iso().required(),
+    otherwise: Joi.date().iso().optional().allow("", null)
+  }),
+
+  testAnniversaryDate: Joi.date().when("$hasTestResult", {
+    is: "pass",
+    then:  Joi.date().iso().required(),
+    otherwise: Joi.date().iso().optional().allow("", null)
+  }),
+
   numberOfSeatbeltsFitted: Joi.number().required().allow(null),
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
