@@ -1047,6 +1047,7 @@
             "additionalNotesRecorded": null,
             "testTypeId": "175",
             "name": "Specialist test",
+            "certificateNumber": null,
             "customDefects": [
                 {
                     "referenceNumber": "ref",
