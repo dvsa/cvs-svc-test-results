@@ -796,4 +796,48 @@ describe("updateTestResults", () => {
       });
     });
   });
+
+  context("when testing specialist test", () => {
+    context(
+      "when updating a 'fail' specialist test with blank certificate number",
+      () => {
+        it("should not return an error", () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => {
+            return {
+              updateTestResult: () => {
+                return Promise.resolve({});
+              },
+              getActivity: () => {
+                return Promise.resolve([
+                  {
+                    startTime: "2018-03-22",
+                    endTime: "2022-10-20",
+                  },
+                ]);
+              },
+              getBySystemNumber: () =>
+                Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+            };
+          });
+
+          testResultsService = new TestResultsService(
+            new MockTestResultsDAO()
+          );
+          testToUpdate = cloneDeep(testResultsMockDB[64]);
+          expect.assertions(2);
+          return testResultsService
+            .updateTestResult(
+              testToUpdate.systemNumber,
+              testToUpdate,
+              msUserDetails
+            )
+           .then((returnedRecord: any) => {
+              expect(returnedRecord).not.toEqual(undefined);
+              expect(returnedRecord).not.toEqual({});
+            });
+        });
+      }
+    );
+
+  });
 });

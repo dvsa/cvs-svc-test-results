@@ -3480,4 +3480,15 @@ describe("insertTestResult", () => {
     }
   );
 
+  context(
+    "when inserting a 'fail' Specialist test with blank certificate number",
+    () => {
+      it("should not throw an error", () => {
+        const testResult = testResultsPostMock[13];
+        expect.assertions(1);
+        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
+      });
+    }
+  );
+
 });
