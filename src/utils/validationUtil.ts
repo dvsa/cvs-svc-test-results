@@ -263,8 +263,6 @@ private static validateDates(
       countryOfRegistration,
       euVehicleCategory,
       vehicleType,
-      odometerReading,
-      odometerReadingUnits,
     } = payload;
     if (
       testTypes.every(
@@ -288,13 +286,7 @@ private static validateDates(
     ) {
       return missingMandatoryFields;
     }
-    // odometerReading and odoMeterReadingUnits are required only for HGV and PSV
-    if (odometerReading === undefined || odometerReading === null) {
-      missingMandatoryFields.push(enums.ERRORS.OdometerReadingMandatory);
-    }
-    if (!odometerReadingUnits) {
-      missingMandatoryFields.push(enums.ERRORS.OdometerReadingUnitsMandatory);
-    }
+
     return missingMandatoryFields;
   }
 

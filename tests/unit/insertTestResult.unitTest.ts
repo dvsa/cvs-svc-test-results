@@ -2591,8 +2591,6 @@ describe("insertTestResult", () => {
               expect.arrayContaining([
                 ERRORS.CountryOfRegistrationMandatory,
                 ERRORS.EuVehicleCategoryMandatory,
-                ERRORS.OdometerReadingMandatory,
-                ERRORS.OdometerReadingUnitsMandatory,
               ])
             );
           });
@@ -3434,48 +3432,6 @@ describe("insertTestResult", () => {
         testResult.odometerReading = 0;
         expect.assertions(1);
         expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(true);
-      });
-    }
-  );
-
-  context(
-    "when inserting a submitted HGV that has null in odometer reading then",
-    () => {
-      it("should throw an error", () => {
-        const testResult = testResultsPostMock[4];
-        testResult.testTypes.forEach((type: any) => {
-          type.testTypeId = "95";
-        });
-        testResult.odometerReading = null;
-        expect.assertions(2);
-        try {
-        ValidationUtil.validateInsertTestResultPayload(testResult);
-        } catch (err) {
-          expect(err.statusCode).toEqual(400);
-          console.log(err);
-          expect(err.body.errors[0]).toEqual(ERRORS.OdometerReadingMandatory);
-        }
-      });
-    }
-  );
-
-  context(
-    "when inserting a submitted HGV that has null in odometer reading then",
-    () => {
-      it("should throw an error", () => {
-        const testResult = testResultsPostMock[4];
-        testResult.testTypes.forEach((type: any) => {
-          type.testTypeId = "95";
-        });
-        delete testResult.odometerReading;
-        expect.assertions(2);
-        try {
-        ValidationUtil.validateInsertTestResultPayload(testResult);
-        } catch (err) {
-          expect(err.statusCode).toEqual(400);
-          console.log(err);
-          expect(err.body.errors[0]).toEqual(ERRORS.OdometerReadingMandatory);
-        }
       });
     }
   );

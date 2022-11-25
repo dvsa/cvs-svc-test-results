@@ -22,8 +22,6 @@ export enum ERRORS {
     EuVehicleCategoryMandatory = "\"euVehicleCategory\" is mandatory",
     NoUniqueActivityFound = "More than one activity found",
     StartTimeBeforeEndTime = "testTypeStartTimestamp must be before testTypeEndTimestamp",
-    OdometerReadingMandatory = "\"odometerReading\" is mandatory",
-    OdometerReadingUnitsMandatory = "\"odometerReadingUnits\" is mandatory",
     ExpiryConfigMissing = "Invalid Expiry config!",
     MethodNotImplemented  = "Method not implemented."
 }
@@ -117,7 +115,7 @@ export const REASON_FOR_CREATION = {
 
 export const TYPE_OF_TEST = {
   CONTINGENCY: "contingency",
-  DESK_BASE: "desk-based",
+  DESK_BASED: "desk-based",
   COMPLETION: "completion"
 }
 

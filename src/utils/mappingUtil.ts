@@ -132,10 +132,16 @@ export class MappingUtil {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
-    if (payload.typeOfTest !== enums.TYPE_OF_TEST.CONTINGENCY) {
+    if (
+      payload.typeOfTest !== enums.TYPE_OF_TEST.CONTINGENCY &&
+      payload.typeOfTest !== enums.TYPE_OF_TEST.DESK_BASED
+    ) {
       payload.createdById = payload.testerStaffId;
       payload.createdByName = payload.testerName;
-      payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+      payload.reasonForCreation =
+        payload.typeOfTest !== enums.TYPE_OF_TEST.CONTINGENCY
+          ? enums.REASON_FOR_CREATION.TEST_CONDUCTED
+          : payload.reasonForCreation;
     }
     payload.testTypes.forEach((testType: any) => {
       Object.assign(testType, {
@@ -214,5 +220,4 @@ export class MappingUtil {
           : defaultTestCode,
     };
   };
-
 }
