@@ -117,7 +117,7 @@ export const REASON_FOR_CREATION = {
 
 export const TYPE_OF_TEST = {
   CONTINGENCY: "contingency",
-  DESK_BASE: "desk-based",
+  DESK_BASED: "desk-based",
   COMPLETION: "completion"
 }
 
