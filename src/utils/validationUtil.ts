@@ -265,13 +265,15 @@ private static validateDates(
       vehicleType,
       odometerReading,
       odometerReadingUnits,
+      typeOfTest
     } = payload;
     if (
+      testStatus !== enums.TEST_STATUS.SUBMITTED ||
+      enums.TYPE_OF_TEST.DESK_BASED === typeOfTest ||
       testTypes.every(
         (testType: models.TestType) =>
-          testType.testResult === enums.TEST_RESULT.ABANDONED
-      ) ||
-      testStatus !== enums.TEST_STATUS.SUBMITTED
+        testType.testResult === enums.TEST_RESULT.ABANDONED
+        )
     ) {
       return missingMandatoryFields;
     }
