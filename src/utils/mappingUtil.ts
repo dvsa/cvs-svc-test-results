@@ -41,34 +41,36 @@ export class MappingUtil {
       } as models.ITestResultFilters;
     }
     const {
-        toDateTime,
-        fromDateTime,
-        status,
-        testResultId,
-        version,
-        testStationPNumber
-      } = event.queryStringParameters;
+      toDateTime,
+      fromDateTime,
+      status,
+      testResultId,
+      version,
+      testStationPNumber,
+    } = event.queryStringParameters;
     if (toDateTime === "" || fromDateTime === "") {
-        const errorDate = toDateTime === "" ? "toDate" : "fromDate";
-        if (subSegment) {
-          subSegment.addError(`Bad Request - ${errorDate} empty`);
-        }
-        console.error(
-          `Bad Request in getTestResultsBySystemNumber - ${errorDate} empty`
-        );
-        throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
+      const errorDate = toDateTime === "" ? "toDate" : "fromDate";
+      if (subSegment) {
+        subSegment.addError(`Bad Request - ${errorDate} empty`);
       }
+      console.error(
+        `Bad Request in getTestResultsBySystemNumber - ${errorDate} empty`
+      );
+      throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
+    }
     toDate = toDateTime ? new Date(toDateTime) : toDate;
-    fromDate = fromDateTime ? new Date(fromDateTime) :  DateProvider.getTwoYearsFromDate(toDate);
+    fromDate = fromDateTime
+      ? new Date(fromDateTime)
+      : DateProvider.getTwoYearsFromDate(toDate);
     if (status) {
-        testStatus = status;
-      }
+      testStatus = status;
+    }
     if (testResultId) {
-        resultId = testResultId;
-      }
+      resultId = testResultId;
+    }
     if (version) {
-        testVersion = version;
-      }
+      testVersion = version;
+    }
 
     const filters: models.ITestResultFilters = {
       systemNumber: event.pathParameters.systemNumber,
@@ -77,7 +79,7 @@ export class MappingUtil {
       fromDateTime: fromDate,
       testResultId: resultId,
       testVersion,
-      testStationPNumber
+      testStationPNumber,
     };
     return filters;
   }
@@ -132,11 +134,19 @@ export class MappingUtil {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
-    if (payload.typeOfTest !== enums.TYPE_OF_TEST.CONTINGENCY) {
-      payload.createdById = payload.testerStaffId;
-      payload.createdByName = payload.testerName;
-      payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+
+    switch (payload.typeOfTest) {
+      case enums.TYPE_OF_TEST.CONTINGENCY:
+        break;
+      case enums.TYPE_OF_TEST.DESK_BASED:
+        payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+        break;
+      default:
+        payload.createdById = payload.testerStaffId;
+        payload.createdByName = payload.testerName;
+        payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
     }
+
     payload.testTypes.forEach((testType: any) => {
       Object.assign(testType, {
         createdAt: createdAtDate,
@@ -187,32 +197,30 @@ export class MappingUtil {
     });
   }
 
-  public static addTestcodeToTestTypes = (
-    service: models.TestResultsDAO,
-    params: models.TestTypeParams
-    // not sure why Ts complains as TestType has testTypeClassification key...
-  ) => async (
-    testType: any,
-    _: number,
-    testTypes: models.TestType[]
-  ): Promise<models.TestType[]> => {
-    const { testTypeId } = testType;
-    const {
-      defaultTestCode,
-      linkedTestCode,
-      testTypeClassification,
-    } = await service.getTestCodesAndClassificationFromTestTypes(
-      testTypeId,
-      params
-    );
-    return {
-      ...testType,
-      testTypeClassification,
-      testCode:
-        testTypes.length > 1 && linkedTestCode
-          ? linkedTestCode
-          : defaultTestCode,
+  public static addTestcodeToTestTypes =
+    (
+      service: models.TestResultsDAO,
+      params: models.TestTypeParams
+      // not sure why Ts complains as TestType has testTypeClassification key...
+    ) =>
+    async (
+      testType: any,
+      _: number,
+      testTypes: models.TestType[]
+    ): Promise<models.TestType[]> => {
+      const { testTypeId } = testType;
+      const { defaultTestCode, linkedTestCode, testTypeClassification } =
+        await service.getTestCodesAndClassificationFromTestTypes(
+          testTypeId,
+          params
+        );
+      return {
+        ...testType,
+        testTypeClassification,
+        testCode:
+          testTypes.length > 1 && linkedTestCode
+            ? linkedTestCode
+            : defaultTestCode,
+      };
     };
-  };
-
 }
