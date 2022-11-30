@@ -132,11 +132,19 @@ export class MappingUtil {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
-    if (payload.typeOfTest !== enums.TYPE_OF_TEST.CONTINGENCY) {
-      payload.createdById = payload.testerStaffId;
-      payload.createdByName = payload.testerName;
-      payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+
+    switch (payload.typeOfTest) {
+      case enums.TYPE_OF_TEST.CONTINGENCY:
+        break;
+      case enums.TYPE_OF_TEST.DESK_BASED:
+        payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
+        break;
+      default:
+        payload.createdById = payload.testerStaffId;
+        payload.createdByName = payload.testerName;
+        payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
     }
+    
     payload.testTypes.forEach((testType: any) => {
       Object.assign(testType, {
         createdAt: createdAtDate,
