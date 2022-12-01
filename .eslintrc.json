@@ -1,12 +1,62 @@
 {
-  "extends": "standard",
-  "plugins": [
-    "mocha"
-  ],
-  "rules": {
-    "mocha/no-exclusive-tests": "error"
+  "extends": ["@dvsa/eslint-config-ts", "prettier"],
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true
+      }
+    }
   },
-  "env": {
-    "mocha": true
+  "rules": {
+    "@typescript-eslint/no-unsafe-call": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-redeclare": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/require-await": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/await-thenable": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/no-useless-constructor": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/default-param-last": "off",
+    "jest/no-conditional-expect": "off",
+    "jest/no-identical-title": "off",
+    "jest/no-commented-out-tests": "off",
+    "jest/no-jasmine-globals": "off",
+    "jest/no-standalone-expect": "off",
+    "jest/require-top-level-describe": "off",
+    "security/detect-non-literal-fs-filename": "off",
+    "security/detect-object-injection": "off",
+    "security/detect-non-literal-require": "off",
+    "security/detect-unsafe-regex": "off",
+    "array-callback-return": "off",
+    "consistent-return": "off",
+    "global-require": "off",
+    "implicit-arrow-linebreak": "off",
+    "new-cap": "off",
+    "no-param-reassign": "off",
+    "no-ex-assign": "off",
+    "no-restricted-globals": "off",
+    "no-underscore-dangle": "off",
+    "no-restricted-syntax": "off",
+    "no-await-in-loop": "off",
+    "prefer-destructuring": "off",
+    "prefer-promise-reject-errors": "off",
+    "import/no-dynamic-require": "off",
+    "import/no-cycle": "off",
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": true
+      }
+    ]
   }
 }

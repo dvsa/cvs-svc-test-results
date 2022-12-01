@@ -164,22 +164,17 @@ If the record being amended only contains one item in the `testTypes` array, the
 
 ### Hooks and code standards
 
-The projects has multiple hooks configured using [husky](https://github.com/typicode/husky#readme) which will execute the following scripts: `security-checks`, `audit`, `tslint`, `prepush`.
+The projects has multiple hooks configured using [husky](https://github.com/typicode/husky#readme) which will execute the following scripts: `commit-msg`, `pre-commit`, and `prepush`.
 The codebase uses [typescript clean code standards](https://github.com/labs42io/clean-code-typescript) as well as sonarqube for static analysis.
 
 SonarQube is available locally, please follow the instructions below if you wish to run the service locally (brew is the preferred approach).
 
-### Static code analysis
+## SonarQube Scanning
 
-_Brew_ (recommended):
+SonarQube code coverage analysis has been added as part of the git prepush hook. This is to better align with what happens in the pipeline.  
+To get it working locally, follow these steps:
 
-- Install sonarqube using brew
-- Change `sonar.host.url` to point to localhost, by default, sonar runs on `http://localhost:9000`
-- run the sonar server `sonar start`, then perform your analysis `npm run sonar-scanner`
-
-_Manual_:
-
-- [Download sonarqube](https://www.sonarqube.org/downloads/)
-- Add sonar-scanner in environment variables in your profile file add the line: `export PATH=<PATH_TO_SONAR_SCANNER>/sonar-scanner-3.3.0.1492-macosx/bin:$PATH`
-- Start the SonarQube server: `cd <PATH_TO_SONARQUBE_SERVER>/bin/macosx-universal-64 ./sonar.sh start`
-- In the microservice folder run the command: `npm run sonar-scanner`
+- Ensure SonarQube is installed. Running in a [container](https://hub.docker.com/_/sonarqube) is a great option.
+- Within SonarQube, Disable Force user authentication via Administration -> Configuration -> Security.
+- Install jq with `sudo apt install jq` or `brew install jq`.
+  When running `git push`, it will run tests followed by the SonarQube scan. If the scan fails or the unit test coverage is below 80%, the push is cancelled.
