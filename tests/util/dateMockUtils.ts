@@ -15,10 +15,9 @@ export default class DateMock {
         return currentDate;
       }
     };
-  }
+  };
 
   public static restoreDateMock = () => {
     global.Date = DateMock.realDate;
-  }
+  };
 }
-

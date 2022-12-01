@@ -1,19 +1,19 @@
-import { ValidationResult } from "joi";
-import { isArray } from "lodash";
-import * as enums from "../assets/Enums";
-import * as models from "../models";
-import { ISubSeg } from "../models/ISubSeg";
-import { HTTPError } from "../models/HTTPError";
-import { DateProvider } from "../handlers/expiry/providers/DateProvider";
+import { ValidationResult } from 'joi';
+import { isArray } from 'lodash';
+import * as enums from '../assets/Enums';
+import * as models from '../models';
+import { ISubSeg } from '../models/ISubSeg';
+import { HTTPError } from '../models/HTTPError';
+import { DateProvider } from '../handlers/expiry/providers/DateProvider';
 
 export class MappingUtil {
   public static getSubSegment(newSubSegment: string): ISubSeg | null {
     let subSegment: ISubSeg | null = null;
     if (!process.env._X_AMZN_TRACE_ID) {
-      console.log("Serverless Offline detected; skipping AWS X-Ray setup");
+      console.log('Serverless Offline detected; skipping AWS X-Ray setup');
       return subSegment;
     }
-    const AWS = require("aws-xray-sdk");
+    const AWS = require('aws-xray-sdk');
     const segment = AWS.getSegment();
     AWS.capturePromise();
     if (segment) {
@@ -24,7 +24,7 @@ export class MappingUtil {
 
   public static getTestResultsBySystemNumberFilters(
     event: any,
-    subSegment: ISubSeg | null
+    subSegment: ISubSeg | null,
   ) {
     let toDate = DateProvider.getEndOfDay();
     let fromDate = DateProvider.getTwoYearsFromDate(toDate);
@@ -41,34 +41,36 @@ export class MappingUtil {
       } as models.ITestResultFilters;
     }
     const {
-        toDateTime,
-        fromDateTime,
-        status,
-        testResultId,
-        version,
-        testStationPNumber
-      } = event.queryStringParameters;
-    if (toDateTime === "" || fromDateTime === "") {
-        const errorDate = toDateTime === "" ? "toDate" : "fromDate";
-        if (subSegment) {
-          subSegment.addError(`Bad Request - ${errorDate} empty`);
-        }
-        console.error(
-          `Bad Request in getTestResultsBySystemNumber - ${errorDate} empty`
-        );
-        throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
+      toDateTime,
+      fromDateTime,
+      status,
+      testResultId,
+      version,
+      testStationPNumber,
+    } = event.queryStringParameters;
+    if (toDateTime === '' || fromDateTime === '') {
+      const errorDate = toDateTime === '' ? 'toDate' : 'fromDate';
+      if (subSegment) {
+        subSegment.addError(`Bad Request - ${errorDate} empty`);
       }
+      console.error(
+        `Bad Request in getTestResultsBySystemNumber - ${errorDate} empty`,
+      );
+      throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
+    }
     toDate = toDateTime ? new Date(toDateTime) : toDate;
-    fromDate = fromDateTime ? new Date(fromDateTime) :  DateProvider.getTwoYearsFromDate(toDate);
+    fromDate = fromDateTime
+      ? new Date(fromDateTime)
+      : DateProvider.getTwoYearsFromDate(toDate);
     if (status) {
-        testStatus = status;
-      }
+      testStatus = status;
+    }
     if (testResultId) {
-        resultId = testResultId;
-      }
+      resultId = testResultId;
+    }
     if (version) {
-        testVersion = version;
-      }
+      testVersion = version;
+    }
 
     const filters: models.ITestResultFilters = {
       systemNumber: event.pathParameters.systemNumber,
@@ -77,17 +79,17 @@ export class MappingUtil {
       fromDateTime: fromDate,
       testResultId: resultId,
       testVersion,
-      testStationPNumber
+      testStationPNumber,
     };
     return filters;
   }
 
   public static getTestResultsByTesterStaffIdFilters(
     event: any,
-    subSegment: ISubSeg | null
+    subSegment: ISubSeg | null,
   ) {
     const BAD_REQUEST_MISSING_FIELDS =
-      "Bad request in getTestResultsByTesterStaffId - missing required parameters";
+      'Bad request in getTestResultsByTesterStaffId - missing required parameters';
     if (!event.queryStringParameters) {
       throw new HTTPError(400, enums.MESSAGES.BAD_REQUEST);
     }
@@ -117,7 +119,7 @@ export class MappingUtil {
   }
 
   public static cleanDefectsArrayForSpecialistTests(
-    testResult: models.ITestResult
+    testResult: models.ITestResult,
   ) {
     testResult.testTypes.forEach((testType: models.TestType) => {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
@@ -127,7 +129,7 @@ export class MappingUtil {
   }
 
   public static setCreatedAtAndLastUpdatedAtDates(
-    payload: models.ITestResultPayload
+    payload: models.ITestResultPayload,
   ): models.ITestResultPayload {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
@@ -157,7 +159,7 @@ export class MappingUtil {
   public static setAuditDetails(
     newTestResult: models.ITestResult,
     oldTestResult: models.ITestResult,
-    msUserDetails: models.IMsUserDetails
+    msUserDetails: models.IMsUserDetails,
   ) {
     const date = new Date().toISOString();
     newTestResult.createdAt = date;
@@ -171,8 +173,8 @@ export class MappingUtil {
     oldTestResult.lastUpdatedByName = msUserDetails.msUser;
     oldTestResult.lastUpdatedById = msUserDetails.msOid;
 
-    newTestResult.shouldEmailCertificate = "false";
-    oldTestResult.shouldEmailCertificate = "false;";
+    newTestResult.shouldEmailCertificate = 'false';
+    oldTestResult.shouldEmailCertificate = 'false;';
   }
 
   public static arrayCustomizer(objValue: any, srcValue: any) {
@@ -190,37 +192,35 @@ export class MappingUtil {
   }
 
   public static mapErrorMessage(validation: ValidationResult<any> | any) {
-    return validation.error.details.map((detail: { message: string }) => {
-      return detail.message;
-    });
+    return validation.error.details.map(
+      (detail: { message: string }) => detail.message,
+    );
   }
 
-  public static addTestcodeToTestTypes = (
-    service: models.TestResultsDAO,
-    params: models.TestTypeParams
-    // not sure why Ts complains as TestType has testTypeClassification key...
-  ) => async (
-    testType: any,
-    _: number,
-    testTypes: models.TestType[]
-  ): Promise<models.TestType[]> => {
-    const { testTypeId } = testType;
-    const {
-      defaultTestCode,
-      linkedTestCode,
-      testTypeClassification,
-    } = await service.getTestCodesAndClassificationFromTestTypes(
-      testTypeId,
-      params
-    );
-    return {
-      ...testType,
-      testTypeClassification,
-      testCode:
-        testTypes.length > 1 && linkedTestCode
-          ? linkedTestCode
-          : defaultTestCode,
+  public static addTestcodeToTestTypes =
+    (
+      service: models.TestResultsDAO,
+      params: models.TestTypeParams,
+      // not sure why Ts complains as TestType has testTypeClassification key...
+    ) =>
+    async (
+      testType: any,
+      _: number,
+      testTypes: models.TestType[],
+    ): Promise<models.TestType[]> => {
+      const { testTypeId } = testType;
+      const { defaultTestCode, linkedTestCode, testTypeClassification } =
+        await service.getTestCodesAndClassificationFromTestTypes(
+          testTypeId,
+          params,
+        );
+      return {
+        ...testType,
+        testTypeClassification,
+        testCode:
+          testTypes.length > 1 && linkedTestCode
+            ? linkedTestCode
+            : defaultTestCode,
+      };
     };
-  };
-
 }

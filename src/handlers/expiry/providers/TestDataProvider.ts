@@ -1,21 +1,21 @@
-import { Service } from "../../../models/injector/ServiceDecorator";
-import * as enums from "../../../assets/Enums";
-import * as models from "../../../models";
-import * as utils from "../../../utils";
-import { DateProvider } from "./DateProvider";
-import { ITestDataProvider } from "./ITestDataProvider";
+import { Service } from '../../../models/injector/ServiceDecorator';
+import * as enums from '../../../assets/Enums';
+import * as models from '../../../models';
+import * as utils from '../../../utils';
+import { DateProvider } from './DateProvider';
+import { ITestDataProvider } from './ITestDataProvider';
 
 @Service()
 export class TestDataProvider implements ITestDataProvider {
   public testResultsDAO: models.TestResultsDAO | undefined;
 
-  //#region [rgba(52, 152, 219, 0.15)] Public functions
+  // #region [rgba(52, 152, 219, 0.15)] Public functions
   /**
    * To fetch test results by systemNumber
    * @param filters filters used to search the database
    */
   public async getTestResultBySystemNumber(
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     try {
       this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
@@ -26,15 +26,15 @@ export class TestDataProvider implements ITestDataProvider {
       return TestDataProvider.applyTestResultsFilters(testResults, filters);
     } catch (error) {
       console.error(
-        "TestDataProvider.getTestResultBySystemNumber: error-> ",
-        error
+        'TestDataProvider.getTestResultBySystemNumber: error-> ',
+        error,
       );
       throw error;
     }
   }
 
   public async getTestResultByTesterStaffId(
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     try {
       this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
@@ -42,21 +42,18 @@ export class TestDataProvider implements ITestDataProvider {
       if (result && !result.length) {
         return result;
       }
-      return TestDataProvider.applyTestResultsFilters(
-        result as models.ITestResult[],
-        filters
-      );
+      return TestDataProvider.applyTestResultsFilters(result, filters);
     } catch (error) {
       console.error(
-        "TestDataProvider.getTestResultBySystemNumber: error-> ",
-        error
+        'TestDataProvider.getTestResultBySystemNumber: error-> ',
+        error,
       );
       throw error;
     }
   }
 
   public async getTestHistory(
-    systemNumber: string
+    systemNumber: string,
   ): Promise<models.ITestResult[]> {
     const fromDateTime = new Date(1970, 1, 1);
     const toDateTime = new Date();
@@ -74,10 +71,10 @@ export class TestDataProvider implements ITestDataProvider {
         return result;
       }
       return result.filter(
-        (test) => test.testStatus === enums.TEST_STATUS.SUBMITTED
+        (test) => test.testStatus === enums.TEST_STATUS.SUBMITTED,
       );
     } catch (error) {
-      console.log("TestDataProvider.getTestHistory: error -> ", error);
+      console.log('TestDataProvider.getTestHistory: error -> ', error);
       throw error;
     }
   }
@@ -85,7 +82,7 @@ export class TestDataProvider implements ITestDataProvider {
   public async getBySystemNumber(systemNumber: string) {
     const filters: models.ITestResultFilters = { systemNumber };
     const data = (await this.testResultsDAO?.getBySystemNumber(
-      filters
+      filters,
     )) as models.ITestResult[];
     console.log(data);
     return data;
@@ -95,7 +92,7 @@ export class TestDataProvider implements ITestDataProvider {
     let maxDate = DateProvider.getEpoc();
     const testResults = await this.getTestHistory(systemNumber);
     console.log(
-      `getMostRecentExpiryDate: Filtered Data Count -> ${testResults?.length}`
+      `getMostRecentExpiryDate: Filtered Data Count -> ${testResults?.length}`,
     );
 
     const filteredTestTypeDates: any[] = [];
@@ -104,19 +101,19 @@ export class TestDataProvider implements ITestDataProvider {
         if (
           testCode &&
           TestDataProvider.isValidTestCodeForExpiryCalculation(
-            testCode.toUpperCase()
+            testCode.toUpperCase(),
           ) &&
           testExpiryDate &&
           DateProvider.isValidDate(testExpiryDate)
         ) {
           console.log(
-            `getMostRecentExpiryDate: Filtered Date -> ${testExpiryDate}`
+            `getMostRecentExpiryDate: Filtered Date -> ${testExpiryDate}`,
           );
           filteredTestTypeDates.push(DateProvider.getInstance(testExpiryDate));
         }
         if (testExpiryDate && !DateProvider.isValidDate(testExpiryDate)) {
           console.warn(
-            `getMostRecentExpiryDate: Invalid Expiry Date -> systemNumber: ${systemNumber} testExpiryDate: ${testExpiryDate}`
+            `getMostRecentExpiryDate: Invalid Expiry Date -> systemNumber: ${systemNumber} testExpiryDate: ${testExpiryDate}`,
           );
         }
       });
@@ -129,28 +126,28 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static isValidTestCodeForExpiryCalculation(
-    testCode: string
+    testCode: string,
   ): boolean {
     return enums.TEST_CODES_FOR_CALCULATING_EXPIRY.CODES.includes(testCode);
   }
 
   private static applyTestResultsFilters(
     testResults: models.ITestResult[],
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): models.ITestResult[] {
     const { testStatus, testResultId, testVersion } = filters;
     testResults = this.filterTestResultsByDeletionFlag(testResults);
     testResults = this.filterTestTypesByDeletionFlag(testResults);
     testResults = this.filterTestResultsByParam(
       testResults,
-      "testStatus",
-      testStatus
+      'testStatus',
+      testStatus,
     );
 
     if (!testResultId) {
       testResults = this.filterTestResultsByTestVersion(
         testResults,
-        enums.TEST_VERSION.CURRENT
+        enums.TEST_VERSION.CURRENT,
       );
       testResults = this.removeTestHistory(testResults);
       return testResults;
@@ -158,8 +155,8 @@ export class TestDataProvider implements ITestDataProvider {
 
     testResults = this.filterTestResultsByParam(
       testResults,
-      "testResultId",
-      testResultId
+      'testResultId',
+      testResultId,
     );
 
     testResults = this.filterTestResultsByTestVersion(testResults, testVersion);
@@ -169,34 +166,42 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async getTestTypesWithTestCodesAndClassification(
     testTypes: models.TestType[] = [],
-    testTypeParams: models.TestTypeParams
+    testTypeParams: models.TestTypeParams,
   ) {
-    return await this.createNewTestTypes(testTypes, testTypeParams);
+    return this.createNewTestTypes(testTypes, testTypeParams);
   }
 
   private async createNewTestTypes(list: any, params: any) {
-    return await Promise.all(
+    return Promise.all(
       list.map(
         utils.MappingUtil.addTestcodeToTestTypes(
           this.testResultsDAO as models.TestResultsDAO,
-          params
-        )
-      )
+          params,
+        ),
+      ),
     );
   }
 
-  public async updateTestTypeDetails(testTypes: models.TestType[], testTypeParams: models.TestTypeParams): Promise<models.TestType[]> {
-    return await Promise.all(
+  public async updateTestTypeDetails(
+    testTypes: models.TestType[],
+    testTypeParams: models.TestTypeParams,
+  ): Promise<models.TestType[]> {
+    return Promise.all(
       testTypes.map(async (testType) => {
-        const { testTypeId } =  testType
-        const fields = "defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName"
+        const { testTypeId } = testType;
+        const fields =
+          'defaultTestCode,linkedTestCode,testTypeClassification,name,testTypeName';
         const {
           defaultTestCode,
           linkedTestCode,
           testTypeClassification,
           name,
-          testTypeName
-        } = await this.testResultsDAO?.getTestCodesAndClassificationFromTestTypes(testTypeId, testTypeParams, fields)
+          testTypeName,
+        } = await this.testResultsDAO?.getTestCodesAndClassificationFromTestTypes(
+          testTypeId,
+          testTypeParams,
+          fields,
+        );
         return {
           ...testType,
           testTypeClassification,
@@ -205,15 +210,14 @@ export class TestDataProvider implements ITestDataProvider {
               ? linkedTestCode
               : defaultTestCode,
           name,
-          testTypeName
+          testTypeName,
         };
-      }
-      )
-    )
+      }),
+    );
   }
 
   public async setTestNumberForEachTestType(
-    payload: models.ITestResultPayload
+    payload: models.ITestResultPayload,
   ) {
     const { testTypes } = payload;
 
@@ -221,20 +225,20 @@ export class TestDataProvider implements ITestDataProvider {
       return payload;
     }
 
-    return await this.createNewTestNumber(testTypes);
+    return this.createNewTestNumber(testTypes);
   }
 
   private async createNewTestNumber(
-    list: models.TestType[]
+    list: models.TestType[],
   ): Promise<models.TestType[]> {
-    return await Promise.all(
+    return Promise.all(
       list.map(async (testType) => {
         const { testNumber } = await this.testResultsDAO?.createTestNumber();
         return {
           ...testType,
           testNumber,
         } as models.TestType;
-      })
+      }),
     );
   }
 
@@ -245,25 +249,26 @@ export class TestDataProvider implements ITestDataProvider {
       utils.LoggingUtil.logDefectsReporting(payload);
       return result.Attributes as models.ITestResult[];
     } catch (error) {
-      console.error("TestDataProvider.insertTestResult -> ", error);
+      console.error('TestDataProvider.insertTestResult -> ', error);
       throw error;
     }
   }
 
   public async updateTestResult(payload: models.ITestResult) {
     try {
-      return this.testResultsDAO?.updateTestResult(payload);
+      return await this.testResultsDAO?.updateTestResult(payload);
     } catch (error) {
-      console.error("TestDataProvider.updateTestResult -> ", error);
+      console.error('TestDataProvider.updateTestResult -> ', error);
       throw error;
     }
   }
-  //#endregion
-  //#region [rgba(0, 205, 30, 0.1)] Private Static functions
+
+  // #endregion
+  // #region [rgba(0, 205, 30, 0.1)] Private Static functions
   private static filterTestResultsByParam(
     testResults: models.ITestResult[],
     filterName: string,
-    filterValue: any
+    filterValue: any,
   ): models.ITestResult[] {
     return filterValue
       ? testResults.filter((testResult) => {
@@ -276,21 +281,21 @@ export class TestDataProvider implements ITestDataProvider {
   private static filterTestResultByDate(
     testResults: models.ITestResult[],
     fromDateTime: string | number | Date,
-    toDateTime: string | number | Date
+    toDateTime: string | number | Date,
   ): models.ITestResult[] {
     return testResults.filter((testResult) =>
       DateProvider.isBetweenDates(
         testResult.testStartTimestamp,
         testResult.testEndTimestamp,
         fromDateTime,
-        toDateTime
-      )
+        toDateTime,
+      ),
     );
   }
 
   private static filterTestResultsByTestVersion(
     testResults: models.ITestResult[],
-    testVersion: string = enums.TEST_VERSION.CURRENT
+    testVersion: string = enums.TEST_VERSION.CURRENT,
   ): models.ITestResult[] {
     let result: models.ITestResult[] = [];
     if (testVersion === enums.TEST_VERSION.ALL) {
@@ -327,23 +332,23 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static filterTestResultsByDeletionFlag(
-    testResults: models.ITestResult[]
+    testResults: models.ITestResult[],
   ) {
-    return testResults.filter((testResult) => {
-      return !testResult.deletionFlag === true;
-    });
+    return testResults.filter(
+      (testResult) => !testResult.deletionFlag === true,
+    );
   }
 
   private static filterTestTypesByDeletionFlag(
-    testResults: models.ITestResult[]
+    testResults: models.ITestResult[],
   ) {
     testResults.forEach((testResult) => {
-      const filteredTestTypes = testResult.testTypes.filter((testType) => {
-        return !testType.deletionFlag === true;
-      });
+      const filteredTestTypes = testResult.testTypes.filter(
+        (testType) => !testType.deletionFlag === true,
+      );
       testResult.testTypes = filteredTestTypes;
     });
     return testResults;
   }
-  //#endregion
+  // #endregion
 }

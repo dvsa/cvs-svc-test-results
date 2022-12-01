@@ -1,14 +1,14 @@
-import { TestResultsDAO } from "../models/TestResultsDAO";
-import { TestResultsService } from "../services/TestResultsService";
-import { HTTPResponse } from "../models/HTTPResponse";
-import { MESSAGES } from "../assets/Enums";
-import { MappingUtil } from "../utils/mappingUtil";
+import { TestResultsDAO } from '../models/TestResultsDAO';
+import { TestResultsService } from '../services/TestResultsService';
+import { HTTPResponse } from '../models/HTTPResponse';
+import { MESSAGES } from '../assets/Enums';
+import { MappingUtil } from '../utils/mappingUtil';
 
 export async function updateTestResults(event: {
   pathParameters: { systemNumber: any };
   body: any;
 }) {
-  const subseg = MappingUtil.getSubSegment("updateTestResults");
+  const subseg = MappingUtil.getSubSegment('updateTestResults');
   const testResultsDAO = new TestResultsDAO();
   const testResultsService = new TestResultsService(testResultsDAO);
 
@@ -18,29 +18,29 @@ export async function updateTestResults(event: {
 
   try {
     if (!testResult) {
-      const errorMessage = MESSAGES.BAD_REQUEST + " testResult not provided";
+      const errorMessage = `${MESSAGES.BAD_REQUEST} testResult not provided`;
       if (subseg) {
         subseg.addError(errorMessage);
       }
-      return Promise.resolve(new HTTPResponse(400, errorMessage));
+      return await Promise.resolve(new HTTPResponse(400, errorMessage));
     }
     if (!msUserDetails || !msUserDetails.msUser || !msUserDetails.msOid) {
-      const errorMessage = MESSAGES.BAD_REQUEST + " msUserDetails not provided";
+      const errorMessage = `${MESSAGES.BAD_REQUEST} msUserDetails not provided`;
       if (subseg) {
         subseg.addError(errorMessage);
       }
-      return Promise.resolve(new HTTPResponse(400, errorMessage));
+      return await Promise.resolve(new HTTPResponse(400, errorMessage));
     }
 
     try {
       const data = await testResultsService.updateTestResult(
         systemNumber,
         testResult,
-        msUserDetails
+        msUserDetails,
       );
       return new HTTPResponse(200, data);
     } catch (error) {
-      console.log("Error in updateTestResults > updateTestResults: ", error);
+      console.log('Error in updateTestResults > updateTestResults: ', error);
       if (subseg) {
         subseg.addError(error.body);
       }

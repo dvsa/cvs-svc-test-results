@@ -1,6 +1,6 @@
-import { IExpiryDateStrategy } from "./expiry/IExpiryDateStrategy";
-import { TestTypeForExpiry } from "../models/TestTypeforExpiry";
+import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
+import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 
 export interface IVehicleTestController {
-    getExpiryStrategy(testType: TestTypeForExpiry): IExpiryDateStrategy;
+  getExpiryStrategy(testType: TestTypeForExpiry): IExpiryDateStrategy;
 }

@@ -1,56 +1,60 @@
 /* global describe context it */
-import {validateInvocationResponse} from "../../src/utils/validateInvocationResponse";
+import { validateInvocationResponse } from '../../src/utils/validateInvocationResponse';
 
-describe("validateInvocationResponse", () => {
-
-  context("when response payload is missing", () => {
-    it("should throw an error", () => {
+describe('validateInvocationResponse', () => {
+  context('when response payload is missing', () => {
+    it('should throw an error', () => {
       try {
         validateInvocationResponse({
-          Payload: "",
-          StatusCode: 500
+          Payload: '',
+          StatusCode: 500,
         });
       } catch (error) {
-        expect(error.statusCode).toEqual(500);
+        expect(error.statusCode).toBe(500);
       }
     });
   });
 
-  context("when payload is not a valid JSON", () => {
-    it("should throw a 500 error", () => {
+  context('when payload is not a valid JSON', () => {
+    it('should throw a 500 error', () => {
       try {
         validateInvocationResponse({
           Payload: '{"headers:123}',
-          StatusCode: 500
+          StatusCode: 500,
         });
       } catch (error) {
-        expect(error.statusCode).toEqual(500);
-        expect(error.body).toEqual('Lambda invocation returned bad data: {"headers:123}');
+        expect(error.statusCode).toBe(500);
+        expect(error.body).toBe(
+          'Lambda invocation returned bad data: {"headers:123}',
+        );
       }
     });
   });
 
-  context("when payload status code is >= 400", () => {
-    it("should throw an error", () => {
+  context('when payload status code is >= 400', () => {
+    it('should throw an error', () => {
       try {
         validateInvocationResponse({
           StatusCode: 404,
-          Payload: '{"statusCode":404,"body":"No resources match the search criteria"}'
+          Payload:
+            '{"statusCode":404,"body":"No resources match the search criteria"}',
         });
       } catch (error) {
-        expect(error.statusCode).toEqual(404);
-        expect(error.body).toEqual("Lambda invocation returned error: 404 No resources match the search criteria");
+        expect(error.statusCode).toBe(404);
+        expect(error.body).toBe(
+          'Lambda invocation returned error: 404 No resources match the search criteria',
+        );
       }
     });
   });
 
-  context("when payload is valid", () => {
-    it("should return the payload parsed", () => {
+  context('when payload is valid', () => {
+    it('should return the payload parsed', () => {
       const parsedPayload = validateInvocationResponse({
         StatusCode: 200,
-        Payload: '{"statusCode":200,"body":"{}"}'
+        Payload: '{"statusCode":200,"body":"{}"}',
       });
-      expect(parsedPayload.statusCode).toEqual(200);
+      expect(parsedPayload.statusCode).toBe(200);
     });
   });
 });

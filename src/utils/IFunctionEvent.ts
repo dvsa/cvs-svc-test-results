@@ -1,5 +1,5 @@
-import {Handler} from "aws-lambda";
-import { HTTPMethods } from "../assets/Enums";
+import { Handler } from 'aws-lambda';
+import { HTTPMethods } from '../assets/Enums';
 /**
  * Configuration class for retrieving project config
  */

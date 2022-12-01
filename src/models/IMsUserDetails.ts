@@ -1,4 +1,4 @@
 export interface IMsUserDetails {
-    msUser: string;
-    msOid: string;
+  msUser: string;
+  msOid: string;
 }
