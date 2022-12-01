@@ -144,7 +144,7 @@ export class MappingUtil {
         payload.createdByName = payload.testerName;
         payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
     }
-    
+
     payload.testTypes.forEach((testType: any) => {
       Object.assign(testType, {
         createdAt: createdAtDate,
