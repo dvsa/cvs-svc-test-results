@@ -18,7 +18,7 @@
     "test-i": "npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts'",
     "security-checks": "git secrets --scan",
     "lint:fix": "eslint '*/**/*.ts' --fix",
-    "lint": "eslint '*/**/*.ts'",
+    "lint": "eslint '*/**/*.ts' -f json -o .reports/eslint/eslint-report.json",
     "format": "prettier --write .",
     "commit-msg": "commitlint --edit",
     "pre-commit": "npm run security-checks && npm run audit && npm run format && npm run lint",
