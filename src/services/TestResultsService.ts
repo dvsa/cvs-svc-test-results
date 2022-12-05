@@ -1,8 +1,8 @@
-import * as enums from "../assets/Enums";
-import * as models from "../models";
-import { VehicleTestController } from "../handlers/VehicleTestController";
-import { TestDataProvider } from "../handlers/expiry/providers/TestDataProvider";
-import { DateProvider } from "../handlers/expiry/providers/DateProvider";
+import * as enums from '../assets/Enums';
+import * as models from '../models';
+import { VehicleTestController } from '../handlers/VehicleTestController';
+import { TestDataProvider } from '../handlers/expiry/providers/TestDataProvider';
+import { DateProvider } from '../handlers/expiry/providers/DateProvider';
 
 /**
  * Service for retrieving and creating Test Results from/into the db
@@ -10,26 +10,27 @@ import { DateProvider } from "../handlers/expiry/providers/DateProvider";
  */
 export class TestResultsService {
   public readonly testResultsDAO: models.TestResultsDAO;
+
   public vehicleTestController: VehicleTestController;
 
   constructor(testResultsDAO: models.TestResultsDAO) {
     this.testResultsDAO = testResultsDAO;
     this.vehicleTestController = models.Injector.resolve<VehicleTestController>(
       VehicleTestController,
-      [TestDataProvider, DateProvider]
+      [TestDataProvider, DateProvider],
     );
     this.vehicleTestController.dataProvider.testResultsDAO =
       this.testResultsDAO;
   }
 
-  //#region [rgba(52, 152, 219, 0.15)] Public functions
+  // #region [rgba(52, 152, 219, 0.15)] Public functions
 
   public async getTestResultBySystemNumber(
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     try {
       return await this.vehicleTestController.getTestResultBySystemNumber(
-        filters
+        filters,
       );
     } catch (error) {
       return TestResultsService.handleError(error);
@@ -37,11 +38,11 @@ export class TestResultsService {
   }
 
   public async getTestResultsByTesterStaffId(
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): Promise<any> {
     try {
       return await this.vehicleTestController.getTestResultByTestStaffId(
-        filters
+        filters,
       );
     } catch (error) {
       return TestResultsService.handleError(error);
@@ -51,17 +52,17 @@ export class TestResultsService {
   public async updateTestResult(
     systemNumber: string,
     payload: models.ITestResult,
-    msUserDetails: models.IMsUserDetails
+    msUserDetails: models.IMsUserDetails,
   ) {
     try {
       const result = await this.vehicleTestController.updateTestResult(
         systemNumber,
         payload,
-        msUserDetails
+        msUserDetails,
       );
       return result;
     } catch (error) {
-      console.error("TestResultService.updateTestResult ->", error);
+      console.error('TestResultService.updateTestResult ->', error);
       return Promise.reject(error);
     }
   }
@@ -71,7 +72,7 @@ export class TestResultsService {
       const result = await this.vehicleTestController.insertTestResult(payload);
       return result;
     } catch (error) {
-      console.error("TestResultService.insertTestResult ->", error);
+      console.error('TestResultService.insertTestResult ->', error);
       const rejection = [201, 400].includes(error.statusCode)
         ? error
         : new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR);
@@ -85,7 +86,7 @@ export class TestResultsService {
     const httpError = error as models.HTTPError;
     if (!(httpError && [400, 404].includes(httpError.statusCode))) {
       return Promise.reject(
-        new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR)
+        new models.HTTPError(500, enums.MESSAGES.INTERNAL_SERVER_ERROR),
       );
     }
     return Promise.reject(error);

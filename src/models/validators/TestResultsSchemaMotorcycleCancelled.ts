@@ -1,3 +1,4 @@
-import {testResultsCommonSchemaSpecialistTestsCancelled} from "./SpecialistTestsCommonSchemaCancelled";
+import { testResultsCommonSchemaSpecialistTestsCancelled } from './SpecialistTestsCommonSchemaCancelled';
 
-export const motorcycleCancelled = testResultsCommonSchemaSpecialistTestsCancelled;
+export const motorcycleCancelled =
+  testResultsCommonSchemaSpecialistTestsCancelled;

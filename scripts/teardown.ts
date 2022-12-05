@@ -1,4 +1,4 @@
-import { killTestSetup } from "./destroyServices";
+import { killTestSetup } from './destroyServices';
 
 module.exports = async () => {
   console.log(`
@@ -11,10 +11,10 @@ module.exports = async () => {
 
   try {
     await killTestSetup();
-    console.log("processes killed");
+    console.log('processes killed');
     process.exit(0);
   } catch (e) {
-    console.log("Can not kill processes");
+    console.log('Can not kill processes');
     console.error(e);
     throw e;
   }

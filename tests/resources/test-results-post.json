@@ -832,9 +832,7 @@
     "testEndTimestamp": "2019-11-07T12:21:49.752Z",
     "testStatus": "submitted",
     "reasonForCancellation": null,
-    "vehicleSubclass": [
-      "string"
-    ],
+    "vehicleSubclass": ["string"],
     "vrm": "CT70VRL",
     "odometerReading": 123,
     "odometerReadingUnits": "kilometres",
@@ -914,9 +912,7 @@
     "preparerId": "No preparer ID given",
     "preparerName": "",
     "euVehicleCategory": "n1",
-    "vehicleSubclass": [
-      "string"
-    ],
+    "vehicleSubclass": ["string"],
     "countryOfRegistration": "gb",
     "noOfAxles": 2,
     "testTypes": [
@@ -1032,31 +1028,31 @@
     "createdAt": "2022-11-11T00:52:16.000",
     "testStartTimestamp": "2022-11-11T00:51:39.000",
     "testTypes": [
-        {
-            "testResult": "fail",
-            "reasonForAbandoning": null,
-            "additionalCommentsForAbandon": null,
-            "testTypeName": "COIF retest with annual test",
-            "secondaryCertificateNumber": null,
-            "testTypeStartTimestamp": "2022-11-11T00:51:39.000",
-            "testTypeEndTimestamp": "2022-11-11T00:52:15.000",
-            "prohibitionIssued": false,
-            "seatbeltInstallationCheckDate": true,
-            "numberOfSeatbeltsFitted": 8,
-            "lastSeatbeltInstallationCheckDate": "2022-10-10T00:00:00.000",
-            "additionalNotesRecorded": null,
-            "testTypeId": "175",
-            "name": "Specialist test",
-            "certificateNumber": null,
-            "customDefects": [
-                {
-                    "referenceNumber": "ref",
-                    "defectName": "name",
-                    "defectNotes": "notes"
-                }
-            ],
-            "defects": []
-        }
+      {
+        "testResult": "fail",
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "testTypeName": "COIF retest with annual test",
+        "secondaryCertificateNumber": null,
+        "testTypeStartTimestamp": "2022-11-11T00:51:39.000",
+        "testTypeEndTimestamp": "2022-11-11T00:52:15.000",
+        "prohibitionIssued": false,
+        "seatbeltInstallationCheckDate": true,
+        "numberOfSeatbeltsFitted": 8,
+        "lastSeatbeltInstallationCheckDate": "2022-10-10T00:00:00.000",
+        "additionalNotesRecorded": null,
+        "testTypeId": "175",
+        "name": "Specialist test",
+        "certificateNumber": null,
+        "customDefects": [
+          {
+            "referenceNumber": "ref",
+            "defectName": "name",
+            "defectNotes": "notes"
+          }
+        ],
+        "defects": []
+      }
     ],
     "testStationName": "Abshire-Kub",
     "testStationPNumber": "09-4129632",
@@ -1071,8 +1067,8 @@
     "systemNumber": "11000002",
     "testEndTimestamp": "2022-11-11T00:52:14.616Z",
     "vehicleClass": {
-        "code": "s",
-        "description": "small psv (ie: less than or equal to 22 seats)"
+      "code": "s",
+      "description": "small psv (ie: less than or equal to 22 seats)"
     },
     "noOfAxles": 2,
     "numberOfWheelsDriven": null,

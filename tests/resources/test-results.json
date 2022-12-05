@@ -3168,8 +3168,8 @@
         "testTypeName": "Annual test",
         "seatbeltInstallationCheckDate": true,
         "additionalNotesRecorded": "VEHICLE FRONT ROW SECOND SEAT HAS MISSING SEATBELT",
-        "customDefects": [ ],
-        "defects": [ ],
+        "customDefects": [],
+        "defects": [],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "pass",
@@ -4158,12 +4158,8 @@
         "additionalNotesRecorded": "Test notes",
         "certificateNumber": null,
         "createdAt": "2021-04-07T13:31:26.304Z",
-        "customDefects": [
-
-        ],
-        "defects": [
-
-        ],
+        "customDefects": [],
+        "defects": [],
         "emissionStandard": "0.10 g/kWh Euro 3 PM",
         "fuelType": "diesel",
         "lastUpdatedAt": "2021-04-07T13:31:26.304Z",
@@ -4236,12 +4232,8 @@
         "additionalNotesRecorded": "Test notes",
         "certificateNumber": null,
         "createdAt": "2021-04-06T11:33:26.429Z",
-        "customDefects": [
-
-        ],
-        "defects": [
-
-        ],
+        "customDefects": [],
+        "defects": [],
         "emissionStandard": "0.10 g/kWh Euro 3 PM",
         "fuelType": "diesel",
         "lastUpdatedAt": "2021-04-06T11:33:26.429Z",
@@ -5947,35 +5939,35 @@
     "createdAt": "2022-11-11T00:52:16.000",
     "testStartTimestamp": "2022-11-11T00:51:39.000",
     "testTypes": [
-        {
-            "testCode": "cks",
-            "testResult": "fail",
-            "reasonForAbandoning": null,
-            "additionalCommentsForAbandon": null,
-            "testTypeName": "COIF retest with annual test",
-            "secondaryCertificateNumber": null,
-            "testNumber": "W01A92749",
-            "testTypeStartTimestamp": "2022-11-11T00:51:39.000",
-            "testTypeEndTimestamp": "2022-11-11T00:52:15.000",
-            "prohibitionIssued": false,
-            "seatbeltInstallationCheckDate": true,
-            "numberOfSeatbeltsFitted": 8,
-            "lastSeatbeltInstallationCheckDate": "2022-10-10T00:00:00.000",
-            "additionalNotesRecorded": null,
-            "testTypeId": "175",
-            "name": "Specialist test",
-            "createdAt": "2022-11-11T00:52:16.203Z",
-            "lastUpdatedAt": "2022-11-11T00:52:16.203Z",
-            "testTypeClassification": "Annual With Certificate",
-            "certificateNumber": null,
-            "customDefects": [
-                {
-                    "referenceNumber": "ref",
-                    "defectName": "name",
-                    "defectNotes": "notes"
-                }
-            ]
-        }
+      {
+        "testCode": "cks",
+        "testResult": "fail",
+        "reasonForAbandoning": null,
+        "additionalCommentsForAbandon": null,
+        "testTypeName": "COIF retest with annual test",
+        "secondaryCertificateNumber": null,
+        "testNumber": "W01A92749",
+        "testTypeStartTimestamp": "2022-11-11T00:51:39.000",
+        "testTypeEndTimestamp": "2022-11-11T00:52:15.000",
+        "prohibitionIssued": false,
+        "seatbeltInstallationCheckDate": true,
+        "numberOfSeatbeltsFitted": 8,
+        "lastSeatbeltInstallationCheckDate": "2022-10-10T00:00:00.000",
+        "additionalNotesRecorded": null,
+        "testTypeId": "175",
+        "name": "Specialist test",
+        "createdAt": "2022-11-11T00:52:16.203Z",
+        "lastUpdatedAt": "2022-11-11T00:52:16.203Z",
+        "testTypeClassification": "Annual With Certificate",
+        "certificateNumber": null,
+        "customDefects": [
+          {
+            "referenceNumber": "ref",
+            "defectName": "name",
+            "defectNotes": "notes"
+          }
+        ]
+      }
     ],
     "testStationName": "Abshire-Kub",
     "testStationPNumber": "09-4129632",
@@ -5990,8 +5982,8 @@
     "systemNumber": "233567",
     "testEndTimestamp": "2022-11-11T00:52:14.616Z",
     "vehicleClass": {
-        "code": "s",
-        "description": "small psv (ie: less than or equal to 22 seats)"
+      "code": "s",
+      "description": "small psv (ie: less than or equal to 22 seats)"
     },
     "noOfAxles": 2,
     "numberOfWheelsDriven": null,

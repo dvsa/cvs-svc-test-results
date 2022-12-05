@@ -1,0 +1,22 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npm run prepush
+npm run sonar-scanner
+GREEN=$'\e[0;32m'
+RED=$'\e[0;31m'
+NC=$'\e[0m'
+projectKey=$(cat '.scannerwork/report-task.txt' | grep projectKey | cut -f2,3 -d "=")
+sonarServer=$(cat '.scannerwork/report-task.txt' | grep serverUrl | cut -f2,3 -d "=")
+taskUrl=$(cat '.scannerwork/report-task.txt' | grep ceTaskUrl | cut -f2,3 -d "=")
+scanStatus=$(curl -s $taskUrl | jq -r .task.status)
+if [ $scanStatus != 'SUCCESS' ]; then
+  echo "${RED}Scan failed.${NC}"
+  exit 1
+fi
+coverage=$(curl -L -s ${sonarServer}/api/measures/component\?metricKeys\=coverage\&component\=${projectKey} | jq -r '.component.measures[].value')
+if (( $(echo "$coverage < 80" |bc -l) )); then
+  echo "${RED}Coverage below 80%.${NC}"
+  exit 1
+fi
+echo "${GREEN}Scan completed with suitable coverage.${NC}"

@@ -1,28 +1,26 @@
-import { TestResultsService } from "../../src/services/TestResultsService";
-import { HTTPError } from "../../src/models/HTTPError";
-import testResults from "../resources/test-results.json";
-import { ERRORS, MESSAGES } from "../../src/assets/Enums";
-import { cloneDeep } from "lodash";
-import { MappingUtil } from "../../src/utils/mappingUtil";
-import { ValidationUtil } from "../../src/utils/validationUtil";
-import { VehicleTestController } from "../../src/handlers/VehicleTestController";
-import { TestDataProvider } from "../../src/handlers/expiry/providers/TestDataProvider";
-import { DateProvider } from "../../src/handlers/expiry/providers/DateProvider";
+import { cloneDeep } from 'lodash';
+import { TestResultsService } from '../../src/services/TestResultsService';
+import { HTTPError } from '../../src/models/HTTPError';
+import testResults from '../resources/test-results.json';
+import { ERRORS, MESSAGES } from '../../src/assets/Enums';
+import { MappingUtil } from '../../src/utils/mappingUtil';
+import { ValidationUtil } from '../../src/utils/validationUtil';
+import { VehicleTestController } from '../../src/handlers/VehicleTestController';
+import { TestDataProvider } from '../../src/handlers/expiry/providers/TestDataProvider';
+import { DateProvider } from '../../src/handlers/expiry/providers/DateProvider';
 
-describe("updateTestResults", () => {
+describe('updateTestResults', () => {
   let testResultsService: TestResultsService | any;
   let MockTestResultsDAO: jest.Mock;
   let testResultsMockDB: any;
   let testToUpdate: any;
   const msUserDetails = {
-    msUser: "dorel",
-    msOid: "123456",
+    msUser: 'dorel',
+    msOid: '123456',
   };
   beforeEach(() => {
     testResultsMockDB = testResults;
-    MockTestResultsDAO = jest.fn().mockImplementation(() => {
-      return {};
-    });
+    MockTestResultsDAO = jest.fn().mockImplementation(() => ({}));
     testResultsService = new TestResultsService(new MockTestResultsDAO());
     testToUpdate = cloneDeep(testResultsMockDB[30]);
   });
@@ -34,27 +32,22 @@ describe("updateTestResults", () => {
     MockTestResultsDAO.mockReset();
   });
 
-  context("when trying to update a test-result", () => {
-    context("and the payload is valid", () => {
-      context("and the test-result is found", () => {
-        it("should return the updated test-result", () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.resolve({});
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2021-04-22",
-                  },
-                ]);
-              },
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(cloneDeep(testToUpdate))),
-            };
-          });
+  context('when trying to update a test-result', () => {
+    context('and the payload is valid', () => {
+      context('and the test-result is found', () => {
+        it('should return the updated test-result', () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+          }));
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           expect.assertions(9);
@@ -62,228 +55,208 @@ describe("updateTestResults", () => {
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
             .then((returnedRecord: any) => {
-              expect(returnedRecord).not.toEqual(undefined);
+              expect(returnedRecord).toBeDefined();
               expect(returnedRecord).not.toEqual({});
-              expect(returnedRecord).toHaveProperty("createdAt");
-              expect(returnedRecord).toHaveProperty("createdById");
-              expect(returnedRecord).toHaveProperty("createdByName");
-              expect(returnedRecord).toHaveProperty("testVersion");
-              expect(returnedRecord.testVersion).toEqual("current");
-              expect(returnedRecord).toHaveProperty("testHistory");
-              expect(returnedRecord.testHistory[0].testVersion).toEqual(
-                "archived"
+              expect(returnedRecord).toHaveProperty('createdAt');
+              expect(returnedRecord).toHaveProperty('createdById');
+              expect(returnedRecord).toHaveProperty('createdByName');
+              expect(returnedRecord).toHaveProperty('testVersion');
+              expect(returnedRecord.testVersion).toBe('current');
+              expect(returnedRecord).toHaveProperty('testHistory');
+              expect(returnedRecord.testHistory[0].testVersion).toBe(
+                'archived',
               );
             });
         });
-        it("should add the old test types onto the new test type if there is only one testType", async () => {
-          const testResultMockDBWithUniqueTestNumbers = cloneDeep(testResultsMockDB[0])
-          testResultMockDBWithUniqueTestNumbers.testTypes[2].testNumber = "3"
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.resolve({});
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2021-04-22",
-                  },
-                ]);
-              },
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(testResultMockDBWithUniqueTestNumbers)),
-              getTestCodesAndClassificationFromTestTypes: () => {
-                return Promise.resolve({
-                  defaultTestCode: "bde",
-                  testTypeClassification: "Annual With Certificate",
-                  name: "foo",
-                  testTypeName: "bar"
-                });
-              },
-            };
-          });
+        it('should add the old test types onto the new test type if there is only one testType', async () => {
+          const testResultMockDBWithUniqueTestNumbers = cloneDeep(
+            testResultsMockDB[0],
+          );
+          testResultMockDBWithUniqueTestNumbers.testTypes[2].testNumber = '3';
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(testResultMockDBWithUniqueTestNumbers)),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                defaultTestCode: 'bde',
+                testTypeClassification: 'Annual With Certificate',
+                name: 'foo',
+                testTypeName: 'bar',
+              }),
+          }));
 
           const testDataProvider = new TestDataProvider();
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           const vehicleTestController = new VehicleTestController(
             testDataProvider,
-            new DateProvider()
+            new DateProvider(),
           );
 
-          const updatedPayload: any = cloneDeep(testResultMockDBWithUniqueTestNumbers);
-          expect(updatedPayload.testTypes.length).toBe(3)
-          updatedPayload.testTypes = updatedPayload.testTypes.slice(0, 1)
-          expect(updatedPayload.testTypes.length).toBe(1)
+          const updatedPayload: any = cloneDeep(
+            testResultMockDBWithUniqueTestNumbers,
+          );
+          expect(updatedPayload.testTypes).toHaveLength(3);
+          updatedPayload.testTypes = updatedPayload.testTypes.slice(0, 1);
+          expect(updatedPayload.testTypes).toHaveLength(1);
           const returnedRecord =
             await vehicleTestController.mapOldTestResultToNew(
               updatedPayload.systemNumber,
               updatedPayload,
-              msUserDetails
+              msUserDetails,
             );
-          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).toBeDefined();
           expect(returnedRecord).not.toEqual({});
-          expect(returnedRecord.testTypes.length).toBe(3)
+          expect(returnedRecord.testTypes).toHaveLength(3);
         });
 
-        it("should not add any test types onto the new test type if there is only one testType in payload and DB", async () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.resolve({});
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2021-04-22",
-                  },
-                ]);
-              },
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(cloneDeep(testResultsMockDB[30]))),
-              getTestCodesAndClassificationFromTestTypes: () => {
-                return Promise.resolve({
-                  defaultTestCode: "bde",
-                  testTypeClassification: "Annual With Certificate",
-                  name: "foo",
-                  testTypeName: "bar"
-                });
-              },
-            };
-          });
+        it('should not add any test types onto the new test type if there is only one testType in payload and DB', async () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(cloneDeep(testResultsMockDB[30]))),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                defaultTestCode: 'bde',
+                testTypeClassification: 'Annual With Certificate',
+                name: 'foo',
+                testTypeName: 'bar',
+              }),
+          }));
 
           const testDataProvider = new TestDataProvider();
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           const vehicleTestController = new VehicleTestController(
             testDataProvider,
-            new DateProvider()
+            new DateProvider(),
           );
 
           const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
-          expect(updatedPayload.testTypes.length).toBe(1)
+          expect(updatedPayload.testTypes).toHaveLength(1);
           const returnedRecord =
             await vehicleTestController.mapOldTestResultToNew(
               updatedPayload.systemNumber,
               updatedPayload,
-              msUserDetails
+              msUserDetails,
             );
-          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).toBeDefined();
           expect(returnedRecord).not.toEqual({});
-          expect(returnedRecord.testTypes.length).toBe(1)
+          expect(returnedRecord.testTypes).toHaveLength(1);
         });
 
-        it("should add the old test types onto the new test type if there is only one testType", async () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.resolve({});
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2021-04-22",
-                  },
-                ]);
-              },
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(cloneDeep(testResultsMockDB[0]))),
-              getTestCodesAndClassificationFromTestTypes: () => {
-                return Promise.resolve({
-                  defaultTestCode: "bde",
-                  testTypeClassification: "Annual With Certificate",
-                  name: "foo",
-                  testTypeName: "bar"
-                });
-              },
-            };
-          });
+        it('should add the old test types onto the new test type if there is only one testType', async () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(cloneDeep(testResultsMockDB[0]))),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                defaultTestCode: 'bde',
+                testTypeClassification: 'Annual With Certificate',
+                name: 'foo',
+                testTypeName: 'bar',
+              }),
+          }));
 
           const testDataProvider = new TestDataProvider();
           testDataProvider.testResultsDAO = new MockTestResultsDAO();
           const vehicleTestController = new VehicleTestController(
             testDataProvider,
-            new DateProvider()
+            new DateProvider(),
           );
 
           const updatedPayload: any = cloneDeep(testResultsMockDB[0]);
-          expect(updatedPayload.testTypes.length).toBe(3)
+          expect(updatedPayload.testTypes).toHaveLength(3);
           const returnedRecord =
             await vehicleTestController.mapOldTestResultToNew(
               updatedPayload.systemNumber,
               updatedPayload,
-              msUserDetails
+              msUserDetails,
             );
-          expect(returnedRecord).not.toEqual(undefined);
+          expect(returnedRecord).toBeDefined();
           expect(returnedRecord).not.toEqual({});
-          expect(returnedRecord.testTypes.length).toBe(3)
+          expect(returnedRecord.testTypes).toHaveLength(3);
         });
 
-        context("when changing an attribute that requires new testCode", () => {
-          context("when changing an attribute on the test-type", () => {
-            it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", async () => {
+        context('when changing an attribute that requires new testCode', () => {
+          context('when changing an attribute on the test-type', () => {
+            it('should call getTestCodesAndClassificationFromTestTypes and return the new testCode', async () => {
               const systemNumber = testToUpdate.systemNumber;
-              MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                return {
-                  updateTestResult: () => {
-                    return Promise.resolve({});
-                  },
-                  getActivity: () => {
-                    return Promise.resolve([
-                      {
-                        startTime: "2018-03-22",
-                        endTime: "2021-04-22",
-                      },
-                    ]);
-                  },
-                  getBySystemNumber: () =>
-                    Promise.resolve(Array.of(cloneDeep(testToUpdate))),
-                  getTestCodesAndClassificationFromTestTypes: () => {
-                    return Promise.resolve({
-                      defaultTestCode: "bde",
-                      testTypeClassification: "Annual With Certificate",
-                      name: "foo",
-                      testTypeName: "bar"
-                    });
-                  },
-                };
-              });
+              MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+                updateTestResult: () => Promise.resolve({}),
+                getActivity: () =>
+                  Promise.resolve([
+                    {
+                      startTime: '2018-03-22',
+                      endTime: '2021-04-22',
+                    },
+                  ]),
+                getBySystemNumber: () =>
+                  Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+                getTestCodesAndClassificationFromTestTypes: () =>
+                  Promise.resolve({
+                    defaultTestCode: 'bde',
+                    testTypeClassification: 'Annual With Certificate',
+                    name: 'foo',
+                    testTypeName: 'bar',
+                  }),
+              }));
 
               const testDataProvider = new TestDataProvider();
               testDataProvider.testResultsDAO = new MockTestResultsDAO();
               const vehicleTestController = new VehicleTestController(
                 testDataProvider,
-                new DateProvider()
+                new DateProvider(),
               );
 
               const updatedPayload: any = cloneDeep(testResultsMockDB[30]);
               updatedPayload.testTypes[0].testTypeName =
-                "Another test type name";
+                'Another test type name';
               expect.assertions(6);
               // @ts-ignore
               const returnedRecord =
                 await vehicleTestController.mapOldTestResultToNew(
                   updatedPayload.systemNumber,
                   updatedPayload,
-                  msUserDetails
+                  msUserDetails,
                 );
-              expect(returnedRecord).not.toEqual(undefined);
+              expect(returnedRecord).toBeDefined();
               expect(returnedRecord).not.toEqual({});
-              expect(returnedRecord.testTypes[0].testCode).toEqual("bde");
-              expect(
-                returnedRecord.testTypes[0].testTypeClassification
-              ).toEqual("Annual With Certificate");
-              expect(returnedRecord.testTypes[0].name).toEqual("foo")
-              expect(returnedRecord.testTypes[0].testTypeName).toEqual("bar")
+              expect(returnedRecord.testTypes[0].testCode).toBe('bde');
+              expect(returnedRecord.testTypes[0].testTypeClassification).toBe(
+                'Annual With Certificate',
+              );
+              expect(returnedRecord.testTypes[0].name).toBe('foo');
+              expect(returnedRecord.testTypes[0].testTypeName).toBe('bar');
             });
           });
 
           context(
-            "when changing an attribute on the test-result object regarding vehicle details",
+            'when changing an attribute on the test-result object regarding vehicle details',
             () => {
               // it("should call getTestCodesAndClassificationFromTestTypes and return the new testCode", () => {
               //   MockTestResultsDAO = jest.fn().mockImplementation(() => {
@@ -336,82 +309,72 @@ describe("updateTestResults", () => {
               //       ).toEqual("Annual No Certificate");
               //     });
               // });
-            }
+            },
           );
         });
 
-        context("and when changing testTypeStartTimestamp", () => {
+        context('and when changing testTypeStartTimestamp', () => {
           context(
-            "and the testTypeStartTimestamp is after the testTypeStartTimestamp",
+            'and the testTypeStartTimestamp is after the testTypeStartTimestamp',
             () => {
-              it("should return error 400 testTypeStartTimestamp must be before testTypeEndTimestamp", () => {
-                MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                  return {
-                    getBySystemNumber: () => {
-                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
-                    },
-                  };
-                });
+              it('should return error 400 testTypeStartTimestamp must be before testTypeEndTimestamp', () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+                  getBySystemNumber: () =>
+                    Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+                }));
                 testResultsService = new TestResultsService(
-                  new MockTestResultsDAO()
+                  new MockTestResultsDAO(),
                 );
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
-                  "2021-01-14T16:00:33.987Z";
+                  '2021-01-14T16:00:33.987Z';
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
-                  "2021-01-14T18:00:33.987Z";
+                  '2021-01-14T18:00:33.987Z';
                 expect.assertions(3);
                 return testResultsService
                   .updateTestResult(
                     testToUpdate.systemNumber,
                     testToUpdate,
-                    msUserDetails
+                    msUserDetails,
                   )
                   .catch((errorResponse: { statusCode: any; body: any }) => {
                     expect(errorResponse).toBeInstanceOf(HTTPError);
-                    expect(errorResponse.statusCode).toEqual(400);
+                    expect(errorResponse.statusCode).toBe(400);
                     expect(errorResponse.body).toEqual(
-                      ERRORS.StartTimeBeforeEndTime
+                      ERRORS.StartTimeBeforeEndTime,
                     );
                   });
               });
-            }
+            },
           );
           context(
-            "and the getActivity function throws a 404 Not Found error",
+            'and the getActivity function throws a 404 Not Found error',
             () => {
-              it("should skip the validation for testTypeStart/EndTimestamp and accept the values from the payload", () => {
-                MockTestResultsDAO = jest.fn().mockImplementation(() => {
-                  return {
-                    getActivity: () => {
-                      return Promise.reject({
-                        statusCode: 404,
-                        body: ERRORS.NoResourceMatch,
-                      });
-                    },
-                    getBySystemNumber: () => {
-                      return Promise.resolve(Array.of(cloneDeep(testToUpdate)));
-                    },
-                    updateTestResult: () => {
-                      return Promise.resolve({});
-                    },
-                    getTestCodesAndClassificationFromTestTypes: () => {
-                      return Promise.resolve({
-                        defaultTestCode: "lbp",
-                        testTypeClassification: "Annual No Certificate",
-                      });
-                    },
-                  };
-                });
+              it('should skip the validation for testTypeStart/EndTimestamp and accept the values from the payload', () => {
+                MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+                  getActivity: () =>
+                    Promise.reject({
+                      statusCode: 404,
+                      body: ERRORS.NoResourceMatch,
+                    }),
+                  getBySystemNumber: () =>
+                    Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+                  updateTestResult: () => Promise.resolve({}),
+                  getTestCodesAndClassificationFromTestTypes: () =>
+                    Promise.resolve({
+                      defaultTestCode: 'lbp',
+                      testTypeClassification: 'Annual No Certificate',
+                    }),
+                }));
 
                 const dataProvider = new TestDataProvider();
                 dataProvider.testResultsDAO = new MockTestResultsDAO();
                 const vehicleTestController = new VehicleTestController(
                   dataProvider,
-                  new DateProvider()
+                  new DateProvider(),
                 );
                 const expectedTestTypeStartTimestamp =
-                  "2021-12-28T09:26:58.477Z";
-                const expectedTestTypeEndTimestamp = "2021-12-28T18:00:00.000Z";
+                  '2021-12-28T09:26:58.477Z';
+                const expectedTestTypeEndTimestamp = '2021-12-28T18:00:00.000Z';
                 testToUpdate.testTypes[0].testTypeStartTimestamp =
                   expectedTestTypeStartTimestamp;
                 testToUpdate.testTypes[0].testTypeEndTimestamp =
@@ -422,73 +385,66 @@ describe("updateTestResults", () => {
                   .mapOldTestResultToNew(
                     testToUpdate.systemNumber,
                     testToUpdate,
-                    msUserDetails
+                    msUserDetails,
                   )
                   .then((returnedRecord: any) => {
-                    expect(returnedRecord).not.toEqual(undefined);
+                    expect(returnedRecord).toBeDefined();
                     expect(returnedRecord).not.toEqual({});
                     expect(
-                      returnedRecord.testTypes[0].testTypeStartTimestamp
+                      returnedRecord.testTypes[0].testTypeStartTimestamp,
                     ).toEqual(expectedTestTypeStartTimestamp);
                     expect(
-                      returnedRecord.testTypes[0].testTypeEndTimestamp
+                      returnedRecord.testTypes[0].testTypeEndTimestamp,
                     ).toEqual(expectedTestTypeEndTimestamp);
                   });
               });
-            }
+            },
           );
-
         });
       });
 
-      context("when updateTestResultDAO throws error", () => {
-        it("should throw an error 500-Internal Error", () => {
+      context('when updateTestResultDAO throws error', () => {
+        it('should throw an error 500-Internal Error', () => {
           const existingTest = cloneDeep(testToUpdate);
-          existingTest.testHistory = ["previously archived test"];
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.reject({
-                  statusCode: 500,
-                  message: MESSAGES.INTERNAL_SERVER_ERROR,
-                });
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2021-04-22",
-                  },
-                ]);
-              },
-              getBySystemNumber: () => Promise.resolve(Array.of(existingTest)),
-            };
-          });
+          existingTest.testHistory = ['previously archived test'];
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () =>
+              Promise.reject({
+                statusCode: 500,
+                message: MESSAGES.INTERNAL_SERVER_ERROR,
+              }),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () => Promise.resolve(Array.of(existingTest)),
+          }));
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           expect.assertions(3);
           return testResultsService
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
             .catch((errorResponse: { statusCode: any; body: any }) => {
               expect(errorResponse).toBeInstanceOf(HTTPError);
-              expect(errorResponse.statusCode).toEqual(500);
+              expect(errorResponse.statusCode).toBe(500);
               expect(errorResponse.body).toEqual(
-                MESSAGES.INTERNAL_SERVER_ERROR
+                MESSAGES.INTERNAL_SERVER_ERROR,
               );
             });
         });
       });
 
-      context("when no data was found", () => {
-        it("should throw an error 404-No resources match the search criteria", () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              getBySystemNumber: () => Promise.resolve([]),
-            };
-          });
+      context('when no data was found', () => {
+        it('should throw an error 404-No resources match the search criteria', () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            getBySystemNumber: () => Promise.resolve([]),
+          }));
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           expect.assertions(3);
@@ -496,26 +452,24 @@ describe("updateTestResults", () => {
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
             .catch((errorResponse: { statusCode: any; body: any }) => {
               expect(errorResponse).toBeInstanceOf(HTTPError);
-              expect(errorResponse.statusCode).toEqual(404);
-              expect(errorResponse.body).toEqual(
-                "No resources match the search criteria"
+              expect(errorResponse.statusCode).toBe(404);
+              expect(errorResponse.body).toBe(
+                'No resources match the search criteria',
               );
             });
         });
       });
 
-      context("when could not uniquely identify the test to update", () => {
-        it("should throw an error 404-No resources match the search criteria", () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(testResultsMockDB[0])),
-            };
-          });
+      context('when could not uniquely identify the test to update', () => {
+        it('should throw an error 404-No resources match the search criteria', () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(testResultsMockDB[0])),
+          }));
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           expect.assertions(3);
@@ -523,81 +477,71 @@ describe("updateTestResults", () => {
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
             .catch((errorResponse: { statusCode: any; body: any }) => {
               expect(errorResponse).toBeInstanceOf(HTTPError);
-              expect(errorResponse.statusCode).toEqual(404);
-              expect(errorResponse.body).toEqual(
-                "No resources match the search criteria"
+              expect(errorResponse.statusCode).toBe(404);
+              expect(errorResponse.body).toBe(
+                'No resources match the search criteria',
               );
             });
         });
       });
     });
 
-    context("and the payload is invalid", () => {
+    context('and the payload is invalid', () => {
       context(
-        "and an attempt to update a test without a mandatory field is done",
+        'and an attempt to update a test without a mandatory field is done',
         () => {
-          it("should return error 400 Invalid payload", () => {
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              return {
-                updateTestResult: () => {
-                  return Promise.resolve({});
-                },
-                getBySystemNumber: () =>
-                  Promise.resolve(Array.of(testToUpdate)),
-              };
-            });
+          it('should return error 400 Invalid payload', () => {
+            MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+              updateTestResult: () => Promise.resolve({}),
+              getBySystemNumber: () => Promise.resolve(Array.of(testToUpdate)),
+            }));
 
             testResultsService = new TestResultsService(
-              new MockTestResultsDAO()
+              new MockTestResultsDAO(),
             );
-            testToUpdate.vehicleType = "trl";
+            testToUpdate.vehicleType = 'trl';
             return testResultsService
               .updateTestResult(
                 testToUpdate.systemNumber,
                 testToUpdate,
-                msUserDetails
+                msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
-                expect(errorResponse.statusCode).toEqual(400);
+                expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body).toEqual({
                   errors: ['"trailerId" is required'],
                 });
               });
           });
-        }
+        },
       );
       context(
-        "and an attempt to update a test with invalid values is done",
+        'and an attempt to update a test with invalid values is done',
         () => {
-          it("should return error 400 Invalid payload", () => {
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              return {
-                updateTestResult: () => {
-                  return Promise.resolve({});
-                },
-                getBySystemNumber: () =>
-                  Promise.resolve(Array.of(testToUpdate)),
-              };
-            });
+          it('should return error 400 Invalid payload', () => {
+            MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+              updateTestResult: () => Promise.resolve({}),
+              getBySystemNumber: () => Promise.resolve(Array.of(testToUpdate)),
+            }));
 
             testResultsService = new TestResultsService(
-              new MockTestResultsDAO()
+              new MockTestResultsDAO(),
             );
-            testToUpdate.euVehicleCategory = "invalid value";
+            testToUpdate.euVehicleCategory = 'invalid value';
             return testResultsService
               .updateTestResult(
                 testToUpdate.systemNumber,
                 testToUpdate,
-                msUserDetails
+                msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
-                expect(errorResponse.statusCode).toEqual(400);
+                expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body).toEqual({
                   errors: [
                     '"euVehicleCategory" must be one of [m1, m2, m3, n1, n2, n3, o1, o2, o3, o4, l1e-a, l1e, l2e, l3e, l4e, l5e, l6e, l7e, null]',
@@ -605,36 +549,31 @@ describe("updateTestResults", () => {
                 });
               });
           });
-        }
+        },
       );
       context(
-        "and an attempt to update a test with a field exceeding min/max length limit is done",
+        'and an attempt to update a test with a field exceeding min/max length limit is done',
         () => {
-          it("should return error 400 Invalid payload", () => {
-            MockTestResultsDAO = jest.fn().mockImplementation(() => {
-              return {
-                updateTestResult: () => {
-                  return Promise.resolve({});
-                },
-                getBySystemNumber: () =>
-                  Promise.resolve(Array.of(testToUpdate)),
-              };
-            });
+          it('should return error 400 Invalid payload', () => {
+            MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+              updateTestResult: () => Promise.resolve({}),
+              getBySystemNumber: () => Promise.resolve(Array.of(testToUpdate)),
+            }));
 
             testResultsService = new TestResultsService(
-              new MockTestResultsDAO()
+              new MockTestResultsDAO(),
             );
             testToUpdate.testerStaffId =
-              "invalid value exceeding size limit 123456789012343454";
+              'invalid value exceeding size limit 123456789012343454';
             return testResultsService
               .updateTestResult(
                 testToUpdate.systemNumber,
                 testToUpdate,
-                msUserDetails
+                msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
-                expect(errorResponse.statusCode).toEqual(400);
+                expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body).toEqual({
                   errors: [
                     '"testerStaffId" length must be less than or equal to 36 characters long',
@@ -642,19 +581,19 @@ describe("updateTestResults", () => {
                 });
               });
           });
-        }
+        },
       );
     });
 
-    context("and when validating test types", () => {
+    context('and when validating test types', () => {
       context(
-        "and the test type contains a field that is not applicable",
+        'and the test type contains a field that is not applicable',
         () => {
-          it("should return validation Error 400", () => {
+          it('should return validation Error 400', () => {
             MockTestResultsDAO = jest.fn().mockImplementation();
 
             testResultsService = new TestResultsService(
-              new MockTestResultsDAO()
+              new MockTestResultsDAO(),
             );
             testToUpdate = cloneDeep(testResultsMockDB[1]);
             expect.assertions(4);
@@ -662,64 +601,64 @@ describe("updateTestResults", () => {
               .updateTestResult(
                 testToUpdate.systemNumber,
                 testToUpdate,
-                msUserDetails
+                msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
-                expect(errorResponse.statusCode).toEqual(400);
+                expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body.errors).toContain(
-                  '"prohibitionIssued" is not allowed'
+                  '"prohibitionIssued" is not allowed',
                 );
                 expect(errorResponse.body.errors).toContain(
-                  '"certificateNumber" is not allowed'
+                  '"certificateNumber" is not allowed',
                 );
               });
           });
-        }
+        },
       );
 
-      context("and when the testTypeId is unknown", () => {
-        it("should return validation Error 400", () => {
+      context('and when the testTypeId is unknown', () => {
+        it('should return validation Error 400', () => {
           MockTestResultsDAO = jest.fn().mockImplementation();
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
-          testToUpdate.testTypes[0].testTypeId = "unknown";
+          testToUpdate.testTypes[0].testTypeId = 'unknown';
           expect.assertions(3);
           return testResultsService
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
             .catch((errorResponse: { statusCode: any; body: any }) => {
               expect(errorResponse).toBeInstanceOf(HTTPError);
-              expect(errorResponse.statusCode).toEqual(400);
-              expect(errorResponse.body.errors).toContain("Unknown testTypeId");
+              expect(errorResponse.statusCode).toBe(400);
+              expect(errorResponse.body.errors).toContain('Unknown testTypeId');
             });
         });
       });
 
-      context("and the test types are invalid", () => {
-        it("should apply the correct validation schema and return an array of validation errors", () => {
+      context('and the test types are invalid', () => {
+        it('should apply the correct validation schema and return an array of validation errors', () => {
           MockTestResultsDAO = jest.fn().mockImplementation();
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           // testTypeId from each of the test-types groupings
           const testTypeIds = [
-            "1",
-            "15",
-            "38",
-            "56",
-            "62",
-            "59",
-            "76",
-            "117",
-            "39",
-            "125",
-            "142",
-            "143",
-            "147",
-            "153",
+            '1',
+            '15',
+            '38',
+            '56',
+            '62',
+            '59',
+            '76',
+            '117',
+            '39',
+            '125',
+            '142',
+            '143',
+            '147',
+            '153',
           ];
           testToUpdate = cloneDeep(testResultsMockDB[1]);
           for (const testTypeId of testTypeIds) {
@@ -728,19 +667,19 @@ describe("updateTestResults", () => {
             const validationResponse =
               ValidationUtil.validateTestTypes(testToUpdate);
             expect(validationResponse).toBeDefined();
-            expect(validationResponse.length).not.toEqual(0);
+            expect(validationResponse).not.toHaveLength(0);
           }
         });
       });
 
       context(
-        "and when testTypes attribute is not present on the payload",
+        'and when testTypes attribute is not present on the payload',
         () => {
-          it("should return validation Error 400", () => {
+          it('should return validation Error 400', () => {
             MockTestResultsDAO = jest.fn().mockImplementation();
 
             testResultsService = new TestResultsService(
-              new MockTestResultsDAO()
+              new MockTestResultsDAO(),
             );
             delete testToUpdate.testTypes;
             expect.assertions(3);
@@ -748,26 +687,26 @@ describe("updateTestResults", () => {
               .updateTestResult(
                 testToUpdate.systemNumber,
                 testToUpdate,
-                msUserDetails
+                msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
-                expect(errorResponse.statusCode).toEqual(400);
+                expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body.errors).toContain(
-                  '"testTypes" is required'
+                  '"testTypes" is required',
                 );
               });
           });
-        }
+        },
       );
 
-      context("and the test is a specialist test", () => {
-        it("should set the defects attribute as an empty array", () => {
+      context('and the test is a specialist test', () => {
+        it('should set the defects attribute as an empty array', () => {
           MockTestResultsDAO = jest.fn().mockImplementation();
 
           testResultsService = new TestResultsService(new MockTestResultsDAO());
           // testTypeId from each of the specialist test-types groupings
-          const testTypeIds = ["125", "142", "143", "147", "153"];
+          const testTypeIds = ['125', '142', '143', '147', '153'];
           testToUpdate = cloneDeep(testResultsMockDB[1]);
           for (const testTypeId of testTypeIds) {
             testToUpdate.testTypes[0].testTypeId = testTypeId;
@@ -780,64 +719,56 @@ describe("updateTestResults", () => {
         });
       });
 
-      it("should remove the attributes that are not updatable from the payload", () => {
+      it('should remove the attributes that are not updatable from the payload', () => {
         MockTestResultsDAO = jest.fn().mockImplementation();
 
         // testResultsService = new TestResultsService(new MockTestResultsDAO());
         // FIXME: move to a separate test
         MappingUtil.removeNonEditableAttributes(testToUpdate);
-        expect(testToUpdate).not.toHaveProperty("systemNumber");
-        expect(testToUpdate).not.toHaveProperty("vin");
-        expect(testToUpdate).not.toHaveProperty("vehicleId");
-        expect(testToUpdate).not.toHaveProperty("testEndTimestamp");
-        expect(testToUpdate).not.toHaveProperty("testVersion");
-        expect(testToUpdate).toHaveProperty("testerEmailAddress");
-        expect(testToUpdate).toHaveProperty("testStationType");
+        expect(testToUpdate).not.toHaveProperty('systemNumber');
+        expect(testToUpdate).not.toHaveProperty('vin');
+        expect(testToUpdate).not.toHaveProperty('vehicleId');
+        expect(testToUpdate).not.toHaveProperty('testEndTimestamp');
+        expect(testToUpdate).not.toHaveProperty('testVersion');
+        expect(testToUpdate).toHaveProperty('testerEmailAddress');
+        expect(testToUpdate).toHaveProperty('testStationType');
       });
     });
   });
 
-  context("when testing specialist test", () => {
+  context('when testing specialist test', () => {
     context(
       "when updating a 'fail' specialist test with blank certificate number",
       () => {
-        it("should not return an error", () => {
-          MockTestResultsDAO = jest.fn().mockImplementation(() => {
-            return {
-              updateTestResult: () => {
-                return Promise.resolve({});
-              },
-              getActivity: () => {
-                return Promise.resolve([
-                  {
-                    startTime: "2018-03-22",
-                    endTime: "2022-10-20",
-                  },
-                ]);
-              },
-              getBySystemNumber: () =>
-                Promise.resolve(Array.of(cloneDeep(testToUpdate))),
-            };
-          });
+        it('should not return an error', () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2022-10-20',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+          }));
 
-          testResultsService = new TestResultsService(
-            new MockTestResultsDAO()
-          );
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
           testToUpdate = cloneDeep(testResultsMockDB[64]);
           expect.assertions(2);
           return testResultsService
             .updateTestResult(
               testToUpdate.systemNumber,
               testToUpdate,
-              msUserDetails
+              msUserDetails,
             )
-           .then((returnedRecord: any) => {
-              expect(returnedRecord).not.toEqual(undefined);
+            .then((returnedRecord: any) => {
+              expect(returnedRecord).toBeDefined();
               expect(returnedRecord).not.toEqual({});
             });
         });
-      }
+      },
     );
-
   });
 });

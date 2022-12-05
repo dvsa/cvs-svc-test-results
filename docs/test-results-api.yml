@@ -164,7 +164,7 @@ paths:
           content:
             application/json:
               schema:
-               $ref: '#/components/schemas/putBadRequest'
+                $ref: '#/components/schemas/putBadRequest'
         '401':
           description: Not authenticated
         '403':
@@ -339,7 +339,8 @@ components:
                 - 'MOT class 5'
                 - 'PSV of unknown or unspecified size'
                 - 'Not Known'
-          description: Mandatory only for motorcycles. 2 = MotorBikes over 200cc or with a sidecar, N = Not Applicable, S =
+          description:
+            Mandatory only for motorcycles. 2 = MotorBikes over 200cc or with a sidecar, N = Not Applicable, S =
             Small PSV i.e less than or equal to 22 seats, 1 = Motorbikes upto
             200cc, T = Trailer, L = LARGE PSV (ie. greater than 23 seats), 3 =
             3 wheelers, V = Heavy Goods Vehicle

@@ -1,23 +1,25 @@
-import { PromiseResult } from "aws-sdk/lib/request";
-import { DocumentClient } from "aws-sdk/lib/dynamodb/document_client";
-import { AWSError } from "aws-sdk/lib/error";
-import * as models from "../models";
-import { Configuration } from "../utils/Configuration";
-import { LambdaService } from "../services/LambdaService";
+import { PromiseResult } from 'aws-sdk/lib/request';
+import { DocumentClient } from 'aws-sdk/lib/dynamodb/document_client';
+import { AWSError } from 'aws-sdk/lib/error';
+import * as models from '.';
+import { Configuration } from '../utils/Configuration';
+import { LambdaService } from '../services/LambdaService';
 
 /* tslint:disable */
 let AWS: { DynamoDB: { DocumentClient: new (arg0: any) => DocumentClient } };
 if (process.env._X_AMZN_TRACE_ID) {
-  AWS = require("aws-xray-sdk").captureAWS(require("aws-sdk"));
+  AWS = require('aws-xray-sdk').captureAWS(require('aws-sdk'));
 } else {
-  console.log("Serverless Offline detected; skipping AWS X-Ray setup");
-  AWS = require("aws-sdk");
+  console.log('Serverless Offline detected; skipping AWS X-Ray setup');
+  AWS = require('aws-sdk');
 }
 /* tslint:enable */
 
 export class TestResultsDAO {
   private readonly tableName: string;
+
   private static docClient: DocumentClient;
+
   private static lambdaInvokeEndpoints: any;
 
   constructor() {
@@ -36,56 +38,56 @@ export class TestResultsDAO {
 
   public getBySystemNumber(filters: models.ITestResultFilters) {
     const { systemNumber, fromDateTime, toDateTime } = filters;
-    const keyCondition = "systemNumber = :systemNumber";
-    let filterExpression = "";
+    const keyCondition = 'systemNumber = :systemNumber';
+    let filterExpression = '';
     if (fromDateTime && toDateTime) {
       filterExpression =
-        "testStartTimestamp > :testStartTimestamp AND  testEndTimestamp < :testEndTimestamp";
+        'testStartTimestamp > :testStartTimestamp AND  testEndTimestamp < :testEndTimestamp';
       filterExpression = this.getOptionalFilters(filterExpression, filters);
     }
-    const keyExpressionAttribute = { ":systemNumber": systemNumber };
+    const keyExpressionAttribute = { ':systemNumber': systemNumber };
     const expressionAttributeValues = Object.assign(
       {},
       keyExpressionAttribute,
-      ...this.mapFilterValues(filters)
+      ...this.mapFilterValues(filters),
     );
     const params = {
       TableName: this.tableName,
-      IndexName: "SysNumIndex",
+      IndexName: 'SysNumIndex',
       KeyConditionExpression: keyCondition,
-      FilterExpression: filterExpression ? filterExpression : undefined,
+      FilterExpression: filterExpression || undefined,
       ExpressionAttributeValues: {
         ...expressionAttributeValues,
       },
     };
-    console.log("getBySystemNumber: PARAMS ->", params);
+    console.log('getBySystemNumber: PARAMS ->', params);
     return this.queryAllData(params);
   }
 
   public getByTesterStaffId(
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     const { testerStaffId } = filters;
     const keyCondition =
-      "testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp";
-    let filterExpression = "testEndTimestamp <= :testEndTimestamp";
+      'testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp';
+    let filterExpression = 'testEndTimestamp <= :testEndTimestamp';
     filterExpression = this.getOptionalFilters(filterExpression, filters);
-    const keyExpressionAttribute = { [":testerStaffId"]: testerStaffId };
+    const keyExpressionAttribute = { ':testerStaffId': testerStaffId };
     const expressionAttributeValues = Object.assign(
       {},
       keyExpressionAttribute,
-      ...this.mapFilterValues(filters)
+      ...this.mapFilterValues(filters),
     );
     const params = {
       TableName: this.tableName,
-      IndexName: "TesterStaffIdIndex",
+      IndexName: 'TesterStaffIdIndex',
       KeyConditionExpression: keyCondition,
       FilterExpression: filterExpression,
       ExpressionAttributeValues: {
         ...expressionAttributeValues,
       },
     };
-    console.log("getByTesterStaffId: PARAMS ->", params);
+    console.log('getByTesterStaffId: PARAMS ->', params);
     return this.queryAllData(params);
   }
 
@@ -93,16 +95,16 @@ export class TestResultsDAO {
     const query = {
       TableName: this.tableName,
       Item: payload,
-      ConditionExpression: "testResultId <> :testResultIdVal",
+      ConditionExpression: 'testResultId <> :testResultIdVal',
       ExpressionAttributeValues: {
-        ":testResultIdVal": payload.testResultId,
+        ':testResultIdVal': payload.testResultId,
       },
     };
     return TestResultsDAO.docClient.put(query).promise();
   }
 
   public createMultiple(
-    testResultsItems: models.ITestResult[]
+    testResultsItems: models.ITestResult[],
   ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>> {
     const params = this.generateBatchWritePartialParams();
 
@@ -118,14 +120,14 @@ export class TestResultsDAO {
   }
 
   public deleteMultiple(
-    systemNumberIdPairsToBeDeleted: any[]
+    systemNumberIdPairsToBeDeleted: any[],
   ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>> {
     const params = this.generateBatchWritePartialParams();
 
     systemNumberIdPairsToBeDeleted.forEach(
       (systemNumberIdPairToBeDeleted: any) => {
         const systemNumberToBeDeleted: string = Object.keys(
-          systemNumberIdPairToBeDeleted
+          systemNumberIdPairToBeDeleted,
         )[0];
         const testResultIdToBeDeleted: string =
           systemNumberIdPairToBeDeleted[systemNumberToBeDeleted];
@@ -138,7 +140,7 @@ export class TestResultsDAO {
             },
           },
         });
-      }
+      },
     );
 
     return TestResultsDAO.docClient.batchWrite(params).promise();
@@ -147,7 +149,7 @@ export class TestResultsDAO {
   public generateBatchWritePartialParams(): any {
     return {
       RequestItems: {
-        [this.tableName]: Array(),
+        [this.tableName]: [],
       },
     };
   }
@@ -155,7 +157,7 @@ export class TestResultsDAO {
   public async getTestCodesAndClassificationFromTestTypes(
     testTypeId: string,
     testTypeParams: models.TestTypeParams,
-    fields: string = "defaultTestCode,linkedTestCode,testTypeClassification"
+    fields = 'defaultTestCode,linkedTestCode,testTypeClassification',
   ) {
     const {
       vehicleType,
@@ -168,7 +170,7 @@ export class TestResultsDAO {
       vehicleWheels,
     } = testTypeParams;
     const event = {
-      path: "/test-types/" + testTypeId,
+      path: `/test-types/${testTypeId}`,
       queryStringParameters: {
         vehicleType,
         vehicleSize,
@@ -183,20 +185,20 @@ export class TestResultsDAO {
       pathParameters: {
         id: testTypeId,
       },
-      httpMethod: "GET",
-      resource: "/test-types/{id}",
+      httpMethod: 'GET',
+      resource: '/test-types/{id}',
     };
 
     const lambdaName =
       TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
     try {
-      console.log("queryString for get Test: ", event);
+      console.log('queryString for get Test: ', event);
       const lambdaResult = LambdaService.invoke(lambdaName, event);
 
       return lambdaResult;
     } catch (error) {
       console.error(
-        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`
+        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
       );
     }
 
@@ -210,9 +212,9 @@ export class TestResultsDAO {
 
   public async createTestNumber(): Promise<any> {
     const event = {
-      path: "/test-number/",
-      httpMethod: "POST",
-      resource: "/test-number/",
+      path: '/test-number/',
+      httpMethod: 'POST',
+      resource: '/test-number/',
     };
 
     const lambdaName =
@@ -222,7 +224,7 @@ export class TestResultsDAO {
       return lambdaResult;
     } catch (error) {
       console.error(
-        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`
+        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
       );
     }
 
@@ -236,9 +238,8 @@ export class TestResultsDAO {
     // });
   }
 
-
   public updateTestResult(
-    updatedTestResult: models.ITestResult
+    updatedTestResult: models.ITestResult,
   ): Promise<PromiseResult<DocumentClient.TransactWriteItemsOutput, AWSError>> {
     const query: DocumentClient.TransactWriteItemsInput = {
       TransactItems: [
@@ -247,11 +248,11 @@ export class TestResultsDAO {
             TableName: this.tableName,
             Item: updatedTestResult,
             ConditionExpression:
-              "systemNumber = :systemNumber AND testResultId = :oldTestResultId AND vin = :vin",
+              'systemNumber = :systemNumber AND testResultId = :oldTestResultId AND vin = :vin',
             ExpressionAttributeValues: {
-              ":systemNumber": updatedTestResult.systemNumber,
-              ":vin": updatedTestResult.vin,
-              ":oldTestResultId": updatedTestResult.testResultId,
+              ':systemNumber': updatedTestResult.systemNumber,
+              ':vin': updatedTestResult.vin,
+              ':oldTestResultId': updatedTestResult.testResultId,
             },
           },
         },
@@ -262,7 +263,7 @@ export class TestResultsDAO {
 
   private async queryAllData(
     params: any,
-    allData: models.ITestResult[] = []
+    allData: models.ITestResult[] = [],
   ): Promise<models.ITestResult[]> {
     const data: PromiseResult<DocumentClient.QueryOutput, AWSError> =
       await TestResultsDAO.docClient.query(params).promise();
@@ -274,34 +275,33 @@ export class TestResultsDAO {
     if (data.LastEvaluatedKey) {
       params.ExclusiveStartKey = data.LastEvaluatedKey;
       return this.queryAllData(params, allData);
-    } else {
-      return allData;
     }
+    return allData;
   }
 
   private getOptionalFilters(
     filterExpress: string,
-    filters: models.ITestResultFilters
+    filters: models.ITestResultFilters,
   ): string {
     const { testStationPNumber } = filters;
     filterExpress = testStationPNumber
-      ? filterExpress.concat(" AND testStationPNumber= :testStationPNumber")
+      ? filterExpress.concat(' AND testStationPNumber= :testStationPNumber')
       : filterExpress;
     return filterExpress;
   }
 
   private mapFilterValues(filters: models.ITestResultFilters) {
     const filterValues: models.FilterValue[] = [];
-    const {fromDateTime, toDateTime, testStationPNumber} = filters;
+    const { fromDateTime, toDateTime, testStationPNumber } = filters;
 
     if (fromDateTime) {
-      filterValues.push({[":testStartTimestamp"]: fromDateTime.toISOString()});
+      filterValues.push({ ':testStartTimestamp': fromDateTime.toISOString() });
     }
     if (toDateTime) {
-      filterValues.push({[":testEndTimestamp"]: toDateTime.toISOString()});
+      filterValues.push({ ':testEndTimestamp': toDateTime.toISOString() });
     }
     if (testStationPNumber) {
-      filterValues.push({ [":testStationPNumber"]: testStationPNumber });
+      filterValues.push({ ':testStationPNumber': testStationPNumber });
     }
     return filterValues;
   }

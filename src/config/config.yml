@@ -1,24 +1,24 @@
 functions:
-- postTestResults:
-    method: POST
-    path: /test-results
-    proxy: null
-    function: postTestResults
-- getTestResultsBySystemNumber:
-    method: GET
-    path: /test-results/{+proxy}
-    proxy: :systemNumber
-    function: getTestResultsBySystemNumber
-- getTestResultsByTesterStaffId:
-    method: GET
-    path: /test-results/getTestResultsByTesterStaffId
-    proxy: null
-    function: getTestResultsByTesterStaffId
-- updateTestResults:
-    method: PUT
-    path: /test-results/{+proxy}
-    proxy: :systemNumber
-    function: updateTestResults
+  - postTestResults:
+      method: POST
+      path: /test-results
+      proxy: null
+      function: postTestResults
+  - getTestResultsBySystemNumber:
+      method: GET
+      path: /test-results/{+proxy}
+      proxy: :systemNumber
+      function: getTestResultsBySystemNumber
+  - getTestResultsByTesterStaffId:
+      method: GET
+      path: /test-results/getTestResultsByTesterStaffId
+      proxy: null
+      function: getTestResultsByTesterStaffId
+  - updateTestResults:
+      method: PUT
+      path: /test-results/{+proxy}
+      proxy: :systemNumber
+      function: updateTestResults
 dynamodb:
   local:
     params:

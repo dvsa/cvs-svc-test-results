@@ -11,12 +11,12 @@ provider:
   iam:
     role:
       statements:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Action:
-            - "xray:PutTraceSegments"
-            - "xray:PutTelemetryRecords"
+            - 'xray:PutTraceSegments'
+            - 'xray:PutTelemetryRecords'
           Resource:
-            - "*"
+            - '*'
 
 plugins:
   - serverless-dynamodb-local
@@ -117,8 +117,8 @@ resources:
                 - testStatus
               ProjectionType: INCLUDE
             ProvisionedThroughput:
-              ReadCapacityUnits: "1"
-              WriteCapacityUnits: "1"
+              ReadCapacityUnits: '1'
+              WriteCapacityUnits: '1'
           - IndexName: SysNumIndex
             KeySchema:
               - AttributeName: systemNumber
@@ -126,8 +126,8 @@ resources:
             Projection:
               ProjectionType: ALL
             ProvisionedThroughput:
-              ReadCapacityUnits: "1"
-              WriteCapacityUnits: "1"
+              ReadCapacityUnits: '1'
+              WriteCapacityUnits: '1'
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1

@@ -1,5 +1,4 @@
-
 export interface ITestResultData {
-    Count: any;
-    Items: any;
+  Count: any;
+  Items: any;
 }
