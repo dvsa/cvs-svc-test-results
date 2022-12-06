@@ -184,36 +184,3 @@ export const testResultsCommonSchema = Joi.object().keys({
     .optional(),
   source: Joi.string().only(['vta', 'vtm']).optional(),
 });
-
-export const deskBasedTestCommonSchema = Joi.object().keys({
-  // leif woz 'ere
-  testResult: Joi.any().only(['pass']).required(),
-  // vin
-  vin: Joi.string().min(1).max(21).required(),
-  // vrm
-  vrm: Joi.string().alphanum().min(1).max(8).required(),
-  // CoR
-  countryOfRegistration: Joi.string().required().allow('', null),
-  // EU cat
-  euVehicleCategory: Joi.string().required().allow('', null),
-  // type
-  typeOfTest: Joi.string().only(['desk-based']).optional(),
-  // code
-  testCode: Joi.string().required(),
-  // test num
-  testNumber: Joi.string().required(),
-  // test date
-  testDate: Joi.date().required().required(),
-  // facility name/num
-  testStationName: Joi.string().max(999).required().allow('', null),
-  testStationPNumber: Joi.string().max(20).required().allow('', null),
-  // type of facility
-  testStationType: Joi.any().only(['atf', 'gvts', 'hq', 'potf']).required(),
-  // tester name
-  testerName: Joi.string().max(60).required().allow('', null),
-  // tester email
-  testerEmailAddress: Joi.string().max(60).required().allow('', null),
-  testerStaffId: Joi.string().max(36).required().allow(''),
-  // notes
-  additionalNotesRecorded: Joi.string().max(500).required().allow('', null),
-});
