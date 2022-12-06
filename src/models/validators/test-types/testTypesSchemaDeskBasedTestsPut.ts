@@ -2,14 +2,14 @@ import * as Joi from 'joi';
 import { defectsCommonSchema } from '../CommonSchema';
 
 export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
-  name: Joi.string().required(),
-  testTypeName: Joi.string().required(),
+  name: Joi.string(),
+  testTypeName: Joi.string(),
   testTypeId: Joi.string().required(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso().required(),
   testResult: Joi.any().only(['pass']).required(),
   additionalNotesRecorded: Joi.string().max(500).allow('', null),
-  testCode: Joi.string().required(),
+  testCode: Joi.string(),
   testNumber: Joi.string().required(),
   createdAt: Joi.string().optional(),
   lastUpdatedAt: Joi.string().optional(),
@@ -19,17 +19,17 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
 
 export const testTypesDeskBasedGroup1 =
   testTypesCommonSchemaDeskBasedTests.keys({
-    certificateNumber: Joi.number().when('$vehicleType', {
+    certificateNumber: Joi.string().when('$vehicleType', {
       is: 'psv',
-      then: Joi.required(),
-      otherwise: Joi.allow(null),
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow(null),
     }),
     testExpiryDate: Joi.date().required().allow('', null),
   });
 
 export const testTypesDeskBasedGroup2 =
   testTypesCommonSchemaDeskBasedTests.keys({
-    certificateNumber: Joi.number().required(),
+    certificateNumber: Joi.string().required(),
     testExpiryDate: Joi.date().required().allow('', null),
     modType: Joi.object()
       .keys({
@@ -71,21 +71,21 @@ export const testTypesDeskBasedGroup2 =
 
 export const testTypesDeskBasedGroup3 =
   testTypesCommonSchemaDeskBasedTests.keys({
-    certificateNumber: Joi.number().required(),
+    certificateNumber: Joi.string().required(),
     testExpiryDate: Joi.date().required().allow('', null),
   });
 
 export const testTypesDeskBasedGroup4 =
   testTypesCommonSchemaDeskBasedTests.keys({
-    certificateNumber: Joi.number().when('$vehicleType', {
+    certificateNumber: Joi.string().when('$vehicleType', {
       is: 'psv',
-      then: Joi.required(),
-      otherwise: Joi.allow(null),
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow(null),
     }),
     secondaryCertificateNumber: Joi.any().when('$vehicleType', {
       is: 'psv',
-      then: Joi.required(),
-      otherwise: Joi.allow('', null),
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow('', null),
     }),
     testExpiryDate: Joi.date().allow('', null),
   });

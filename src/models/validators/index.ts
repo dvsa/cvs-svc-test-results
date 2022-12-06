@@ -12,4 +12,4 @@ export * from './TestResultsSchemaMotorcycleCancelled';
 export * from './TestResultsSchemaMotorcycleSubmitted';
 export * from './test-types/testTypesSchemaPut';
 export * from './test-types/testTypesSchemaSpecialistTestsPut';
-export * from './TestResultsSchemaDeskAssessment';
+export * from './test-types/testTypesSchemaDeskBasedTestsPut';
