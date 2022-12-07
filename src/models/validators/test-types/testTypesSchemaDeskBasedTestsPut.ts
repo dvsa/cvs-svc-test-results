@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import { defectsCommonSchema } from '../CommonSchema';
 
 export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   name: Joi.string(),
@@ -14,7 +13,9 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   createdAt: Joi.string().optional(),
   lastUpdatedAt: Joi.string().optional(),
   certificateLink: Joi.string().optional(),
-  testTypeClassification: Joi.string().required(),
+  testTypeClassification: Joi.string().required().allow('', null),
+  defects: Joi.array().max(0).allow(null),
+  customDefects: Joi.array().max(0).allow(null),
 });
 
 export const testTypesDeskBasedGroup1 =
@@ -88,4 +89,5 @@ export const testTypesDeskBasedGroup4 =
       otherwise: Joi.string().allow('', null),
     }),
     testExpiryDate: Joi.date().allow('', null),
+    testAnniversaryDate: Joi.date().iso().allow(null),
   });

@@ -179,7 +179,8 @@ export class ValidationUtil {
     validationSchema = validationSchema!.keys({
       countryOfRegistration: string()
         .valid(enums.COUNTRY_OF_REGISTRATION)
-        .required(),
+        .required()
+        .allow('', null),
       testTypes: any().forbidden(),
     });
     validationSchema = validationSchema.optionalKeys([
