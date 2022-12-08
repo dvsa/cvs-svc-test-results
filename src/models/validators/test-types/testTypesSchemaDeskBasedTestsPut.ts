@@ -30,6 +30,7 @@ export const testTypesDeskBasedGroup1 =
       then: Joi.date().required().allow('', null),
       otherwise: Joi.date().allow(null),
     }),
+    testAnniversaryDate: Joi.date().allow(null),
     secondaryCertificateNumber: Joi.string().allow('', null),
   });
 
