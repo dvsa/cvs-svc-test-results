@@ -6,7 +6,7 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   testTypeId: Joi.string().required(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso().required(),
-  testResult: Joi.any().only(['pass']).required(),
+  testResult: Joi.any().only(['pass', 'fail']).required(),
   additionalNotesRecorded: Joi.string().max(500).allow('', null),
   testCode: Joi.string(),
   testNumber: Joi.string().required(),
