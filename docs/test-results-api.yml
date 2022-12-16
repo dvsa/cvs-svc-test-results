@@ -239,6 +239,9 @@ components:
           type: string
           format: date-time
           description: 'Not sent from FE, calculated in the BE.'
+        createdByEmailAddress:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
         createdByName:
           type: string
           description: 'Applicable only when updating/creating a test from VTM'
@@ -249,6 +252,9 @@ components:
           type: string
           format: date-time
           description: 'Not sent from FE, calculated in the BE.'
+        lastUpdatedByEmailAddress:
+          type: string
+          description: 'Applicable only when updating/creating a test from VTM'
         lastUpdatedByName:
           type: string
           description: 'Applicable only when updating/creating a test from VTM'

@@ -8,16 +8,19 @@ import { ValidationUtil } from '../../src/utils/validationUtil';
 import { VehicleTestController } from '../../src/handlers/VehicleTestController';
 import { TestDataProvider } from '../../src/handlers/expiry/providers/TestDataProvider';
 import { DateProvider } from '../../src/handlers/expiry/providers/DateProvider';
+import { IMsUserDetails } from '../../src/models';
 
 describe('updateTestResults', () => {
   let testResultsService: TestResultsService | any;
   let MockTestResultsDAO: jest.Mock;
   let testResultsMockDB: any;
   let testToUpdate: any;
-  const msUserDetails = {
-    msUser: 'dorel',
-    msOid: '123456',
+  const msUserDetails: IMsUserDetails = {
+    msUser: 'dorelly',
+    msOid: '654321',
+    msEmailAddress: 'an@email.uk',
   };
+
   beforeEach(() => {
     testResultsMockDB = testResults;
     MockTestResultsDAO = jest.fn().mockImplementation(() => ({}));
@@ -71,6 +74,45 @@ describe('updateTestResults', () => {
               );
             });
         });
+
+        it('should map msUserDetails to the updated test-result', () => {
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            updateTestResult: () => Promise.resolve({}),
+            getActivity: () =>
+              Promise.resolve([
+                {
+                  startTime: '2018-03-22',
+                  endTime: '2021-04-22',
+                },
+              ]),
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(cloneDeep(testToUpdate))),
+          }));
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+          expect.assertions(6);
+          return testResultsService
+            .updateTestResult(
+              testToUpdate.systemNumber,
+              testToUpdate,
+              msUserDetails,
+            )
+            .then((returnedRecord: any) => {
+              expect(returnedRecord.createdById).toBe('654321');
+              expect(returnedRecord.createdByName).toBe('dorelly');
+              expect(returnedRecord.createdByEmailAddress).toBe('an@email.uk');
+              expect(returnedRecord.testHistory[0].lastUpdatedById).toBe(
+                '654321',
+              );
+              expect(returnedRecord.testHistory[0].lastUpdatedByName).toBe(
+                'dorelly',
+              );
+              expect(
+                returnedRecord.testHistory[0].lastUpdatedByEmailAddress,
+              ).toBe('an@email.uk');
+            });
+        });
+
         it('should add the old test types onto the new test type if there is only one testType', async () => {
           const testResultMockDBWithUniqueTestNumbers = cloneDeep(
             testResultsMockDB[0],

@@ -163,13 +163,16 @@ export class MappingUtil {
   ) {
     const date = new Date().toISOString();
     newTestResult.createdAt = date;
+    newTestResult.createdByEmailAddress = msUserDetails.msEmailAddress;
     newTestResult.createdByName = msUserDetails.msUser;
     newTestResult.createdById = msUserDetails.msOid;
     delete newTestResult.lastUpdatedAt;
     delete newTestResult.lastUpdatedById;
     delete newTestResult.lastUpdatedByName;
+    delete newTestResult.lastUpdatedByEmailAddress;
 
     oldTestResult.lastUpdatedAt = date;
+    oldTestResult.lastUpdatedByEmailAddress = msUserDetails.msEmailAddress;
     oldTestResult.lastUpdatedByName = msUserDetails.msUser;
     oldTestResult.lastUpdatedById = msUserDetails.msOid;
 
