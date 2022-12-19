@@ -175,9 +175,6 @@ export class MappingUtil {
     oldTestResult.lastUpdatedByEmailAddress = msUserDetails.msEmailAddress;
     oldTestResult.lastUpdatedByName = msUserDetails.msUser;
     oldTestResult.lastUpdatedById = msUserDetails.msOid;
-
-    newTestResult.shouldEmailCertificate = 'false';
-    oldTestResult.shouldEmailCertificate = 'false;';
   }
 
   public static arrayCustomizer(objValue: any, srcValue: any) {

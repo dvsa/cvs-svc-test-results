@@ -263,7 +263,7 @@ components:
           description: 'Applicable only when updating/creating a test from VTM'
         shouldEmailCertificate:
           type: string
-          description: 'Not sent from FE, calculated in BE. Applicable only when updating a test from VTM. Used to determine if a certificate should be emailed or not after an update.'
+          description: 'Used to determine if a certificate should be emailed or not.'
         testStationName:
           type: string
           maxLength: 999
