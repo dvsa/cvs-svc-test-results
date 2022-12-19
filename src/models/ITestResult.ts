@@ -35,9 +35,11 @@ export interface ITestResult {
   firstUseDate?: string | Date; // Used only for TRL
   testVersion?: string;
   reasonForCreation?: string;
+  createdByEmailAddress?: string;
   createdByName?: string;
   createdById?: string;
   createdAt?: string;
+  lastUpdatedByEmailAddress?: string;
   lastUpdatedByName?: string;
   lastUpdatedById?: string;
   lastUpdatedAt?: string;
