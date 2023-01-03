@@ -84,8 +84,8 @@
     "joi": "^14.3.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
-    "moment-timezone": "^0.5.28",
-    "node-yaml": "^3.2.0",
+    "moment-timezone": "^0.5.40",
+    "node-yaml": "^4.0.1",
     "path-parser": "^4.2.0",
     "reflect-metadata": "^0.1.13"
   },

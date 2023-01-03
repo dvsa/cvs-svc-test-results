@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import { defectsCommonSchemaSpecialistTestsSubmitted } from '../SpecialistTestsCommonSchemaSubmitted';
 
 export const testTypesCommonSchemaSpecialistTests = Joi.object()
   .keys({
@@ -25,6 +26,9 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object()
         }),
       )
       .required(),
+    defects: Joi.array()
+      .items(defectsCommonSchemaSpecialistTestsSubmitted)
+      .optional(),
     testCode: Joi.string().required(),
     testNumber: Joi.string().required(),
     createdAt: Joi.string().optional(),
