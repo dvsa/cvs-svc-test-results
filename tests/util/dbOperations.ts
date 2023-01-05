@@ -33,7 +33,7 @@ export const emptyDatabase = async () => {
 
 export const convertToResponse = (dbObj: any) => {
   // Needed to convert an object from the database to a response object
-  const responseObj = Object.assign({}, dbObj);
+  const responseObj = { ...dbObj };
 
   // Adding primary and secondary VRMs in the same array
   const vrms: any = [{ isPrimary: true }];

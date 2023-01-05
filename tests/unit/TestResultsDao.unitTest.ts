@@ -93,7 +93,7 @@ describe('Test Results DAO', () => {
           // docClient.query will return an object containing LastEvaluatedKey when called for the first time
           // and will remove it in the next calls
           const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = Object.assign({}, queryResponse);
+          queryResponse = { ...queryResponse };
           delete queryResponse.LastEvaluatedKey;
           return promiseToReturn;
         },
@@ -130,7 +130,7 @@ describe('Test Results DAO', () => {
           // docClient.query will return an object containing LastEvaluatedKey when called for the first time
           // and will remove it in the next calls
           const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = Object.assign({}, queryResponse);
+          queryResponse = { ...queryResponse };
           delete queryResponse.LastEvaluatedKey;
           return promiseToReturn;
         },

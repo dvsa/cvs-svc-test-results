@@ -7,7 +7,7 @@ import { ITestDataProvider } from './ITestDataProvider';
 
 @Service()
 export class TestDataProvider implements ITestDataProvider {
-  public testResultsDAO: models.TestResultsDAO | undefined;
+  public testResultsDAO = new models.TestResultsDAO();
 
   // #region [rgba(52, 152, 219, 0.15)] Public functions
   /**
@@ -18,7 +18,6 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
       const testResults = await this.testResultsDAO.getBySystemNumber(filters);
       if (!testResults.length) {
         throw new models.HTTPError(404, enums.ERRORS.NoResourceMatch);
@@ -37,7 +36,6 @@ export class TestDataProvider implements ITestDataProvider {
     filters: models.ITestResultFilters,
   ): Promise<models.ITestResult[]> {
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
       const result = await this.testResultsDAO.getByTesterStaffId(filters);
       if (result && !result.length) {
         return result;
@@ -59,7 +57,6 @@ export class TestDataProvider implements ITestDataProvider {
     const toDateTime = new Date();
     let result: models.ITestResult[] = [];
     try {
-      this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
       const filters: models.ITestResultFilters = {
         systemNumber,
         fromDateTime,
@@ -81,9 +78,7 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async getBySystemNumber(systemNumber: string) {
     const filters: models.ITestResultFilters = { systemNumber };
-    const data = (await this.testResultsDAO?.getBySystemNumber(
-      filters,
-    )) as models.ITestResult[];
+    const data = await this.testResultsDAO.getBySystemNumber(filters);
     console.log(data);
     return data;
   }
@@ -174,10 +169,7 @@ export class TestDataProvider implements ITestDataProvider {
   private async createNewTestTypes(list: any, params: any) {
     return Promise.all(
       list.map(
-        utils.MappingUtil.addTestcodeToTestTypes(
-          this.testResultsDAO as models.TestResultsDAO,
-          params,
-        ),
+        utils.MappingUtil.addTestcodeToTestTypes(this.testResultsDAO, params),
       ),
     );
   }
@@ -197,7 +189,7 @@ export class TestDataProvider implements ITestDataProvider {
           testTypeClassification,
           name,
           testTypeName,
-        } = await this.testResultsDAO?.getTestCodesAndClassificationFromTestTypes(
+        } = await this.testResultsDAO.getTestCodesAndClassificationFromTestTypes(
           testTypeId,
           testTypeParams,
           fields,
@@ -233,7 +225,7 @@ export class TestDataProvider implements ITestDataProvider {
   ): Promise<models.TestType[]> {
     return Promise.all(
       list.map(async (testType) => {
-        const { testNumber } = await this.testResultsDAO?.createTestNumber();
+        const { testNumber } = await this.testResultsDAO.createTestNumber();
         return {
           ...testType,
           testNumber,
@@ -243,7 +235,6 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async insertTestResult(payload: models.ITestResultPayload) {
-    this.testResultsDAO = this.testResultsDAO as models.TestResultsDAO;
     try {
       const result = await this.testResultsDAO.createSingle(payload);
       utils.LoggingUtil.logDefectsReporting(payload);

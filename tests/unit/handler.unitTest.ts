@@ -55,7 +55,7 @@ describe('The lambda function handler', () => {
       });
 
       it('should return error on invalid body json', async () => {
-        const invalidBodyEvent = Object.assign({}, eventWithStaffId);
+        const invalidBodyEvent = { ...eventWithStaffId };
         invalidBodyEvent.body = '{"hello":}';
 
         const result = await handler(invalidBodyEvent, ctx, () => {});
@@ -67,7 +67,7 @@ describe('The lambda function handler', () => {
       });
 
       it('should return a Route Not Found error on invalid path', async () => {
-        const invalidPathEvent = Object.assign({}, eventWithStaffId);
+        const invalidPathEvent = { ...eventWithStaffId };
         // invalidPathEvent.body = ""
         invalidPathEvent.path = '/vehicles/123/doesntExist';
 
