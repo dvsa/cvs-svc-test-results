@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import { defectsCommonSchemaSpecialistTestsSubmitted } from '../SpecialistTestsCommonSchemaSubmitted';
 
 export const testTypesCommonSchemaSpecialistTests = Joi.object()
   .keys({
@@ -41,6 +42,9 @@ export const testTypesSpecialistGroup1 =
       then: Joi.string().required(),
       otherwise: Joi.string().optional().allow('', null),
     }),
+    defects: Joi.array()
+      .items(defectsCommonSchemaSpecialistTestsSubmitted)
+      .optional(),
   });
 
 export const testTypesSpecialistGroup2 =
@@ -95,4 +99,9 @@ export const testTypesSpecialistGroup4 =
     seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   });
 
-export const testTypesSpecialistGroup5 = testTypesCommonSchemaSpecialistTests;
+export const testTypesSpecialistGroup5 =
+  testTypesCommonSchemaSpecialistTests.keys({
+    defects: Joi.array()
+      .items(defectsCommonSchemaSpecialistTestsSubmitted)
+      .optional(),
+  });
