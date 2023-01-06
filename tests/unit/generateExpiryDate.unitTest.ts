@@ -1898,7 +1898,6 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               hgvTestResult.regnDate = moment()
                 .add(1, 'months')
                 .subtract(1, 'years')
-                .endOf('month')
                 .toDate();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -1912,13 +1911,10 @@ describe('VehicleTestController calling generateExpiryDate', () => {
                   }),
               }));
 
-              const anniversaryDate = moment(hgvTestResult.regnDate)
-                .add(1, 'years')
-                .toISOString();
-              const expectedExpiryDate = moment(anniversaryDate)
-                .add(1, 'years')
+              const expectedExpiryDate = moment(hgvTestResult.regnDate)
                 .endOf('month')
-                .hours(12);
+                .add(2, 'years')
+                .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();
               // @ts-ignore
@@ -2034,13 +2030,10 @@ describe('VehicleTestController calling generateExpiryDate', () => {
                   }),
               }));
 
-              const registrationAnniversaryDate = moment(hgvTestResult.regnDate)
-                .add(1, 'years')
+              const expectedExpiryDate = moment(hgvTestResult.regnDate)
+                .add(2, 'years')
                 .endOf('month')
-                .toISOString();
-              const expectedExpiryDate = moment(registrationAnniversaryDate)
-                .add(1, 'years')
-                .hours(12);
+                .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();
               // @ts-ignore
@@ -2182,13 +2175,10 @@ describe('VehicleTestController calling generateExpiryDate', () => {
                   }),
               }));
 
-              const anniversaryDate = moment(trlTestResult.firstUseDate)
-                .add(1, 'years')
-                .toISOString();
-              const expectedExpiryDate = moment(anniversaryDate)
-                .add(1, 'years')
+              const expectedExpiryDate = moment(trlTestResult.firstUseDate)
                 .endOf('month')
-                .hours(12);
+                .add(2, 'year')
+                .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();
               // @ts-ignore
@@ -2227,13 +2217,10 @@ describe('VehicleTestController calling generateExpiryDate', () => {
                   }),
               }));
 
-              const firstUseAnniversaryDate = moment(trlTestResult.firstUseDate)
-                .add(1, 'years')
+              const expectedExpiryDate = moment(trlTestResult.firstUseDate)
+                .add(2, 'years')
                 .endOf('month')
-                .toISOString();
-              const expectedExpiryDate = moment(firstUseAnniversaryDate)
-                .add(1, 'years')
-                .hours(12);
+                .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();
               // @ts-ignore
