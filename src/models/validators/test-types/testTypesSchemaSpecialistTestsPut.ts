@@ -99,8 +99,9 @@ export const testTypesSpecialistGroup4 =
     seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   });
 
-export const testTypesSpecialistGroup5 = testTypesCommonSchemaSpecialistTests.keys({
-  defects: Joi.array()
+export const testTypesSpecialistGroup5 =
+  testTypesCommonSchemaSpecialistTests.keys({
+    defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .optional(),
-});
+  });
