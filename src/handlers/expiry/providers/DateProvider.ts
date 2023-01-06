@@ -177,12 +177,6 @@ export class DateProvider {
     return moment(inputDate).add(1, 'years').toISOString();
   }
 
-  public static addOneYearStartOfDayISOString(
-    inputDate: Date | string,
-  ): string {
-    return moment(inputDate).add(1, 'year').startOf('day').toISOString();
-  }
-
   public static addOneYearMinusOneDayISOString(
     inputDate: Date | string,
   ): string {
