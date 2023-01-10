@@ -1912,8 +1912,8 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               }));
 
               const expectedExpiryDate = moment(hgvTestResult.regnDate)
-                .endOf('month')
                 .add(2, 'years')
+                .endOf('month')
                 .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();
@@ -2176,8 +2176,8 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               }));
 
               const expectedExpiryDate = moment(trlTestResult.firstUseDate)
-                .endOf('month')
                 .add(2, 'year')
+                .endOf('month')
                 .startOf('day');
               vehicleTestController.dataProvider.testResultsDAO =
                 new MockTestResultsDAO();

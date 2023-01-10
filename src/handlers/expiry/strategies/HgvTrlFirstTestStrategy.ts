@@ -21,7 +21,7 @@ export class HgvTrlFirstTestStrategy implements IExpiryDateStrategy {
       isValidRegn &&
       DateProvider.isBetweenTwoMonths(regnAnniversaryEndOfMonth, testDate, '[)')
     ) {
-      return DateProvider.addOneYearStartOfDayISOString(
+      return DateProvider.getLastDayOfMonthInNextYearISOString(
         regnAnniversaryEndOfMonth,
       );
     }
