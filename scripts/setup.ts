@@ -27,10 +27,9 @@ const setupServer = (process: any) =>
       if (code !== 137) {
         console.info(
           `process terminated with code: ${code} and signal: ${signal}`,
-        )
+        );
       }
-    }
-    );
+    });
   });
 
 const server = spawn('npm', ['run', 'start'], {});
