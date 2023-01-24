@@ -34,9 +34,9 @@ describe('getTestResultsBySystemNumber', () => {
         context(
           'and there are test results in the db that satisfy both conditions',
           () => {
-            it("should return the test results for that systemNumber with status 'submitted' and that have createdAt value between 2017-01-01 and 2021-02-23", async () => {
+            it("should return the test results for that systemNumber with status 'submitted' and that have createdAt value between 2021-01-01 and 2023-02-23", async () => {
               const res = await request.get(
-                'test-results/11000002?status=submitted&fromDateTime=2021-01-01&toDateTime=2021-02-23',
+                'test-results/11000002?status=submitted&fromDateTime=2021-01-01&toDateTime=2023-02-23',
               );
               expect(res.status).toBe(200);
               expect(res.header['access-control-allow-origin']).toBe('*');
