@@ -134,7 +134,7 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
       MockTestResultsDAO = jest.fn().mockImplementation((testerStaffId) => ({
         getByTesterStaffId: () => Promise.resolve(filteredTestResults),
       }));
-      const expectedResult = cloneDeep(testResultsMockDB[1]);
+      const expectedResult = cloneDeep(testResultsMockDB[19]);
 
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       expect.assertions(4);
@@ -144,7 +144,7 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
           expect(returnedRecords).toBeDefined();
           expect(returnedRecords).not.toEqual({});
           expect(returnedRecords[0]).toEqual(expectedResult);
-          expect(returnedRecords).toHaveLength(2);
+          expect(returnedRecords).toHaveLength(1);
         });
     });
   });
