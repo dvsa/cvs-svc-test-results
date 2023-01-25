@@ -121,7 +121,7 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
         testerStaffId: '15',
         testStationPNumber: '84-926821',
         fromDateTime: '2015-02-22',
-        toDateTime: '2021-02-22',
+        toDateTime: '2023-02-22',
         testStatus: 'submitted',
       };
       const filteredTestResults = cloneDeep(testResultsMockDB).filter(
