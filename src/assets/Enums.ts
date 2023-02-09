@@ -85,8 +85,9 @@ export const VEHICLE_TYPES = {
   HGV: 'hgv',
   TRL: 'trl',
   LGV: 'lgv',
-  MOTORCYCLE: 'motorcycle',
   CAR: 'car',
+  SMALL_TRL: 'small trl',
+  MOTORCYCLE: 'motorcycle',
 };
 
 export const TEST_TYPE_CLASSIFICATION = {

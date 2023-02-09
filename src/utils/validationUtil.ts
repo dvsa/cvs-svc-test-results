@@ -146,6 +146,7 @@ export class ValidationUtil {
     return [
       enums.VEHICLE_TYPES.CAR,
       enums.VEHICLE_TYPES.LGV,
+      enums.VEHICLE_TYPES.SMALL_TRL,
       enums.VEHICLE_TYPES.MOTORCYCLE,
     ].includes(vehicleType);
   }

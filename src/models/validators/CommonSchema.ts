@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import { VEHICLE_TYPES } from '../../assets/Enums';
 
 export const defectsCommonSchema = Joi.object().keys({
   imNumber: Joi.number().required(),
@@ -135,7 +136,7 @@ export const testResultsCommonSchema = Joi.object().keys({
     })
     .allow(null),
   vehicleType: Joi.any()
-    .only(['psv', 'hgv', 'trl', 'car', 'lgv', 'motorcycle'])
+    .only(Object.values(VEHICLE_TYPES))
     .required(),
   noOfAxles: Joi.number().max(99).required(),
   preparerId: Joi.string().required().allow('', null),
