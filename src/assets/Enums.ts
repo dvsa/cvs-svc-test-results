@@ -569,6 +569,7 @@ export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '414',
   '420',
   '426',
+  '431',
 ];
 export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '409',
