@@ -569,7 +569,7 @@ export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '414',
   '420',
   '426',
-  '431',
+  '432',
 ];
 export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '409',
@@ -579,6 +579,7 @@ export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '424',
   '425',
 ];
+export const TEST_TYPES_GROUP5_DESK_BASED_TEST: string[] = ['441', '442'];
 
 export const TEST_TYPES = {
   testTypesGroup1: TEST_TYPES_GROUP1,
@@ -599,4 +600,5 @@ export const TEST_TYPES = {
   testTypesDeskBasedGroup2: TEST_TYPES_GROUP2_DESK_BASED_TEST,
   testTypesDeskBasedGroup3: TEST_TYPES_GROUP3_DESK_BASED_TEST,
   testTypesDeskBasedGroup4: TEST_TYPES_GROUP4_DESK_BASED_TEST,
+  testTypesDeskBasedGroup5: TEST_TYPES_GROUP5_DESK_BASED_TEST,
 };
