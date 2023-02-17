@@ -97,3 +97,5 @@ export const testTypesDeskBasedGroup4 =
     testExpiryDate: Joi.date().allow('', null),
     testAnniversaryDate: Joi.date().iso().allow(null),
   });
+
+export const testTypesDeskBasedGroup5 = testTypesDeskBasedGroup3;
