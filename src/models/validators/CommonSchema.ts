@@ -135,9 +135,7 @@ export const testResultsCommonSchema = Joi.object().keys({
         .allow(null),
     })
     .allow(null),
-  vehicleType: Joi.any()
-    .only(Object.values(VEHICLE_TYPES))
-    .required(),
+  vehicleType: Joi.any().only(Object.values(VEHICLE_TYPES)).required(),
   noOfAxles: Joi.number().max(99).required(),
   preparerId: Joi.string().required().allow('', null),
   preparerName: Joi.string().required().allow('', null),
