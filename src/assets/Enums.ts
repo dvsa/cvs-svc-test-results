@@ -555,14 +555,15 @@ export const SPECIALIST_TEST_TYPE_IDS: string[] = [
   '197',
   '185',
 ];
-
+// Annual
 export const TEST_TYPES_GROUP1_DESK_BASED_TEST: string[] = ['417', '418'];
-
+// LEC without inspection
 export const TEST_TYPES_GROUP2_DESK_BASED_TEST: string[] = [
   '403',
   '404',
   '415',
 ];
+// DDA, Appeal for IVA HGV, IVA
 export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '407',
   '408',
@@ -570,6 +571,7 @@ export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '420',
   '426',
 ];
+// Tempo 100, COIF, Appeal for IVA PSV, Notifiable alteration
 export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '409',
   '411',
