@@ -97,3 +97,18 @@ export const testTypesDeskBasedGroup4 =
     testExpiryDate: Joi.date().allow('', null),
     testAnniversaryDate: Joi.date().iso().allow(null),
   });
+
+export const testTypesDeskBasedGroup5 =
+  testTypesCommonSchemaDeskBasedTests.keys({
+    certificateNumber: Joi.string().when('$vehicleType', {
+      is: 'hgv',
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow('', null),
+    }),
+    secondaryCertificateNumber: Joi.any().when('$vehicleType', {
+      is: 'hgv',
+      then: Joi.string().required(),
+      otherwise: Joi.string().allow('', null),
+    }),
+    testExpiryDate: Joi.date().allow('', null),
+  });

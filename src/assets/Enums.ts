@@ -85,8 +85,9 @@ export const VEHICLE_TYPES = {
   HGV: 'hgv',
   TRL: 'trl',
   LGV: 'lgv',
-  MOTORCYCLE: 'motorcycle',
   CAR: 'car',
+  SMALL_TRL: 'small trl',
+  MOTORCYCLE: 'motorcycle',
 };
 
 export const TEST_TYPE_CLASSIFICATION = {
@@ -554,21 +555,25 @@ export const SPECIALIST_TEST_TYPE_IDS: string[] = [
   '197',
   '185',
 ];
-
+// Annual
 export const TEST_TYPES_GROUP1_DESK_BASED_TEST: string[] = ['417', '418'];
-
+// LEC without inspection
 export const TEST_TYPES_GROUP2_DESK_BASED_TEST: string[] = [
   '403',
   '404',
   '415',
 ];
+// DDA, Appeal for IVA HGV, IVA
 export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '407',
   '408',
   '414',
   '420',
   '426',
+  '431',
+  '432',
 ];
+// Tempo 100, COIF, Appeal for IVA PSV, Notifiable alteration
 export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '409',
   '411',
@@ -577,6 +582,9 @@ export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '424',
   '425',
 ];
+
+// ADR: ADRIIIa
+export const TEST_TYPES_GROUP5_DESK_BASED_TEST: string[] = ['441', '442'];
 
 export const TEST_TYPES = {
   testTypesGroup1: TEST_TYPES_GROUP1,
@@ -597,4 +605,5 @@ export const TEST_TYPES = {
   testTypesDeskBasedGroup2: TEST_TYPES_GROUP2_DESK_BASED_TEST,
   testTypesDeskBasedGroup3: TEST_TYPES_GROUP3_DESK_BASED_TEST,
   testTypesDeskBasedGroup4: TEST_TYPES_GROUP4_DESK_BASED_TEST,
+  testTypesDeskBasedGroup5: TEST_TYPES_GROUP5_DESK_BASED_TEST,
 };
