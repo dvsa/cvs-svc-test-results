@@ -87,7 +87,7 @@ export class VehicleTestController implements IVehicleTestController {
         vehicleAxles: payload.noOfAxles,
         euVehicleCategory: payload.euVehicleCategory,
         vehicleClass: payload.vehicleClass?.code,
-        vehicleSubclass: payload.vehicleSubclass?.[0],
+        vehicleSubclass: payload.vehicleSubclass?.join(','),
         vehicleWheels: payload.numberOfWheelsDriven,
       };
       const testTypesWithTestCodesAndClassification =
@@ -328,10 +328,7 @@ export class VehicleTestController implements IVehicleTestController {
     ) {
       return testTypes;
     }
-    const vehicleSubclass =
-      newTestResult.vehicleSubclass && newTestResult.vehicleSubclass.length
-        ? newTestResult.vehicleSubclass[0]
-        : undefined;
+    const vehicleSubclass = newTestResult.vehicleSubclass?.join(',');
     return this.dataProvider.updateTestTypeDetails(testTypes, {
       vehicleType,
       vehicleSize,
