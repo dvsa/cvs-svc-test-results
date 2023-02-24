@@ -86,7 +86,7 @@ export class DateProvider {
   }
 
   /**
-   * To compare whether input date is between two months of compare date. Inlcusivty parameter represents start and end of month.
+   * To compare whether input date is between two months of compare date. Inclusivity parameter represents start and end of month.
    * @param inputDate the input date.
    * @param compareDate the date to compare with.
    * @param inclusivity []= start and end included, ()= start and end excluded, [)= start included end excluded, (]= start excluded and end included.
@@ -157,6 +157,18 @@ export class DateProvider {
     return moment(date1).isAfter(date2);
   }
 
+  /**
+   * To check whether input date is February 29 on a leap year
+   * @param inputDate
+   */
+  public static isFebruary29(inputDate: Date | string): boolean {
+    return (
+      moment(inputDate).isLeapYear() &&
+      moment(inputDate).month() === 1 &&
+      moment(inputDate).date() === 29
+    );
+  }
+
   public static addOneYear(inputDate: Date | string): Date {
     return moment(inputDate).add(1, 'years').startOf('day').toDate();
   }
@@ -177,14 +189,24 @@ export class DateProvider {
     return moment(inputDate).add(1, 'years').toISOString();
   }
 
+  /**
+   * Adds one calendar year minus one day as default. Logic has been added to handle the case of Feb 29 on a leap year.
+   * @param inputDate
+   */
   public static addOneYearMinusOneDayISOString(
     inputDate: Date | string,
   ): string {
-    return moment(inputDate)
-      .add(1, 'year')
-      .subtract(1, 'day')
-      .startOf('day')
-      .toISOString();
+    //
+    const generateExpiryDate = (subtractDays = 1): string =>
+      moment(inputDate)
+        .add(1, 'year')
+        .subtract(subtractDays, 'day')
+        .startOf('day')
+        .toISOString();
+
+    return this.isFebruary29(inputDate)
+      ? generateExpiryDate(0)
+      : generateExpiryDate();
   }
 
   public static getLastDayOfMonthInNextYearISOString(
