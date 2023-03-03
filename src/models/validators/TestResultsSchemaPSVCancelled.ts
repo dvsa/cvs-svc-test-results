@@ -32,7 +32,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   testResult: Joi.any()
-    .only(['fail', 'pass', 'prs', 'abandoned'])
+    .only(['fail', 'pass', 'prs', 'abandoned', 'fta'])
     .required()
     .allow(null),
   defects: Joi.array().items(defectsSchema).required(),

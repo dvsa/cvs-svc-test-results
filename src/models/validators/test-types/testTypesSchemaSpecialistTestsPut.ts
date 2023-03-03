@@ -8,7 +8,7 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object()
     testTypeId: Joi.string().required(),
     testTypeStartTimestamp: Joi.date().iso().required(),
     testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned', 'fta']).required(),
     prohibitionIssued: Joi.boolean().required(),
     reasonForAbandoning: Joi.string().when('$hasTestResult', {
       is: 'abandoned',

@@ -33,7 +33,7 @@ export const testTypesCommonSchema = Joi.object()
     testTypeStartTimestamp: Joi.date().iso().required(),
     testTypeEndTimestamp: Joi.date().iso().required().allow(null),
     testResult: Joi.any()
-      .only(['fail', 'pass', 'prs', 'abandoned'])
+      .only(['fail', 'pass', 'prs', 'abandoned', 'fta'])
       .required()
       .allow(null),
     reasonForAbandoning: Joi.string().required().allow('', null),
