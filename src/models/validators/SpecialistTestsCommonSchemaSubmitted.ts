@@ -39,7 +39,9 @@ export const defectsCommonSchemaSpecialistTestsSubmitted =
 export const testTypesCommonSchemaSpecialistTestsSubmitted =
   testTypesCommonSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned', 'fta']).required(),
+    testResult: Joi.any()
+      .only(['fail', 'pass', 'prs', 'abandoned', 'fta'])
+      .required(),
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
