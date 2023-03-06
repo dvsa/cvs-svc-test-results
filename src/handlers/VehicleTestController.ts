@@ -213,7 +213,8 @@ export class VehicleTestController implements IVehicleTestController {
         console.log('testTypeForExpiry');
         console.log(testTypeForExpiry);
 
-        if(payload.testEndTimestamp){
+        if (payload.testEndTimestamp) {
+          console.log('testEndTimestamp exists, setting date provider test date')
           this.dateProvider.setTestDate(new Date(payload.testEndTimestamp));
         }
 
