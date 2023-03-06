@@ -27,7 +27,8 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "node_modules/.bin/sls dynamodb install"
+    "tools-setup": "node_modules/.bin/sls dynamodb install",
+    "postinstall": "patch-package"
   },
   "repository": {
     "type": "git",
@@ -87,6 +88,7 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
     "node-yaml": "^4.0.1",
+    "patch-package": "^6.5.1",
     "path-parser": "^4.2.0",
     "reflect-metadata": "^0.1.13"
   },
