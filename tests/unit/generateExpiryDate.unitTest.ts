@@ -45,7 +45,39 @@ describe('VehicleTestController calling generateExpiryDate', () => {
       describe('with good dates in test history', () => {
         it('should set the expiryDate for Annual With Certificate testTypes with testResult pass, fail or prs', () => {
           const psvTestResult = cloneDeep(testResultsMockDB[0]);
-          psvTestResult.testEndTimestamp = new Date();
+          psvTestResult.testEndTimestamp = new Date('2020-02-10T10:00:00.000Z');
+
+          const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]);
+
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            getBySystemNumber: () =>
+              Promise.resolve(Array.of(getBySystemNumberResponse)),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                linkedTestCode: 'wde',
+                defaultTestCode: 'bde',
+                testTypeClassification: 'Annual With Certificate',
+              }),
+          }));
+
+          const expectedExpiryDate = new Date('2021-02-09T10:00:00.000Z');
+          vehicleTestController.dataProvider.testResultsDAO =
+            new MockTestResultsDAO();
+          // @ts-ignore
+          // prettier-ignore
+          return vehicleTestController.generateExpiryDate(psvTestResult)
+            .then((psvTestResultWithExpiryDateAndTestNumber: any) => {
+              expect(
+                psvTestResultWithExpiryDateAndTestNumber.testTypes[0].testExpiryDate.split(
+                  'T',
+                )[0],
+              ).toEqual(expectedExpiryDate.toISOString().split('T')[0]);
+            });
+        });
+
+        it('should set the expiryDate based on current time if test end timestamp is not provided', () => {
+          const psvTestResult = cloneDeep(testResultsMockDB[0]);
+          delete psvTestResult.testEndTimestamp;
 
           const getBySystemNumberResponse = cloneDeep(testResultsMockDB[0]);
 
@@ -76,6 +108,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               ).toEqual(expectedExpiryDate.toISOString().split('T')[0]);
             });
         });
+
         describe('Annual Tests testTypes with', () => {
           describe('with no previous expiry, anniversary or registration date', () => {
             beforeAll(() => {
