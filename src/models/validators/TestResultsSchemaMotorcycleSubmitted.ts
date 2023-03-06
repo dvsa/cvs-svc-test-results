@@ -1,4 +1,3 @@
-// import * as Joi from 'joi';
 import { any, array, object } from 'joi';
 import {
   defectsCommonSchemaSpecialistTestsSubmitted,
