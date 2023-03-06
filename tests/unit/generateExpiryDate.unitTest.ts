@@ -664,7 +664,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               delete type.testAnniversaryDate;
               return type;
             });
-            
+
             describe('with no previous expiry, anniversary or registration date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
