@@ -218,9 +218,10 @@ export class VehicleTestController implements IVehicleTestController {
             'testEndTimestamp exists, setting date provider test date',
           );
           this.dateProvider.setTestDate(new Date(payload.testEndTimestamp));
-        }
-        else {
-          console.log('testEndTimestamp does not exist, expiry date will default to today');
+        } else {
+          console.log(
+            'testEndTimestamp does not exist, date provider will set test date to today',
+          );
         }
 
         const strategy = this.getExpiryStrategy(testTypeForExpiry);
