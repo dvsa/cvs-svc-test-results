@@ -1,11 +1,16 @@
-import * as Joi from 'joi';
-import { testResultsCommonSchemaSpecialistTestsSubmitted } from './SpecialistTestsCommonSchemaSubmitted';
+// import * as Joi from 'joi';
+import { any, array, object } from 'joi';
+import {
+  defectsCommonSchemaSpecialistTestsSubmitted,
+  testResultsCommonSchemaSpecialistTestsSubmitted,
+  testTypesCommonSchemaSpecialistTestsSubmitted,
+} from './SpecialistTestsCommonSchemaSubmitted';
 
 export const motorcycleSubmitted =
   testResultsCommonSchemaSpecialistTestsSubmitted.keys({
-    vehicleClass: Joi.object()
+    vehicleClass: object()
       .keys({
-        code: Joi.any()
+        code: any()
           .only([
             '1',
             '2',
@@ -22,7 +27,7 @@ export const motorcycleSubmitted =
             'u',
           ])
           .required(),
-        description: Joi.any().only([
+        description: any().only([
           'motorbikes up to 200cc',
           'motorbikes over 200cc or with a sidecar',
           '3 wheelers',
@@ -38,5 +43,14 @@ export const motorcycleSubmitted =
           'Not Known',
         ]),
       })
+      .required(),
+    testTypes: array()
+      .items(
+        testTypesCommonSchemaSpecialistTestsSubmitted.keys({
+          defects: array()
+            .items(defectsCommonSchemaSpecialistTestsSubmitted)
+            .optional(),
+        }),
+      )
       .required(),
   });
