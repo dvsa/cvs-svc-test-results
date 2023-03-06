@@ -525,39 +525,76 @@ describe('VehicleTestController calling generateExpiryDate', () => {
     context('for hgv and trl vehicle types', () => {
       context('when there is no certificate issued for this vehicle', () => {
         describe('with good regn/first use date strings', () => {
-          it('should set the expiry date to last day of current month + 1 year', () => {
-            const hgvTestResult = cloneDeep(testResultsMockDB[15]);
-            hgvTestResult.regnDate = '2020-10-10';
-            hgvTestResult.testTypes[0].testTypeId = '94';
-            hgvTestResult.testEndTimestamp = new Date();
+          describe('should set the expiry date to last day of current month + 1 year', () => {
+            it('with a test end timestamp', () => {
+              const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+              hgvTestResult.regnDate = '2020-10-10';
+              hgvTestResult.testTypes[0].testTypeId = '94';
+              hgvTestResult.testEndTimestamp = new Date('2021-10-10');
 
-            MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-              getBySystemNumber: () => Promise.resolve([]),
-              getTestCodesAndClassificationFromTestTypes: () =>
-                Promise.resolve({
-                  linkedTestCode: null,
-                  defaultTestCode: 'aav2',
-                  testTypeClassification: 'Annual With Certificate',
-                }),
-            }));
+              MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+                getBySystemNumber: () => Promise.resolve([]),
+                getTestCodesAndClassificationFromTestTypes: () =>
+                  Promise.resolve({
+                    linkedTestCode: null,
+                    defaultTestCode: 'aav2',
+                    testTypeClassification: 'Annual With Certificate',
+                  }),
+              }));
 
-            const expectedExpiryDate = moment()
-              .add(1, 'years')
-              .endOf('month')
-              .endOf('day')
-              .toDate();
-            vehicleTestController.dataProvider.testResultsDAO =
-              new MockTestResultsDAO();
-            // @ts-ignore
-            // prettier-ignore
-            return vehicleTestController.generateExpiryDate(hgvTestResult)
-              .then((hgvTestResultWithExpiryDate: any) => {
-                expect(
-                  hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate.split(
-                    'T',
-                  )[0],
-                ).toEqual(expectedExpiryDate.toISOString().split('T')[0]);
-              });
+              const expectedExpiryDate = moment('2021-10-10')
+                .add(1, 'years')
+                .endOf('month')
+                .endOf('day')
+                .toDate();
+              vehicleTestController.dataProvider.testResultsDAO =
+                new MockTestResultsDAO();
+              // @ts-ignore
+              // prettier-ignore
+              return vehicleTestController.generateExpiryDate(hgvTestResult)
+                .then((hgvTestResultWithExpiryDate: any) => {
+                  expect(
+                    hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate.split(
+                      'T',
+                    )[0],
+                  ).toEqual(expectedExpiryDate.toISOString().split('T')[0]);
+                });
+            });
+
+            it('without a test end timestamp', () => {
+              const hgvTestResult = cloneDeep(testResultsMockDB[15]);
+              hgvTestResult.regnDate = '2020-10-10';
+              hgvTestResult.testTypes[0].testTypeId = '94';
+              delete hgvTestResult.testEndTimestamp;
+
+              MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+                getBySystemNumber: () => Promise.resolve([]),
+                getTestCodesAndClassificationFromTestTypes: () =>
+                  Promise.resolve({
+                    linkedTestCode: null,
+                    defaultTestCode: 'aav2',
+                    testTypeClassification: 'Annual With Certificate',
+                  }),
+              }));
+
+              const expectedExpiryDate = moment()
+                .add(1, 'years')
+                .endOf('month')
+                .endOf('day')
+                .toDate();
+              vehicleTestController.dataProvider.testResultsDAO =
+                new MockTestResultsDAO();
+              // @ts-ignore
+              // prettier-ignore
+              return vehicleTestController.generateExpiryDate(hgvTestResult)
+                .then((hgvTestResultWithExpiryDate: any) => {
+                  expect(
+                    hgvTestResultWithExpiryDate.testTypes[0].testExpiryDate.split(
+                      'T',
+                    )[0],
+                  ).toEqual(expectedExpiryDate.toISOString().split('T')[0]);
+                });
+            });
           });
         });
         describe('with invalid regn/first use date strings', () => {
