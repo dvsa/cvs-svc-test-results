@@ -23,7 +23,7 @@ export class LoggingUtil {
 
     testResult.testTypes.forEach((testType: TestType) => {
       if (testType.testResult !== TEST_RESULT.ABANDONED) {
-        testType.defects.forEach((defect: Defect) => {
+        testType.defects?.forEach((defect: Defect) => {
           if (
             LoggingUtil.reportingDeficiencyRef.includes(defect.deficiencyRef)
           ) {
