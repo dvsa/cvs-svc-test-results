@@ -277,7 +277,8 @@ export class ValidationUtil {
       enums.TYPE_OF_TEST.DESK_BASED === typeOfTest ||
       testTypes.every(
         (testType: models.TestType) =>
-          testType.testResult === enums.TEST_RESULT.ABANDONED,
+          testType.testResult === enums.TEST_RESULT.ABANDONED ||
+          testType.testResult === enums.TEST_RESULT.FTA,
       )
     ) {
       return missingMandatoryFields;

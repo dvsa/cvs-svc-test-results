@@ -99,6 +99,7 @@ export const TEST_RESULT = {
   FAIL: 'fail',
   ABANDONED: 'abandoned',
   PRS: 'prs',
+  FTA: 'fta',
 };
 
 export const TEST_STATUS = {

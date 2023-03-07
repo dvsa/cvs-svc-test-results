@@ -2483,7 +2483,116 @@ describe('insertTestResult', () => {
         const testResult = testResultsPostMock[0];
         const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
 
-        clonedTestResult.testTypes[2] = TEST_RESULT.ABANDONED;
+        clonedTestResult.testTypes[1] = cloneDeep(
+          clonedTestResult.testTypes[0],
+        );
+        clonedTestResult.testTypes[1] = TEST_RESULT.ABANDONED;
+
+        clonedTestResult.countryOfRegistration = null;
+        clonedTestResult.euVehicleCategory = null;
+
+        MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+          createSingle: () =>
+            Promise.resolve({
+              Attributes: Array.of(clonedTestResult),
+            }),
+          createTestNumber: () =>
+            Promise.resolve({
+              testNumber: 'W01A00209',
+              id: 'W01',
+              certLetter: 'A',
+              sequenceNumber: '002',
+            }),
+          getTestCodesAndClassificationFromTestTypes: () =>
+            Promise.resolve({
+              linkedTestCode: 'wde',
+              defaultTestCode: 'bde',
+              testTypeClassification: 'Annual With Certificate',
+            }),
+        }));
+
+        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+        expect.assertions(3);
+        return testResultsService
+          .insertTestResult(clonedTestResult)
+          .catch((error: { statusCode: any; body: { errors: string[] } }) => {
+            expect(error).toBeInstanceOf(HTTPError);
+            expect(error.statusCode).toBe(400);
+            expect(error.body.errors).toEqual(
+              expect.arrayContaining([
+                ERRORS.CountryOfRegistrationMandatory,
+                ERRORS.EuVehicleCategoryMandatory,
+              ]),
+            );
+          });
+      });
+    },
+  );
+
+  context(
+    'when inserting a test with only fta testTypes and missing mandatory fields',
+    () => {
+      it('should insert the test correctly', () => {
+        const testResult = testResultsPostMock[1];
+        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+
+        clonedTestResult.countryOfRegistration = null;
+        clonedTestResult.euVehicleCategory = null;
+        clonedTestResult.odometerReading = null;
+        clonedTestResult.odometerReadingUnits = null;
+
+        clonedTestResult.testTypes[0].testResult = TEST_RESULT.FTA;
+
+        MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+          createSingle: () =>
+            Promise.resolve({
+              Attributes: Array.of(clonedTestResult),
+            }),
+          createTestNumber: () =>
+            Promise.resolve({
+              testNumber: 'W01A00209',
+              id: 'W01',
+              certLetter: 'A',
+              sequenceNumber: '002',
+            }),
+          getTestCodesAndClassificationFromTestTypes: () =>
+            Promise.resolve({
+              linkedTestCode: 'wde',
+              defaultTestCode: 'bde',
+              testTypeClassification: 'Annual With Certificate',
+            }),
+          getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
+        }));
+
+        testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+        expect.assertions(5);
+        return testResultsService
+          .insertTestResult(clonedTestResult)
+          .then((data: any) => {
+            expect(data).toBeDefined();
+            expect(data[0].countryOfRegistration).toBeNull();
+            expect(data[0].euVehicleCategory).toBeNull();
+            expect(data[0].odometerReading).toBeNull();
+            expect(data[0].odometerReadingUnits).toBeNull();
+          });
+      });
+    },
+  );
+
+  context(
+    'when inserting a testResult containing multiple testTypes (including fta testTypes) with missing mandatory fields',
+    () => {
+      it('should return an error containing only the missing fields', () => {
+        const testResult = testResultsPostMock[0];
+        testResult.testStationType = 'gvts';
+
+        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+        clonedTestResult.testTypes[1] = cloneDeep(
+          clonedTestResult.testTypes[0],
+        );
+        clonedTestResult.testTypes[1].testResult = TEST_RESULT.FTA;
 
         clonedTestResult.countryOfRegistration = null;
         clonedTestResult.euVehicleCategory = null;

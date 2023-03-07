@@ -409,7 +409,8 @@ export class VehicleTestController implements IVehicleTestController {
     if (
       testType.testTypeClassification ===
         enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
-      testType.testResult !== enums.TEST_RESULT.ABANDONED
+      testType.testResult !== enums.TEST_RESULT.ABANDONED &&
+      testType.testResult !== enums.TEST_RESULT.FTA
     ) {
       if (
         utils.ValidationUtil.isTestTypeAdr(testType) ||

@@ -28,7 +28,7 @@ const defectsSchema = defectsCommonSchema.keys({
 
 const testTypesSchema = testTypesCommonSchema.keys({
   testResult: Joi.any()
-    .only(['fail', 'pass', 'prs', 'abandoned'])
+    .only(['fail', 'pass', 'prs', 'abandoned', 'fta'])
     .required()
     .allow(null),
   testTypeEndTimestamp: Joi.date().iso().required().allow(null),

@@ -55,6 +55,14 @@ describe('Defects logging util', () => {
 
       expect(consoleSpy).toHaveBeenCalledTimes(0);
     });
+    it('should not log when the defects are valid but the testType is fta', async () => {
+      testResult.testTypes[0].defects[0].deficiencyRef = '8.1.i';
+      testResult.testTypes[0].testResult = TEST_RESULT.FTA;
+
+      LoggingUtil.logDefectsReporting(testResult);
+
+      expect(consoleSpy).toHaveBeenCalledTimes(0);
+    });
   });
 
   context('when there are no defects or deficiencies to be logged', () => {

@@ -37,7 +37,9 @@ const testTypesSchema = testTypesCommonSchema.keys({
   numberOfSeatbeltsFitted: Joi.number().required().allow(null),
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
-  testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+  testResult: Joi.any()
+    .only(['fail', 'pass', 'prs', 'abandoned', 'fta'])
+    .required(),
   defects: Joi.array().items(defectsSchema).required(),
   modType: Joi.object({
     code: Joi.string().only(['p', 'm', 'g']),
