@@ -86,7 +86,6 @@ export const VEHICLE_TYPES = {
   TRL: 'trl',
   LGV: 'lgv',
   CAR: 'car',
-  SMALL_TRL: 'small trl',
   MOTORCYCLE: 'motorcycle',
 };
 
