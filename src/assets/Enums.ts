@@ -585,7 +585,7 @@ export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
   '433',
   '435',
   '436',
-  '437'
+  '437',
 ];
 
 // ADR: ADRIIIa
