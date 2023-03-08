@@ -24,6 +24,8 @@ export interface ITestResultPayload {
   createdAt?: string | Date;
   testerStaffId: string;
   testerName: string;
+  testStartTimestamp?: string | Date;
+  testEndTimestamp?: string | Date;
   testVersion?: string;
   reasonForCreation?: string;
   contingencyTestNumber?: string;
