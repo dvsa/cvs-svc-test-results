@@ -85,7 +85,7 @@ export const testTypesDeskBasedGroup3 =
 export const testTypesDeskBasedGroup4 =
   testTypesCommonSchemaDeskBasedTests.keys({
     certificateNumber: Joi.string().when('$vehicleType', {
-      is: 'psv',
+      is: Joi.string().only(['psv', 'lgv', 'car', 'motorcycle']),
       then: Joi.string().required(),
       otherwise: Joi.string().allow('', null),
     }),
@@ -110,5 +110,51 @@ export const testTypesDeskBasedGroup5 =
       then: Joi.string().required(),
       otherwise: Joi.string().allow('', null),
     }),
+    testExpiryDate: Joi.date().allow('', null)
+  });
+
+export const testTypesDeskBasedGroup5Lgv =
+  testTypesCommonSchemaDeskBasedTests.keys({
+    certificateNumber: Joi.string().required(),
+    secondaryCertificateNumber: Joi.string().allow('', null),
     testExpiryDate: Joi.date().allow('', null),
+    testNumber: Joi.string().allow('',null),
+    testTypeStartTimestamp: Joi.date().iso().allow('', null),
+    testTypeEndTimestamp: Joi.date().iso().allow('', null),
+    emissionStandard: Joi.any()
+      .only([
+        '0.10 g/kWh Euro 3 PM',
+        '0.03 g/kWh Euro IV PM',
+        'Euro 3',
+        'Euro 4',
+        'Euro 6',
+        'Euro VI',
+        'Full Electric',
+      ])
+      .allow(null),
+    smokeTestKLimitApplied: Joi.string().max(100).allow(null),
+    fuelType: Joi.any()
+      .only([
+        'diesel',
+        'gas-cng',
+        'gas-lng',
+        'gas-lpg',
+        'petrol',
+        'fuel cell',
+        'full electric',
+      ])
+      .allow(null),
+    modType: Joi.object()
+      .keys({
+        code: Joi.any().only(['p', 'm', 'g']),
+        description: Joi.any().only([
+          'particulate trap',
+          'modification or change of engine',
+          'gas engine',
+        ]),
+      })
+      .allow(null),
+    modificationTypeUsed: Joi.string().max(100).allow(null),
+    particulateTrapFitted: Joi.string().max(100).allow(null),
+    particulateTrapSerialNumber: Joi.string().max(100).allow(null),
   });
