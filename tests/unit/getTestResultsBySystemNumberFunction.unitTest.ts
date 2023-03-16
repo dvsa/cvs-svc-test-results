@@ -20,7 +20,6 @@ describe('getTestResultsBySystemNumber Function', () => {
       const expectedFilters = {
         systemNumber: '1',
         testVersion: 'current',
-        testStatus: 'submitted',
         toDateTime: moment().endOf('day').toDate(),
         fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
       };
@@ -98,7 +97,6 @@ describe('getTestResultsBySystemNumber Function', () => {
         const expectedFilters = {
           systemNumber: '1',
           testVersion: 'current',
-          testStatus: 'submitted',
           toDateTime: new Date('01-01-2010'),
           fromDateTime: moment(new Date('01-01-2010'))
             .subtract(2, 'years')
@@ -131,7 +129,6 @@ describe('getTestResultsBySystemNumber Function', () => {
         const expectedFilters = {
           systemNumber: '1',
           testVersion: 'current',
-          testStatus: 'submitted',
           toDateTime: moment().endOf('day').toDate(),
           fromDateTime: new Date('01-01-2010'),
         };
@@ -192,7 +189,6 @@ describe('getTestResultsBySystemNumber Function', () => {
         const expectedFilters = {
           systemNumber: '1',
           testVersion: 'archived',
-          testStatus: 'submitted',
           toDateTime: moment().endOf('day').toDate(),
           fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
         };
