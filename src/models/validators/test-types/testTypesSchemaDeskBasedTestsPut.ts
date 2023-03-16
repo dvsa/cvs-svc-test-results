@@ -110,7 +110,7 @@ export const testTypesDeskBasedGroup5 =
       then: Joi.string().required(),
       otherwise: Joi.string().allow('', null),
     }),
-    testExpiryDate: Joi.date().allow('', null)
+    testExpiryDate: Joi.date().allow('', null),
   });
 
 export const testTypesDeskBasedGroup5Lgv =
@@ -118,7 +118,7 @@ export const testTypesDeskBasedGroup5Lgv =
     certificateNumber: Joi.string().required(),
     secondaryCertificateNumber: Joi.string().allow('', null),
     testExpiryDate: Joi.date().allow('', null),
-    testNumber: Joi.string().allow('',null),
+    testNumber: Joi.string().allow('', null),
     testTypeStartTimestamp: Joi.date().iso().allow('', null),
     testTypeEndTimestamp: Joi.date().iso().allow('', null),
     emissionStandard: Joi.any()
