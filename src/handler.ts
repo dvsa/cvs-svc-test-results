@@ -33,6 +33,8 @@ const handler: Handler = async (
   const functions: IFunctionEvent[] = config.getFunctions();
   const serverlessConfig: any = config.getConfig().serverless;
 
+  console.log('functions:', JSON.stringify(functions));
+
   let matchingLambdaEvents: IFunctionEvent[] = functions
     .filter(
       (fn) =>
