@@ -347,7 +347,7 @@ export class VehicleTestController implements IVehicleTestController {
       vehicleConfiguration,
       vehicleAxles: newTestResult.noOfAxles,
       euVehicleCategory,
-      vehicleClass: newTestResult.vehicleClass.code,
+      vehicleClass: newTestResult.vehicleClass?.code,
       vehicleSubclass,
       vehicleWheels: newTestResult.numberOfWheelsDriven,
     });
