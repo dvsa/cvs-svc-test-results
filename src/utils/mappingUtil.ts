@@ -28,7 +28,7 @@ export class MappingUtil {
   ) {
     let toDate = DateProvider.getEndOfDay();
     let fromDate = DateProvider.getTwoYearsFromDate(toDate);
-    let testStatus = enums.TEST_STATUS.SUBMITTED;
+    let testStatus;
     let testVersion = enums.TEST_VERSION.CURRENT;
     let resultId;
     if (!event.queryStringParameters) {
