@@ -57,8 +57,7 @@ export const trlSubmitted = testResultsCommonSchema.keys({
       'dolly',
       'full drawbar',
     ])
-    .required()
-    .allow('',null),
+    .required(),
   trailerId: Joi.string().required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   firstUseDate: Joi.string().allow('', null),

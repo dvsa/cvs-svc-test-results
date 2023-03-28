@@ -59,8 +59,7 @@ export const hgvCancelled = testResultsCommonSchema.keys({
       'dolly',
       'full drawbar',
     ])
-    .required()
-    .allow('',null),
+    .required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   regnDate: Joi.string().allow('', null),
 });

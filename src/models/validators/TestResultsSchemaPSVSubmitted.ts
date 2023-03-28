@@ -60,7 +60,7 @@ export const psvSubmitted = testResultsCommonSchema.keys({
   odometerReadingUnits: Joi.any()
     .only(['kilometres', 'miles'])
     .required()
-    .allow('',null),
+    .allow(null),
   vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
   countryOfRegistration: Joi.string().required().allow('', null),
   vehicleSize: Joi.any().only(['small', 'large']).required(),
