@@ -68,7 +68,7 @@ export const testResultsCommonSchemaSpecialistTestsCancelled =
         'full drawbar',
       ])
       .required()
-      .allow(null),
+      .allow('',null),
     testTypes: Joi.array()
       .items(testTypesCommonSchemaSpecialistTestsCancelled)
       .required(),
