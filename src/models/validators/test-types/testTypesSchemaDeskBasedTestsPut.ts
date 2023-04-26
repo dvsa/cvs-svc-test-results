@@ -28,7 +28,7 @@ export const testTypesDeskBasedGroup1 =
     testExpiryDate: Joi.date().when('$vehicleType', {
       is: 'psv',
       then: Joi.date().required().allow('', null),
-      otherwise: Joi.date().allow(null),
+      otherwise: Joi.date().allow(null, ''),
     }),
     testAnniversaryDate: Joi.date().allow(null, ''),
     secondaryCertificateNumber: Joi.string().allow('', null),
