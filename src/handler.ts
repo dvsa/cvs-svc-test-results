@@ -40,7 +40,7 @@ const handler: Handler = async (
         event.httpMethod === fn.method,
     )
     .filter((fn) => {
-      // Find λ with matching path
+      // Find λ with matching path, test
       const localPath: Path = new Path(fn.path);
       const remotePath = new Path(`${serverlessConfig.basePath}${fn.path}`); // Remote paths also have environment
 
