@@ -70,7 +70,7 @@ export const testTypesCommonSchema = Joi.object()
 export const testTypesGroup1 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow('', null),
   testExpiryDate: Joi.date().iso().allow(null),
-  testAnniversaryDate: Joi.date().iso().required().allow(null),
+  testAnniversaryDate: Joi.date().iso().required().allow(null, ''),
   numberOfSeatbeltsFitted: Joi.number().required().allow(null),
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
@@ -107,7 +107,7 @@ export const testTypesGroup7 = testTypesCommonSchema.keys({
 export const testTypesGroup9And10 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow('', null),
   testExpiryDate: Joi.date().iso().allow(null),
-  testAnniversaryDate: Joi.date().iso().required().allow(null),
+  testAnniversaryDate: Joi.date().iso().required().allow(null, ''),
   defects: Joi.array().items(defectsSchemaPut).required(),
 });
 
