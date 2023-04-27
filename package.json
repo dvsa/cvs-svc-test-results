@@ -73,7 +73,7 @@
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "5.12.0",
     "serverless-plugin-tracing": "^2.0.0",
-    "serverless-plugin-typescript": "^1.1.9",
+    "serverless-plugin-typescript": "^2.1.4",
     "sinon": "^7.3.2",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.1",
