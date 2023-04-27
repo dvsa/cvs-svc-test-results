@@ -327,6 +327,7 @@ export class ValidationUtil {
     const options = {
       abortEarly: false,
       context: { hasTestResult: false },
+      stripUnknown: true,
     };
     validation = validators.testTypesArray.validate({
       testTypes: testResult.testTypes,
