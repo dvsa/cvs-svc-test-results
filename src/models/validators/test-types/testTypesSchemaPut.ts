@@ -135,8 +135,8 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
       '0.03 g/kWh Euro IV PM',
       'Euro 3',
       'Euro 4',
+      'Euro 5',
       'Euro 6',
-      'Euro VI',
       'Full Electric',
     ])
     .required()
