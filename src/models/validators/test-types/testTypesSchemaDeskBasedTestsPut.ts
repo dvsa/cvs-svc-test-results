@@ -56,6 +56,7 @@ export const testTypesDeskBasedGroup2 =
         'Euro 4',
         'Euro 5',
         'Euro 6',
+        'Euro VI',
         'Full Electric',
       ])
       .allow(null),

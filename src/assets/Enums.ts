@@ -32,7 +32,7 @@ export enum TESTING_ERRORS {
   NoDeficiencyCategory = '/location/deficiencyText/stdForProhibition are null for a defect with deficiency category other than advisory',
   FuelTypeInvalid = '"fuelType" must be one of [diesel, gas-cng, gas-lng, gas-lpg, petrol, fuel cell, full electric, null]',
   ModTypeDescriptionInvalid = '"description" must be one of [particulate trap, modification or change of engine, gas engine]',
-  EmissionStandardInvalid = '"emissionStandard" must be one of [0.10 g/kWh Euro 3 PM, 0.03 g/kWh Euro IV PM, Euro 3, Euro 4, Euro 5, Euro 6, Full Electric, null]',
+  EmissionStandardInvalid = '"emissionStandard" must be one of [0.10 g/kWh Euro 3 PM, 0.03 g/kWh Euro IV PM, Euro 3, Euro 4, Euro 5, Euro 6, Euro VI, Full Electric, null]',
   ModTypeCodeInvalid = '"code" must be one of [p, m, g]',
   VehicleSubclassIsNotAllowed = '"vehicleSubclass" is not allowed',
   VehicleSubclassIsRequired = '"vehicleSubclass" is required',
