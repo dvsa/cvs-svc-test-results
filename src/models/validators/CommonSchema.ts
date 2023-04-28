@@ -42,7 +42,7 @@ export const testTypesCommonSchema = Joi.object().keys({
     .when('testResult', {
       is: 'pass',
       then: Joi.date().iso().allow(null),
-      otherwise: Joi.date().forbidden(),
+      otherwise: Joi.date().allow(null, ''),
     })
     .allow(null),
   modType: Joi.object()
@@ -78,7 +78,6 @@ export const testTypesCommonSchema = Joi.object().keys({
       'Euro 4',
       'Euro 5',
       'Euro 6',
-      'Euro VI',
       'Full Electric',
     ])
     .allow(null),

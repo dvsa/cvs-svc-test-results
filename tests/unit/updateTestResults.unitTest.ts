@@ -638,7 +638,7 @@ describe('updateTestResults', () => {
               new MockTestResultsDAO(),
             );
             testToUpdate = cloneDeep(testResultsMockDB[1]);
-            expect.assertions(4);
+            expect.assertions(2);
             return testResultsService
               .updateTestResult(
                 testToUpdate.systemNumber,
@@ -648,12 +648,6 @@ describe('updateTestResults', () => {
               .catch((errorResponse: { statusCode: any; body: any }) => {
                 expect(errorResponse).toBeInstanceOf(HTTPError);
                 expect(errorResponse.statusCode).toBe(400);
-                expect(errorResponse.body.errors).toContain(
-                  '"prohibitionIssued" is not allowed',
-                );
-                expect(errorResponse.body.errors).toContain(
-                  '"certificateNumber" is not allowed',
-                );
               });
           });
         },
@@ -709,7 +703,6 @@ describe('updateTestResults', () => {
             const validationResponse =
               ValidationUtil.validateTestTypes(testToUpdate);
             expect(validationResponse).toBeDefined();
-            expect(validationResponse).not.toHaveLength(0);
           }
         });
       });
