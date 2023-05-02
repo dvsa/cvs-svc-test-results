@@ -137,6 +137,7 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
       'Euro 4',
       'Euro 5',
       'Euro 6',
+      'Euro V',
       'Euro VI',
       'Full Electric',
     ])

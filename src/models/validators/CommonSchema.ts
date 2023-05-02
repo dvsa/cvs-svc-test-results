@@ -78,6 +78,7 @@ export const testTypesCommonSchema = Joi.object().keys({
       'Euro 4',
       'Euro 5',
       'Euro 6',
+      'Euro V',
       'Euro VI',
       'Full Electric',
     ])
