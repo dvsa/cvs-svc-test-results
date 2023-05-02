@@ -56,6 +56,7 @@ export const testTypesDeskBasedGroup2 =
         'Euro 4',
         'Euro 5',
         'Euro 6',
+        'Euro V',
         'Euro VI',
         'Full Electric',
       ])
@@ -130,6 +131,7 @@ export const testTypesDeskBasedGroup5Lgv =
         'Euro 4',
         'Euro 5',
         'Euro 6',
+        'Euro V',
         'Euro VI',
         'Full Electric',
       ])
