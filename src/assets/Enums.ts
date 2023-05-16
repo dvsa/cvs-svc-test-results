@@ -572,7 +572,7 @@ export const TEST_TYPES_GROUP3_DESK_BASED_TEST: string[] = [
   '431',
   '432',
   '443',
-  '444'
+  '444',
 ];
 // Tempo 100, COIF, Appeal for IVA PSV, Notifiable alteration
 export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
