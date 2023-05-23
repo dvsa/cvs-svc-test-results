@@ -590,7 +590,7 @@ export const TEST_TYPES_GROUP4_DESK_BASED_TEST: string[] = [
 // ADR: ADRIIIa
 export const TEST_TYPES_GROUP5_DESK_BASED_TEST: string[] = ['441', '442'];
 
-export const TEST_TYPES_GROUP5_DESK_BASED_TEST_LGV: string[] = ['439','449'];
+export const TEST_TYPES_GROUP5_DESK_BASED_TEST_LGV: string[] = ['439', '449'];
 
 export const TEST_TYPES = {
   testTypesGroup1: TEST_TYPES_GROUP1,
