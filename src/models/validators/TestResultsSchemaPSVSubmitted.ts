@@ -54,7 +54,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
 });
 
 export const psvSubmitted = testResultsCommonSchema.keys({
-  vrm: Joi.string().alphanum().min(1).max(8).required(),
+  vrm: Joi.string().alphanum().min(1).max(9).required(),
   numberOfSeats: Joi.number().required(),
   odometerReading: Joi.number().required().allow(null),
   odometerReadingUnits: Joi.any()
