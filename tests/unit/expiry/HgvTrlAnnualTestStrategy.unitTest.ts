@@ -23,6 +23,7 @@ describe('HgvTrlAnnualTestStrategy', () => {
     describe('test hgvTrlAnnualTestStrategy with multiple scenarios', () => {
       test.each`
         inputRegistrationDate | inputTestDate   | ExpectedExpiryDate
+        ${'2018-07-31'}       | ${'2020-11-05'} | ${'2021-11-30'}
         ${'2019-08-29'}       | ${'2020-07-01'} | ${'2021-08-31'}
         ${'2019-08-30'}       | ${'2020-06-30'} | ${'2021-06-30'}
         ${'2020-02-29'}       | ${'2021-01-01'} | ${'2022-02-28'}

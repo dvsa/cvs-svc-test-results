@@ -35,6 +35,9 @@ describe('HgvTrlFirstTestStrategy', () => {
           ${'2022-02-05'}       | ${'2023-01-15'} | ${'2024-02-29'}
           ${'2022-02-05'}       | ${'2023-02-28'} | ${'2024-02-29'}
           ${'2022-02-05'}       | ${'2023-03-15'} | ${'2024-03-31'}
+          ${'2018-07-31'}       | ${'2020-11-05'} | ${'2021-11-30'}
+          ${'2019'}             | ${'2020-05-30'} | ${'2021-05-31'}
+          ${undefined}          | ${'2020-05-30'} | ${'2021-05-31'}
         `(
           'The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRegistrationDate',
           ({ inputRegistrationDate, inputTestDate, ExpectedExpiryDate }) => {
