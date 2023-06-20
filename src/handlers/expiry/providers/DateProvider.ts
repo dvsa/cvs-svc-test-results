@@ -196,7 +196,6 @@ export class DateProvider {
   public static addOneYearMinusOneDayISOString(
     inputDate: Date | string,
   ): string {
-    //
     const generateExpiryDate = (subtractDays = 1): string =>
       moment(inputDate)
         .add(1, 'year')
