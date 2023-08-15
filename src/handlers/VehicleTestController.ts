@@ -1,5 +1,4 @@
 import { cloneDeep, mergeWith, differenceWith, isEqual } from 'lodash';
-import { EPROTONOSUPPORT } from 'constants';
 import * as enums from '../assets/Enums';
 import * as utils from '../utils';
 import * as models from '../models';
@@ -10,6 +9,7 @@ import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 import { Service } from '../models/injector/ServiceDecorator';
 import { TestDataProvider } from './expiry/providers/TestDataProvider';
 import { DateProvider } from './expiry/providers/DateProvider';
+import { HTTPError } from '../models';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -117,8 +117,8 @@ export class VehicleTestController implements IVehicleTestController {
       return result;
     } catch (error) {
       if (
-        error.statusCode === 400 &&
-        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+        (error as HTTPError).statusCode === 400 &&
+        (error as HTTPError).message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
@@ -156,14 +156,14 @@ export class VehicleTestController implements IVehicleTestController {
       );
     } catch (error) {
       console.error('Error on update test result', error);
-      throw new models.HTTPError(error.statusCode, error.body);
+      throw new models.HTTPError((error as HTTPError).statusCode, (error as HTTPError).body);
     }
     try {
       await this.dataProvider.updateTestResult(newTestResult);
       return newTestResult;
     } catch (dynamoError) {
       console.error('dynamoError', dynamoError);
-      throw new models.HTTPError(500, dynamoError.message);
+      throw new models.HTTPError(500, (dynamoError as HTTPError).message);
     }
   }
 

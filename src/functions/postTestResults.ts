@@ -3,6 +3,7 @@ import { TestResultsService } from '../services/TestResultsService';
 import { HTTPResponse } from '../models/HTTPResponse';
 import { MESSAGES } from '../assets/Enums';
 import { MappingUtil } from '../utils/mappingUtil';
+import { HTTPError } from '../models';
 
 export async function postTestResults(event: { body: any }) {
   const subseg = MappingUtil.getSubSegment('postTestResults');
@@ -24,9 +25,12 @@ export async function postTestResults(event: { body: any }) {
   } catch (error) {
     console.log('Error in postTestResults > insertTestResults: ', error);
     if (subseg) {
-      subseg.addError(error.body);
+      subseg.addError((error as HTTPError).body);
     }
-    return new HTTPResponse(error.statusCode, error.body);
+    return new HTTPResponse(
+      (error as HTTPError).statusCode,
+      (error as HTTPError).body,
+    );
   } finally {
     if (subseg) {
       subseg.close();
