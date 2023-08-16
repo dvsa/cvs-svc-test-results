@@ -54,7 +54,6 @@ export class TestDataProvider implements ITestDataProvider {
     systemNumber: string,
   ): Promise<models.ITestResult[]> {
     const fromDateTime = new Date(1970, 1, 1);
-    // TODO change here, to be further in the future.
     const toDateTime = new Date(2040, 1, 1);
     let result: models.ITestResult[] = [];
     try {
