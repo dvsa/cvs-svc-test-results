@@ -26,8 +26,8 @@ export class MappingUtil {
     event: any,
     subSegment: ISubSeg | null,
   ) {
-    let toDate = DateProvider.getEndOfDay();
-    let fromDate = DateProvider.getTwoYearsFromDate(toDate);
+    let toDate = new Date(2300, 1, 1);
+    let fromDate = DateProvider.getTwoYearsFromDate(DateProvider.getEndOfDay());
     let testStatus;
     let testVersion = enums.TEST_VERSION.CURRENT;
     let resultId;
@@ -61,7 +61,7 @@ export class MappingUtil {
     toDate = toDateTime ? new Date(toDateTime) : toDate;
     fromDate = fromDateTime
       ? new Date(fromDateTime)
-      : DateProvider.getTwoYearsFromDate(toDate);
+      : DateProvider.getTwoYearsFromDate(DateProvider.getEndOfDay());
     if (status) {
       testStatus = status;
     }
