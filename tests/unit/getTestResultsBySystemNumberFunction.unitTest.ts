@@ -19,8 +19,9 @@ describe('getTestResultsBySystemNumber Function', () => {
 
       const expectedFilters = {
         systemNumber: '1',
+        testStatus: undefined,
         testVersion: 'current',
-        toDateTime: moment().endOf('day').toDate(),
+        toDateTime: new Date(2300, 1, 1),
         fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
       };
 
@@ -98,10 +99,7 @@ describe('getTestResultsBySystemNumber Function', () => {
           systemNumber: '1',
           testVersion: 'current',
           toDateTime: new Date('01-01-2010'),
-          fromDateTime: moment(new Date('01-01-2010'))
-            .subtract(2, 'years')
-            .endOf('day')
-            .toDate(),
+          fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
         };
 
         expect.assertions(4);
@@ -128,8 +126,11 @@ describe('getTestResultsBySystemNumber Function', () => {
 
         const expectedFilters = {
           systemNumber: '1',
+          testResultId: undefined,
+          testStationPNumber: undefined,
+          testStatus: undefined,
           testVersion: 'current',
-          toDateTime: moment().endOf('day').toDate(),
+          toDateTime: moment(new Date(2300, 1, 1)).toDate(),
           fromDateTime: new Date('01-01-2010'),
         };
 
@@ -159,7 +160,9 @@ describe('getTestResultsBySystemNumber Function', () => {
           systemNumber: '1',
           testVersion: 'current',
           testStatus: 'cheese',
-          toDateTime: moment().endOf('day').toDate(),
+          testResultId: undefined,
+          testStationPNumber: undefined,
+          toDateTime: moment(new Date(2300, 1, 1)).toDate(),
           fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
         };
 
@@ -189,7 +192,7 @@ describe('getTestResultsBySystemNumber Function', () => {
         const expectedFilters = {
           systemNumber: '1',
           testVersion: 'archived',
-          toDateTime: moment().endOf('day').toDate(),
+          toDateTime: moment(new Date(2300, 1, 1)).toDate(),
           fromDateTime: moment().subtract(2, 'years').endOf('day').toDate(),
         };
 
