@@ -14,11 +14,22 @@ describe('Test Results DAO', () => {
   });
   describe('GetBySystemNumber function', () => {
     it('builds correct query', () => {
+      let queryResponse: any = {
+        Items: [{ id: 1 }, { id: 2 }],
+        LastEvaluatedKey: 123,
+      };
+
       const daoStub = jest.fn().mockImplementation(() => ({
         promise: () => {
-          Promise.resolve(undefined);
+          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+          // and will remove it in the next calls
+          const promiseToReturn = Promise.resolve(queryResponse);
+          queryResponse = { ...queryResponse };
+          delete queryResponse.LastEvaluatedKey;
+          return promiseToReturn;
         },
       }));
+
       (TestResultsDAO as any).docClient.query = daoStub;
       const filter: ITestResultFilters = {
         systemNumber: 'abc123',
@@ -49,12 +60,21 @@ describe('Test Results DAO', () => {
 
   describe('getByTesterStaffId function', () => {
     it('builds correct query', () => {
+      let queryResponse: any = {
+        Items: [{ id: 1 }, { id: 2 }],
+        LastEvaluatedKey: 123,
+      };
+
       const daoStub = jest.fn().mockImplementation(() => ({
         promise: () => {
-          Promise.resolve(undefined);
+          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+          // and will remove it in the next calls
+          const promiseToReturn = Promise.resolve(queryResponse);
+          queryResponse = { ...queryResponse };
+          delete queryResponse.LastEvaluatedKey;
+          return promiseToReturn;
         },
       }));
-      (TestResultsDAO as any).docClient.query = daoStub;
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -63,6 +83,9 @@ describe('Test Results DAO', () => {
         testStationPNumber: '123QWE',
       };
       dao.getByTesterStaffId(filter);
+
+      console.log('HELLO');
+      console.log(daoStub.mock.calls);
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[':testerStaffId'],

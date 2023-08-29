@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import mockContext from 'aws-lambda-mock-context';
+import mockContext, { Context } from 'aws-lambda';
 import { handler } from '../../src/handler';
 import { HTTPResponse } from '../../src/models/HTTPResponse';
 import eventWithStaffId from '../resources/event-getTestResultsByTesterStaffId.json';
@@ -10,7 +10,7 @@ import * as getTestResultsBySystemNumber from '../../src/functions/getTestResult
 const sandbox = sinon.createSandbox();
 
 describe('The lambda function handler', () => {
-  const ctx = mockContext();
+  const ctx = mockContext as Context;
   afterAll(() => {
     sandbox.restore();
   });
