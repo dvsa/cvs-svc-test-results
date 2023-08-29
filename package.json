@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/handler.js",
   "engines": {
-    "node": "14.*",
+    "node": "18.*",
     "npm": "6.*"
   },
   "scripts": {
