@@ -5,7 +5,7 @@
   "main": "src/handler.js",
   "engines": {
     "node": "18.*",
-    "npm": "6.*"
+    "npm": "9.*"
   },
   "scripts": {
     "start": "BRANCH=local serverless offline start",
