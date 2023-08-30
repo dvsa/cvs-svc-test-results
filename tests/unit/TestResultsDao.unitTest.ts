@@ -75,6 +75,7 @@ describe('Test Results DAO', () => {
           return promiseToReturn;
         },
       }));
+      (TestResultsDAO as any).docClient.query = daoStub;
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -83,9 +84,6 @@ describe('Test Results DAO', () => {
         testStationPNumber: '123QWE',
       };
       dao.getByTesterStaffId(filter);
-
-      console.log('HELLO');
-      console.log(daoStub.mock.calls);
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[':testerStaffId'],

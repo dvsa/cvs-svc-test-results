@@ -265,8 +265,6 @@ export class TestResultsDAO {
     params: any,
     allData: models.ITestResult[] = [],
   ): Promise<models.ITestResult[]> {
-    console.log('EVEN MORE PARAMS');
-    console.log(params);
     const data: PromiseResult<DocumentClient.QueryOutput, AWSError> =
       await TestResultsDAO.docClient.query(params).promise();
 
