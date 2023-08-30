@@ -23,13 +23,13 @@ dynamodb:
   local:
     params:
       region: localhost
-      endpoint: http://localhost:8004
+      endpoint: http://127.0.0.1:8004
       convertEmptyValues: true
     table: cvs-local-test-results
   local-global:
     params:
       region: localhost
-      endpoint: http://localhost:8000
+      endpoint: http://127.0.0.1:8000
       convertEmptyValues: true
     table: cvs-local-global-test-results
   remote:
