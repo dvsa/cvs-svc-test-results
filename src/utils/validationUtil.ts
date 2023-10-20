@@ -311,7 +311,7 @@ export class ValidationUtil {
     }
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
-    console.log('validator is: ', validator)
+    console.log('validator is: ', validator);
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
@@ -340,6 +340,7 @@ export class ValidationUtil {
     for (const testType of testResult.testTypes) {
       options.context.hasTestResult = !!testType.testResult;
       const validator = this.getTestGroup(testType.testTypeId);
+      console.log(JSON.stringify(validator), 'validator')
       validation = validator
         ? validator.validate(testType, options)
         : invalidTestType;
