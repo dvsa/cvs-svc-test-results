@@ -188,7 +188,6 @@ export class ValidationUtil {
       'systemNumber',
       'vin',
     ]);
-    console.log('payload before validation:', payload);
     const validation: ValidationResult<any> | any | null = validate(
       payload,
       validationSchema,
@@ -311,7 +310,6 @@ export class ValidationUtil {
     }
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
-    console.log('validator is: ', validator);
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
