@@ -135,15 +135,15 @@ export class VehicleTestController implements IVehicleTestController {
     payload: models.ITestResult,
     msUserDetails: models.IMsUserDetails,
   ) {
-    console.log(JSON.stringify(payload), "updateTestResult")
+    console.log(JSON.stringify(payload), 'updateTestResult');
     let newTestResult: models.ITestResult;
     try {
       const { testTypes } = payload;
       utils.MappingUtil.removeNonEditableAttributes(payload);
-      console.log(JSON.stringify(payload), "removeNonEditable")
+      console.log(JSON.stringify(payload), 'removeNonEditable');
       const validationErrors =
         utils.ValidationUtil.validateUpdateTestResult(payload);
-        console.log(JSON.stringify(payload), "validateUpdateTestResult")
+      console.log(JSON.stringify(payload), 'validateUpdateTestResult');
       if (validationErrors && validationErrors.length) {
         throw new models.HTTPError(400, {
           errors: validationErrors,
@@ -157,7 +157,7 @@ export class VehicleTestController implements IVehicleTestController {
         payload,
         msUserDetails,
       );
-      console.log(JSON.stringify(payload), "mapOldToNew")
+      console.log(JSON.stringify(payload), 'mapOldToNew');
     } catch (error) {
       console.error('Error on update test result', error);
       throw new models.HTTPError(error.statusCode, error.body);

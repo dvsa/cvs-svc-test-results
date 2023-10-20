@@ -31,7 +31,7 @@ describe('TestResultsService calling generateExpiryDate', () => {
     baseTestResult.testTypes[0].testNumber = 'W01A00209';
     baseTestResult.testTypes[0].testTypeClassification =
       TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE;
-    baseTestResult.testTypes[0].certificateNumber = '';
+    baseTestResult.testTypes[0].certificateNumber = null;
   }
 
   describe('When inserting a testResult with Annual With Certificate classification', () => {
