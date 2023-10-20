@@ -341,7 +341,10 @@ export class ValidationUtil {
       options.context.hasTestResult = !!testType.testResult;
       const validator = this.getTestGroup(testType.testTypeId);
       validation = validator
-        ? validator.validate({...testType, vehicleType: testResult.vehicleType}, options)
+        ? validator.validate(
+            { ...testType, vehicleType: testResult.vehicleType },
+            options,
+          )
         : invalidTestType;
       if (validation.error) {
         validationErrors.push(...MappingUtil.mapErrorMessage(validation));
