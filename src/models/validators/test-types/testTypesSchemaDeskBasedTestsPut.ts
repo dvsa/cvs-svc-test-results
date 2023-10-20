@@ -87,9 +87,9 @@ export const testTypesDeskBasedGroup3 =
 export const testTypesDeskBasedGroup4 =
   testTypesCommonSchemaDeskBasedTests.keys({
     certificateNumber: Joi.string().when('$vehicleType', {
-      is: Joi.string().only('psv', 'lgv', 'car', 'motorcycle'),
-      then: Joi.string().required(),
-      otherwise: Joi.string().allow('', null).default(''),
+      is: Joi.string().only(['psv', 'lgv', 'car', 'motorcycle']),
+      then: Joi.string().required().allow(null),
+      otherwise: Joi.string().allow('', null),
     }),
     secondaryCertificateNumber: Joi.any().when('$vehicleType', {
       is: 'psv',
