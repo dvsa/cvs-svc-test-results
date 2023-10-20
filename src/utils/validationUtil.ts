@@ -340,10 +340,10 @@ export class ValidationUtil {
     for (const testType of testResult.testTypes) {
       options.context.hasTestResult = !!testType.testResult;
       const validator = this.getTestGroup(testType.testTypeId);
-      console.log(JSON.stringify(validator), 'validator')
       validation = validator
-        ? validator.validate(testType, options)
-        : invalidTestType;
+      ? validator.validate(testType, options)
+      : invalidTestType;
+      console.log(validator, 'validator');
       if (validation.error) {
         validationErrors.push(...MappingUtil.mapErrorMessage(validation));
       }
