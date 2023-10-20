@@ -1,9 +1,9 @@
-import { ValidationResult, validate, string, any } from 'joi';
+import { ValidationResult, any, string, validate } from 'joi';
 import { isDate } from 'lodash';
-import { MappingUtil } from './mappingUtil';
-import * as validators from '../models/validators';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
+import * as validators from '../models/validators';
+import { MappingUtil } from './mappingUtil';
 
 export class ValidationUtil {
   // #region [rgba(52, 152, 219, 0.15)]  Public Functions
@@ -188,6 +188,7 @@ export class ValidationUtil {
       'systemNumber',
       'vin',
     ]);
+    console.log('payload before validation:', payload);
     const validation: ValidationResult<any> | any | null = validate(
       payload,
       validationSchema,
@@ -310,6 +311,7 @@ export class ValidationUtil {
     }
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
+    console.log('validator is: ', validator)
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
