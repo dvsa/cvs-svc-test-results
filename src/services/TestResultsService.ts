@@ -54,6 +54,7 @@ export class TestResultsService {
     payload: models.ITestResult,
     msUserDetails: models.IMsUserDetails,
   ) {
+    console.log(JSON.stringify(payload))
     try {
       const result = await this.vehicleTestController.updateTestResult(
         systemNumber,
