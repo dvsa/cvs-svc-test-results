@@ -1,9 +1,9 @@
-import { ValidationResult, validate, string, any } from 'joi';
+import { ValidationResult, any, string, validate } from 'joi';
 import { isDate } from 'lodash';
-import { MappingUtil } from './mappingUtil';
-import * as validators from '../models/validators';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
+import * as validators from '../models/validators';
+import { MappingUtil } from './mappingUtil';
 
 export class ValidationUtil {
   // #region [rgba(52, 152, 219, 0.15)]  Public Functions
@@ -339,7 +339,10 @@ export class ValidationUtil {
       options.context.hasTestResult = !!testType.testResult;
       const validator = this.getTestGroup(testType.testTypeId);
       validation = validator
-        ? validator.validate(testType, options)
+        ? validator.validate(
+            { ...testType, vehicleType: testResult.vehicleType },
+            options,
+          )
         : invalidTestType;
       if (validation.error) {
         validationErrors.push(...MappingUtil.mapErrorMessage(validation));
