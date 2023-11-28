@@ -65,7 +65,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -122,7 +123,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -180,7 +182,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "prs"
+        "testResult": "prs",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -287,7 +290,8 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "19",
         "testTypeName": "Annual test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -366,7 +370,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -485,7 +490,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -570,7 +576,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "abandoned",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -664,7 +671,8 @@
         ],
         "name": "Annual test",
         "testResult": "pass",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -756,7 +764,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -812,7 +821,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -869,7 +879,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "prs"
+        "testResult": "prs",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -962,7 +973,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -1018,7 +1030,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       },
       {
         "prohibitionIssued": false,
@@ -1075,7 +1088,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual NO CERTIFICATE",
-        "testResult": "prs"
+        "testResult": "prs",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1169,7 +1183,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": true
+        "deletionFlag": true,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1263,7 +1278,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1357,7 +1373,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": true
+        "deletionFlag": true,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1466,7 +1483,8 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "1",
         "testTypeName": "Annual test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1545,7 +1563,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1654,7 +1673,8 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "1",
         "testTypeName": "Annual test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1733,7 +1753,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1844,7 +1865,8 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "95",
         "testTypeName": "First test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -1939,7 +1961,8 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "95",
         "testTypeName": "First test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "trailerId": "C234567",
@@ -2014,7 +2037,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2113,7 +2137,8 @@
         ],
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2210,7 +2235,8 @@
             "defectNotes": "some defect noe"
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -2282,7 +2308,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2378,7 +2405,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "abandoned"
+        "testResult": "abandoned",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2474,7 +2502,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "prs"
+        "testResult": "prs",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2584,7 +2613,8 @@
         "testTypeEndTimestamp": "2021-01-14T10:36:33.987Z",
         "testTypeId": "94",
         "testTypeName": "Voluntary test",
-        "testTypeStartTimestamp": "2021-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2021-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2666,7 +2696,8 @@
         "name": "Technical test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "fail"
+        "testResult": "fail",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2762,7 +2793,8 @@
         "name": "Technical test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "prs"
+        "testResult": "prs",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2856,7 +2888,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -2944,7 +2977,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3038,7 +3072,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
         "testResult": "pass",
-        "deletionFlag": false
+        "deletionFlag": false,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3112,7 +3147,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3173,7 +3209,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "pass",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3258,7 +3295,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3351,7 +3389,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3444,7 +3483,8 @@
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
         "testTypeClassification": "Annual With Certificate",
-        "deletionFlag": true
+        "deletionFlag": true,
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3536,7 +3576,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testResult": "fail",
-        "testTypeClassification": "Annual With Certificate"
+        "testTypeClassification": "Annual With Certificate",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3629,7 +3670,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3723,7 +3765,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -3817,7 +3860,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -4007,7 +4051,8 @@
         "name": "Annual test",
         "certificateLink": "http://dvsagov.co.uk",
         "testTypeClassification": "Annual With Certificate",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -4184,7 +4229,8 @@
         "testTypeEndTimestamp": "2021-11-07T12:21:49.754Z",
         "testTypeId": "44",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeStartTimestamp": "2021-11-07T12:20:29.601Z"
+        "testTypeStartTimestamp": "2021-11-07T12:20:29.601Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "archived",
@@ -4258,7 +4304,8 @@
         "testTypeEndTimestamp": "2021-11-07T12:21:49.754Z",
         "testTypeId": "44",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeStartTimestamp": "2021-11-07T12:20:29.601Z"
+        "testTypeStartTimestamp": "2021-11-07T12:20:29.601Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4353,7 +4400,8 @@
         "testTypeEndTimestamp": "2021-01-14T10:36:33.987Z",
         "testTypeId": "95",
         "testTypeName": "First test",
-        "testTypeStartTimestamp": "2021-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2021-01-14T10:36:33.987Z",
+        "ivaDefects": []
       }
     ],
     "trailerId": "C220279",
@@ -4479,7 +4527,8 @@
         "testTypeEndTimestamp": "2021-07-28T01:21:25.657Z",
         "testTypeId": "44",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeStartTimestamp": "2021-07-28T01:06:25.657Z"
+        "testTypeStartTimestamp": "2021-07-28T01:06:25.657Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4546,7 +4595,8 @@
         "testTypeEndTimestamp": "2021-08-24T14:12:21.406Z",
         "testTypeId": "1",
         "testTypeName": "Annual test",
-        "testTypeStartTimestamp": "2021-08-24T13:23:16.929Z"
+        "testTypeStartTimestamp": "2021-08-24T13:23:16.929Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4621,7 +4671,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:27:43.793Z",
         "testTypeId": "1",
         "testTypeName": "Annual test",
-        "testTypeStartTimestamp": "2022-07-21T14:25:47.165Z"
+        "testTypeStartTimestamp": "2022-07-21T14:25:47.165Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4696,7 +4747,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:30:30.406Z",
         "testTypeId": "3",
         "testTypeName": "Class 6A seatbelt installation check (annual test)",
-        "testTypeStartTimestamp": "2022-07-21T14:29:16.040Z"
+        "testTypeStartTimestamp": "2022-07-21T14:29:16.040Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4771,7 +4823,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:32:43.832Z",
         "testTypeId": "4",
         "testTypeName": "Class 6A seatbelt installation check (first test)",
-        "testTypeStartTimestamp": "2022-07-21T14:31:41.860Z"
+        "testTypeStartTimestamp": "2022-07-21T14:31:41.860Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4846,7 +4899,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:44:51.494Z",
         "testTypeId": "7",
         "testTypeName": "Paid retest",
-        "testTypeStartTimestamp": "2022-07-21T14:43:25.888Z"
+        "testTypeStartTimestamp": "2022-07-21T14:43:25.888Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4921,7 +4975,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:47:02.601Z",
         "testTypeId": "8",
         "testTypeName": "Paid retest with Class 6A seatbelt installation check",
-        "testTypeStartTimestamp": "2022-07-21T14:46:05.128Z"
+        "testTypeStartTimestamp": "2022-07-21T14:46:05.128Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -4980,7 +5035,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:50:44.555Z",
         "testTypeId": "10",
         "testTypeName": "Part-paid retest",
-        "testTypeStartTimestamp": "2022-07-21T14:49:46.358Z"
+        "testTypeStartTimestamp": "2022-07-21T14:49:46.358Z",
+        "ivaDefects": []
       }
     ],
     "vehicleType": "psv",
@@ -5031,7 +5087,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:54:06.032Z",
         "testTypeId": "14",
         "testTypeName": "Paid prohibition clearance (full inspection with certificate)",
-        "testTypeStartTimestamp": "2022-07-21T14:53:15.608Z"
+        "testTypeStartTimestamp": "2022-07-21T14:53:15.608Z",
+        "ivaDefects": []
       }
     ],
     "vehicleType": "psv",
@@ -5098,7 +5155,8 @@
         "testTypeEndTimestamp": "2022-07-21T14:57:57.920Z",
         "testTypeId": "18",
         "testTypeName": "Paid prohibition clearance (retest with certificate)",
-        "testTypeStartTimestamp": "2022-07-21T14:56:52.302Z"
+        "testTypeStartTimestamp": "2022-07-21T14:56:52.302Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5173,7 +5231,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:01:01.427Z",
         "testTypeId": "21",
         "testTypeName": "Part-paid prohibition clearance (retest with certificate)",
-        "testTypeStartTimestamp": "2022-07-21T14:59:55.141Z"
+        "testTypeStartTimestamp": "2022-07-21T14:59:55.141Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5248,7 +5307,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:11:18.095Z",
         "testTypeId": "27",
         "testTypeName": "Paid prohibition clearance with Class 6A seatbelt installation check (full inspection)",
-        "testTypeStartTimestamp": "2022-07-21T15:10:12.759Z"
+        "testTypeStartTimestamp": "2022-07-21T15:10:12.759Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5323,7 +5383,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:14:24.563Z",
         "testTypeId": "28",
         "testTypeName": "Prohibition clearance (retest with Class 6A seatbelt installation check)",
-        "testTypeStartTimestamp": "2022-07-21T15:13:10.534Z"
+        "testTypeStartTimestamp": "2022-07-21T15:13:10.534Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5398,7 +5459,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:16:43.414Z",
         "testTypeId": "93",
         "testTypeName": "Prohibition clearance (retest without Class 6A seatbelt installation check)",
-        "testTypeStartTimestamp": "2022-07-21T15:15:55.405Z"
+        "testTypeStartTimestamp": "2022-07-21T15:15:55.405Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5471,7 +5533,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:20:40.489Z",
         "testTypeId": "15",
         "testTypeName": "Paid prohibition clearance (full inspection without certificate)",
-        "testTypeStartTimestamp": "2022-07-21T15:20:09.318Z"
+        "testTypeStartTimestamp": "2022-07-21T15:20:09.318Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5544,7 +5607,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:31:52.738Z",
         "testTypeId": "16",
         "testTypeName": "Part-paid prohibition clearance (full inspection)",
-        "testTypeStartTimestamp": "2022-07-21T15:29:45.724Z"
+        "testTypeStartTimestamp": "2022-07-21T15:29:45.724Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5617,7 +5681,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:36:03.851Z",
         "testTypeId": "23",
         "testTypeName": "Part-paid prohibition clearance (partial inspection)",
-        "testTypeStartTimestamp": "2022-07-21T15:35:17.052Z"
+        "testTypeStartTimestamp": "2022-07-21T15:35:17.052Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5690,7 +5755,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:38:34.695Z",
         "testTypeId": "19",
         "testTypeName": "Paid prohibition clearance (retest without certificate)",
-        "testTypeStartTimestamp": "2022-07-21T15:37:36.286Z"
+        "testTypeStartTimestamp": "2022-07-21T15:37:36.286Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5763,7 +5829,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:40:57.857Z",
         "testTypeId": "22",
         "testTypeName": "Part-paid prohibition clearance (retest without certificate)",
-        "testTypeStartTimestamp": "2022-07-21T15:40:04.849Z"
+        "testTypeStartTimestamp": "2022-07-21T15:40:04.849Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5840,7 +5907,8 @@
         "testTypeEndTimestamp": "2022-07-21T15:43:55.835Z",
         "testTypeId": "39",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeStartTimestamp": "2022-07-21T15:41:53.428Z"
+        "testTypeStartTimestamp": "2022-07-21T15:41:53.428Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5913,7 +5981,8 @@
         "testTypeEndTimestamp": "2022-07-22T13:09:39.483Z",
         "testTypeId": "39",
         "testTypeName": "Low Emissions Certificate (LEC) with annual test",
-        "testTypeStartTimestamp": "2022-07-22T13:08:45.191Z"
+        "testTypeStartTimestamp": "2022-07-22T13:08:45.191Z",
+        "ivaDefects": []
       }
     ],
     "testVersion": "current",
@@ -5966,7 +6035,8 @@
             "defectName": "name",
             "defectNotes": "notes"
           }
-        ]
+        ],
+        "ivaDefects": []
       }
     ],
     "testStationName": "Abshire-Kub",

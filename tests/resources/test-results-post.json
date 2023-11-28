@@ -81,7 +81,8 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ]
+        ],
+        "ivaDefects": []
       }
     ]
   },
@@ -167,7 +168,8 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ]
+        ],
+        "ivaDefects": []
       }
     ]
   },
@@ -253,7 +255,8 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ]
+        ],
+        "ivaDefects": []
       }
     ]
   },
@@ -317,7 +320,8 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -400,7 +404,8 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -481,7 +486,8 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -561,7 +567,8 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -639,7 +646,8 @@
           }
         ],
         "name": "First test",
-        "testResult": "pass"
+        "testResult": "pass",
+        "ivaDefects": []
       }
     ],
     "vehicleClass": {
@@ -750,7 +758,8 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ]
+        ],
+        "ivaDefects": []
       }
     ]
   },
@@ -815,7 +824,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -832,7 +842,9 @@
     "testEndTimestamp": "2019-11-07T12:21:49.752Z",
     "testStatus": "submitted",
     "reasonForCancellation": null,
-    "vehicleSubclass": ["string"],
+    "vehicleSubclass": [
+      "string"
+    ],
     "vrm": "CT70VRL",
     "odometerReading": 123,
     "odometerReadingUnits": "kilometres",
@@ -881,7 +893,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -912,7 +925,9 @@
     "preparerId": "No preparer ID given",
     "preparerName": "",
     "euVehicleCategory": "n1",
-    "vehicleSubclass": ["string"],
+    "vehicleSubclass": [
+      "string"
+    ],
     "countryOfRegistration": "gb",
     "noOfAxles": 2,
     "testTypes": [
@@ -947,7 +962,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -1012,7 +1028,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -1051,7 +1068,8 @@
             "defectNotes": "notes"
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ],
     "testStationName": "Abshire-Kub",
