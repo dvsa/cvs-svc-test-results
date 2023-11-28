@@ -5,6 +5,34 @@ import {
   testTypesCommonSchema,
 } from './CommonSchema';
 
+export const ivaDefectSchema = Joi.object({
+  sectionNumber: Joi.string().required(),
+  sectionDescription: Joi.string().required(),
+  vehicleTypes: Joi.array().items(Joi.string()).required(),
+  euVehicleCategories: Joi.array().items(Joi.string()).required(),
+  additionalInformation: Joi.object({
+    notes: Joi.string().required(),
+  }).optional(),
+  requiredStandards: Joi.array()
+    .items(
+      Joi.object({
+        rsNumber: Joi.number().required(),
+        requiredStandard: Joi.string().required(),
+        refCalculation: Joi.string().required(),
+        additionalInfo: Joi.boolean().required(),
+        inspectionTypes: Joi.array().items(Joi.string()).optional(),
+      }),
+    )
+    .required(),
+});
+
+export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
+  testTypesCommonSchema.keys({
+    testTypeEndTimestamp: Joi.date().iso().required(),
+    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
+  });
+
 export const defectsCommonSchemaSpecialistTestsSubmitted =
   defectsCommonSchema.keys({
     additionalInformation: Joi.object()
@@ -43,6 +71,7 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =
@@ -74,5 +103,37 @@ export const testResultsCommonSchemaSpecialistTestsSubmitted =
       .allow(null),
     testTypes: Joi.array()
       .items(testTypesCommonSchemaSpecialistTestsSubmitted)
+      .required(),
+  });
+
+export const testResultsIVADefectCommonSchemaSpecialistTestsSubmitted =
+  testResultsCommonSchema.keys({
+    vrm: Joi.string().alphanum().min(1).max(8).required(),
+    countryOfRegistration: Joi.string().required().allow('', null),
+    odometerReading: Joi.number().required().allow(null),
+    odometerReadingUnits: Joi.any()
+      .only(['kilometres', 'miles'])
+      .required()
+      .allow(null),
+    reasonForCancellation: Joi.string().max(500).required().allow('', null),
+    vehicleConfiguration: Joi.any()
+      .only([
+        'rigid',
+        'articulated',
+        'centre axle drawbar',
+        'semi-car transporter',
+        'semi-trailer',
+        'long semi-trailer',
+        'low loader',
+        'other',
+        'drawbar',
+        'four-in-line',
+        'dolly',
+        'full drawbar',
+      ])
+      .required()
+      .allow(null),
+    testTypes: Joi.array()
+      .items(testTypesIVADefectCommonSchemaSpecialistTestsSubmitted)
       .required(),
   });

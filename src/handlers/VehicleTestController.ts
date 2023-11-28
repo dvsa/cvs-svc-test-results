@@ -114,6 +114,7 @@ export class VehicleTestController implements IVehicleTestController {
       const result = await this.dataProvider.insertTestResult(
         payloadWithAnniversaryDate,
       );
+      console.log(`SYSTEM NUBMER ${payloadWithAnniversaryDate.systemNumber}`);
       return result;
     } catch (error) {
       if (

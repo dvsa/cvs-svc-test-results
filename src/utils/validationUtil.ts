@@ -1,5 +1,6 @@
 import { ValidationResult, any, string, validate } from 'joi';
 import { isDate } from 'lodash';
+import { DefectGETIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
 import * as validators from '../models/validators';
@@ -304,15 +305,31 @@ export class ValidationUtil {
     return missingMandatoryFields;
   }
 
-  private static getValidationSchema(vehicleType: string, testStatus: string) {
+  private static getValidationSchema(
+    vehicleType: string,
+    testStatus: string,
+    ivaDefects?: DefectGETIVA[] | null,
+  ) {
     if (!(vehicleType && testStatus)) {
       return null;
     }
+
+    console.log(ivaDefects);
+    // If any of the testTypes has ivaDefects populated, use a specific schema
+    if (ivaDefects && ivaDefects.length > 0) {
+      console.log('using new validatior');
+      return validators[
+        'testResultsIVADefectCommonSchemaSpecialistTestsSubmitted' as keyof typeof validators
+      ];
+    }
+
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
+
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
+
     return null;
   }
 
