@@ -842,9 +842,7 @@
     "testEndTimestamp": "2019-11-07T12:21:49.752Z",
     "testStatus": "submitted",
     "reasonForCancellation": null,
-    "vehicleSubclass": [
-      "string"
-    ],
+    "vehicleSubclass": ["string"],
     "vrm": "CT70VRL",
     "odometerReading": 123,
     "odometerReadingUnits": "kilometres",
@@ -925,9 +923,7 @@
     "preparerId": "No preparer ID given",
     "preparerName": "",
     "euVehicleCategory": "n1",
-    "vehicleSubclass": [
-      "string"
-    ],
+    "vehicleSubclass": ["string"],
     "countryOfRegistration": "gb",
     "noOfAxles": 2,
     "testTypes": [
