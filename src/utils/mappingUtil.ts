@@ -121,7 +121,6 @@ export class MappingUtil {
   public static cleanDefectsArrayForSpecialistTests(
     testResult: models.ITestResult,
   ) {
-    // TODO change needs to be made here
     testResult.testTypes.forEach((testType: models.TestType) => {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
         testType.defects = [];

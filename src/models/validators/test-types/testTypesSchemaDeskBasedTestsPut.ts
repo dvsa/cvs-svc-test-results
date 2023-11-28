@@ -110,11 +110,7 @@ export const testTypesDeskBasedGroup5 =
       then: Joi.string().required(),
       otherwise: Joi.string().allow('', null),
     }),
-    secondaryCertificateNumber: Joi.any().when('vehicleType', {
-      is: 'hgv',
-      then: Joi.string().required(),
-      otherwise: Joi.string().allow('', null),
-    }),
+    secondaryCertificateNumber: Joi.string().allow('', null),
     testExpiryDate: Joi.date().allow('', null),
   });
 

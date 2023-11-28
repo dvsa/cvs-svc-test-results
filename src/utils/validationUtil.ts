@@ -313,11 +313,7 @@ export class ValidationUtil {
     if (!(vehicleType && testStatus)) {
       return null;
     }
-
-    console.log(ivaDefects);
-    // If any of the testTypes has ivaDefects populated, use a specific schema
     if (ivaDefects && ivaDefects.length > 0) {
-      console.log('using new validatior');
       return validators[
         'testResultsIVADefectCommonSchemaSpecialistTestsSubmitted' as keyof typeof validators
       ];
@@ -325,11 +321,9 @@ export class ValidationUtil {
 
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
-
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
-
     return null;
   }
 
