@@ -81,8 +81,7 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ],
-        "ivaDefects": []
+        ]
       }
     ]
   },
@@ -168,8 +167,7 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ],
-        "ivaDefects": []
+        ]
       }
     ]
   },
@@ -255,8 +253,7 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ],
-        "ivaDefects": []
+        ]
       }
     ]
   },
@@ -320,8 +317,7 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass",
-        "ivaDefects": []
+        "testResult": "pass"
       }
     ],
     "vehicleClass": {
@@ -404,8 +400,7 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass",
-        "ivaDefects": []
+        "testResult": "pass"
       }
     ],
     "vehicleClass": {
@@ -486,8 +481,7 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass",
-        "ivaDefects": []
+        "testResult": "pass"
       }
     ],
     "vehicleClass": {
@@ -567,8 +561,7 @@
           }
         ],
         "name": "Annual test",
-        "testResult": "pass",
-        "ivaDefects": []
+        "testResult": "pass"
       }
     ],
     "vehicleClass": {
@@ -646,8 +639,7 @@
           }
         ],
         "name": "First test",
-        "testResult": "pass",
-        "ivaDefects": []
+        "testResult": "pass"
       }
     ],
     "vehicleClass": {
@@ -758,8 +750,7 @@
             "stdForProhibition": false,
             "prs": false
           }
-        ],
-        "ivaDefects": []
+        ]
       }
     ]
   },

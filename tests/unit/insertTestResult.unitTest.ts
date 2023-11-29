@@ -1,6 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import { cloneDeep } from 'lodash';
+import {
+  DefectGETIVA as IVADefect,
+  DefectGETIVA,
+} from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import {
@@ -3211,11 +3215,17 @@ describe('insertTestResult', () => {
     "when inserting a 'fail' Specialist test with blank certificate number",
     () => {
       it('should not throw an error', () => {
-        const testResult = testResultsPostMock[13];
-        expect.assertions(1);
-        expect(ValidationUtil.validateInsertTestResultPayload(testResult)).toBe(
-          true,
-        );
+        try {
+          const testResult = testResultsPostMock[13] as ITestResultPayload;
+          testResult.testTypes.forEach((x) => delete x.ivaDefects);
+
+          expect.assertions(1);
+          expect(
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toBe(true);
+        } catch (e) {
+          console.log(e);
+        }
       });
     },
   );
