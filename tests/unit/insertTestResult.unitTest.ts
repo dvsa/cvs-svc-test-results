@@ -1,10 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 import { cloneDeep } from 'lodash';
-import {
-  DefectGETIVA as IVADefect,
-  DefectGETIVA,
-} from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import {
