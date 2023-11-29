@@ -8,8 +8,7 @@ import {
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),
   sectionDescription: Joi.string().required(),
-  vehicleTypes: Joi.array().items(Joi.string()).required(),
-  euVehicleCategories: Joi.array().items(Joi.string()).required(),
+  euVehicleCategories: Joi.array().items().only('m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4', 'mvsa'),
   additionalInformation: Joi.object({
     notes: Joi.string().required(),
   }).optional(),
@@ -20,7 +19,7 @@ export const ivaDefectSchema = Joi.object({
         requiredStandard: Joi.string().required(),
         refCalculation: Joi.string().required(),
         additionalInfo: Joi.boolean().required(),
-        inspectionTypes: Joi.array().items(Joi.string()).optional(),
+        inspectionTypes: Joi.array().items().only('basic', 'normal').optional(),
       }),
     )
     .required(),
@@ -71,7 +70,9 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
+    ivaDefects: Joi.array()
+        .items(ivaDefectSchema)
+        .required(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =

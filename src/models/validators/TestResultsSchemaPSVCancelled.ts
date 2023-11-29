@@ -4,7 +4,6 @@ import {
   testTypesCommonSchema,
   testResultsCommonSchema,
 } from './CommonSchema';
-import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object().keys({
@@ -37,7 +36,6 @@ const testTypesSchema = testTypesCommonSchema.keys({
     .required()
     .allow(null),
   defects: Joi.array().items(defectsSchema).required(),
-  ivaDefects: Joi.array().items(ivaDefectSchema).required(),
   modType: Joi.object({
     code: Joi.string().only(['p', 'm', 'g']),
     description: Joi.string().only([
