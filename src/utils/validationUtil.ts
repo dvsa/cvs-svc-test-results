@@ -307,16 +307,10 @@ export class ValidationUtil {
 
   private static getValidationSchema(
     vehicleType: string,
-    testStatus: string,
-    ivaDefects?: IVADefect[] | null,
+    testStatus: string
   ) {
     if (!(vehicleType && testStatus)) {
       return null;
-    }
-    if (ivaDefects && ivaDefects.length > 0) {
-      return validators[
-        'testResultsIVADefectCommonSchemaSpecialistTestsSubmitted' as keyof typeof validators
-      ];
     }
 
     const validator =
