@@ -5,7 +5,7 @@ import {
   testTypesCommonSchema,
   testResultsCommonSchema,
 } from './CommonSchema';
-import { testResultsIVADefectCommonSchemaSpecialistTestsSubmitted } from './SpecialistTestsCommonSchemaSubmitted';
+import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object()
@@ -41,9 +41,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
   defects: Joi.array().items(defectsSchema).required(),
-  ivaDefects: array()
-    .items(testResultsIVADefectCommonSchemaSpecialistTestsSubmitted)
-    .optional(),
+  ivaDefects: array().items(ivaDefectSchema).optional(),
   modType: Joi.object({
     code: Joi.string().only(['p', 'm', 'g']),
     description: Joi.string().only([

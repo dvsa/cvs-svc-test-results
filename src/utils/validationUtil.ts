@@ -1,6 +1,5 @@
 import { ValidationResult, any, string, validate } from 'joi';
 import { isDate } from 'lodash';
-import { DefectGETIVA as IVADefect } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
 import * as validators from '../models/validators';
@@ -43,6 +42,7 @@ export class ValidationUtil {
       payload.vehicleType,
       payload.testStatus,
     );
+
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validate(payload, validationSchema)
       : null;
@@ -309,7 +309,6 @@ export class ValidationUtil {
     if (!(vehicleType && testStatus)) {
       return null;
     }
-
     const validator =
       vehicleType + testStatus.charAt(0).toUpperCase() + testStatus.slice(1);
     if (validator in validators) {

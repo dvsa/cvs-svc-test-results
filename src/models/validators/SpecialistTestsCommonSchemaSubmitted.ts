@@ -8,9 +8,21 @@ import {
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),
   sectionDescription: Joi.string().required(),
-  euVehicleCategories: Joi.array()
-    .items()
-    .only('m1', 'm2', 'm3', 'n1', 'n2', 'n3', 'o1', 'o2', 'o3', 'o4', 'mvsa'),
+  euVehicleCategories: Joi.array().items(
+    Joi.string().valid(
+      'm1',
+      'm2',
+      'm3',
+      'n1',
+      'n2',
+      'n3',
+      'o1',
+      'o2',
+      'o3',
+      'o4',
+      'mvsa',
+    ),
+  ),
   additionalInformation: Joi.object({
     notes: Joi.string().required(),
   }).optional(),
@@ -21,7 +33,9 @@ export const ivaDefectSchema = Joi.object({
         requiredStandard: Joi.string().required(),
         refCalculation: Joi.string().required(),
         additionalInfo: Joi.boolean().required(),
-        inspectionTypes: Joi.array().items().only('basic', 'normal').optional(),
+        inspectionTypes: Joi.array()
+          .items(Joi.string().valid('basic', 'normal'))
+          .optional(),
       }),
     )
     .required(),
@@ -104,37 +118,5 @@ export const testResultsCommonSchemaSpecialistTestsSubmitted =
       .allow(null),
     testTypes: Joi.array()
       .items(testTypesCommonSchemaSpecialistTestsSubmitted)
-      .required(),
-  });
-
-export const testResultsIVADefectCommonSchemaSpecialistTestsSubmitted =
-  testResultsCommonSchema.keys({
-    vrm: Joi.string().alphanum().min(1).max(8).required(),
-    countryOfRegistration: Joi.string().required().allow('', null),
-    odometerReading: Joi.number().required().allow(null),
-    odometerReadingUnits: Joi.any()
-      .only(['kilometres', 'miles'])
-      .required()
-      .allow(null),
-    reasonForCancellation: Joi.string().max(500).required().allow('', null),
-    vehicleConfiguration: Joi.any()
-      .only([
-        'rigid',
-        'articulated',
-        'centre axle drawbar',
-        'semi-car transporter',
-        'semi-trailer',
-        'long semi-trailer',
-        'low loader',
-        'other',
-        'drawbar',
-        'four-in-line',
-        'dolly',
-        'full drawbar',
-      ])
-      .required()
-      .allow(null),
-    testTypes: Joi.array()
-      .items(testTypesIVADefectCommonSchemaSpecialistTestsSubmitted)
       .required(),
   });
