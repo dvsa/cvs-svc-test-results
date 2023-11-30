@@ -305,10 +305,7 @@ export class ValidationUtil {
     return missingMandatoryFields;
   }
 
-  private static getValidationSchema(
-    vehicleType: string,
-    testStatus: string
-  ) {
+  private static getValidationSchema(vehicleType: string, testStatus: string) {
     if (!(vehicleType && testStatus)) {
       return null;
     }

@@ -1,8 +1,9 @@
 import { array, string } from 'joi';
 import {
-    defectsCommonSchemaSpecialistTestsSubmitted,
-    testResultsCommonSchemaSpecialistTestsSubmitted, testResultsIVADefectCommonSchemaSpecialistTestsSubmitted,
-    testTypesCommonSchemaSpecialistTestsSubmitted,
+  defectsCommonSchemaSpecialistTestsSubmitted,
+  testResultsCommonSchemaSpecialistTestsSubmitted,
+  testResultsIVADefectCommonSchemaSpecialistTestsSubmitted,
+  testTypesCommonSchemaSpecialistTestsSubmitted,
 } from './SpecialistTestsCommonSchemaSubmitted';
 
 export const carSubmitted =
@@ -15,7 +16,7 @@ export const carSubmitted =
             .items(defectsCommonSchemaSpecialistTestsSubmitted)
             .optional(),
         }),
-          testTypesCommonSchemaSpecialistTestsSubmitted.keys({
+        testTypesCommonSchemaSpecialistTestsSubmitted.keys({
           ivaDefects: array()
             .items(testResultsIVADefectCommonSchemaSpecialistTestsSubmitted)
             .required(),
