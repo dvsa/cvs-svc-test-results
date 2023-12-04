@@ -12,12 +12,10 @@ export const carSubmitted =
     testTypes: array()
       .items(
         testTypesCommonSchemaSpecialistTestsSubmitted.keys({
-          defects: array()
-            .items(defectsCommonSchemaSpecialistTestsSubmitted)
-            .optional(),
-        }),
-        testTypesCommonSchemaSpecialistTestsSubmitted.keys({
-          ivaDefects: array().items(ivaDefectSchema).required(),
+            defects: array()
+                .items(defectsCommonSchemaSpecialistTestsSubmitted)
+                .optional(),
+            ivaDefects: array().items(ivaDefectSchema).required(),
         }),
       )
       .required(),
