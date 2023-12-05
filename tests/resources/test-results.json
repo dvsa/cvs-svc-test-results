@@ -5956,6 +5956,7 @@
         "additionalNotesRecorded": null,
         "testTypeId": "175",
         "name": "Specialist test",
+        "ivaDefect": [],
         "createdAt": "2022-11-11T00:52:16.203Z",
         "lastUpdatedAt": "2022-11-11T00:52:16.203Z",
         "testTypeClassification": "Annual With Certificate",
