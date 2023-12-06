@@ -42,6 +42,7 @@ export class ValidationUtil {
       payload.vehicleType,
       payload.testStatus,
     );
+
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validate(payload, validationSchema)
       : null;
