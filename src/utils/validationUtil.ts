@@ -346,7 +346,7 @@ export class ValidationUtil {
     ) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingMandatory);
     }
-    if (!odometerReadingUnits) {
+    if (!ValidationUtil.isIvaTest(testTypes) && !odometerReadingUnits) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingUnitsMandatory);
     }
     return missingMandatoryFields;
