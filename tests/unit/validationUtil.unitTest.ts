@@ -1,4 +1,4 @@
-import { ITestResult } from '../../src/models';
+import { ITestResult, TestType } from '../../src/models';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
 describe('validateTestTypes with desk based group 5', () => {
@@ -305,4 +305,42 @@ describe('validateTestTypes with desk based group 3', () => {
     const result = ValidationUtil.validateTestTypes(testResult);
     expect(result).toEqual(['"certificateNumber" is required']);
   });
+
+  describe('Is IVA test', () => {
+    it('Should return true if given 1 IVA test', () => {
+      const tests = [{testTypeId: '125'}] as unknown as TestType[];
+
+      const result = (ValidationUtil as any).isIvaTest(tests);
+
+      expect(result).toBeTruthy();
+    });
+    it('Should return true if given 2 IVA tests', () => {
+      const tests = [{testTypeId: '125'}, {testTypeId: '126'}] as unknown as TestType[];
+
+      const result = (ValidationUtil as any).isIvaTest(tests);
+
+      expect(result).toBeTruthy();
+    });
+    it('Should return false if given 1 non-IVA test', () => {
+      const tests = [{testTypeId: '94'}] as unknown as TestType[];
+
+      const result = (ValidationUtil as any).isIvaTest(tests);
+
+      expect(result).toBeFalsy();
+    });
+    it('Should return false if given 2 non-IVA tests', () => {
+      const tests = [{testTypeId: '94'}, {testTypeId: '95'}] as unknown as TestType[];
+
+      const result = (ValidationUtil as any).isIvaTest(tests);
+
+      expect(result).toBeFalsy();
+    });
+    it('Should return false if given 1 IVA and 1 non-IVA test', () => {
+      const tests = [{testTypeId: '94'}, {testTypeId: '126'}] as unknown as TestType[];
+
+      const result = (ValidationUtil as any).isIvaTest(tests);
+
+      expect(result).toBeFalsy();
+    });
+  })
 });

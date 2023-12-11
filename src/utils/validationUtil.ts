@@ -299,7 +299,7 @@ export class ValidationUtil {
       '196',
       '197',
     ];
-    return tests.some((test: models.TestType) =>
+    return tests.every((test: models.TestType) =>
       ivaTests.includes(test.testTypeId),
     );
   }
