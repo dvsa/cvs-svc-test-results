@@ -4,7 +4,6 @@ import {
   testResultsCommonSchema,
   testTypesCommonSchema,
 } from './CommonSchema';
-import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 export const defectsCommonSchemaSpecialistTestsCancelled =
   defectsCommonSchema.keys({

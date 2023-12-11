@@ -727,9 +727,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
           });
           describe('First test types', () => {
-            const hgvTestResult = cloneDeep(
-              testResults[15],
-            ) as unknown as ITestResult;
+            const hgvTestResult = cloneDeep(testResults[15]) as ITestResult;
             hgvTestResult.testTypes.forEach((type) => {
               type.testTypeId = '65';
               delete type.testExpiryDate;
