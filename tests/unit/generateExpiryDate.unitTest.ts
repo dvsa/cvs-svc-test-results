@@ -956,9 +956,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           });
 
           describe('Non-First-Test Types', () => {
-            const hgvTestResult = cloneDeep(
-              testResults[15],
-            ) as unknown as ITestResult;
+            const hgvTestResult = cloneDeep(testResults[15]) as ITestResult;
             describe('with Today >2 months before previous expiry date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2019-02-01T10:00:00.000Z');
@@ -1160,9 +1158,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
 
       describe('for TRL vehicles', () => {
         describe('First test types', () => {
-          const trlTestResult = cloneDeep(
-            testResults[17],
-          ) as unknown as ITestResult;
+          const trlTestResult = cloneDeep(testResults[17]) as ITestResult;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '95';
             delete type.testExpiryDate;
@@ -1390,9 +1386,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
         });
 
         describe('Annual test types', () => {
-          const trlTestResult = cloneDeep(
-            testResults[17],
-          ) as unknown as ITestResult;
+          const trlTestResult = cloneDeep(testResults[17]) as ITestResult;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '94';
             delete type.testExpiryDate;
@@ -1724,9 +1718,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
         });
 
         describe('Non-First-Test Types', () => {
-          const trlTestResult = cloneDeep(
-            testResults[15],
-          ) as unknown as ITestResult;
+          const trlTestResult = cloneDeep(testResults[15]) as ITestResult;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '94';
           });
@@ -1931,9 +1923,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           'when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.',
           () => {
             it('should set the expiry date to last day of test date month + 1 year', () => {
-              const hgvTestResult = cloneDeep(
-                testResults[16],
-              ) as unknown as ITestResult;
+              const hgvTestResult = cloneDeep(testResults[16]) as ITestResult;
               // Setting regnDate to a year older + 2 months
               hgvTestResult.regnDate = moment()
                 .add(2, 'months')

@@ -40,7 +40,6 @@ export const testTypesCommonSchemaSpecialistTestsCancelled =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsCancelled)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsCancelled =
