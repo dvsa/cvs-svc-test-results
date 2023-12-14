@@ -258,6 +258,52 @@ export class ValidationUtil {
     return missingFields;
   }
 
+  private static isIvaTest(tests: models.TestType[]): boolean {
+    const ivaTests = [
+      '125',
+      '126',
+      '128',
+      '129',
+      '130',
+      '133',
+      '134',
+      '135',
+      '136',
+      '138',
+      '139',
+      '140',
+      '153',
+      '154',
+      '158',
+      '159',
+      '162',
+      '163',
+      '166',
+      '167',
+      '169',
+      '170',
+      '172',
+      '173',
+      '184',
+      '185',
+      '186',
+      '187',
+      '188',
+      '189',
+      '190',
+      '191',
+      '192',
+      '193',
+      '194',
+      '195',
+      '196',
+      '197',
+    ];
+    return tests.every((test: models.TestType) =>
+      ivaTests.includes(test.testTypeId),
+    );
+  }
+
   private static validateMandatoryTestResultFields(
     payload: models.ITestResultPayload,
   ): string[] {
@@ -290,16 +336,17 @@ export class ValidationUtil {
       missingMandatoryFields.push(enums.ERRORS.EuVehicleCategoryMandatory);
     }
 
-    if (
-      ![enums.VEHICLE_TYPES.HGV, enums.VEHICLE_TYPES.PSV].includes(vehicleType)
-    ) {
+    if (vehicleType === enums.VEHICLE_TYPES.TRL) {
       return missingMandatoryFields;
     }
-    // odometerReading and odoMeterReadingUnits are required only for HGV and PSV
-    if (odometerReading === undefined || odometerReading === null) {
+    // odometerReading and odoMeterReadingUnits are not required for TRL
+    if (
+      !ValidationUtil.isIvaTest(testTypes) &&
+      (odometerReading === undefined || odometerReading === null)
+    ) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingMandatory);
     }
-    if (!odometerReadingUnits) {
+    if (!ValidationUtil.isIvaTest(testTypes) && !odometerReadingUnits) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingUnitsMandatory);
     }
     return missingMandatoryFields;
