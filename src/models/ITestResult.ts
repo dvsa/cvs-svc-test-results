@@ -99,6 +99,26 @@ export interface Defect {
   prohibitionIssued?: boolean;
 }
 
+export interface IVADefect {
+  sectionNumber: string;
+  sectionDescription: string;
+  vehicleTypes: string[];
+  euVehicleCatergories: string[];
+  additionalInformation: AdditionalInformation;
+  requiredStandards: RequiredStandards[];
+}
+
+export interface AdditionalInformation {
+  notes: string;
+}
+
+export interface RequiredStandards {
+  rsNumber: number;
+  requiredStandard: string;
+  refCalculation: string;
+  additionalInfo: boolean;
+  inspectionTypes: string[];
+}
 export interface AdditionalInformation {
   location: Location | null;
   notes: string;
