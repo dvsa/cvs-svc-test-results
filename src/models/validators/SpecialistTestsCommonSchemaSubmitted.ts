@@ -5,49 +5,6 @@ import {
   testTypesCommonSchema,
 } from './CommonSchema';
 
-export const ivaDefectSchema = Joi.object({
-  sectionNumber: Joi.string().required(),
-  sectionDescription: Joi.string().required(),
-  euVehicleCategories: Joi.array().items(
-    Joi.string().valid(
-      'm1',
-      'm2',
-      'm3',
-      'n1',
-      'n2',
-      'n3',
-      'o1',
-      'o2',
-      'o3',
-      'o4',
-      'mvsa',
-    ),
-  ),
-  additionalInformation: Joi.object({
-    notes: Joi.string().required(),
-  }).optional(),
-  requiredStandards: Joi.array()
-    .items(
-      Joi.object({
-        rsNumber: Joi.number().required(),
-        requiredStandard: Joi.string().required(),
-        refCalculation: Joi.string().required(),
-        additionalInfo: Joi.boolean().required(),
-        inspectionTypes: Joi.array()
-          .items(Joi.string().valid('basic', 'normal'))
-          .optional(),
-      }),
-    )
-    .required(),
-});
-
-export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
-  testTypesCommonSchema.keys({
-    testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
-  });
-
 export const defectsCommonSchemaSpecialistTestsSubmitted =
   defectsCommonSchema.keys({
     additionalInformation: Joi.object()
@@ -86,7 +43,6 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =
