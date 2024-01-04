@@ -189,25 +189,25 @@ export class TestResultsDAO {
       resource: '/test-types/{id}',
     };
 
-    const lambdaName =
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
-    try {
-      console.log('queryString for get Test: ', event);
-      const lambdaResult = LambdaService.invoke(lambdaName, event);
-
-      return lambdaResult;
-    } catch (error) {
-      console.error(
-        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
-      );
-    }
+    // const lambdaName =
+    //   TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
+    // try {
+    //   console.log('queryString for get Test: ', event);
+    //   const lambdaResult = LambdaService.invoke(lambdaName, event);
+    //
+    //   return lambdaResult;
+    // } catch (error) {
+    //   console.error(
+    //     `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
+    //   );
+    // }
 
     // TODO Add Mocks CVSB-19153
-    // return Promise.resolve({
-    //   testTypeClassification: "foo",
-    //   linkedTestCode: "linkedTestCode",
-    //   defaultTestCode: "defaultTestCode",
-    // });
+    return Promise.resolve({
+      testTypeClassification: "foo",
+      linkedTestCode: "linkedTestCode",
+      defaultTestCode: "defaultTestCode",
+    });
   }
 
   public async createTestNumber(): Promise<any> {
@@ -217,25 +217,25 @@ export class TestResultsDAO {
       resource: '/test-number/',
     };
 
-    const lambdaName =
-      TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name;
-    try {
-      const lambdaResult = LambdaService.invoke(lambdaName, event);
-      return lambdaResult;
-    } catch (error) {
-      console.error(
-        `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
-      );
-    }
+    // const lambdaName =
+    //   TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name;
+    // try {
+    //   const lambdaResult = LambdaService.invoke(lambdaName, event);
+    //   return lambdaResult;
+    // } catch (error) {
+    //   console.error(
+    //     `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
+    //   );
+    // }
 
     // TODO Add Mocks CVSB-19153
-    // return Promise.resolve({
-    //   id: "W01",
-    //   certLetter: "A",
-    //   sequenceNumber: "003",
-    //   testNumber: "W01A00330",
-    //   testNumberKey: 1,
-    // });
+    return Promise.resolve({
+      id: "W01",
+      certLetter: "A",
+      sequenceNumber: "003",
+      testNumber: "W01A00330",
+      testNumberKey: 1,
+    });
   }
 
   public updateTestResult(

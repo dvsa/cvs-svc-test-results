@@ -4,6 +4,8 @@ import {
   testTypesCommonSchema,
   testResultsCommonSchema,
 } from './CommonSchema';
+import {array} from "joi";
+import {ivaDefectSchema} from "./SpecialistTestsCommonSchemaSubmitted";
 
 const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object().keys({
@@ -33,6 +35,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
     .required()
     .allow(null),
   defects: Joi.array().items(defectsSchema).required(),
+    ivaDefects: array().items(ivaDefectSchema).optional()
 });
 
 export const trlCancelled = testResultsCommonSchema.keys({
