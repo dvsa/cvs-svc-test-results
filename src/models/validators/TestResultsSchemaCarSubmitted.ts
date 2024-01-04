@@ -15,7 +15,7 @@ export const carSubmitted =
           defects: array()
             .items(defectsCommonSchemaSpecialistTestsSubmitted)
             .optional(),
-          ivaDefects: array().items(ivaDefectSchema).optional(),
+          ivaDefects: array().items(ivaDefectSchema.required()).optional(),
         }),
       )
       .required(),

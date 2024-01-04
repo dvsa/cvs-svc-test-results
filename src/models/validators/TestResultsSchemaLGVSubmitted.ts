@@ -17,7 +17,7 @@ export const lgvSubmitted =
             .optional(),
         }),
         testTypesCommonSchemaSpecialistTestsSubmitted.keys({
-          ivaDefects: array().items(ivaDefectSchema).optional(),
+          ivaDefects: array().items(ivaDefectSchema.required()).optional(),
         }),
       )
       .required(),
