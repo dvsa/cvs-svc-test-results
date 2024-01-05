@@ -204,9 +204,11 @@ export class TestResultsDAO {
 
     // TODO Add Mocks CVSB-19153
     return Promise.resolve({
-      testTypeClassification: "foo",
-      linkedTestCode: "linkedTestCode",
-      defaultTestCode: "defaultTestCode",
+      testTypeClassification: 'foo',
+      linkedTestCode: 'linkedTestCode',
+      defaultTestCode: 'defaultTestCode',
+      name: 'bob',
+      testTypeName: 'IVA/annual/etc',
     });
   }
 
@@ -230,10 +232,10 @@ export class TestResultsDAO {
 
     // TODO Add Mocks CVSB-19153
     return Promise.resolve({
-      id: "W01",
-      certLetter: "A",
-      sequenceNumber: "003",
-      testNumber: "W01A00330",
+      id: 'W01',
+      certLetter: 'A',
+      sequenceNumber: '003',
+      testNumber: 'W01A00330',
       testNumberKey: 1,
     });
   }

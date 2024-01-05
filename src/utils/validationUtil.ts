@@ -43,6 +43,19 @@ export class ValidationUtil {
       payload.testStatus,
     );
 
+    if (this.isIvaTest(payload.testTypes)) {
+      if (
+        payload.testTypes.every((x) => {
+          !x.testResult && x.ivaDefects.isEmpty();
+        })
+      ) {
+        throw new models.HTTPError(
+          400,
+          'Failed IVA tests cannot have empty IVA Defects',
+        );
+      }
+    }
+
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validate(payload, validationSchema)
       : null;
@@ -349,6 +362,7 @@ export class ValidationUtil {
     if (!ValidationUtil.isIvaTest(testTypes) && !odometerReadingUnits) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingUnitsMandatory);
     }
+
     return missingMandatoryFields;
   }
 

@@ -4,32 +4,35 @@ import {
   testResultsCommonSchema,
   testTypesCommonSchema,
 } from './CommonSchema';
-import {SectionIVA} from "@dvsa/cvs-type-definitions/types/iva/defects/get";
-
+import { SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 
 export const ivaDefectSchema = Joi.object({
-    sectionNumber: Joi.string().required(),
-    sectionDescription: Joi.string().required(),
-    additionalInformation: Joi.object({
-        notes: Joi.string().required()
-    }).optional(),
-    requiredStandards : Joi.array().items(
-        Joi.object({
-            rsNumber: Joi.number().required(),
-            requiredStandard: Joi.string().required(),
-            refCalculation: Joi.string().required(),
-            additionalInfo: Joi.boolean().required(),
-            InspectionTypes: Joi.array().items(Joi.string().valid("basic", "normal")).required()
-        }),
-    ).required(),
+  sectionNumber: Joi.string().required(),
+  sectionDescription: Joi.string().required(),
+  additionalInformation: Joi.object({
+    notes: Joi.string().required(),
+  }).optional(),
+  requiredStandards: Joi.array()
+    .items(
+      Joi.object({
+        rsNumber: Joi.number().required(),
+        requiredStandard: Joi.string().required(),
+        refCalculation: Joi.string().required(),
+        additionalInfo: Joi.boolean().required(),
+        inspectionTypes: Joi.array()
+          .items(Joi.string().valid('basic', 'normal'))
+          .required(),
+      }),
+    )
+    .required(),
 });
 
 export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
-    testTypesCommonSchema.keys({
-        testTypeEndTimestamp: Joi.date().iso().required(),
-        testResult: Joi.any().only(['fail','pass','prs','abandoned']).required(),
-        ivaDefects: Joi.array().items(ivaDefectSchema).required()
-})
+  testTypesCommonSchema.keys({
+    testTypeEndTimestamp: Joi.date().iso().required(),
+    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
+  });
 
 export const defectsCommonSchemaSpecialistTestsSubmitted =
   defectsCommonSchema.keys({
@@ -64,10 +67,12 @@ export const defectsCommonSchemaSpecialistTestsSubmitted =
 
 export const testTypesCommonSchemaSpecialistTestsSubmitted =
   testTypesCommonSchema.keys({
-      testTypeEndTimestamp: Joi.date().iso().required(),
-      testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-      defects: Joi.array().items(defectsCommonSchemaSpecialistTestsSubmitted).required(),
-      ivaDefects: Joi.array().items(ivaDefectSchema).required()
+    testTypeEndTimestamp: Joi.date().iso().required(),
+    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    defects: Joi.array()
+      .items(defectsCommonSchemaSpecialistTestsSubmitted)
+      .required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =

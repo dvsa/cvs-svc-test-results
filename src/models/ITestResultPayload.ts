@@ -32,3 +32,5 @@ export interface ITestResultPayload {
   typeOfTest?: string;
   source?: string;
 }
+
+// TODO change testTypes type from any[] to testType[]

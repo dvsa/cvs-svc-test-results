@@ -3211,17 +3211,17 @@ describe('insertTestResult', () => {
     "when inserting a 'fail' Specialist test with blank certificate number",
     () => {
       it('should not throw an error', () => {
-          try {
-              const testResult = testResultsPostMock[13] as ITestResultPayload;
-              testResult.testTypes.forEach((x) => delete x.ivaDefects);
+        try {
+          const testResult = testResultsPostMock[13] as ITestResultPayload;
+          testResult.testTypes.forEach((x) => delete x.ivaDefects);
 
-              expect.assertions(1);
-              expect(
-                  ValidationUtil.validateInsertTestResultPayload(testResult),
-              ).toBe(true);
-          } catch (e) {
-              console.log(e);
-          }
+          expect.assertions(1);
+          expect(
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toBe(true);
+        } catch (e) {
+          console.log(e);
+        }
       });
     },
   );

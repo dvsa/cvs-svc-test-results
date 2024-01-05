@@ -1,4 +1,4 @@
-import {SectionIVA} from "@dvsa/cvs-type-definitions/types/iva/defects/get";
+import { SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 
 export interface ITestResult {
   testResultId: string;
