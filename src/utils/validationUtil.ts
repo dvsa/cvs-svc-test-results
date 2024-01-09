@@ -44,14 +44,12 @@ export class ValidationUtil {
     );
 
     if (this.isIvaTest(payload.testTypes)) {
-      if (
-        payload.testTypes.every((x) => {
-          !x.testResult && x.ivaDefects.isEmpty();
-        })
-      ) {
+      if (payload.testTypes.every((test) => {
+        return (test.testResult === "fail" && test.ivaDefects.length < 1);
+      })) {
         throw new models.HTTPError(
           400,
-          'Failed IVA tests cannot have empty IVA Defects',
+          'Failed IVA tests must have IVA Defects',
         );
       }
     }
