@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import { SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import {
   defectsCommonSchema,
   testResultsCommonSchema,
