@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
+import { SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 import {
   defectsCommonSchema,
   testResultsCommonSchema,
   testTypesCommonSchema,
 } from './CommonSchema';
-import { SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),

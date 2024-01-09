@@ -1,10 +1,10 @@
 import * as Joi from 'joi';
+import { array } from 'joi';
 import {
   defectsCommonSchema,
   testTypesCommonSchema,
   testResultsCommonSchema,
 } from './CommonSchema';
-import { array } from 'joi';
 import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 const defectsSchema = defectsCommonSchema.keys({

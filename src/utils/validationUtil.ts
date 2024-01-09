@@ -44,9 +44,11 @@ export class ValidationUtil {
     );
 
     if (this.isIvaTest(payload.testTypes)) {
-      if (payload.testTypes.every((test) => {
-        return (test.testResult === "fail" && test.ivaDefects.length < 1);
-      })) {
+      const allFailWithoutDefects = payload.testTypes.every(
+        (test) => test.testResult === 'fail' && test.ivaDefects.length === 0,
+      );
+
+      if (allFailWithoutDefects) {
         throw new models.HTTPError(
           400,
           'Failed IVA tests must have IVA Defects',
