@@ -515,7 +515,7 @@ export class ValidationUtil {
     if (!testTypes) {
       return missingFieldsString;
     }
-    (testTypes ).map((testType) => {
+    testTypes.map((testType) => {
       if (!testType.defects) {
         return missingFieldsString;
       }
@@ -554,7 +554,7 @@ export class ValidationUtil {
     const { testTypes } = payload;
     return !testTypes || !testTypes.length
       ? true
-      : !(testTypes ).some(
+      : !testTypes.some(
           (testType) =>
             testType.testResult === enums.TEST_RESULT.ABANDONED &&
             !testType.reasonForAbandoning,
