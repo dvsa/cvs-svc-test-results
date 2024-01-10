@@ -4,6 +4,7 @@ import * as enums from '../assets/Enums';
 import * as models from '../models';
 import * as validators from '../models/validators';
 import { MappingUtil } from './mappingUtil';
+import { TestType } from '../models';
 
 export class ValidationUtil {
   // #region [rgba(52, 152, 219, 0.15)]  Public Functions
@@ -44,18 +45,7 @@ export class ValidationUtil {
     );
 
     if (this.isIvaTest(payload.testTypes)) {
-      const allFailWithoutDefects = payload.testTypes.every(
-        (test) =>
-          test.testResult === 'fail' &&
-          (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
-      );
-
-      if (allFailWithoutDefects) {
-        throw new models.HTTPError(
-          400,
-          'Failed IVA tests must have IVA Defects',
-        );
-      }
+      this.ivaFailedHasRequiredFields(payload.testTypes);
     }
 
     const validation: ValidationResult<any> | any | null = validationSchema
@@ -559,5 +549,22 @@ export class ValidationUtil {
             testType.testResult === enums.TEST_RESULT.ABANDONED &&
             !testType.reasonForAbandoning,
         );
+  }
+
+  public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
+    if (this.isIvaTest(testTypes)) {
+      const allFailWithoutDefects = testTypes.every(
+        (test) =>
+          test.testResult === 'fail' &&
+          (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+      );
+
+      if (allFailWithoutDefects) {
+        throw new models.HTTPError(
+          400,
+          'Failed IVA tests must have IVA Defects',
+        );
+      }
+    }
   }
 }

@@ -10,6 +10,7 @@ import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 import { Service } from '../models/injector/ServiceDecorator';
 import { TestDataProvider } from './expiry/providers/TestDataProvider';
 import { DateProvider } from './expiry/providers/DateProvider';
+import { TestType } from '../models';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -95,7 +96,7 @@ export class VehicleTestController implements IVehicleTestController {
           payload.testTypes,
           testTypeParams,
         );
-      payload.testTypes = testTypesWithTestCodesAndClassification;
+      payload.testTypes = testTypesWithTestCodesAndClassification as TestType[];
 
       const payloadWithTestNumber =
         await this.dataProvider.setTestNumberForEachTestType(payload);

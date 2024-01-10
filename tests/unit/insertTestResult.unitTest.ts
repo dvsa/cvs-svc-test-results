@@ -2483,7 +2483,7 @@ describe('insertTestResult', () => {
         const testResult = testResultsPostMock[0];
         const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
 
-        clonedTestResult.testTypes[2] = TEST_RESULT.ABANDONED;
+        clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
 
         clonedTestResult.countryOfRegistration = null;
         clonedTestResult.euVehicleCategory = null;
@@ -3207,22 +3207,74 @@ describe('insertTestResult', () => {
     },
   );
 
-  context(
-    "when inserting a 'fail' Specialist test with blank certificate number",
-    () => {
-      it('should not throw an error', () => {
-        try {
-          const testResult = testResultsPostMock[13] as ITestResultPayload;
-          testResult.testTypes.forEach((x) => delete x.ivaDefects);
-
-          expect.assertions(1);
-          expect(
-            ValidationUtil.validateInsertTestResultPayload(testResult),
-          ).toBe(true);
-        } catch (e) {
-          console.log(e);
-        }
+  describe('IVA Defects', () => {
+    context('when creating an IVA failed test record with IVA defects', () => {
+      it('should create the record successfully', () => {
+        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        testResult.testTypes.forEach((x) => {
+          x.testTypeId = '125';
+          x.ivaDefects?.push({
+            sectionNumber: '01',
+            sectionDescription: 'Noise',
+            requiredStandards: [
+              {
+                rsNumber: 1,
+                requiredStandard: 'The exhaust must be securely mounted.',
+                refCalculation: '1.1',
+                additionalInfo: true,
+                inspectionTypes: ['basic', 'normal'],
+              },
+            ],
+          });
+          return x;
+        });
+        const validationResult =
+          ValidationUtil.validateInsertTestResultPayload(testResult);
+        expect(validationResult).toBe(true);
       });
-    },
-  );
+    });
+
+    context(
+      'when creating an IVA failed test record without IVA defects',
+      () => {
+        it('should not create the record', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            return x;
+          });
+          expect(() =>
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toThrow();
+        });
+      },
+    );
+
+    context('when creating a non IVA test record without IVA defects', () => {
+      it('should create the record successfully', () => {
+        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        testResult.testTypes.forEach((x) => delete x.ivaDefects);
+        const validationResult =
+          ValidationUtil.validateInsertTestResultPayload(testResult);
+        expect(validationResult).toBe(true);
+      });
+    });
+
+    context('when creating a COIF test without IVA defects', () => {
+      it('should create the record successfully', () => {
+        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        testResult.testTypes.forEach((x) => {
+          x.testTypeId = '142';
+          x.testTypeName = 'COIF with annual test';
+          delete x.ivaDefects;
+          return x;
+        });
+        const validationResult =
+          ValidationUtil.validateInsertTestResultPayload(testResult);
+        expect(validationResult).toBe(true);
+      });
+    });
+  });
 });
