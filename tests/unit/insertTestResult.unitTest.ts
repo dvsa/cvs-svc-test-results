@@ -2483,8 +2483,6 @@ describe('insertTestResult', () => {
         const testResult = testResultsPostMock[0];
         const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
 
-        clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
-
         clonedTestResult.countryOfRegistration = null;
         clonedTestResult.euVehicleCategory = null;
 
