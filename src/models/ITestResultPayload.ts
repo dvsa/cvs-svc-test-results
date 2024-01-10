@@ -1,10 +1,12 @@
+import { TestType } from './ITestResult';
+
 export interface ITestResultPayload {
   systemNumber: string;
   vehicleClass?: any | null;
   vehicleSubclass?: any;
   numberOfWheelsDriven: any;
   testStatus: string;
-  testTypes: any[];
+  testTypes: TestType[];
   vehicleType: any;
   vehicleSize?: any;
   vehicleConfiguration: any;

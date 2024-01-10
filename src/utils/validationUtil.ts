@@ -45,7 +45,9 @@ export class ValidationUtil {
 
     if (this.isIvaTest(payload.testTypes)) {
       const allFailWithoutDefects = payload.testTypes.every(
-        (test) => test.testResult === 'fail' && test.ivaDefects.length === 0,
+        (test) =>
+          test.testResult === 'fail' &&
+          (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
       );
 
       if (allFailWithoutDefects) {
@@ -513,7 +515,7 @@ export class ValidationUtil {
     if (!testTypes) {
       return missingFieldsString;
     }
-    (testTypes as models.TestType[]).map((testType) => {
+    (testTypes ).map((testType) => {
       if (!testType.defects) {
         return missingFieldsString;
       }
@@ -552,7 +554,7 @@ export class ValidationUtil {
     const { testTypes } = payload;
     return !testTypes || !testTypes.length
       ? true
-      : !(testTypes as models.TestType[]).some(
+      : !(testTypes ).some(
           (testType) =>
             testType.testResult === enums.TEST_RESULT.ABANDONED &&
             !testType.reasonForAbandoning,

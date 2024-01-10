@@ -30,7 +30,7 @@ export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
   testTypesCommonSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
     testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).optional(),
   });
 
 export const defectsCommonSchemaSpecialistTestsSubmitted =

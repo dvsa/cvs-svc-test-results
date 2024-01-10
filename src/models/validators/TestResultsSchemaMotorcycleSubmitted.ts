@@ -50,7 +50,7 @@ export const motorcycleSubmitted =
           defects: array()
             .items(defectsCommonSchemaSpecialistTestsSubmitted)
             .optional(),
-          ivaDefects: array().items(ivaDefectSchema).required(),
+          ivaDefects: array().items(ivaDefectSchema).optional(),
         }),
       )
       .required(),
