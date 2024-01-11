@@ -71,7 +71,7 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).optional(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =
