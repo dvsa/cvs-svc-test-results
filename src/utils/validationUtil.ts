@@ -552,19 +552,17 @@ export class ValidationUtil {
   }
 
   public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
-    if (this.isIvaTest(testTypes)) {
-      const allFailWithoutDefects = testTypes.every(
-        (test) =>
-          test.testResult === 'fail' &&
-          (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
-      );
+    const allFailWithoutDefects = testTypes.every(
+      (test) =>
+        test.testResult === 'fail' &&
+        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+    );
 
-      if (allFailWithoutDefects) {
-        throw new models.HTTPError(
-          400,
-          'Failed IVA tests must have IVA Defects',
-        );
-      }
+    if (allFailWithoutDefects) {
+      throw new models.HTTPError(
+        400,
+        'Failed IVA tests must have IVA Defects',
+      );
     }
   }
 }
