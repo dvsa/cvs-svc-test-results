@@ -559,10 +559,7 @@ export class ValidationUtil {
     );
 
     if (allFailWithoutDefects) {
-      throw new models.HTTPError(
-        400,
-        'Failed IVA tests must have IVA Defects',
-      );
+      throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
     }
   }
 }
