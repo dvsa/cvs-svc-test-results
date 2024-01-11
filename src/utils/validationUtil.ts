@@ -541,9 +541,9 @@ export class ValidationUtil {
     return !testTypes || !testTypes.length
       ? true
       : !testTypes.some(
-        (testType) =>
-          testType.testResult === enums.TEST_RESULT.ABANDONED &&
-          !testType.reasonForAbandoning,
-      );
+          (testType) =>
+            testType.testResult === enums.TEST_RESULT.ABANDONED &&
+            !testType.reasonForAbandoning,
+        );
   }
 }
