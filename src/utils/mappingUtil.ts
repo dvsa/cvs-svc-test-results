@@ -124,6 +124,8 @@ export class MappingUtil {
     testResult.testTypes.forEach((testType: models.TestType) => {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
         testType.defects = [];
+      } else {
+        testType.ivaDefects = [];
       }
     });
   }

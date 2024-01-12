@@ -815,7 +815,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivadefects": []
       }
     ]
   },
@@ -881,7 +882,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -947,7 +949,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -1012,7 +1015,8 @@
             "defectNotes": null
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ]
   },
@@ -1051,7 +1055,8 @@
             "defectNotes": "notes"
           }
         ],
-        "defects": []
+        "defects": [],
+        "ivaDefects": []
       }
     ],
     "testStationName": "Abshire-Kub",

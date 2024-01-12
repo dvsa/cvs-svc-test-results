@@ -79,6 +79,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@dvsa/cvs-type-definitions": "4.4.1",
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1354.0",
     "aws-xray-sdk": "^3.3.4",

@@ -4,6 +4,7 @@ import * as enums from '../assets/Enums';
 import * as models from '../models';
 import * as validators from '../models/validators';
 import { MappingUtil } from './mappingUtil';
+import { TestType } from '../models';
 
 export class ValidationUtil {
   // #region [rgba(52, 152, 219, 0.15)]  Public Functions
@@ -42,6 +43,12 @@ export class ValidationUtil {
       payload.vehicleType,
       payload.testStatus,
     );
+
+    // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+    // if (this.isIvaTest(payload.testTypes)) {
+    //   this.ivaFailedHasRequiredFields(payload.testTypes);
+    // }
+
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validate(payload, validationSchema)
       : null;
@@ -348,6 +355,7 @@ export class ValidationUtil {
     if (!ValidationUtil.isIvaTest(testTypes) && !odometerReadingUnits) {
       missingMandatoryFields.push(enums.ERRORS.OdometerReadingUnitsMandatory);
     }
+
     return missingMandatoryFields;
   }
 
@@ -498,7 +506,7 @@ export class ValidationUtil {
     if (!testTypes) {
       return missingFieldsString;
     }
-    (testTypes as models.TestType[]).map((testType) => {
+    testTypes.map((testType) => {
       if (!testType.defects) {
         return missingFieldsString;
       }
@@ -537,10 +545,23 @@ export class ValidationUtil {
     const { testTypes } = payload;
     return !testTypes || !testTypes.length
       ? true
-      : !(testTypes as models.TestType[]).some(
+      : !testTypes.some(
           (testType) =>
             testType.testResult === enums.TEST_RESULT.ABANDONED &&
             !testType.reasonForAbandoning,
         );
+  }
+
+  // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+  public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
+    const allFailWithoutDefects = testTypes.every(
+      (test) =>
+        test.testResult === 'fail' &&
+        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+    );
+
+    if (allFailWithoutDefects) {
+      throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
+    }
   }
 }

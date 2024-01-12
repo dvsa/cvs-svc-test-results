@@ -1,9 +1,53 @@
 import * as Joi from 'joi';
+import { ValidationErrorItem } from 'joi';
 import {
   defectsCommonSchema,
   testResultsCommonSchema,
   testTypesCommonSchema,
 } from './CommonSchema';
+
+const customInspectionTypesErrorMessage = (
+  errors: ValidationErrorItem[],
+): ValidationErrorItem[] =>
+  errors.map((e) =>
+    e.type === 'any.allowOnly'
+      ? { ...e, message: `"inspectionTypes" must be one of [basic, normal]` }
+      : e,
+  );
+
+export const ivaDefectSchema = Joi.object({
+  sectionNumber: Joi.string().required(),
+  sectionDescription: Joi.string().required(),
+  additionalInformation: Joi.object({
+    notes: Joi.string().required(),
+  }).optional(),
+  requiredStandards: Joi.array()
+    .items(
+      Joi.object({
+        rsNumber: Joi.number().required(),
+        requiredStandard: Joi.string().required(),
+        refCalculation: Joi.string().required(),
+        additionalInfo: Joi.boolean().required(),
+        inspectionTypes: Joi.array()
+          .items(
+            Joi.string()
+              .valid('basic', 'normal')
+              .error(customInspectionTypesErrorMessage),
+          )
+          .min(1)
+          .max(2)
+          .required(),
+      }),
+    )
+    .required(),
+});
+
+export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
+  testTypesCommonSchema.keys({
+    testTypeEndTimestamp: Joi.date().iso().required(),
+    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).optional(),
+  });
 
 export const defectsCommonSchemaSpecialistTestsSubmitted =
   defectsCommonSchema.keys({
@@ -43,6 +87,7 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
+    ivaDefects: Joi.array().items(ivaDefectSchema).optional(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =
