@@ -44,6 +44,11 @@ export class ValidationUtil {
       payload.testStatus,
     );
 
+    // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+    // if (this.isIvaTest(payload.testTypes)) {
+    //   this.ivaFailedHasRequiredFields(payload.testTypes);
+    // }
+
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validate(payload, validationSchema)
       : null;
@@ -545,5 +550,18 @@ export class ValidationUtil {
             testType.testResult === enums.TEST_RESULT.ABANDONED &&
             !testType.reasonForAbandoning,
         );
+  }
+
+  // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+  public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
+    const allFailWithoutDefects = testTypes.every(
+      (test) =>
+        test.testResult === 'fail' &&
+        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+    );
+
+    if (allFailWithoutDefects) {
+      throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
+    }
   }
 }
