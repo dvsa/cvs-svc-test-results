@@ -107,6 +107,11 @@ export class ValidationUtil {
   }
 
   public static validateUpdateTestResult(payload: models.ITestResult) {
+    // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+    // if (payload.testTypes && this.isIvaTest(payload.testTypes)) {
+    //   this.ivaFailedHasRequiredFields(payload.testTypes);
+    // }
+
     const validationErrors = this.validateTestTypes(payload);
     // to testTypes are deleted to avoid validation on testTypes again
     delete payload.testTypes;
@@ -552,16 +557,18 @@ export class ValidationUtil {
         );
   }
 
-  // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
-  public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
-    const allFailWithoutDefects = testTypes.every(
-      (test) =>
-        test.testResult === 'fail' &&
-        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
-    );
 
-    if (allFailWithoutDefects) {
-      throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
-    }
-  }
+  // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
+  // public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
+  //   const allFailWithoutDefects = testTypes.every(
+  //     (test) =>
+  //       test.testResult === 'fail' &&
+  //       (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+  //   );
+
+  //   if (allFailWithoutDefects) {
+  //     throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
+  //   }
+  // }
+
 }

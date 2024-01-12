@@ -35,7 +35,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
     .required()
     .allow(null),
   defects: Joi.array().items(defectsSchema).required(),
-  ivaDefects: array().items(ivaDefectSchema).optional(),
+  ivaDefects: array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const trlCancelled = testResultsCommonSchema.keys({

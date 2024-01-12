@@ -3249,7 +3249,7 @@ describe('insertTestResult', () => {
     //       ).toThrow();
     //     });
     //   },
-    // );g
+    // );
 
     context('when creating a non IVA test record without IVA defects', () => {
       it('should create the record successfully', () => {

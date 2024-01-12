@@ -1,4 +1,6 @@
 import { cloneDeep } from 'lodash';
+import fs from 'fs';
+import path from 'path';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import testResults from '../resources/test-results.json';
@@ -8,13 +10,19 @@ import { ValidationUtil } from '../../src/utils/validationUtil';
 import { VehicleTestController } from '../../src/handlers/VehicleTestController';
 import { TestDataProvider } from '../../src/handlers/expiry/providers/TestDataProvider';
 import { DateProvider } from '../../src/handlers/expiry/providers/DateProvider';
-import { IMsUserDetails } from '../../src/models';
+import {
+  IMsUserDetails,
+  ITestResult,
+  TestType,
+  ITestResultPayload,
+} from '../../src/models';
 
 describe('updateTestResults', () => {
   let testResultsService: TestResultsService | any;
   let MockTestResultsDAO: jest.Mock;
   let testResultsMockDB: any;
   let testToUpdate: any;
+
   const msUserDetails: IMsUserDetails = {
     msUser: 'dorelly',
     msOid: '654321',
@@ -805,5 +813,184 @@ describe('updateTestResults', () => {
         });
       },
     );
+  });
+
+  describe('PUT for updating test records', () => {
+    const testResultsPostMock = JSON.parse(
+      fs.readFileSync(
+        path.resolve(__dirname, '../resources/test-results-post.json'),
+        'utf8',
+      ),
+    );
+
+    beforeEach(() => {
+      testToUpdate = cloneDeep(testResultsPostMock[13] as ITestResult);
+      MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+        updateTestResult: jest.fn().mockResolvedValue({} as ITestResult),
+        getActivity: jest
+          .fn()
+          .mockResolvedValue([
+            { startTime: '2018-03-22', endTime: '2022-10-20' },
+          ]),
+        getBySystemNumber: jest
+          .fn()
+          .mockResolvedValue([cloneDeep(testToUpdate)]),
+      }));
+      testResultsService = new TestResultsService(new MockTestResultsDAO());
+    });
+    afterEach(() => MockTestResultsDAO.mockReset());
+    const setupTestTypes = (
+      modificationCallback: (testType: TestType) => void,
+    ) => {
+      testToUpdate.testTypes.forEach(modificationCallback);
+    };
+
+    context('A failed IVA Test Record with IVA defects', () => {
+      it('can be updated with IVA defects present', async () => {
+        setupTestTypes((x) => {
+          x.testTypeId = '125';
+          x.ivaDefects = [
+            {
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              requiredStandards: [
+                {
+                  rsNumber: 1,
+                  requiredStandard: 'The exhaust must be securely mounted.',
+                  refCalculation: '1.1',
+                  additionalInfo: true,
+                  inspectionTypes: ['basic', 'normal'],
+                },
+              ],
+            },
+          ];
+          x.testTypeClassification = 'Annual With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = '213213123';
+          return x;
+        });
+
+        const returnedRecord = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        expect(returnedRecord).toBeDefined();
+      });
+    });
+
+    context('A failed IVA Test Record without IVA defects', () => {
+      it('cannot be updated without IVA defects present', async () => {
+        setupTestTypes((x) => delete x.ivaDefects);
+
+        try {
+          await testResultsService.updateTestResult(
+            testToUpdate.systemNumber,
+            testToUpdate,
+            msUserDetails,
+          );
+        } catch (errorResponse) {
+          expect(errorResponse).toBeInstanceOf(HTTPError);
+          expect(errorResponse.statusCode).toBe(400);
+        }
+      });
+    });
+
+    context('A non-IVA test', () => {
+      it('can be updated without IVA defects present', async () => {
+        setupTestTypes((x) => {
+          x.testTypeClassification = 'Annual With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = '213213123';
+          delete x.ivaDefects;
+          return x;
+        });
+
+        const returnedRecord = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        expect(returnedRecord).toBeDefined();
+      });
+    });
+
+    context('A COIF test', () => {
+      it('can be updated without IVA defects present', async () => {
+        setupTestTypes((x) => {
+          x.testTypeId = '142';
+          x.testTypeName = 'COIF with annual test';
+          x.testTypeClassification = 'Annual With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = '213213123';
+          delete x.ivaDefects;
+          return x;
+        });
+        const returnedRecord = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        expect(returnedRecord).toBeDefined();
+      });
+    });
+
+    context('When IVA defects are present in the payload', () => {
+      it('IVA defects are not removed', async () => {
+        setupTestTypes((x) => {
+          x.testTypeId = '125';
+          x.ivaDefects = [
+            {
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              requiredStandards: [
+                {
+                  rsNumber: 1,
+                  requiredStandard: 'The exhaust must be securely mounted.',
+                  refCalculation: '1.1',
+                  additionalInfo: true,
+                  inspectionTypes: ['basic', 'normal'],
+                },
+              ],
+            },
+          ];
+          x.testTypeClassification = 'Annual With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = '213213123';
+          return x;
+        });
+
+        const res: ITestResult = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        res.testTypes.forEach((testType) =>
+          expect(testType.ivaDefects).toBeDefined(),
+        );
+      });
+    });
+
+    context('When IVA defects are not present in the payload', () => {
+      it('IVA defects are removed', async () => {
+        setupTestTypes((x) => {
+          x.testTypeClassification = 'Annual With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = '213213123';
+          delete x.ivaDefects;
+        });
+        const res: ITestResult = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        res.testTypes.forEach((testType) => {
+          const isIvaDefectsRemoved =
+            testType.ivaDefects === undefined ||
+            testType.ivaDefects.length === 0;
+          expect(isIvaDefectsRemoved).toBe(true);
+        });
+      });
+    });
   });
 });
