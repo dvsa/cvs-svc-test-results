@@ -1,9 +1,19 @@
 import * as Joi from 'joi';
+import { ValidationErrorItem } from 'joi';
 import {
   defectsCommonSchema,
   testResultsCommonSchema,
   testTypesCommonSchema,
 } from './CommonSchema';
+
+const customInspectionTypesErrorMessage = (
+  errors: ValidationErrorItem[],
+): ValidationErrorItem[] =>
+  errors.map((e) =>
+    e.type === 'any.allowOnly'
+      ? { ...e, message: `"inspectionTypes" must be one of [basic, normal]` }
+      : e,
+  );
 
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),
@@ -19,7 +29,12 @@ export const ivaDefectSchema = Joi.object({
         refCalculation: Joi.string().required(),
         additionalInfo: Joi.boolean().required(),
         inspectionTypes: Joi.array()
-          .items(Joi.string().valid('basic', 'normal'))
+          .items(
+            Joi.string()
+              .valid('basic', 'normal')
+              .error(customInspectionTypesErrorMessage),
+          )
+          .max(2)
           .required(),
       }),
     )
