@@ -557,7 +557,6 @@ export class ValidationUtil {
         );
   }
 
-
   // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
   // public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
   //   const allFailWithoutDefects = testTypes.every(
@@ -570,5 +569,4 @@ export class ValidationUtil {
   //     throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
   //   }
   // }
-
 }
