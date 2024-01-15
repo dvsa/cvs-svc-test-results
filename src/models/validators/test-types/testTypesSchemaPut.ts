@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { defectsCommonSchema } from '../CommonSchema';
+import { defectsCommonSchema, ivaDefectSchema } from '../CommonSchema';
 
 const additionalInformationSchema = Joi.object().keys({
   location: Joi.object()
@@ -75,6 +75,7 @@ export const testTypesGroup1 = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required(),
+  ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const testTypesGroup2 = testTypesCommonSchema.keys({
@@ -82,6 +83,7 @@ export const testTypesGroup2 = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required(),
+  ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const testTypesGroup3And4And8 = testTypesCommonSchema.keys({
@@ -96,6 +98,7 @@ export const testTypesGroup5And13 = testTypesCommonSchema.keys({
 export const testTypesGroup6And11 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow('', null),
   defects: Joi.array().items(defectsSchemaPut).required(),
+  ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const testTypesGroup7 = testTypesCommonSchema.keys({
@@ -109,10 +112,12 @@ export const testTypesGroup9And10 = testTypesCommonSchema.keys({
   testExpiryDate: Joi.date().iso().allow(null, ''),
   testAnniversaryDate: Joi.date().iso().required().allow(null, ''),
   defects: Joi.array().items(defectsSchemaPut).required(),
+  ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const testTypesGroup12And14 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required(),
+  ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
 });
 
 export const testTypesGroup15And16 = testTypesCommonSchema.keys({

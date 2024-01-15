@@ -1,5 +1,6 @@
 import * as Joi from 'joi';
 import { defectsCommonSchemaSpecialistTestsSubmitted } from '../SpecialistTestsCommonSchemaSubmitted';
+import { ivaDefectSchema } from '../CommonSchema';
 
 export const testTypesCommonSchemaSpecialistTests = Joi.object()
   .keys({
@@ -45,6 +46,7 @@ export const testTypesSpecialistGroup1 =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .optional(),
+    ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
   });
 
 export const testTypesSpecialistGroup2 =
@@ -104,4 +106,5 @@ export const testTypesSpecialistGroup5 =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .optional(),
+    ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
   });
