@@ -4,8 +4,8 @@ import {
   defectsCommonSchema,
   testTypesCommonSchema,
   testResultsCommonSchema,
+  ivaDefectSchema,
 } from './CommonSchema';
-import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object().keys({

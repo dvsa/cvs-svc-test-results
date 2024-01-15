@@ -3,8 +3,8 @@ import {
   defectsCommonSchema,
   testResultsCommonSchema,
   testTypesCommonSchema,
+  ivaDefectSchema,
 } from './CommonSchema';
-import { ivaDefectSchema } from './SpecialistTestsCommonSchemaSubmitted';
 
 export const defectsCommonSchemaSpecialistTestsCancelled =
   defectsCommonSchema.keys({
