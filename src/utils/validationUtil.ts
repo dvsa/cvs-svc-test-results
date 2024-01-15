@@ -557,16 +557,17 @@ export class ValidationUtil {
         );
   }
 
+
   // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
-  // public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
-  //   const allFailWithoutDefects = testTypes.every(
-  //     (test) =>
-  //       test.testResult === 'fail' &&
-  //       (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
-  //   );
+  public static ivaFailedHasRequiredFields(testTypes: TestType[]) {
+    const allFailWithoutDefects = testTypes.every(
+      (test) =>
+        test.testResult === 'fail' &&
+        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+    );
 
   //   if (allFailWithoutDefects) {
   //     throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
   //   }
-  // }
+  }
 }
