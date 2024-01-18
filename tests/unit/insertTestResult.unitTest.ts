@@ -3214,15 +3214,13 @@ describe('insertTestResult', () => {
           x.ivaDefects?.push({
             sectionNumber: '01',
             sectionDescription: 'Noise',
-            requiredStandards: [
-              {
-                rsNumber: 1,
-                requiredStandard: 'The exhaust must be securely mounted.',
-                refCalculation: '1.1',
-                additionalInfo: true,
-                inspectionTypes: ['basic', 'normal'],
-              },
-            ],
+            rsNumber: 1,
+            requiredStandard: 'The exhaust must be securely mounted.',
+            refCalculation: '1.1',
+            additionalInfo: true,
+            inspectionTypes: ['basic', 'normal'],
+            prs: false,
+            additionalNotes: 'the exhaust was loose',
           });
           return x;
         });
