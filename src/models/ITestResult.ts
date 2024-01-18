@@ -1,4 +1,4 @@
-import {InspectionType} from '@dvsa/cvs-type-definitions/types/iva/defects/get';
+import { InspectionType } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 
 export interface ITestResult {
   testResultId: string;
