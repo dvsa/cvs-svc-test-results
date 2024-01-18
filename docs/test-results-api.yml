@@ -766,7 +766,7 @@ components:
         defectNotes:
           type: string
           maxLength: 200
-          nullable: true    
+          nullable: true
     putBadRequest:
       type: object
       properties:
