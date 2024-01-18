@@ -93,7 +93,7 @@ export const ivaDefectSchema = Joi.object({
     .min(1)
     .max(2)
     .required(),
-  prs: Joi.boolean().required()
+  prs: Joi.boolean().required(),
 });
 
 export const defectsCommonSchema = Joi.object().keys({

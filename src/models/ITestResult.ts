@@ -1,4 +1,4 @@
-import { InspectionType, SectionIVA } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
+import {InspectionType} from '@dvsa/cvs-type-definitions/types/iva/defects/get';
 
 export interface ITestResult {
   testResultId: string;
@@ -102,9 +102,9 @@ export interface Defect {
   prohibitionIssued?: boolean;
 }
 
-export interface DefectIVA{
+export interface DefectIVA {
   sectionNumber: string;
-  sectionDescription: string;  
+  sectionDescription: string;
   rsNumber: number;
   requiredStandard: string;
   refCalculation: string;
