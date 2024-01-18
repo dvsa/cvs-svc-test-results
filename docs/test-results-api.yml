@@ -736,7 +736,10 @@ components:
       type: array
       nullable: true
       items:
-        $ref: '#/components/schemas/customDefect'
+        type: object
+        oneOf:
+          - $ref: '#/components/schemas/customDefect'
+          - $ref: '#/components/schemas/specialistCustomDefect'
     customDefect:
       type: object
       properties:
@@ -750,6 +753,20 @@ components:
           type: string
           maxLength: 200
           nullable: true
+    specialistCustomDefect:
+      type: object
+      properties:
+        referenceNumber:
+          type: string
+          maxLength: 10
+          nullable: false
+        defectName:
+          type: string
+          maxLength: 200
+        defectNotes:
+          type: string
+          maxLength: 200
+          nullable: true    
     putBadRequest:
       type: object
       properties:
