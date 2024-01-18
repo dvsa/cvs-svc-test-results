@@ -11,6 +11,71 @@ const customInspectionTypesErrorMessage = (
       : e,
   );
 
+const baseTestTypesCommonSchema = Joi.object().keys({
+  name: Joi.string().required(),
+  testTypeName: Joi.string().required().allow('', null),
+  testTypeId: Joi.string().required().allow(''),
+  testTypeStartTimestamp: Joi.date().iso().required(),
+  certificateNumber: Joi.string().required().allow('', null),
+  prohibitionIssued: Joi.boolean().required().allow(null),
+  reasonForAbandoning: Joi.string().required().allow('', null),
+  additionalNotesRecorded: Joi.string().max(500).required().allow('', null),
+  additionalCommentsForAbandon: Joi.string()
+    .max(500)
+    .required()
+    .allow('', null),
+  testExpiryDate: Joi.date()
+    .when('testResult', {
+      is: 'pass',
+      then: Joi.date().iso().allow(null),
+      otherwise: Joi.date().allow(null, ''),
+    })
+    .allow(null),
+  modType: Joi.object()
+    .keys({
+      code: Joi.any().only(['p', 'm', 'g']),
+      description: Joi.any().only([
+        'particulate trap',
+        'modification or change of engine',
+        'gas engine',
+      ]),
+    })
+    .allow(null),
+  secondaryCertificateNumber: Joi.string()
+    .alphanum()
+    .max(20)
+    .required()
+    .allow(null),
+  emissionStandard: Joi.any()
+    .only([
+      '0.10 g/kWh Euro 3 PM',
+      '0.03 g/kWh Euro IV PM',
+      'Euro 3',
+      'Euro 4',
+      'Euro 5',
+      'Euro 6',
+      'Euro V',
+      'Euro VI',
+      'Full Electric',
+    ])
+    .allow(null),
+  fuelType: Joi.any()
+    .only([
+      'diesel',
+      'gas-cng',
+      'gas-lng',
+      'gas-lpg',
+      'petrol',
+      'fuel cell',
+      'full electric',
+    ])
+    .allow(null),
+  particulateTrapSerialNumber: Joi.string().max(100).allow(null),
+  smokeTestKLimitApplied: Joi.string().max(100).allow(null),
+  modificationTypeUsed: Joi.string().max(100).allow(null),
+  particulateTrapFitted: Joi.string().max(100).allow(null),
+});
+
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),
   sectionDescription: Joi.string().required(),
@@ -62,36 +127,7 @@ export const defectsCommonSchema = Joi.object().keys({
   prs: Joi.boolean().required().allow(null),
 });
 
-export const testTypesCommonSchema = Joi.object().keys({
-  name: Joi.string().required(),
-  testTypeName: Joi.string().required().allow('', null),
-  testTypeId: Joi.string().required().allow(''),
-  testTypeStartTimestamp: Joi.date().iso().required(),
-  certificateNumber: Joi.string().required().allow('', null),
-  prohibitionIssued: Joi.boolean().required().allow(null),
-  reasonForAbandoning: Joi.string().required().allow('', null),
-  additionalNotesRecorded: Joi.string().max(500).required().allow('', null),
-  additionalCommentsForAbandon: Joi.string()
-    .max(500)
-    .required()
-    .allow('', null),
-  testExpiryDate: Joi.date()
-    .when('testResult', {
-      is: 'pass',
-      then: Joi.date().iso().allow(null),
-      otherwise: Joi.date().allow(null, ''),
-    })
-    .allow(null),
-  modType: Joi.object()
-    .keys({
-      code: Joi.any().only(['p', 'm', 'g']),
-      description: Joi.any().only([
-        'particulate trap',
-        'modification or change of engine',
-        'gas engine',
-      ]),
-    })
-    .allow(null),
+export const testTypesCommonSchema = baseTestTypesCommonSchema.keys({
   customDefects: Joi.array()
     .items(
       Joi.object().keys({
@@ -102,39 +138,19 @@ export const testTypesCommonSchema = Joi.object().keys({
     )
     .required()
     .allow(null),
-  secondaryCertificateNumber: Joi.string()
-    .alphanum()
-    .max(20)
+});
+
+export const testTypesSpecialistSchema = baseTestTypesCommonSchema.keys({
+  customDefects: Joi.array()
+    .items(
+      Joi.object().keys({
+        referenceNumber: Joi.string().max(10).optional(),
+        defectName: Joi.string().max(200).required(),
+        defectNotes: Joi.string().max(200).required().allow(null),
+      }),
+    )
     .required()
     .allow(null),
-  emissionStandard: Joi.any()
-    .only([
-      '0.10 g/kWh Euro 3 PM',
-      '0.03 g/kWh Euro IV PM',
-      'Euro 3',
-      'Euro 4',
-      'Euro 5',
-      'Euro 6',
-      'Euro V',
-      'Euro VI',
-      'Full Electric',
-    ])
-    .allow(null),
-  fuelType: Joi.any()
-    .only([
-      'diesel',
-      'gas-cng',
-      'gas-lng',
-      'gas-lpg',
-      'petrol',
-      'fuel cell',
-      'full electric',
-    ])
-    .allow(null),
-  particulateTrapSerialNumber: Joi.string().max(100).allow(null),
-  smokeTestKLimitApplied: Joi.string().max(100).allow(null),
-  modificationTypeUsed: Joi.string().max(100).allow(null),
-  particulateTrapFitted: Joi.string().max(100).allow(null),
 });
 
 export const testResultsCommonSchema = Joi.object().keys({

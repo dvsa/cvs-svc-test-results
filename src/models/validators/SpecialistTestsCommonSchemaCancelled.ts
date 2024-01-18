@@ -2,7 +2,7 @@ import * as Joi from 'joi';
 import {
   defectsCommonSchema,
   testResultsCommonSchema,
-  testTypesCommonSchema,
+  testTypesSpecialistSchema,
   ivaDefectSchema,
 } from './CommonSchema';
 
@@ -32,7 +32,7 @@ export const defectsCommonSchemaSpecialistTestsCancelled =
   });
 
 export const testTypesCommonSchemaSpecialistTestsCancelled =
-  testTypesCommonSchema.keys({
+  testTypesSpecialistSchema.keys({
     testResult: Joi.any()
       .only(['fail', 'pass', 'prs', 'abandoned'])
       .required()
