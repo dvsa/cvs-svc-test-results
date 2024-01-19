@@ -759,7 +759,7 @@ components:
         referenceNumber:
           type: string
           maxLength: 10
-          nullable: false
+          nullable: true
         defectName:
           type: string
           maxLength: 200
