@@ -21,7 +21,7 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object()
     customDefects: Joi.array()
       .items(
         Joi.object().keys({
-          referenceNumber: Joi.string().max(10).required(),
+          referenceNumber: Joi.string().max(10).optional(),
           defectName: Joi.string().max(200).required(),
           defectNotes: Joi.string().max(200).required(),
         }),
