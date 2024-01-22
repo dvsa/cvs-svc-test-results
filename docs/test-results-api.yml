@@ -792,7 +792,7 @@ components:
         inspectionTypes:
           type: array
           items:
-            $ref: '#/components/schemas/inspectionType' 
+            $ref: '#/components/schemas/inspectionType'
         prs:
           type: boolean
         additionalNotes:
