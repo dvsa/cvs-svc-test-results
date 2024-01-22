@@ -631,6 +631,8 @@ components:
 
         defects:
           $ref: '#/components/schemas/defects'
+        ivaDefects:
+          $ref: '#/components/schemas/ivaDefects'
         customDefects:
           $ref: '#/components/schemas/customDefects'
     defects:
@@ -767,6 +769,39 @@ components:
           type: string
           maxLength: 200
           nullable: true
+    ivaDefects:
+      type: array
+      nullable: true
+      items:
+        $ref: '#/components/schemas/ivaDefect'
+    ivaDefect:
+      type: object
+      properties:
+        sectionNumber:
+          type: string
+        sectionDescription:
+          type: string
+        rsNumber:
+          type: number
+        requiredStandard:
+          type: string
+        refCalculation:
+          type: string
+        additionalInfo:
+          type: boolean
+        inspectionTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/inspectionType'
+        prs:
+          type: boolean
+        additionalNotes:
+          type: string
+    inspectionType:
+      type: string
+      enum:
+        - basic
+        - normal
     putBadRequest:
       type: object
       properties:

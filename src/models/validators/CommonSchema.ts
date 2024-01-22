@@ -79,28 +79,21 @@ const baseTestTypesCommonSchema = Joi.object().keys({
 export const ivaDefectSchema = Joi.object({
   sectionNumber: Joi.string().required(),
   sectionDescription: Joi.string().required(),
-  additionalInformation: Joi.object({
-    notes: Joi.string().required(),
-  }).optional(),
-  requiredStandards: Joi.array()
+  additionalNotes: Joi.string().allow('', null).optional(),
+  rsNumber: Joi.number().required(),
+  requiredStandard: Joi.string().required(),
+  refCalculation: Joi.string().required(),
+  additionalInfo: Joi.boolean().required(),
+  inspectionTypes: Joi.array()
     .items(
-      Joi.object({
-        rsNumber: Joi.number().required(),
-        requiredStandard: Joi.string().required(),
-        refCalculation: Joi.string().required(),
-        additionalInfo: Joi.boolean().required(),
-        inspectionTypes: Joi.array()
-          .items(
-            Joi.string()
-              .valid('basic', 'normal')
-              .error(customInspectionTypesErrorMessage),
-          )
-          .min(1)
-          .max(2)
-          .required(),
-      }),
+      Joi.string()
+        .valid('basic', 'normal')
+        .error(customInspectionTypesErrorMessage),
     )
+    .min(1)
+    .max(2)
     .required(),
+  prs: Joi.boolean().required(),
 });
 
 export const defectsCommonSchema = Joi.object().keys({

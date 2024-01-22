@@ -3214,15 +3214,13 @@ describe('insertTestResult', () => {
           x.ivaDefects?.push({
             sectionNumber: '01',
             sectionDescription: 'Noise',
-            requiredStandards: [
-              {
-                rsNumber: 1,
-                requiredStandard: 'The exhaust must be securely mounted.',
-                refCalculation: '1.1',
-                additionalInfo: true,
-                inspectionTypes: ['basic', 'normal'],
-              },
-            ],
+            rsNumber: 1,
+            requiredStandard: 'The exhaust must be securely mounted.',
+            refCalculation: '1.1',
+            additionalInfo: true,
+            inspectionTypes: ['basic', 'normal'],
+            prs: false,
+            additionalNotes: 'the exhaust was loose',
           });
           return x;
         });
@@ -3231,6 +3229,35 @@ describe('insertTestResult', () => {
         expect(validationResult).toBe(true);
       });
     });
+
+    context(
+      'when creating an IVA failed test record with IVA defects and an empty string for additional notes',
+      () => {
+        it('should create the record successfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
 
     // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
     // context(
