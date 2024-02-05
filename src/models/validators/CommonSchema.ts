@@ -232,4 +232,7 @@ export const testResultsCommonSchema = Joi.object().keys({
     .only(['contingency', 'desk-based', 'completion'])
     .optional(),
   source: Joi.string().only(['vta', 'vtm']).optional(),
+  make: Joi.string().optional().allow(null),
+  model: Joi.string().optional().allow(null),
+  bodyType: Joi.string().optional().allow(null),
 });
