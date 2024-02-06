@@ -33,4 +33,7 @@ export interface ITestResultPayload {
   contingencyTestNumber?: string;
   typeOfTest?: string;
   source?: string;
+  make?: string;
+  model?: string;
+  bodyType?: string;
 }

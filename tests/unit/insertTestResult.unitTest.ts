@@ -3302,5 +3302,195 @@ describe('insertTestResult', () => {
         expect(validationResult).toBe(true);
       });
     });
+
+    context(
+      'when creating a test record for a non IVA test with a missing make',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[12],
+          } as ITestResultPayload;
+          delete testResult.make;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for a non IVA test with a missing model',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[12],
+          } as ITestResultPayload;
+          delete testResult.model;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for a non IVA test with a missing body type',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[12],
+          } as ITestResultPayload;
+          delete testResult.bodyType;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for a non IVA test with make, model and body type',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[12],
+          } as ITestResultPayload;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for an IVA test with make, model and body type',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for an IVA test with a missing make',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+          delete testResult.make;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for an IVA test with a missing model',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+          delete testResult.model;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
+      'when creating a test record for an IVA test with a missing body type',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+          delete testResult.bodyType;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
   });
 });
