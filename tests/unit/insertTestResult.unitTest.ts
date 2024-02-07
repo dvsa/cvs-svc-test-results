@@ -3492,5 +3492,37 @@ describe('insertTestResult', () => {
         });
       },
     );
+
+    context(
+      'when creating a test record for an IVA test with a defect with an empty inspectionType array',
+      () => {
+        it('should create the record succesfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.ivaDefects?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: [],
+              prs: false,
+              additionalNotes: '',
+            });
+            return x;
+          });
+          delete testResult.bodyType;
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
   });
 });

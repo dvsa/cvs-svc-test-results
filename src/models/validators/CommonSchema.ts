@@ -90,7 +90,6 @@ export const ivaDefectSchema = Joi.object({
         .valid('basic', 'normal')
         .error(customInspectionTypesErrorMessage),
     )
-    .min(1)
     .max(2)
     .required(),
   prs: Joi.boolean().required(),
