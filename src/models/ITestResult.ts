@@ -49,7 +49,7 @@ export interface ITestResult {
   testHistory?: ITestResult[];
   make?: string;
   model?: string;
-  bodyType?: string;
+  bodyType?: BodyTypeModel;
 }
 
 export interface TestType {
@@ -138,6 +138,11 @@ export interface VehicleClass {
 }
 
 export interface ModType {
+  code: string;
+  description: string;
+}
+
+export interface BodyTypeModel {
   code: string;
   description: string;
 }

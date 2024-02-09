@@ -233,5 +233,8 @@ export const testResultsCommonSchema = Joi.object().keys({
   source: Joi.string().only(['vta', 'vtm']).optional(),
   make: Joi.string().optional().allow(null),
   model: Joi.string().optional().allow(null),
-  bodyType: Joi.string().optional().allow(null),
+  bodyType: Joi.object().keys({
+      code: Joi.string().optional().allow(null),
+      description: Joi.string().optional().allow(null),
+  }).optional().allow(null),
 });

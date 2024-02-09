@@ -1,4 +1,4 @@
-import { TestType } from './ITestResult';
+import { BodyTypeModel, TestType } from './ITestResult';
 
 export interface ITestResultPayload {
   systemNumber: string;
@@ -35,5 +35,5 @@ export interface ITestResultPayload {
   source?: string;
   make?: string;
   model?: string;
-  bodyType?: string;
+  bodyType?: BodyTypeModel;
 }
