@@ -70,7 +70,7 @@ export interface TestType {
   seatbeltInstallationCheckDate?: boolean | null; // mandatory for PSV only, not applicable for HGV and TRL
   additionalNotesRecorded: string;
   defects: Defect[];
-  requiredStandards?: DefectIVA[];
+  requiredStandards?: DefectRequiredStandard[];
   name: string;
   certificateLink?: string | null; // Not sent from FE, calculated in the BE.
   testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
@@ -105,7 +105,7 @@ export interface Defect {
   prohibitionIssued?: boolean;
 }
 
-export interface DefectIVA {
+export interface DefectRequiredStandard {
   sectionNumber: string;
   sectionDescription: string;
   rsNumber: number;
