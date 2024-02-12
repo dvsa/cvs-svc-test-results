@@ -3376,7 +3376,7 @@ describe('insertTestResult', () => {
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
@@ -3407,7 +3407,7 @@ describe('insertTestResult', () => {
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
@@ -3439,7 +3439,7 @@ describe('insertTestResult', () => {
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
@@ -3471,7 +3471,7 @@ describe('insertTestResult', () => {
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
@@ -3503,7 +3503,7 @@ describe('insertTestResult', () => {
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
