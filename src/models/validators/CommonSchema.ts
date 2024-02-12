@@ -90,7 +90,6 @@ export const ivaDefectSchema = Joi.object({
         .valid('basic', 'normal')
         .error(customInspectionTypesErrorMessage),
     )
-    .min(1)
     .max(2)
     .required(),
   prs: Joi.boolean().required(),
@@ -232,4 +231,10 @@ export const testResultsCommonSchema = Joi.object().keys({
     .only(['contingency', 'desk-based', 'completion'])
     .optional(),
   source: Joi.string().only(['vta', 'vtm']).optional(),
+  make: Joi.string().optional().allow(null),
+  model: Joi.string().optional().allow(null),
+  bodyType: Joi.object().keys({
+      code: Joi.string().optional().allow(null),
+      description: Joi.string().optional().allow(null),
+  }).optional().allow(null),
 });

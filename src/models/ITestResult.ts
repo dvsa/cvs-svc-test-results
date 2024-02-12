@@ -47,6 +47,9 @@ export interface ITestResult {
   lastUpdatedAt?: string;
   shouldEmailCertificate?: string;
   testHistory?: ITestResult[];
+  make?: string;
+  model?: string;
+  bodyType?: BodyTypeModel;
 }
 
 export interface TestType {
@@ -135,6 +138,11 @@ export interface VehicleClass {
 }
 
 export interface ModType {
+  code: string;
+  description: string;
+}
+
+export interface BodyTypeModel {
   code: string;
   description: string;
 }
