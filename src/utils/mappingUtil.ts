@@ -125,7 +125,7 @@ export class MappingUtil {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
         testType.defects = [];
       } else {
-        testType.ivaDefects = [];
+        testType.requiredStandards = [];
       }
     });
   }

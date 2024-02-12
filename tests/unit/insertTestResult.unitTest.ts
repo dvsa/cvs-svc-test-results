@@ -3211,7 +3211,7 @@ describe('insertTestResult', () => {
         const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
         testResult.testTypes.forEach((x) => {
           x.testTypeId = '125';
-          x.ivaDefects?.push({
+          x.requiredStandards?.push({
             sectionNumber: '01',
             sectionDescription: 'Noise',
             rsNumber: 1,
@@ -3239,7 +3239,7 @@ describe('insertTestResult', () => {
           } as ITestResultPayload;
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
-            x.ivaDefects?.push({
+            x.requiredStandards?.push({
               sectionNumber: '01',
               sectionDescription: 'Noise',
               rsNumber: 1,
@@ -3281,7 +3281,7 @@ describe('insertTestResult', () => {
     context('when creating a non IVA test record without IVA defects', () => {
       it('should create the record successfully', () => {
         const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
-        testResult.testTypes.forEach((x) => delete x.ivaDefects);
+        testResult.testTypes.forEach((x) => delete x.requiredStandards);
         const validationResult =
           ValidationUtil.validateInsertTestResultPayload(testResult);
         expect(validationResult).toBe(true);
@@ -3294,7 +3294,7 @@ describe('insertTestResult', () => {
         testResult.testTypes.forEach((x) => {
           x.testTypeId = '142';
           x.testTypeName = 'COIF with annual test';
-          delete x.ivaDefects;
+          delete x.requiredStandards;
           return x;
         });
         const validationResult =

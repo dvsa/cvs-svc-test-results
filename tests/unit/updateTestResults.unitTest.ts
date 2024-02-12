@@ -845,11 +845,11 @@ describe('updateTestResults', () => {
       testToUpdate.testTypes.forEach(modificationCallback);
     };
 
-    context('A failed IVA Test Record with IVA defects', () => {
-      it('can be updated with IVA defects present', async () => {
+    context('A failed IVA Test Record with required standards', () => {
+      it('can be updated with required standards present', async () => {
         setupTestTypes((x) => {
           x.testTypeId = '125';
-          x.ivaDefects = [
+          x.requiredStandards = [
             {
               sectionNumber: '01',
               sectionDescription: 'Noise',
@@ -876,9 +876,9 @@ describe('updateTestResults', () => {
       });
     });
 
-    context('A failed IVA Test Record without IVA defects', () => {
-      it('cannot be updated without IVA defects present', async () => {
-        setupTestTypes((x) => delete x.ivaDefects);
+    context('A failed IVA Test Record without required standards', () => {
+      it('cannot be updated without required standards present', async () => {
+        setupTestTypes((x) => delete x.requiredStandards);
 
         try {
           await testResultsService.updateTestResult(
@@ -894,12 +894,12 @@ describe('updateTestResults', () => {
     });
 
     context('A non-IVA test', () => {
-      it('can be updated without IVA defects present', async () => {
+      it('can be updated without required standards present', async () => {
         setupTestTypes((x) => {
           x.testTypeClassification = 'Annual With Certificate';
           x.testCode = 'cel';
           x.testNumber = '213213123';
-          delete x.ivaDefects;
+          delete x.requiredStandards;
           return x;
         });
 
@@ -913,14 +913,14 @@ describe('updateTestResults', () => {
     });
 
     context('A COIF test', () => {
-      it('can be updated without IVA defects present', async () => {
+      it('can be updated without required standards defects present', async () => {
         setupTestTypes((x) => {
           x.testTypeId = '142';
           x.testTypeName = 'COIF with annual test';
           x.testTypeClassification = 'Annual With Certificate';
           x.testCode = 'cel';
           x.testNumber = '213213123';
-          delete x.ivaDefects;
+          delete x.requiredStandards;
           return x;
         });
         const returnedRecord = await testResultsService.updateTestResult(
@@ -932,11 +932,11 @@ describe('updateTestResults', () => {
       });
     });
 
-    context('When IVA defects are present in the payload', () => {
-      it('IVA defects are not removed', async () => {
+    context('When required standards are present in the payload', () => {
+      it('Required standards are not removed', async () => {
         setupTestTypes((x) => {
           x.testTypeId = '125';
-          x.ivaDefects = [
+          x.requiredStandards = [
             {
               sectionNumber: '01',
               sectionDescription: 'Noise',
@@ -960,18 +960,18 @@ describe('updateTestResults', () => {
           msUserDetails,
         );
         res.testTypes.forEach((testType) =>
-          expect(testType.ivaDefects).toBeDefined(),
+          expect(testType.requiredStandards).toBeDefined(),
         );
       });
     });
 
-    context('When IVA defects are not present in the payload', () => {
-      it('IVA defects are removed', async () => {
+    context('When required standards are not present in the payload', () => {
+      it('Required standards are removed', async () => {
         setupTestTypes((x) => {
           x.testTypeClassification = 'Annual With Certificate';
           x.testCode = 'cel';
           x.testNumber = '213213123';
-          delete x.ivaDefects;
+          delete x.requiredStandards;
         });
         const res: ITestResult = await testResultsService.updateTestResult(
           testToUpdate.systemNumber,
@@ -979,10 +979,10 @@ describe('updateTestResults', () => {
           msUserDetails,
         );
         res.testTypes.forEach((testType) => {
-          const isIvaDefectsRemoved =
-            testType.ivaDefects === undefined ||
-            testType.ivaDefects.length === 0;
-          expect(isIvaDefectsRemoved).toBe(true);
+          const isRequiredStandardsRemoved =
+            testType.requiredStandards === undefined ||
+            testType.requiredStandards.length === 0;
+          expect(isRequiredStandardsRemoved).toBe(true);
         });
       });
     });

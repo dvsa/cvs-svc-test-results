@@ -15,7 +15,7 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   certificateLink: Joi.string().optional(),
   testTypeClassification: Joi.string().required().allow('', null),
   defects: Joi.array().max(0).allow(null),
-  ivaDefects: Joi.array().max(0).allow(null),
+  requiredStandards: Joi.array().max(0).allow(null),
   customDefects: Joi.array().max(0).allow(null),
 });
 

@@ -3,7 +3,7 @@ import {
   defectsCommonSchema,
   testResultsCommonSchema,
   testTypesSpecialistSchema,
-  ivaDefectSchema,
+  requiredStandardsSchema,
 } from './CommonSchema';
 
 export const defectsCommonSchemaSpecialistTestsCancelled =
@@ -41,7 +41,7 @@ export const testTypesCommonSchemaSpecialistTestsCancelled =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsCancelled)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
+    requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsCancelled =

@@ -76,7 +76,7 @@ const baseTestTypesCommonSchema = Joi.object().keys({
   particulateTrapFitted: Joi.string().max(100).allow(null),
 });
 
-export const ivaDefectSchema = Joi.object({
+export const requiredStandardsSchema = Joi.object({
   sectionNumber: Joi.string().required(),
   sectionDescription: Joi.string().required(),
   additionalNotes: Joi.string().allow('', null).optional(),
