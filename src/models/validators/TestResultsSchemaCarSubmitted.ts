@@ -4,7 +4,7 @@ import {
   testResultsCommonSchemaSpecialistTestsSubmitted,
   testTypesCommonSchemaSpecialistTestsSubmitted,
 } from './SpecialistTestsCommonSchemaSubmitted';
-import { ivaDefectSchema } from './CommonSchema';
+import { requiredStandardsSchema } from './CommonSchema';
 
 export const carSubmitted =
   testResultsCommonSchemaSpecialistTestsSubmitted.keys({
@@ -15,7 +15,7 @@ export const carSubmitted =
           defects: array()
             .items(defectsCommonSchemaSpecialistTestsSubmitted)
             .optional(),
-          ivaDefects: array().items(ivaDefectSchema.required()).optional(),
+          requiredStandards: array().items(requiredStandardsSchema.required()).optional(),
         }),
       )
       .required(),

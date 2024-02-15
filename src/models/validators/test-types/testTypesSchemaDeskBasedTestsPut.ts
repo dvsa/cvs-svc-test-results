@@ -1,4 +1,5 @@
 import * as Joi from 'joi';
+import {requiredStandardsSchema} from "../CommonSchema";
 
 export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   name: Joi.string(),
@@ -15,7 +16,7 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   certificateLink: Joi.string().optional(),
   testTypeClassification: Joi.string().required().allow('', null),
   defects: Joi.array().max(0).allow(null),
-  ivaDefects: Joi.array().max(0).allow(null),
+  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
   customDefects: Joi.array().max(0).allow(null),
 });
 

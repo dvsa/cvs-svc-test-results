@@ -631,8 +631,8 @@ components:
 
         defects:
           $ref: '#/components/schemas/defects'
-        ivaDefects:
-          $ref: '#/components/schemas/ivaDefects'
+        requiredStandards:
+          $ref: '#/components/schemas/requiredStandards'
         customDefects:
           $ref: '#/components/schemas/customDefects'
     defects:
@@ -769,12 +769,12 @@ components:
           type: string
           maxLength: 200
           nullable: true
-    ivaDefects:
+    requiredStandards:
       type: array
       nullable: true
       items:
-        $ref: '#/components/schemas/ivaDefect'
-    ivaDefect:
+        $ref: '#/components/schemas/requiredStandard'
+    requiredStandard:
       type: object
       properties:
         sectionNumber:

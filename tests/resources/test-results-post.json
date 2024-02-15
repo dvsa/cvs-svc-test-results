@@ -1055,7 +1055,7 @@
           }
         ],
         "defects": [],
-        "ivaDefects": []
+        "requiredStandards": []
       }
     ],
     "testStationName": "Abshire-Kub",

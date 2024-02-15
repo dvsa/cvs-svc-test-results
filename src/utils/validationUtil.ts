@@ -563,7 +563,7 @@ export class ValidationUtil {
     const allFailWithoutDefects = testTypes.every(
       (test) =>
         test.testResult === 'fail' &&
-        (test.ivaDefects?.length === 0 || test.ivaDefects === undefined),
+        (test.requiredStandards?.length === 0 || test.requiredStandards === undefined),
     );
 
     //   if (allFailWithoutDefects) {

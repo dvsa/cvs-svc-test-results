@@ -1,4 +1,4 @@
-import { InspectionType } from '@dvsa/cvs-type-definitions/types/iva/defects/get';
+import { InspectionType } from '@dvsa/cvs-type-definitions/types/required-standards/defects/get';
 
 export interface ITestResult {
   testResultId: string;
@@ -70,7 +70,7 @@ export interface TestType {
   seatbeltInstallationCheckDate?: boolean | null; // mandatory for PSV only, not applicable for HGV and TRL
   additionalNotesRecorded: string;
   defects: Defect[];
-  ivaDefects?: DefectIVA[];
+  requiredStandards?: RequiredStandard[];
   name: string;
   certificateLink?: string | null; // Not sent from FE, calculated in the BE.
   testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
@@ -105,7 +105,7 @@ export interface Defect {
   prohibitionIssued?: boolean;
 }
 
-export interface DefectIVA {
+export interface RequiredStandard {
   sectionNumber: string;
   sectionDescription: string;
   rsNumber: number;

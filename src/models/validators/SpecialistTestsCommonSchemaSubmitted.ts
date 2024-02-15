@@ -1,16 +1,16 @@
 import * as Joi from 'joi';
 import {
   defectsCommonSchema,
-  ivaDefectSchema,
+  requiredStandardsSchema,
   testResultsCommonSchema,
   testTypesSpecialistSchema,
 } from './CommonSchema';
 
-export const testTypesIVADefectCommonSchemaSpecialistTestsSubmitted =
+export const testTypesRequiredStandardCommonSchemaSpecialistTestsSubmitted =
   testTypesSpecialistSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
     testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema.required()).optional(),
+    requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
   });
 
 export const defectsCommonSchemaSpecialistTestsSubmitted =
@@ -51,7 +51,7 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
-    ivaDefects: Joi.array().items(ivaDefectSchema).optional(),
+    requiredStandards: Joi.array().items(requiredStandardsSchema).optional(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =
