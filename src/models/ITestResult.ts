@@ -71,6 +71,7 @@ export interface TestType {
   additionalNotesRecorded: string;
   defects: Defect[];
   requiredStandards?: RequiredStandard[];
+  customDefects?: CustomDefects[];
   name: string;
   certificateLink?: string | null; // Not sent from FE, calculated in the BE.
   testTypeClassification?: string; // field not present in API specs and is removed during POST but present in all json objects
@@ -145,4 +146,10 @@ export interface ModType {
 export interface BodyTypeModel {
   code: string;
   description: string;
+}
+
+export interface CustomDefects {
+  referenceNumber?: string;
+  defectName: string;
+  defectNotes: string;
 }
