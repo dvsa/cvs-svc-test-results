@@ -3398,6 +3398,45 @@ describe('insertTestResult', () => {
     );
 
     context(
+      'when creating a test record for an IVA test with make, model and body type and without reference number',
+      () => {
+        it('should create the record successfully', () => {
+          const testResult = {
+            ...testResultsPostMock[13],
+          } as ITestResultPayload;
+
+
+          testResult.testTypes.forEach((x) => {
+            x.testTypeId = '125';
+            x.customDefects = [
+              {
+                defectName: "Some custom defect",
+                defectNotes: "some defect noe"
+              }
+            ]
+            x.requiredStandards?.push({
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'The exhaust must be securely mounted.',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+              additionalNotes: '',
+            });
+
+            return x;
+          });
+
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      },
+    );
+
+    context(
       'when creating a test record for an IVA test with a missing make',
       () => {
         it('should create the record succesfully', () => {
