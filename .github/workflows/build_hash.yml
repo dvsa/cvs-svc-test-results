@@ -1,5 +1,5 @@
 name: Build hash and deploy to S3
-run-name: "${{ github.actor }} - ${{ github.ref_name }} - ${{ github.run_id }} 🚀"
+run-name: '${{ github.actor }} - ${{ github.ref_name }} - ${{ github.run_id }} 🚀'
 
 on:
   workflow_dispatch:

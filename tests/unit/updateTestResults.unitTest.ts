@@ -622,6 +622,7 @@ describe('updateTestResults', () => {
                 msUserDetails,
               )
               .catch((errorResponse: { statusCode: any; body: any }) => {
+                console.log(errorResponse);
                 expect(errorResponse).toBeInstanceOf(HTTPError);
                 expect(errorResponse.statusCode).toBe(400);
                 expect(errorResponse.body).toEqual({

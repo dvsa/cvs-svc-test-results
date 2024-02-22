@@ -1018,6 +1018,7 @@
     "make": "test make",
     "model": "test model",
     "bodyType": { "code": "test code", "description": "test description" }
+    "bodyType": { "code": "test code", "description": "test description" }
   },
   {
     "vin": "1B7GG36N12S678410",
@@ -1085,7 +1086,7 @@
     "reasonForCancellation": null,
     "make": "test make",
     "model": "test model",
-    "bodyType": { "code": "test code", "description": "test description" }
+    "bodyType": { "code": "test code", "description": "test description"  }
   },
   {
     "vin": "1B7GG36N12S678410",

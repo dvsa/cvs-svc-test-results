@@ -1,4 +1,4 @@
-import { any, array, object } from 'joi';
+import { any, array, object, string } from 'joi';
 import {
   defectsCommonSchemaSpecialistTestsSubmitted,
   testResultsCommonSchemaSpecialistTestsSubmitted,
@@ -11,7 +11,7 @@ export const motorcycleSubmitted =
     vehicleClass: object()
       .keys({
         code: any()
-          .only([
+          .valid(
             '1',
             '2',
             '3',
@@ -25,9 +25,9 @@ export const motorcycleSubmitted =
             '7',
             'p',
             'u',
-          ])
+          )
           .required(),
-        description: any().only([
+        description: string().valid(
           'motorbikes up to 200cc',
           'motorbikes over 200cc or with a sidecar',
           '3 wheelers',
@@ -41,7 +41,7 @@ export const motorcycleSubmitted =
           'MOT class 7',
           'PSV of unknown or unspecified size',
           'Not Known',
-        ]),
+        ),
       })
       .required(),
     testTypes: array()
@@ -50,7 +50,9 @@ export const motorcycleSubmitted =
           defects: array()
             .items(defectsCommonSchemaSpecialistTestsSubmitted)
             .optional(),
-          requiredStandards: array().items(requiredStandardsSchema.required()).optional(),
+          requiredStandards: array()
+            .items(requiredStandardsSchema.required())
+            .optional(),
         }),
       )
       .required(),

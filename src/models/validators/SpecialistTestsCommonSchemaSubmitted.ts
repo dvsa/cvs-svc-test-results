@@ -9,8 +9,12 @@ import {
 export const testTypesRequiredStandardCommonSchemaSpecialistTestsSubmitted =
   testTypesSpecialistSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
-    requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+    testResult: Joi.string()
+      .valid('fail', 'pass', 'prs', 'abandoned')
+      .required(),
+    requiredStandards: Joi.array()
+      .items(requiredStandardsSchema.required())
+      .optional(),
   });
 
 export const defectsCommonSchemaSpecialistTestsSubmitted =
@@ -19,17 +23,20 @@ export const defectsCommonSchemaSpecialistTestsSubmitted =
       .keys({
         location: Joi.object()
           .keys({
-            vertical: Joi.any().only(['upper', 'lower']).required().allow(null),
+            vertical: Joi.string()
+              .valid('upper', 'lower')
+              .required()
+              .allow(null),
             horizontal: Joi.any()
-              .only(['inner', 'outer'])
+              .valid('inner', 'outer')
               .required()
               .allow(null),
             lateral: Joi.any()
-              .only(['nearside', 'centre', 'offside'])
+              .valid('nearside', 'centre', 'offside')
               .required()
               .allow(null),
             longitudinal: Joi.any()
-              .only(['front', 'rear'])
+              .valid('front', 'rear')
               .required()
               .allow(null),
             rowNumber: Joi.number().max(20).required().allow(null),
@@ -47,7 +54,9 @@ export const defectsCommonSchemaSpecialistTestsSubmitted =
 export const testTypesCommonSchemaSpecialistTestsSubmitted =
   testTypesSpecialistSchema.keys({
     testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    testResult: Joi.string()
+      .valid('fail', 'pass', 'prs', 'abandoned')
+      .required(),
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
@@ -60,12 +69,12 @@ export const testResultsCommonSchemaSpecialistTestsSubmitted =
     countryOfRegistration: Joi.string().required().allow('', null),
     odometerReading: Joi.number().required().allow(null),
     odometerReadingUnits: Joi.any()
-      .only(['kilometres', 'miles'])
+      .valid('kilometres', 'miles')
       .required()
       .allow(null),
     reasonForCancellation: Joi.string().max(500).required().allow('', null),
     vehicleConfiguration: Joi.any()
-      .only([
+      .valid(
         'rigid',
         'articulated',
         'centre axle drawbar',
@@ -78,7 +87,7 @@ export const testResultsCommonSchemaSpecialistTestsSubmitted =
         'four-in-line',
         'dolly',
         'full drawbar',
-      ])
+      )
       .required()
       .allow(null),
     testTypes: Joi.array()

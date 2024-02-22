@@ -9,7 +9,9 @@ export const testTypesCommonSchemaSpecialistTests = Joi.object()
     testTypeId: Joi.string().required(),
     testTypeStartTimestamp: Joi.date().iso().required(),
     testTypeEndTimestamp: Joi.date().iso().required(),
-    testResult: Joi.any().only(['fail', 'pass', 'prs', 'abandoned']).required(),
+    testResult: Joi.string()
+      .valid('fail', 'pass', 'prs', 'abandoned')
+      .required(),
     prohibitionIssued: Joi.boolean().required(),
     reasonForAbandoning: Joi.string().when('$hasTestResult', {
       is: 'abandoned',
@@ -46,7 +48,9 @@ export const testTypesSpecialistGroup1 =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .optional(),
-    requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+    requiredStandards: Joi.array()
+      .items(requiredStandardsSchema.required())
+      .optional(),
   });
 
 export const testTypesSpecialistGroup2 =
@@ -106,5 +110,7 @@ export const testTypesSpecialistGroup5 =
     defects: Joi.array()
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .optional(),
-    requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+    requiredStandards: Joi.array()
+      .items(requiredStandardsSchema.required())
+      .optional(),
   });

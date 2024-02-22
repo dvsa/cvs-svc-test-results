@@ -67,4 +67,3 @@ jobs:
           -Dsonar.login=${{ env.SONARQUBE_GHA_TOKEN }} \
           -Dsonar.projectName=${{ github.repository }} \
           -Dsonar.projectVersion=1.0.${{ github.run_id }}
-

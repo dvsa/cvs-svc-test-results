@@ -11,13 +11,16 @@ const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object().keys({
     location: Joi.object()
       .keys({
-        vertical: Joi.any().only(['upper', 'lower']).required().allow(null),
-        horizontal: Joi.any().only(['inner', 'outer']).required().allow(null),
+        vertical: Joi.string().valid('upper', 'lower').required().allow(null),
+        horizontal: Joi.string().valid('inner', 'outer').required().allow(null),
         lateral: Joi.any()
-          .only(['nearside', 'centre', 'offside'])
+          .valid('nearside', 'centre', 'offside')
           .required()
           .allow(null),
-        longitudinal: Joi.any().only(['front', 'rear']).required().allow(null),
+        longitudinal: Joi.string()
+          .valid('front', 'rear')
+          .required()
+          .allow(null),
         rowNumber: Joi.number().max(20).required().allow(null),
         seatNumber: Joi.number().max(6).required().allow(null),
         axleNumber: Joi.number().max(10).required().allow(null),
@@ -34,18 +37,20 @@ const testTypesSchema = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   testResult: Joi.any()
-    .only(['fail', 'pass', 'prs', 'abandoned'])
+    .valid('fail', 'pass', 'prs', 'abandoned')
     .required()
     .allow(null),
   defects: Joi.array().items(defectsSchema).required(),
-  requiredStandards: array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
   modType: Joi.object({
-    code: Joi.string().only(['p', 'm', 'g']),
-    description: Joi.string().only([
+    code: Joi.string().valid('p', 'm', 'g'),
+    description: Joi.string().valid(
       'particulate trap',
       'modification or change of engine',
       'gas engine',
-    ]),
+    ),
   }).allow(null),
   particulateTrapSerialNumber: Joi.string().max(100).allow(null),
   smokeTestKLimitApplied: Joi.string().max(100).allow(null),
@@ -59,11 +64,11 @@ export const psvCancelled = testResultsCommonSchema.keys({
   numberOfSeats: Joi.number().required(),
   odometerReading: Joi.number().required().allow(null),
   odometerReadingUnits: Joi.any()
-    .only(['kilometres', 'miles'])
+    .valid('kilometres', 'miles')
     .required()
     .allow(null),
-  vehicleConfiguration: Joi.any().only(['rigid', 'articulated']).required(),
+  vehicleConfiguration: Joi.string().valid('rigid', 'articulated').required(),
   countryOfRegistration: Joi.string().required().allow('', null),
-  vehicleSize: Joi.any().only(['small', 'large']).required(),
+  vehicleSize: Joi.string().valid('small', 'large').required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
 });

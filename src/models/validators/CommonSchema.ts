@@ -1,15 +1,6 @@
 import * as Joi from 'joi';
 import { ValidationErrorItem } from 'joi';
-import { VEHICLE_TYPES } from '../../assets/Enums';
-
-const customInspectionTypesErrorMessage = (
-  errors: ValidationErrorItem[],
-): ValidationErrorItem[] =>
-  errors.map((e) =>
-    e.type === 'any.allowOnly'
-      ? { ...e, message: `"inspectionTypes" must be one of [basic, normal]` }
-      : e,
-  );
+import { TESTING_ERRORS, VEHICLE_TYPES } from '../../assets/Enums';
 
 const baseTestTypesCommonSchema = Joi.object().keys({
   name: Joi.string().required(),
@@ -33,12 +24,12 @@ const baseTestTypesCommonSchema = Joi.object().keys({
     .allow(null),
   modType: Joi.object()
     .keys({
-      code: Joi.any().only(['p', 'm', 'g']),
-      description: Joi.any().only([
+      code: Joi.string().valid('p', 'm', 'g'),
+      description: Joi.string().valid(
         'particulate trap',
         'modification or change of engine',
         'gas engine',
-      ]),
+      ),
     })
     .allow(null),
   secondaryCertificateNumber: Joi.string()
@@ -46,8 +37,8 @@ const baseTestTypesCommonSchema = Joi.object().keys({
     .max(20)
     .required()
     .allow(null),
-  emissionStandard: Joi.any()
-    .only([
+  emissionStandard: Joi.string()
+    .valid(
       '0.10 g/kWh Euro 3 PM',
       '0.03 g/kWh Euro IV PM',
       'Euro 3',
@@ -57,10 +48,10 @@ const baseTestTypesCommonSchema = Joi.object().keys({
       'Euro V',
       'Euro VI',
       'Full Electric',
-    ])
+    )
     .allow(null),
-  fuelType: Joi.any()
-    .only([
+  fuelType: Joi.string()
+    .valid(
       'diesel',
       'gas-cng',
       'gas-lng',
@@ -68,7 +59,7 @@ const baseTestTypesCommonSchema = Joi.object().keys({
       'petrol',
       'fuel cell',
       'full electric',
-    ])
+    )
     .allow(null),
   particulateTrapSerialNumber: Joi.string().max(100).allow(null),
   smokeTestKLimitApplied: Joi.string().max(100).allow(null),
@@ -85,11 +76,7 @@ export const requiredStandardsSchema = Joi.object({
   refCalculation: Joi.string().required(),
   additionalInfo: Joi.boolean().required(),
   inspectionTypes: Joi.array()
-    .items(
-      Joi.string()
-        .valid('basic', 'normal')
-        .error(customInspectionTypesErrorMessage),
-    )
+    .items(Joi.string().valid('basic', 'normal'))
     .max(2)
     .required(),
   prs: Joi.boolean().required(),
@@ -110,8 +97,8 @@ export const defectsCommonSchema = Joi.object().keys({
     .regex(/^[mdclxvi]+$/)
     .required()
     .allow(null),
-  deficiencyCategory: Joi.any()
-    .only(['advisory', 'dangerous', 'major', 'minor'])
+  deficiencyCategory: Joi.string()
+    .valid('advisory', 'dangerous', 'major', 'minor')
     .required(),
   deficiencyText: Joi.string().required().allow('', null),
   stdForProhibition: Joi.boolean().required().allow(null),
@@ -151,20 +138,20 @@ export const testResultsCommonSchema = Joi.object().keys({
   vin: Joi.string().min(1).max(21).required(),
   testStationName: Joi.string().max(999).required().allow('', null),
   testStationPNumber: Joi.string().max(20).required().allow('', null),
-  testStationType: Joi.any().only(['atf', 'gvts', 'hq', 'potf']).required(),
+  testStationType: Joi.string().valid('atf', 'gvts', 'hq', 'potf').required(),
   testerName: Joi.string().max(60).required().allow('', null),
   testerEmailAddress: Joi.string().max(60).required().allow('', null),
   testerStaffId: Joi.string().max(36).required().allow(''),
   testStartTimestamp: Joi.date().iso().required(),
   testEndTimestamp: Joi.date().iso().required(),
-  testStatus: Joi.any().only(['submitted', 'cancelled']).required(),
+  testStatus: Joi.string().valid('submitted', 'cancelled').required(),
   vehicleClass: Joi.object()
     .keys({
-      code: Joi.any()
-        .only(['1', '2', '3', 'n', 's', 't', 'l', 'v', '4', '5', '7', 'p', 'u'])
+      code: Joi.string()
+        .valid('1', '2', '3', 'n', 's', 't', 'l', 'v', '4', '5', '7', 'p', 'u')
         .allow(null),
-      description: Joi.any()
-        .only([
+      description: Joi.string()
+        .valid(
           'motorbikes up to 200cc',
           'motorbikes over 200cc or with a sidecar',
           '3 wheelers',
@@ -178,19 +165,21 @@ export const testResultsCommonSchema = Joi.object().keys({
           'MOT class 7',
           'PSV of unknown or unspecified size',
           'Not Known',
-        ])
+        )
         .allow(null),
     })
     .allow(null),
-  vehicleType: Joi.any().only(Object.values(VEHICLE_TYPES)).required(),
+  vehicleType: Joi.string()
+    .valid(...Object.values(VEHICLE_TYPES))
+    .required(),
   noOfAxles: Joi.number().max(99).required(),
   preparerId: Joi.string().required().allow('', null),
   preparerName: Joi.string().required().allow('', null),
   numberOfWheelsDriven: Joi.number().required().allow('', null),
   regnDate: Joi.string().allow('', null),
   firstUseDate: Joi.string().allow('', null),
-  euVehicleCategory: Joi.any()
-    .only([
+  euVehicleCategory: Joi.string()
+    .valid(
       'm1',
       'm2',
       'm3',
@@ -209,7 +198,7 @@ export const testResultsCommonSchema = Joi.object().keys({
       'l5e',
       'l6e',
       'l7e',
-    ])
+    )
     .required()
     .allow(null),
   reasonForCreation: Joi.string().max(100).optional(),
@@ -228,13 +217,16 @@ export const testResultsCommonSchema = Joi.object().keys({
     .regex(/^\d{6,8}$/)
     .optional(),
   typeOfTest: Joi.string()
-    .only(['contingency', 'desk-based', 'completion'])
+    .valid('contingency', 'desk-based', 'completion')
     .optional(),
-  source: Joi.string().only(['vta', 'vtm']).optional(),
+  source: Joi.string().valid('vta', 'vtm').optional(),
   make: Joi.string().optional().allow(null),
   model: Joi.string().optional().allow(null),
-  bodyType: Joi.object().keys({
+  bodyType: Joi.object()
+    .keys({
       code: Joi.string().optional().allow(null),
       description: Joi.string().optional().allow(null),
-  }).optional().allow(null),
+    })
+    .optional()
+    .allow(null),
 });

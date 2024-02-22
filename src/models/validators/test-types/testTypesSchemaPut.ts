@@ -4,10 +4,10 @@ import { defectsCommonSchema, requiredStandardsSchema } from '../CommonSchema';
 const additionalInformationSchema = Joi.object().keys({
   location: Joi.object()
     .keys({
-      vertical: Joi.any().only(['upper', 'lower']).allow(null),
-      horizontal: Joi.any().only(['inner', 'outer']).allow(null),
-      lateral: Joi.any().only(['nearside', 'centre', 'offside']).allow(null),
-      longitudinal: Joi.any().only(['front', 'rear']).allow(null),
+      vertical: Joi.string().valid('upper', 'lower').allow(null),
+      horizontal: Joi.string().valid('inner', 'outer').allow(null),
+      lateral: Joi.string().valid('nearside', 'centre', 'offside').allow(null),
+      longitudinal: Joi.string().valid('front', 'rear').allow(null),
       rowNumber: Joi.number().max(20).allow(null),
       seatNumber: Joi.number().max(6).allow(null),
       axleNumber: Joi.number().max(10).allow(null),
@@ -32,8 +32,8 @@ export const testTypesCommonSchema = Joi.object()
     testTypeId: Joi.string().required(),
     testTypeStartTimestamp: Joi.date().iso().required(),
     testTypeEndTimestamp: Joi.date().iso().required().allow(null),
-    testResult: Joi.any()
-      .only(['fail', 'pass', 'prs', 'abandoned'])
+    testResult: Joi.string()
+      .valid('fail', 'pass', 'prs', 'abandoned')
       .required()
       .allow(null),
     reasonForAbandoning: Joi.string().required().allow('', null),
@@ -75,7 +75,9 @@ export const testTypesGroup1 = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required(),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const testTypesGroup2 = testTypesCommonSchema.keys({
@@ -83,7 +85,9 @@ export const testTypesGroup2 = testTypesCommonSchema.keys({
   lastSeatbeltInstallationCheckDate: Joi.date().required().allow(null),
   seatbeltInstallationCheckDate: Joi.boolean().required().allow(null),
   defects: Joi.array().items(defectsSchemaPut).required(),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const testTypesGroup3And4And8 = testTypesCommonSchema.keys({
@@ -98,7 +102,9 @@ export const testTypesGroup5And13 = testTypesCommonSchema.keys({
 export const testTypesGroup6And11 = testTypesCommonSchema.keys({
   certificateNumber: Joi.string().required().allow('', null),
   defects: Joi.array().items(defectsSchemaPut).required(),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const testTypesGroup7 = testTypesCommonSchema.keys({
@@ -112,12 +118,16 @@ export const testTypesGroup9And10 = testTypesCommonSchema.keys({
   testExpiryDate: Joi.date().iso().allow(null, ''),
   testAnniversaryDate: Joi.date().iso().required().allow(null, ''),
   defects: Joi.array().items(defectsSchemaPut).required(),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const testTypesGroup12And14 = testTypesCommonSchema.keys({
   defects: Joi.array().items(defectsSchemaPut).required(),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const testTypesGroup15And16 = testTypesCommonSchema.keys({
@@ -125,17 +135,17 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
   testExpiryDate: Joi.date().iso().allow(null, ''),
   modType: Joi.object()
     .keys({
-      code: Joi.any().only(['p', 'm', 'g']),
-      description: Joi.any().only([
+      code: Joi.string().valid('p', 'm', 'g'),
+      description: Joi.string().valid(
         'particulate trap',
         'modification or change of engine',
         'gas engine',
-      ]),
+      ),
     })
     .required()
     .allow(null),
-  emissionStandard: Joi.any()
-    .only([
+  emissionStandard: Joi.string()
+    .valid(
       '0.10 g/kWh Euro 3 PM',
       '0.03 g/kWh Euro IV PM',
       'Euro 3',
@@ -145,11 +155,11 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
       'Euro V',
       'Euro VI',
       'Full Electric',
-    ])
+    )
     .required()
     .allow(null),
-  fuelType: Joi.any()
-    .only([
+  fuelType: Joi.string()
+    .valid(
       'diesel',
       'gas-cng',
       'gas-lng',
@@ -157,7 +167,7 @@ export const testTypesGroup15And16 = testTypesCommonSchema.keys({
       'petrol',
       'fuel cell',
       'full electric',
-    ])
+    )
     .required()
     .allow(null),
   particulateTrapSerialNumber: Joi.string().max(100).allow(null),
