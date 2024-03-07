@@ -27,8 +27,7 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "node_modules/.bin/sls dynamodb install",
-    "postinstall": "patch-package"
+    "tools-setup": "node_modules/.bin/sls dynamodb install"
   },
   "repository": {
     "type": "git",
@@ -69,12 +68,12 @@
     "jest-sonar-reporter": "^2.0.0",
     "prettier": "^2.3.2",
     "serverless": "^2.43.1",
-    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-dynamodb": "^0.2.50",
     "serverless-offline": "5.12.0",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-plugin-typescript": "^1.1.9",
-    "sonarqube-scanner": "^3.3.0",
     "sinon": "^7.3.2",
+    "sonarqube-scanner": "^3.3.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.1",
     "typescript": "^3.8.3"
@@ -90,7 +89,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
     "node-yaml": "^4.0.1",
-    "patch-package": "^6.5.1",
     "path-parser": "^4.2.0",
     "reflect-metadata": "^0.1.13"
   },

@@ -19,7 +19,7 @@ provider:
             - '*'
 
 plugins:
-  - serverless-dynamodb-local
+  - serverless-dynamodb
   - serverless-offline
   - serverless-plugin-tracing
   - serverless-plugin-typescript
@@ -27,7 +27,7 @@ plugins:
 custom:
   serverless-offline:
     port: 3006
-  dynamodb:
+  serverless-dynamodb:
     start:
       port: 8004
       inMemory: true
