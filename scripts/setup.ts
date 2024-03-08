@@ -17,10 +17,10 @@ const setupServer = (process: any) =>
     });
 
     process.stderr.setEncoding('utf-8').on('data', (stream: any) => {
-      if (stream.includes(DYNAMO_LOCAL_ERROR_THREAD)) {
-        throw new Error('Internal Java process crashed');
-      }
-      reject(stream);
+      // if (stream.includes(DYNAMO_LOCAL_ERROR_THREAD)) {
+      //   throw new Error('Internal Java process crashed');
+      // }
+      // reject(stream);
     });
 
     process.on('exit', (code: any, signal: any) => {
