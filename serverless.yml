@@ -68,6 +68,10 @@ functions:
             parameters:
               paths:
                 systemNumber: true
+              query:
+                status: false
+                fromDateTime: false
+                toDateTime: false
   getTestResultsByTesterStaffId:
     environment:
       BRANCH: local
