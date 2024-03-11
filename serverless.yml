@@ -30,7 +30,7 @@ custom:
     httpPort: 3006
   serverless-dynamodb:
     start:
-      port: 8004
+      port: 8014
       inMemory: true
       migrate: true
       seed: true
