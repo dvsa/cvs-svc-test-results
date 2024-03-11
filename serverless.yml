@@ -27,7 +27,7 @@ plugins:
 
 custom:
   serverless-offline:
-    port: 3006
+    httpPort: 3006
   serverless-dynamodb:
     start:
       port: 8014

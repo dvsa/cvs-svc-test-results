@@ -1,6 +1,6 @@
 import { killTestSetup } from './destroyServices';
 
-module.exports = async () => {
+const teardownScript = async () => {
   console.log(`
       Integration tests ✅
       ...Tearing down tests...
@@ -18,3 +18,4 @@ module.exports = async () => {
     throw e;
   }
 };
+export default teardownScript;
