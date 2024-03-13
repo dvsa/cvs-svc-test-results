@@ -28,7 +28,7 @@ plugins:
 custom:
   serverless-offline:
     httpPort: 3006
-  dynamodb:
+  serverless-dynamodb:
     start:
       port: 8014
       inMemory: true
@@ -36,6 +36,7 @@ custom:
       seed: true
       noStart: false
       host: 127.0.0.1
+      docker: false
     seed:
       test-results:
         sources:
