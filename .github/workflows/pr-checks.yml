@@ -35,6 +35,8 @@ jobs:
         run: npm run test
       - name: start
         run: npm run start &
+      - name: sleepy time
+        run: run sleep 30s
       - name: int tests
         run: npm run test:integration
         env:
