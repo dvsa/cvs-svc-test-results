@@ -34,11 +34,7 @@ jobs:
       - name: unit tests
         run: npm run test
       - name: start
-        run: npm run start &
-      - name: sleepy time
-        run: sleep 30s
-      - name: int tests
-        run: npm run test:integration
+        run: npm run start && test:integration
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar
