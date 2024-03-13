@@ -29,8 +29,14 @@ jobs:
         run: npm ci
       - name: Setup local dynamo
         run: npm run tools-setup
-      - name: Build and test
-        run: npm run prepush
+      - name: Build
+        run: npm run build
+      - name: unit tests
+        run: npm run test
+      - name: start
+        run: npm run start
+      - name: int tests
+        run: npm run test:integration
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar
