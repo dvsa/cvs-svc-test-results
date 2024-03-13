@@ -6,7 +6,7 @@ const shell = util.promisify(exec);
 let PID_SERVER_IN_CONTAINER;
 let PID_DB_IN_CONTAINER;
 
-module.exports = async () => {
+export const killTestSetup = async () => {
   console.log('Trying to kill test setups in the CI 🦾 ...');
   try {
     const { stdout: serverStream } = await shell(
@@ -26,3 +26,5 @@ module.exports = async () => {
     process.exit(1);
   }
 };
+
+export default killTestSetup
