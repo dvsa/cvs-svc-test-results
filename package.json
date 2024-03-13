@@ -15,7 +15,7 @@
     "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\" --runInBand",
     "test": "npm run test:unit -- --coverage",
     "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\" --runInBand --detectOpenHandles --forceExit",
-    "test-i": "AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts' &",
+    "test-i": "AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/destroyServices.ts'",
     "security-checks": "git secrets --scan",
     "lint:fix": "eslint '*/**/*.ts' --fix",
     "lint": "eslint '*/**/*.ts' -f json -o .reports/eslint/eslint-report.json",
