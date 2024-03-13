@@ -2,8 +2,7 @@ service: cvs-svc-test-results
 
 provider:
   name: aws
-  runtime: nodejs18.18.2
-  timeout: 30
+  runtime: nodejs18.x
   apiGateway:
     shouldStartNameWithService: true
   tracing:

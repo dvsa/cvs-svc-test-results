@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/handler.js",
   "engines": {
-    "node": "v18.18.2",
-    "npm": "9.8.1"
+    "node": "18.*",
+    "npm": "9.*"
   },
   "scripts": {
     "start": "BRANCH=local SLS_DEBUG=* serverless offline start --noPrependStageInUrl",
@@ -14,7 +14,7 @@
     "build:copy": "find src -type f \\( -name \"*.yml\" -or -name \"*.json\" \\) | cpio -pdm .build && find tests -type f \\( -name \"*.yml\" -or -name \"*.json\" \\)  | cpio -pdm .build",
     "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\" --runInBand",
     "test": "npm run test:unit -- --coverage",
-    "test:integration": "jest --testMatch=\"**/*.intTest.ts\"",
+    "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\"",
     "test-i": "npm run test:integration -- --runInBand --detectOpenHandles --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts'",
     "security-checks": "git secrets --scan",
     "lint:fix": "eslint '*/**/*.ts' --fix",
@@ -50,7 +50,7 @@
     "@types/lodash": "^4.14.144",
     "@types/node": "^14.18.33",
     "@types/sinon": "^7.0.13",
-    "@types/supertest": "^6.0.2",
+    "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "commitlint-plugin-function-rules": "^1.7.1",
@@ -74,7 +74,7 @@
     "serverless-plugin-typescript": "^2.1.4",
     "sinon": "^7.3.2",
     "sonarqube-scanner": "^3.3.0",
-    "supertest": "^6.0.2",
+    "supertest": "^4.0.2",
     "ts-jest": "^26.1.1",
     "typescript": "^3.8.3"
   },
