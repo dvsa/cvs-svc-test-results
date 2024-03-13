@@ -1,5 +1,3 @@
-process.env.BRANCH = 'local';
-
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',

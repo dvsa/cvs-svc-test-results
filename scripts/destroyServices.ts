@@ -26,3 +26,5 @@ export const killTestSetup = async () => {
     process.exit(1);
   }
 };
+
+export default killTestSetup
