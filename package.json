@@ -12,8 +12,8 @@
     "debug": "export SLS_DEBUG=* && BRANCH=local node --inspect ./node_modules/serverless/bin/serverless offline start",
     "build": "node_modules/typescript/bin/tsc --rootDir ./ --outDir .build --sourceMap false && npm run build:copy",
     "build:copy": "find src -type f \\( -name \"*.yml\" -or -name \"*.json\" \\) | cpio -pdm .build && find tests -type f \\( -name \"*.yml\" -or -name \"*.json\" \\)  | cpio -pdm .build",
-    "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\" --runInBand",
-    "test": "npm run test:unit -- --coverage",
+    "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\"",
+    "test": "npm run test:unit -- --coverage --runInBand",
     "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\"",
     "test-i": "npm run test:integration -- --runInBand --detectOpenHandles --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts'",
     "security-checks": "git secrets --scan",
@@ -27,7 +27,8 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "sls dynamodb install"
+    "tools-setup": "sls dynamodb install",
+    "pre-push": "npm run prepush"
   },
   "repository": {
     "type": "git",

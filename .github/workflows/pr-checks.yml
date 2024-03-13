@@ -30,7 +30,7 @@ jobs:
       - name: Setup local dynamo
         run: npm run tools-setup
       - name: Build and test
-        run: npm run prepush
+        run: npm run pre-push
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar
