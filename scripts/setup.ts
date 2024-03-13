@@ -15,6 +15,7 @@ const setupServer = (process: any) =>
         console.log('server ok')
         resolve(process);
       }
+      console.log('stdout doing nothing')
     });
 
     process.stderr.setEncoding('utf-8').on('data', (stream: any) => {
