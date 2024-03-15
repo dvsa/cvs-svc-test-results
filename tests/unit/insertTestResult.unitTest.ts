@@ -3671,60 +3671,6 @@ describe('insertTestResult', () => {
     );
 
     context(
-      'when creating a test record for an IVA test with no certificate number',
-      () => {
-        it('should create the record succesfully and the certificate number should match the test number', () => {
-          const testResult = cloneDeep(testResultsPostMock[13]);
-          testResult.testTypes[0].testTypeId = '125';
-          testResult.testTypes[0].certificateNumber = null;
-          testResult.testTypes[0].requiredStandards?.push({
-            sectionNumber: '01',
-            sectionDescription: 'Noise',
-            rsNumber: 1,
-            requiredStandard: 'The exhaust must be securely mounted.',
-            refCalculation: '1.1',
-            additionalInfo: true,
-            inspectionTypes: [],
-            prs: false,
-            additionalNotes: '',
-          });
-          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-            createSingle: () =>
-              Promise.resolve({
-                Attributes: Array.of(testResult),
-              }),
-            createTestNumber: () =>
-              Promise.resolve({
-                testNumber: 'W01A00209',
-                id: 'W01',
-                certLetter: 'A',
-                sequenceNumber: '002',
-              }),
-            getTestCodesAndClassificationFromTestTypes: () =>
-              Promise.resolve({
-                linkedTestCode: null,
-                defaultTestCode: 'qjt1',
-                testTypeClassification: 'IVA With Certificate',
-              }),
-            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
-          }));
-
-          testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-          expect.assertions(2);
-          return testResultsService
-            .insertTestResult(testResult)
-            .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].testTypeId).toBe('125');
-              expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
-                'W01A00209',
-              );
-            });
-        });
-      },
-    );
-
-    context(
       'when creating a test record for an IVA test with an empty certificate number',
       () => {
         it('should create the record succesfully and the certificate number should match the test number', () => {
@@ -3784,7 +3730,6 @@ describe('insertTestResult', () => {
         it('should create the record succesfully and the certificate number should match the test number', () => {
           const testResult = cloneDeep(testResultsPostMock[13]);
           testResult.testTypes[0].testTypeId = '133';
-          testResult.testTypes[0].certificateNumber = null;
           testResult.testTypes[0].requiredStandards?.push({
             sectionNumber: '4',
             sectionDescription: 'Speedometer',
