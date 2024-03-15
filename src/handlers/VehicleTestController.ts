@@ -420,8 +420,9 @@ export class VehicleTestController implements IVehicleTestController {
     vehicleType: string,
   ): boolean {
     if (
-      testType.testTypeClassification ===
-        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE &&
+      (testType.testTypeClassification ===
+        enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE ||
+        this.isSpecialistTestWithoutCertificateNumber(testType)) &&
       testType.testResult !== enums.TEST_RESULT.ABANDONED
     ) {
       if (
@@ -443,5 +444,17 @@ export class VehicleTestController implements IVehicleTestController {
       return true;
     }
     return false;
+  }
+
+  private static isSpecialistTestWithoutCertificateNumber(
+    testType: models.TestType,
+  ): boolean {
+    return (
+      (testType.testTypeClassification ===
+        enums.TEST_TYPE_CLASSIFICATION.IVA_WITH_CERTIFICATE ||
+        testType.testTypeClassification ===
+          enums.TEST_TYPE_CLASSIFICATION.MSVA_WITH_CERTIFICATE) &&
+      (!testType.certificateNumber || testType.certificateNumber === '')
+    );
   }
 }

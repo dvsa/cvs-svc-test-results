@@ -91,6 +91,8 @@ export const VEHICLE_TYPES = {
 
 export const TEST_TYPE_CLASSIFICATION = {
   ANNUAL_WITH_CERTIFICATE: 'Annual With Certificate',
+  IVA_WITH_CERTIFICATE: 'IVA With Certificate',
+  MSVA_WITH_CERTIFICATE: 'MSVA With Certificate',
 };
 
 export const TEST_RESULT = {
