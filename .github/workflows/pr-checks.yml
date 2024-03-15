@@ -31,14 +31,9 @@ jobs:
         run: npm run tools-setup
       - name: Build
         run: npm run build
-      - name: unit tests
-        run: npm run test
-      - name: start
-        run: npm run start &
-      - name: sleepy time
-        run: sleep 30s
-      - name: int tests
-        run: npm run test:integration
+      - name: Test
+        run: npm run prepush
+
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar
