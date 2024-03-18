@@ -31,9 +31,7 @@ jobs:
         run: npm run tools-setup
       - name: Build
         run: npm run build
-      - name: unit tests
-        run: npm run test
-      - name: start
+      - name: Test
         timeout-minutes: 5
         run: npm run prepush
         env:
