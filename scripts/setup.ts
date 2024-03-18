@@ -23,7 +23,7 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
         console.log('error')
         throw new Error('Internal Java process crashed');
       }
-      else if (stream.includes(SERVER_OK)) {
+      if (stream.includes(SERVER_OK)) {
         console.log('stderr server ok')
         resolve(process);
       }
