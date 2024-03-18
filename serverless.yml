@@ -3,11 +3,11 @@ service: cvs-svc-test-results
 provider:
   name: aws
   runtime: nodejs18.x
+  timeout: 30
   apiGateway:
     shouldStartNameWithService: true
   tracing:
     apiGateway: true
-  region: eu-west-1
   stage: dev
   iam:
     role:
@@ -28,7 +28,7 @@ plugins:
 custom:
   serverless-offline:
     httpPort: 3006
-  serverless-dynamodb:
+  dynamodb:
     start:
       port: 8014
       inMemory: true
@@ -48,8 +48,6 @@ custom:
 
 functions:
   getTestResults:
-    environment:
-      BRANCH: local
     handler: src/handler.handler
     events:
       - http:
