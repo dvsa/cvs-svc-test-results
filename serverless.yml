@@ -48,8 +48,6 @@ custom:
 
 functions:
   getTestResults:
-    environment:
-      BRANCH: local
     handler: src/handler.handler
     events:
       - http:
@@ -74,8 +72,6 @@ functions:
                 fromDateTime: false
                 toDateTime: false
   getTestResultsByTesterStaffId:
-    environment:
-      BRANCH: local
     handler: src/functions/getTestResultsByTesterStaffId.getTestResultsByTesterStaffId
     events:
       - http:
