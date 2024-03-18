@@ -35,7 +35,7 @@ jobs:
         run: npm run test:unit
       - name: Integration Tests
         timeout-minutes: 5
-        run: npm run start && test:integration
+        run: npm run prepush
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar
