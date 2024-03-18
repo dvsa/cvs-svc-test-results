@@ -34,7 +34,7 @@ jobs:
       - name: unit tests
         run: npm run test
       - name: start
-        timeout-minutes: 20
+        timeout-minutes: 5
         run: npm run start && test:integration
         env:
           AWS_ACCESS_KEY_ID: foo
