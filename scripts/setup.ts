@@ -23,12 +23,16 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
         console.log('error')
         throw new Error('Internal Java process crashed');
       }
-      if (stream.includes(SERVER_OK)) {
+      else if (stream.includes(SERVER_OK)) {
         console.log('stderr server ok')
         resolve(process);
       }
       console.log('stderr I\'m doing nothing')
     });
+
+    process.on('error',(err: string) => {
+      console.log(`Error: ${err}`)
+    })
 
     process.on('exit', (code: any, signal: any) => {
       if (code !== 137) {
@@ -37,7 +41,7 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
     });
   });
 
-const server = spawn('npm', ['run', 'start', '&'], {});
+const server = spawn('npm', ['run', 'start'], {});
 
 module.exports = async () => {
   console.log(`\nSetting up Integration tests...\n\n`);
