@@ -8,6 +8,7 @@ const SERVER_OK = `Server ready: http://localhost:3006 🚀`;
 const DYNAMO_LOCAL_ERROR_THREAD = `Exception in thread "main"`;
 
 const setupServer = (process: any) => new Promise((resolve, reject) => {
+  const subprocess = spawn('bad_command')
     process.stdout.setEncoding('utf-8').on('data', (stream: any) => {
       console.log(`stdout: ${stream}`);
       if (stream.includes(SERVER_OK)) {
@@ -30,7 +31,7 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
       console.log('stderr I\'m doing nothing')
     });
 
-    process.on('error',(err: string) => {
+    subprocess.on('error',(err: string) => {
       console.log(`Error: ${err}`)
     })
 
