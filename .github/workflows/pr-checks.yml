@@ -29,13 +29,9 @@ jobs:
         run: npm ci
       - name: Setup local dynamo
         run: npm run tools-setup
-      - name: Build
-        run: npm run build
-      - name: unit tests
-        run: npm run test
-      - name: start
+      - name: Build and test
         timeout-minutes: 20
-        run: npm run test-i
+        run: npm run prepush
         env:
           AWS_ACCESS_KEY_ID: foo
           AWS_SECRET_ACCESS_KEY: bar

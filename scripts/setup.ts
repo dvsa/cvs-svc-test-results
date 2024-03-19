@@ -11,23 +11,18 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
     process.stdout.setEncoding('utf-8').on('data', (stream: any) => {
       console.log(`stdout: ${stream}`);
       if (stream.includes(SERVER_OK)) {
-        console.log('server ok')
         resolve(process);
       }
-      console.log('stdout doing nothing')
     });
 
     process.stderr.setEncoding('utf-8').on('data', (stream: any) => {
       console.log(`stderr: ${stream}`);
       if (stream.includes(DYNAMO_LOCAL_ERROR_THREAD)) {
-        console.log('error')
         throw new Error('Internal Java process crashed');
       }
       else if (stream.includes(SERVER_OK)) {
-        console.log('stderr server ok')
         resolve(process);
       }
-      console.log('stderr I\'m doing nothing')
     });
 
     process.on('exit', (code: any, signal: any) => {
@@ -37,13 +32,13 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
     });
   });
 
-const server = exec('npm run start &', (error, stdout, stderr) => {
+const server = exec('npm run start', (error, stdout, stderr) => {
   if (error) {
-    console.error(`exec error: ${error}`);
+    console.error(`error starting server: ${error}`);
     return;
   }
-  console.log(`stdout: ${stdout}`);
-  console.error(`stderr: ${stderr}`);
+  console.log(`stdout server: ${stdout}`);
+  console.error(`stderr server: ${stderr}`);
 }); 
 
 module.exports = async () => {

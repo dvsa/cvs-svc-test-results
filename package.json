@@ -27,8 +27,7 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "sls dynamodb install",
-    "pre-push": "npm run prepush"
+    "tools-setup": "sls dynamodb install"
   },
   "repository": {
     "type": "git",

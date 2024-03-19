@@ -28,7 +28,6 @@ export class TestResultsDAO {
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
-      console.log('config for DynamoDB Client: ', config.params);
       TestResultsDAO.docClient = new AWS.DynamoDB.DocumentClient(config.params);
     }
     if (!TestResultsDAO.lambdaInvokeEndpoints) {
