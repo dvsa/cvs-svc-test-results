@@ -5,7 +5,7 @@
   "main": "src/handler.js",
   "engines": {
     "node": "18.*",
-    "npm": "10.*"
+    "npm": "9.*"
   },
   "scripts": {
     "start": "BRANCH=local SLS_DEBUG=* serverless offline start --noPrependStageInUrl",
@@ -14,8 +14,8 @@
     "build:copy": "find src -type f \\( -name \"*.yml\" -or -name \"*.json\" \\) | cpio -pdm .build && find tests -type f \\( -name \"*.yml\" -or -name \"*.json\" \\)  | cpio -pdm .build",
     "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\" --runInBand",
     "test": "npm run test:unit -- --coverage",
-    "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\" --runInBand --detectOpenHandles --forceExit",
-    "test-i": "AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/destroyServices.ts'",
+    "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\" --runInBand --detectOpenHandles",
+    "test-i": "AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts'",
     "security-checks": "git secrets --scan",
     "lint:fix": "eslint '*/**/*.ts' --fix",
     "lint": "eslint '*/**/*.ts' -f json -o .reports/eslint/eslint-report.json",
@@ -27,7 +27,7 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "sls dynamodb install",
+    "tools-setup": "sls dynamodb install && apt-get update && apt-get install cpio",
     "pre-push": "npm run prepush"
   },
   "repository": {
