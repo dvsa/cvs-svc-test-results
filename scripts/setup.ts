@@ -32,7 +32,7 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
     });
   });
 
-const server = exec('npm run start', (error) => {
+const server = exec('npm run start &', (error) => {
   if (error) {
     console.error(`error starting server: ${error}`);
   }
