@@ -22,7 +22,7 @@ functions:
 dynamodb:
   local:
     params:
-      region: eu-west-1
+      region: localhost
       endpoint: http://127.0.0.1:8004
       convertEmptyValues: true
     table: cvs-local-test-results
