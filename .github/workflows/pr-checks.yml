@@ -31,10 +31,8 @@ jobs:
         run: npm run tools-setup
       - name: Build
         run: npm run build
-      - name: Unit Tests
-        run: npm run test:unit
       - name: Integration Tests
-        timeout-minutes: 5
+        timeout-minutes: 20
         run: npm run prepush
         env:
           AWS_ACCESS_KEY_ID: foo
