@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
+    runs-on: X64
 
     strategy:
       matrix:
@@ -19,9 +19,9 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
@@ -30,6 +30,7 @@ jobs:
       - name: Setup local dynamo
         run: npm run tools-setup
       - name: Build and test
+        timeout-minutes: 20
         run: npm run prepush
         env:
           AWS_ACCESS_KEY_ID: foo

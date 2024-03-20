@@ -8,13 +8,13 @@
     "npm": "9.*"
   },
   "scripts": {
-    "start": "BRANCH=local serverless offline start",
+    "start": "BRANCH=local serverless offline start --noPrependStageInUrl",
     "debug": "export SLS_DEBUG=* && BRANCH=local node --inspect ./node_modules/serverless/bin/serverless offline start",
     "build": "node_modules/typescript/bin/tsc --rootDir ./ --outDir .build --sourceMap false && npm run build:copy",
     "build:copy": "find src -type f \\( -name \"*.yml\" -or -name \"*.json\" \\) | cpio -pdm .build && find tests -type f \\( -name \"*.yml\" -or -name \"*.json\" \\)  | cpio -pdm .build",
     "test:unit": "BRANCH=local SLS_DEBUG=* AWS_XRAY_CONTEXT_MISSING=LOG_ERROR jest --testMatch=\"**/*.unitTest.ts\" --runInBand",
     "test": "npm run test:unit -- --coverage",
-    "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\" --runInBand",
+    "test:integration": "BRANCH=local jest --testMatch=\"**/*.intTest.ts\" --runInBand --detectOpenHandles",
     "test-i": "AWS_SDK_JS_SUPPRESS_MAINTENANCE_MODE_MESSAGE=1 npm run test:integration -- --globalSetup='./scripts/setup.ts' --globalTeardown='./scripts/teardown.ts'",
     "security-checks": "git secrets --scan",
     "lint:fix": "eslint '*/**/*.ts' --fix",
@@ -27,8 +27,7 @@
     "audit": "npm audit --prod",
     "package": "mkdir ${ZIP_NAME} && cp package.json package-lock.json ${ZIP_NAME}/ && cp -r .build/src/* ${ZIP_NAME}/ && cd ${ZIP_NAME} && npm ci --production --ignore-scripts && rm package.json package-lock.json && zip -qr ../${ZIP_NAME}.zip .",
     "prepare": "husky install",
-    "tools-setup": "node_modules/.bin/sls dynamodb install",
-    "postinstall": "patch-package"
+    "tools-setup": "sls dynamodb install"
   },
   "repository": {
     "type": "git",
@@ -64,17 +63,17 @@
     "eslint-plugin-jest": "^27.1.6",
     "eslint-plugin-security": "^1.5.0",
     "husky": "^8.0.2",
-    "jest": "26.6.3",
+    "jest": "^26.6.3",
     "jest-plugin-context": "^2.9.0",
     "jest-sonar-reporter": "^2.0.0",
     "prettier": "^2.3.2",
-    "serverless": "^2.43.1",
-    "serverless-dynamodb-local": "^0.2.40",
-    "serverless-offline": "5.12.0",
+    "serverless": "^3.28.1",
+    "serverless-dynamodb": "^0.2.43",
+    "serverless-offline": "^12.0.4",
     "serverless-plugin-tracing": "^2.0.0",
-    "serverless-plugin-typescript": "^1.1.9",
-    "sonarqube-scanner": "^3.3.0",
+    "serverless-plugin-typescript": "^2.1.4",
     "sinon": "^7.3.2",
+    "sonarqube-scanner": "^3.3.0",
     "supertest": "^4.0.2",
     "ts-jest": "^26.1.1",
     "typescript": "^3.8.3"
@@ -90,7 +89,6 @@
     "moment": "^2.29.4",
     "moment-timezone": "^0.5.40",
     "node-yaml": "^4.0.1",
-    "patch-package": "^6.5.1",
     "path-parser": "^4.2.0",
     "reflect-metadata": "^0.1.13"
   },
@@ -98,11 +96,5 @@
     "reportPath": ".reports",
     "reportFile": "test-report.xml",
     "indent": 4
-  },
-  "jest": {
-    "coverageDirectory": "./coverage",
-    "collectCoverage": true,
-    "testResultsProcessor": "jest-sonar-reporter",
-    "testURL": "http://localhost"
   }
 }
