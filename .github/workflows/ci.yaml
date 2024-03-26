@@ -1,7 +1,13 @@
-name: CI
-
+name: Continuous Integration
 on:
   push:
+    paths-ignore:
+      - .github/**
+      - manifest.json
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   security:
