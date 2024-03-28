@@ -1,4 +1,4 @@
-import { ValidationResult, any, string, validate } from 'joi';
+import { ValidationResult, any, string } from 'joi';
 import { isDate } from 'lodash';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
@@ -50,7 +50,7 @@ export class ValidationUtil {
     // }
 
     const validation: ValidationResult<any> | any | null = validationSchema
-      ? validate(payload, validationSchema)
+      ? validationSchema.validate(payload)
       : null;
 
     if (
@@ -190,20 +190,18 @@ export class ValidationUtil {
     );
     validationSchema = validationSchema!.keys({
       countryOfRegistration: string()
-        .valid(enums.COUNTRY_OF_REGISTRATION)
+        .valid(...enums.COUNTRY_OF_REGISTRATION)
         .required()
         .allow('', null),
       testTypes: any().forbidden(),
     });
-    validationSchema = validationSchema.optionalKeys([
-      'testEndTimestamp',
-      'systemNumber',
-      'vin',
-    ]);
-    const validation: ValidationResult<any> | any | null = validate(
-      payload,
-      validationSchema,
+    validationSchema = validationSchema.fork(
+      ['testEndTimestamp', 'systemNumber', 'vin'],
+      (schema) => schema.optional(),
     );
+
+    const validation: ValidationResult<any> | any | null =
+      validationSchema?.validate(payload);
 
     if (validation !== null && validation.error) {
       validationErrors.push(...MappingUtil.mapErrorMessage(validation));
@@ -563,7 +561,8 @@ export class ValidationUtil {
     const allFailWithoutDefects = testTypes.every(
       (test) =>
         test.testResult === 'fail' &&
-        (test.requiredStandards?.length === 0 || test.requiredStandards === undefined),
+        (test.requiredStandards?.length === 0 ||
+          test.requiredStandards === undefined),
     );
 
     //   if (allFailWithoutDefects) {

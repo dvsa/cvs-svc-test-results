@@ -11,13 +11,16 @@ const defectsSchema = defectsCommonSchema.keys({
   additionalInformation: Joi.object().keys({
     location: Joi.object()
       .keys({
-        vertical: Joi.any().only(['upper', 'lower']).required().allow(null),
-        horizontal: Joi.any().only(['inner', 'outer']).required().allow(null),
+        vertical: Joi.string().valid('upper', 'lower').required().allow(null),
+        horizontal: Joi.string().valid('inner', 'outer').required().allow(null),
         lateral: Joi.any()
-          .only(['nearside', 'centre', 'offside'])
+          .valid('nearside', 'centre', 'offside')
           .required()
           .allow(null),
-        longitudinal: Joi.any().only(['front', 'rear']).required().allow(null),
+        longitudinal: Joi.string()
+          .valid('front', 'rear')
+          .required()
+          .allow(null),
         rowNumber: Joi.number().max(20).required().allow(null),
         seatNumber: Joi.number().max(6).required().allow(null),
         axleNumber: Joi.number().max(10).required().allow(null),
@@ -30,12 +33,14 @@ const defectsSchema = defectsCommonSchema.keys({
 
 const testTypesSchema = testTypesCommonSchema.keys({
   testResult: Joi.any()
-    .only(['fail', 'pass', 'prs', 'abandoned'])
+    .valid('fail', 'pass', 'prs', 'abandoned')
     .required()
     .allow(null),
   testTypeEndTimestamp: Joi.date().iso().required().allow(null),
   defects: Joi.array().items(defectsSchema).required(),
-  requiredStandards: array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
 });
 
 export const hgvCancelled = testResultsCommonSchema.keys({
@@ -43,12 +48,12 @@ export const hgvCancelled = testResultsCommonSchema.keys({
   reasonForCancellation: Joi.string().max(500).required().allow('', null),
   odometerReading: Joi.number().required().allow(null),
   odometerReadingUnits: Joi.any()
-    .only(['kilometres', 'miles'])
+    .valid('kilometres', 'miles')
     .required()
     .allow(null),
   countryOfRegistration: Joi.string().required().allow('', null),
   vehicleConfiguration: Joi.any()
-    .only([
+    .valid(
       'rigid',
       'articulated',
       'centre axle drawbar',
@@ -61,7 +66,7 @@ export const hgvCancelled = testResultsCommonSchema.keys({
       'four-in-line',
       'dolly',
       'full drawbar',
-    ])
+    )
     .required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   regnDate: Joi.string().allow('', null),

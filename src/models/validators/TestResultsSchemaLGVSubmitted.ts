@@ -17,7 +17,9 @@ export const lgvSubmitted =
             .optional(),
         }),
         testTypesCommonSchemaSpecialistTestsSubmitted.keys({
-          requiredStandards: array().items(requiredStandardsSchema.required()).optional(),
+          requiredStandards: array()
+            .items(requiredStandardsSchema.required())
+            .optional(),
         }),
       )
       .required(),

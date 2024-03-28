@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import {requiredStandardsSchema} from "../CommonSchema";
+import { requiredStandardsSchema } from '../CommonSchema';
 
 export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   name: Joi.string(),
@@ -7,7 +7,7 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   testTypeId: Joi.string().required(),
   testTypeStartTimestamp: Joi.date().iso().required(),
   testTypeEndTimestamp: Joi.date().iso().required(),
-  testResult: Joi.any().only(['pass', 'fail']).required(),
+  testResult: Joi.string().valid('pass', 'fail').required(),
   additionalNotesRecorded: Joi.string().max(500).allow('', null),
   testCode: Joi.string(),
   testNumber: Joi.string().required(),
@@ -16,7 +16,9 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
   certificateLink: Joi.string().optional(),
   testTypeClassification: Joi.string().required().allow('', null),
   defects: Joi.array().max(0).allow(null),
-  requiredStandards: Joi.array().items(requiredStandardsSchema.required()).optional(),
+  requiredStandards: Joi.array()
+    .items(requiredStandardsSchema.required())
+    .optional(),
   customDefects: Joi.array().max(0).allow(null),
 });
 
@@ -43,16 +45,16 @@ export const testTypesDeskBasedGroup2 =
     testExpiryDate: Joi.date().required().allow('', null),
     modType: Joi.object()
       .keys({
-        code: Joi.any().only(['p', 'm', 'g']),
-        description: Joi.any().only([
+        code: Joi.string().valid('p', 'm', 'g'),
+        description: Joi.string().valid(
           'particulate trap',
           'modification or change of engine',
           'gas engine',
-        ]),
+        ),
       })
       .allow(null),
-    emissionStandard: Joi.any()
-      .only([
+    emissionStandard: Joi.string()
+      .valid(
         '0.10 g/kWh Euro 3 PM',
         '0.03 g/kWh Euro IV PM',
         'Euro 3',
@@ -62,10 +64,10 @@ export const testTypesDeskBasedGroup2 =
         'Euro V',
         'Euro VI',
         'Full Electric',
-      ])
+      )
       .allow(null),
-    fuelType: Joi.any()
-      .only([
+    fuelType: Joi.string()
+      .valid(
         'diesel',
         'gas-cng',
         'gas-lng',
@@ -73,7 +75,7 @@ export const testTypesDeskBasedGroup2 =
         'petrol',
         'fuel cell',
         'full electric',
-      ])
+      )
       .allow(null),
     particulateTrapSerialNumber: Joi.string().max(100).allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
@@ -91,7 +93,7 @@ export const testTypesDeskBasedGroup4 =
   testTypesCommonSchemaDeskBasedTests.keys({
     vehicleType: Joi.string().required(),
     certificateNumber: Joi.string().when('vehicleType', {
-      is: Joi.string().only(['psv', 'lgv', 'car', 'motorcycle']),
+      is: Joi.string().valid('psv', 'lgv', 'car', 'motorcycle'),
       then: Joi.string().required(),
       otherwise: Joi.string().allow('', null),
     }),
@@ -124,8 +126,8 @@ export const testTypesDeskBasedGroup5Lgv =
     testNumber: Joi.string().allow('', null),
     testTypeStartTimestamp: Joi.date().iso().allow('', null),
     testTypeEndTimestamp: Joi.date().iso().allow('', null),
-    emissionStandard: Joi.any()
-      .only([
+    emissionStandard: Joi.string()
+      .valid(
         '0.10 g/kWh Euro 3 PM',
         '0.03 g/kWh Euro IV PM',
         'Euro 3',
@@ -135,11 +137,11 @@ export const testTypesDeskBasedGroup5Lgv =
         'Euro V',
         'Euro VI',
         'Full Electric',
-      ])
+      )
       .allow(null),
     smokeTestKLimitApplied: Joi.string().max(100).allow(null),
-    fuelType: Joi.any()
-      .only([
+    fuelType: Joi.string()
+      .valid(
         'diesel',
         'gas-cng',
         'gas-lng',
@@ -147,16 +149,16 @@ export const testTypesDeskBasedGroup5Lgv =
         'petrol',
         'fuel cell',
         'full electric',
-      ])
+      )
       .allow(null),
     modType: Joi.object()
       .keys({
-        code: Joi.any().only(['p', 'm', 'g']),
-        description: Joi.any().only([
+        code: Joi.string().valid('p', 'm', 'g'),
+        description: Joi.string().valid(
           'particulate trap',
           'modification or change of engine',
           'gas engine',
-        ]),
+        ),
       })
       .allow(null),
     modificationTypeUsed: Joi.string().max(100).allow(null),

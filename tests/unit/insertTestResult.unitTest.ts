@@ -373,7 +373,9 @@ describe('insertTestResult', () => {
           .catch((error: { statusCode: any; body: any }) => {
             expect(error.statusCode).toBe(400);
             expect(error.body).toEqual({
-              errors: ['"prohibitionIssued" is required'],
+              errors: [
+                '"testTypes[0].defects[0].prohibitionIssued" is required',
+              ],
             });
           });
       });
@@ -2033,8 +2035,8 @@ describe('insertTestResult', () => {
           .catch((error: { statusCode: any; body: { errors: any[] } }) => {
             expect(error).toBeInstanceOf(HTTPError);
             expect(error.statusCode).toBe(400);
-            expect(error.body.errors[0]).toEqual(
-              TESTING_ERRORS.ModTypeCodeInvalid,
+            expect(error.body.errors[0]).toBe(
+              '"testTypes[0].modType.code" must be one of [p, m, g]',
             );
           });
       });
