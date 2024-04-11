@@ -1,12 +1,19 @@
+import { DynamoDBDocumentClient, QueryCommand, PutCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
+import { mockClient } from "aws-sdk-client-mock";
 import { TestTypeParams } from '../../src/models';
+import { ITestResultFilters } from '../../src/models/ITestResultFilter';
 import { TestResultsDAO } from '../../src/models/TestResultsDAO';
 import { LambdaService } from '../../src/services/LambdaService';
-import { ITestResultFilters } from '../../src/models/ITestResultFilter';
 
 jest.mock('../../src/services/LambdaService');
 
 describe('Test Results DAO', () => {
   const dao = new TestResultsDAO();
+  const client = mockClient(DynamoDBDocumentClient);
+
+  beforeEach(() => {
+    client.reset();
+  })
 
   afterAll(() => {
     jest.restoreAllMocks();
@@ -19,18 +26,16 @@ describe('Test Results DAO', () => {
         LastEvaluatedKey: 123,
       };
 
-      const daoStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
-          // and will remove it in the next calls
-          const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = { ...queryResponse };
-          delete queryResponse.LastEvaluatedKey;
-          return promiseToReturn;
-        },
-      }));
-
-      (TestResultsDAO as any).docClient.query = daoStub;
+      const daoStub = jest.fn().mockImplementation(() => {
+        // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+        // and will remove it in the next calls
+        const promiseToReturn = queryResponse;
+        queryResponse = { ...queryResponse };
+        delete queryResponse.LastEvaluatedKey;
+        return promiseToReturn;
+      },
+      );
+      client.on(QueryCommand).callsFake(daoStub);
       const filter: ITestResultFilters = {
         systemNumber: 'abc123',
         fromDateTime: new Date('2021-02-01'),
@@ -38,13 +43,14 @@ describe('Test Results DAO', () => {
         testStationPNumber: '123QWE',
       };
       dao.getBySystemNumber(filter);
+      console.log(daoStub.mock.calls[0])
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[':systemNumber'],
       ).toBe('abc123');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-          ':testStartTimestamp'
+        ':testStartTimestamp'
         ],
       ).toBe('2021-02-01T00:00:00.000Z');
       expect(
@@ -52,30 +58,33 @@ describe('Test Results DAO', () => {
       ).toBe('2021-09-01T00:00:00.000Z');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-          ':testStationPNumber'
+        ':testStationPNumber'
         ],
       ).toBe('123QWE');
     });
   });
 
   describe('getByTesterStaffId function', () => {
+    beforeEach(() => {
+      client.reset();
+    })
     it('builds correct query', () => {
       let queryResponse: any = {
         Items: [{ id: 1 }, { id: 2 }],
         LastEvaluatedKey: 123,
       };
 
-      const daoStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
-          // and will remove it in the next calls
-          const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = { ...queryResponse };
-          delete queryResponse.LastEvaluatedKey;
-          return promiseToReturn;
-        },
-      }));
-      (TestResultsDAO as any).docClient.query = daoStub;
+      const daoStub = jest.fn().mockImplementation(() => {
+
+        // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+        // and will remove it in the next calls
+        const promiseToReturn = Promise.resolve(queryResponse);
+        queryResponse = { ...queryResponse };
+        delete queryResponse.LastEvaluatedKey;
+        return promiseToReturn;
+      }
+      );
+      client.on(QueryCommand).callsFake(daoStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -90,7 +99,7 @@ describe('Test Results DAO', () => {
       ).toBe('abc123');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-          ':testStartTimestamp'
+        ':testStartTimestamp'
         ],
       ).toBe('2021-02-01T00:00:00.000Z');
       expect(
@@ -98,7 +107,7 @@ describe('Test Results DAO', () => {
       ).toBe('2021-09-01T00:00:00.000Z');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-          ':testStationPNumber'
+        ':testStationPNumber'
         ],
       ).toBe('123QWE');
     });
@@ -109,17 +118,15 @@ describe('Test Results DAO', () => {
         LastEvaluatedKey: 123,
       };
 
-      const queryStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
-          // and will remove it in the next calls
-          const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = { ...queryResponse };
-          delete queryResponse.LastEvaluatedKey;
-          return promiseToReturn;
-        },
-      }));
-      (TestResultsDAO as any).docClient.query = queryStub;
+      const queryStub = jest.fn().mockImplementation(() => {
+        // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+        // and will remove it in the next calls
+        const promiseToReturn = Promise.resolve(queryResponse);
+        queryResponse = { ...queryResponse };
+        delete queryResponse.LastEvaluatedKey;
+        return promiseToReturn;
+      });
+      client.on(QueryCommand).callsFake(queryStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -146,17 +153,16 @@ describe('Test Results DAO', () => {
         LastEvaluatedKey: 123,
       };
 
-      const queryStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          // docClient.query will return an object containing LastEvaluatedKey when called for the first time
-          // and will remove it in the next calls
-          const promiseToReturn = Promise.resolve(queryResponse);
-          queryResponse = { ...queryResponse };
-          delete queryResponse.LastEvaluatedKey;
-          return promiseToReturn;
-        },
-      }));
-      (TestResultsDAO as any).docClient.query = queryStub;
+      const queryStub = jest.fn().mockImplementation(() => {
+        // docClient.query will return an object containing LastEvaluatedKey when called for the first time
+        // and will remove it in the next calls
+        const promiseToReturn = Promise.resolve(queryResponse);
+        queryResponse = { ...queryResponse };
+        delete queryResponse.LastEvaluatedKey;
+        return promiseToReturn;
+
+      });
+      client.on(QueryCommand).callsFake(queryStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -174,13 +180,12 @@ describe('Test Results DAO', () => {
   });
 
   describe('createSingle function', () => {
+    beforeEach(() => {
+      client.reset();
+    })
     it('builds correct query', () => {
-      const daoStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          Promise.resolve(undefined);
-        },
-      }));
-      (TestResultsDAO as any).docClient.put = daoStub;
+      const daoStub = jest.fn().mockImplementation(() => undefined);
+      client.on(PutCommand).callsFake(daoStub);
 
       const payload = { testResultId: 'abc123' };
       // @ts-ignore
@@ -200,7 +205,7 @@ describe('Test Results DAO', () => {
           Promise.resolve(undefined);
         },
       }));
-      (TestResultsDAO as any).docClient.batchWrite = daoStub;
+      client.on(BatchWriteCommand).callsFake(daoStub);
 
       const payload = [{ testResultId: 'abc123' }, { testResultId: 'def456' }];
       // @ts-ignore
@@ -215,12 +220,8 @@ describe('Test Results DAO', () => {
 
   describe('deleteMultiple function', () => {
     it('builds correct query', () => {
-      const daoStub = jest.fn().mockImplementation(() => ({
-        promise: () => {
-          Promise.resolve(undefined);
-        },
-      }));
-      (TestResultsDAO as any).docClient.batchWrite = daoStub;
+      const daoStub = jest.fn().mockImplementation(() => undefined);
+      client.on(BatchWriteCommand).callsFake(daoStub);
 
       const payload = [{ sysNumabc: 'abc123' }, { sysNumdef: 'def456' }];
       // @ts-ignore

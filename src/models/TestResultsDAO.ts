@@ -1,34 +1,41 @@
-import { PromiseResult } from 'aws-sdk/lib/request';
-import { DocumentClient } from 'aws-sdk/lib/dynamodb/document_client';
-import { AWSError } from 'aws-sdk/lib/error';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  BatchWriteCommand,
+  BatchWriteCommandOutput,
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
+  QueryCommandOutput,
+  TransactWriteCommand,
+  TransactWriteCommandInput,
+  TransactWriteCommandOutput,
+} from "@aws-sdk/lib-dynamodb";
+import { ServiceException } from '@smithy/smithy-client';
 import * as models from '.';
-import { Configuration } from '../utils/Configuration';
 import { LambdaService } from '../services/LambdaService';
+import { Configuration } from '../utils/Configuration';
 
-/* tslint:disable */
-let AWS: { DynamoDB: { DocumentClient: new (arg0: any) => DocumentClient } };
-if (process.env._X_AMZN_TRACE_ID) {
-  AWS = require('aws-xray-sdk').captureAWS(require('aws-sdk'));
-} else {
-  console.log('Serverless Offline detected; skipping AWS X-Ray setup');
-  AWS = require('aws-sdk');
-}
-/* tslint:enable */
 
 export class TestResultsDAO {
   private readonly tableName: string;
 
-  private static docClient: DocumentClient;
+  private static docClient: DynamoDBDocumentClient;
 
   private static lambdaInvokeEndpoints: any;
 
   constructor() {
-    const config: models.IDBConfig =
+    const config =
       Configuration.getInstance().getDynamoDBConfig();
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
-      TestResultsDAO.docClient = new AWS.DynamoDB.DocumentClient(config.params);
+      const client = new DynamoDBClient(config);
+      if (process.env._X_AMZN_TRACE_ID) {
+        TestResultsDAO.docClient = require('aws-xray-sdk').captureAWS(DynamoDBDocumentClient.from(client));
+      } else {
+        console.log('Serverless Offline detected; skipping AWS X-Ray setup');
+        TestResultsDAO.docClient = DynamoDBDocumentClient.from(client);
+      }
     }
     if (!TestResultsDAO.lambdaInvokeEndpoints) {
       TestResultsDAO.lambdaInvokeEndpoints =
@@ -100,12 +107,12 @@ export class TestResultsDAO {
         ':testResultIdVal': payload.testResultId,
       },
     };
-    return TestResultsDAO.docClient.put(query).promise();
+    return TestResultsDAO.docClient.send(new PutCommand(query));
   }
 
   public createMultiple(
     testResultsItems: models.ITestResult[],
-  ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>> {
+  ): Promise<BatchWriteCommandOutput | ServiceException> {
     const params = this.generateBatchWritePartialParams();
 
     testResultsItems.forEach((testResultItem: models.ITestResult) => {
@@ -116,12 +123,12 @@ export class TestResultsDAO {
       });
     });
 
-    return TestResultsDAO.docClient.batchWrite(params).promise();
+    return TestResultsDAO.docClient.send(new BatchWriteCommand(params));
   }
 
   public deleteMultiple(
     systemNumberIdPairsToBeDeleted: any[],
-  ): Promise<PromiseResult<DocumentClient.BatchWriteItemOutput, AWSError>> {
+  ): Promise<BatchWriteCommandOutput | ServiceException> {
     const params = this.generateBatchWritePartialParams();
 
     systemNumberIdPairsToBeDeleted.forEach(
@@ -143,7 +150,7 @@ export class TestResultsDAO {
       },
     );
 
-    return TestResultsDAO.docClient.batchWrite(params).promise();
+    return TestResultsDAO.docClient.send(new BatchWriteCommand(params));
   }
 
   public generateBatchWritePartialParams(): any {
@@ -195,7 +202,7 @@ export class TestResultsDAO {
       console.log('queryString for get Test: ', event);
       const lambdaResult = LambdaService.invoke(lambdaName, event);
 
-      return lambdaResult;
+      return await lambdaResult;
     } catch (error) {
       console.error(
         `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
@@ -221,7 +228,7 @@ export class TestResultsDAO {
       TestResultsDAO.lambdaInvokeEndpoints.functions.getTestNumber.name;
     try {
       const lambdaResult = LambdaService.invoke(lambdaName, event);
-      return lambdaResult;
+      return await lambdaResult;
     } catch (error) {
       console.error(
         `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
@@ -240,8 +247,8 @@ export class TestResultsDAO {
 
   public updateTestResult(
     updatedTestResult: models.ITestResult,
-  ): Promise<PromiseResult<DocumentClient.TransactWriteItemsOutput, AWSError>> {
-    const query: DocumentClient.TransactWriteItemsInput = {
+  ): Promise<TransactWriteCommandOutput | ServiceException> {
+    const query: TransactWriteCommandInput = {
       TransactItems: [
         {
           Put: {
@@ -258,15 +265,15 @@ export class TestResultsDAO {
         },
       ],
     };
-    return TestResultsDAO.docClient.transactWrite(query).promise();
+    return TestResultsDAO.docClient.send(new TransactWriteCommand(query));
   }
 
   private async queryAllData(
     params: any,
     allData: models.ITestResult[] = [],
   ): Promise<models.ITestResult[]> {
-    const data: PromiseResult<DocumentClient.QueryOutput, AWSError> =
-      await TestResultsDAO.docClient.query(params).promise();
+    const data: QueryCommandOutput | ServiceException =
+      await TestResultsDAO.docClient.send(new QueryCommand(params));
 
     if (data.Items && data.Items.length > 0) {
       allData = [...allData, ...(data.Items as models.ITestResult[])];
