@@ -1,8 +1,9 @@
+import { InvokeCommand, InvokeCommandOutput, LambdaClient } from '@aws-sdk/client-lambda';
 import {
-  DynamoDBDocumentClient,
-  QueryCommand,
-  PutCommand,
   BatchWriteCommand,
+  DynamoDBDocumentClient,
+  PutCommand,
+  QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
 import { TestTypeParams } from '../../src/models';
@@ -14,10 +15,11 @@ jest.mock('../../src/services/LambdaService');
 
 describe('Test Results DAO', () => {
   const dao = new TestResultsDAO();
-  const client = mockClient(DynamoDBDocumentClient);
+  const docClient = mockClient(DynamoDBDocumentClient);
+  const lambClient = mockClient(LambdaClient)
 
   beforeEach(() => {
-    client.reset();
+    docClient.reset();
   });
 
   afterAll(() => {
@@ -39,7 +41,7 @@ describe('Test Results DAO', () => {
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
       });
-      client.on(QueryCommand).callsFake(daoStub);
+      docClient.on(QueryCommand).callsFake(daoStub);
       const filter: ITestResultFilters = {
         systemNumber: 'abc123',
         fromDateTime: new Date('2021-02-01'),
@@ -70,7 +72,7 @@ describe('Test Results DAO', () => {
 
   describe('getByTesterStaffId function', () => {
     beforeEach(() => {
-      client.reset();
+      docClient.reset();
     });
     it('builds correct query', () => {
       let queryResponse: any = {
@@ -86,7 +88,7 @@ describe('Test Results DAO', () => {
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
       });
-      client.on(QueryCommand).callsFake(daoStub);
+      docClient.on(QueryCommand).callsFake(daoStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -128,7 +130,7 @@ describe('Test Results DAO', () => {
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
       });
-      client.on(QueryCommand).callsFake(queryStub);
+      docClient.on(QueryCommand).callsFake(queryStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -163,7 +165,7 @@ describe('Test Results DAO', () => {
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
       });
-      client.on(QueryCommand).callsFake(queryStub);
+      docClient.on(QueryCommand).callsFake(queryStub);
 
       const filter: ITestResultFilters = {
         testerStaffId: 'abc123',
@@ -182,11 +184,11 @@ describe('Test Results DAO', () => {
 
   describe('createSingle function', () => {
     beforeEach(() => {
-      client.reset();
+      docClient.reset();
     });
     it('builds correct query', () => {
       const daoStub = jest.fn().mockImplementation(() => undefined);
-      client.on(PutCommand).callsFake(daoStub);
+      docClient.on(PutCommand).callsFake(daoStub);
 
       const payload = { testResultId: 'abc123' };
       // @ts-ignore
@@ -206,7 +208,7 @@ describe('Test Results DAO', () => {
           Promise.resolve(undefined);
         },
       }));
-      client.on(BatchWriteCommand).callsFake(daoStub);
+      docClient.on(BatchWriteCommand).callsFake(daoStub);
 
       const payload = [{ testResultId: 'abc123' }, { testResultId: 'def456' }];
       // @ts-ignore
@@ -222,7 +224,7 @@ describe('Test Results DAO', () => {
   describe('deleteMultiple function', () => {
     it('builds correct query', () => {
       const daoStub = jest.fn().mockImplementation(() => undefined);
-      client.on(BatchWriteCommand).callsFake(daoStub);
+      docClient.on(BatchWriteCommand).callsFake(daoStub);
 
       const payload = [{ sysNumabc: 'abc123' }, { sysNumdef: 'def456' }];
       // @ts-ignore

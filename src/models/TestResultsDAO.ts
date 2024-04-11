@@ -37,6 +37,10 @@ export class TestResultsDAO {
         TestResultsDAO.docClient = DynamoDBDocumentClient.from(client);
       }
     }
+    if (!TestResultsDAO.lambdaInvokeEndpoints) {
+      TestResultsDAO.lambdaInvokeEndpoints =
+        Configuration.getInstance().getEndpoints();
+    }
   }
 
   public getBySystemNumber(filters: models.ITestResultFilters) {
