@@ -30,7 +30,7 @@ export class TestResultsDAO {
       const client = new DynamoDBClient(config.params);
       if (process.env._X_AMZN_TRACE_ID) {
         TestResultsDAO.docClient = require('aws-xray-sdk').captureAWSv3Client(
-          DynamoDBDocumentClient.from(client)
+          DynamoDBDocumentClient.from(client),
         );
       } else {
         console.log('Serverless Offline detected; skipping AWS X-Ray setup');
