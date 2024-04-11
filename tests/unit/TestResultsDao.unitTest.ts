@@ -1,5 +1,10 @@
-import { DynamoDBDocumentClient, QueryCommand, PutCommand, BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { mockClient } from "aws-sdk-client-mock";
+import {
+  DynamoDBDocumentClient,
+  QueryCommand,
+  PutCommand,
+  BatchWriteCommand,
+} from '@aws-sdk/lib-dynamodb';
+import { mockClient } from 'aws-sdk-client-mock';
 import { TestTypeParams } from '../../src/models';
 import { ITestResultFilters } from '../../src/models/ITestResultFilter';
 import { TestResultsDAO } from '../../src/models/TestResultsDAO';
@@ -13,7 +18,7 @@ describe('Test Results DAO', () => {
 
   beforeEach(() => {
     client.reset();
-  })
+  });
 
   afterAll(() => {
     jest.restoreAllMocks();
@@ -33,8 +38,7 @@ describe('Test Results DAO', () => {
         queryResponse = { ...queryResponse };
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
-      },
-      );
+      });
       client.on(QueryCommand).callsFake(daoStub);
       const filter: ITestResultFilters = {
         systemNumber: 'abc123',
@@ -43,14 +47,14 @@ describe('Test Results DAO', () => {
         testStationPNumber: '123QWE',
       };
       dao.getBySystemNumber(filter);
-      console.log(daoStub.mock.calls[0])
+      console.log(daoStub.mock.calls[0]);
 
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[':systemNumber'],
       ).toBe('abc123');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-        ':testStartTimestamp'
+          ':testStartTimestamp'
         ],
       ).toBe('2021-02-01T00:00:00.000Z');
       expect(
@@ -58,7 +62,7 @@ describe('Test Results DAO', () => {
       ).toBe('2021-09-01T00:00:00.000Z');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-        ':testStationPNumber'
+          ':testStationPNumber'
         ],
       ).toBe('123QWE');
     });
@@ -67,7 +71,7 @@ describe('Test Results DAO', () => {
   describe('getByTesterStaffId function', () => {
     beforeEach(() => {
       client.reset();
-    })
+    });
     it('builds correct query', () => {
       let queryResponse: any = {
         Items: [{ id: 1 }, { id: 2 }],
@@ -75,15 +79,13 @@ describe('Test Results DAO', () => {
       };
 
       const daoStub = jest.fn().mockImplementation(() => {
-
         // docClient.query will return an object containing LastEvaluatedKey when called for the first time
         // and will remove it in the next calls
         const promiseToReturn = Promise.resolve(queryResponse);
         queryResponse = { ...queryResponse };
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
-      }
-      );
+      });
       client.on(QueryCommand).callsFake(daoStub);
 
       const filter: ITestResultFilters = {
@@ -99,7 +101,7 @@ describe('Test Results DAO', () => {
       ).toBe('abc123');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-        ':testStartTimestamp'
+          ':testStartTimestamp'
         ],
       ).toBe('2021-02-01T00:00:00.000Z');
       expect(
@@ -107,7 +109,7 @@ describe('Test Results DAO', () => {
       ).toBe('2021-09-01T00:00:00.000Z');
       expect(
         daoStub.mock.calls[0][0].ExpressionAttributeValues[
-        ':testStationPNumber'
+          ':testStationPNumber'
         ],
       ).toBe('123QWE');
     });
@@ -160,7 +162,6 @@ describe('Test Results DAO', () => {
         queryResponse = { ...queryResponse };
         delete queryResponse.LastEvaluatedKey;
         return promiseToReturn;
-
       });
       client.on(QueryCommand).callsFake(queryStub);
 
@@ -182,7 +183,7 @@ describe('Test Results DAO', () => {
   describe('createSingle function', () => {
     beforeEach(() => {
       client.reset();
-    })
+    });
     it('builds correct query', () => {
       const daoStub = jest.fn().mockImplementation(() => undefined);
       client.on(PutCommand).callsFake(daoStub);

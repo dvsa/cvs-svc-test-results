@@ -1,4 +1,4 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import {
   BatchWriteCommand,
   BatchWriteCommandOutput,
@@ -9,12 +9,11 @@ import {
   TransactWriteCommand,
   TransactWriteCommandInput,
   TransactWriteCommandOutput,
-} from "@aws-sdk/lib-dynamodb";
+} from '@aws-sdk/lib-dynamodb';
 import { ServiceException } from '@smithy/smithy-client';
 import * as models from '.';
 import { LambdaService } from '../services/LambdaService';
 import { Configuration } from '../utils/Configuration';
-
 
 export class TestResultsDAO {
   private readonly tableName: string;
@@ -24,22 +23,19 @@ export class TestResultsDAO {
   private static lambdaInvokeEndpoints: any;
 
   constructor() {
-    const config =
-      Configuration.getInstance().getDynamoDBConfig();
+    const config = Configuration.getInstance().getDynamoDBConfig();
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
-      const client = new DynamoDBClient(config);
+      const client = new DynamoDBClient(config.params);
       if (process.env._X_AMZN_TRACE_ID) {
-        TestResultsDAO.docClient = require('aws-xray-sdk').captureAWS(DynamoDBDocumentClient.from(client));
+        TestResultsDAO.docClient = require('aws-xray-sdk').captureAWSv3Client(
+          DynamoDBDocumentClient.from(client)
+        );
       } else {
         console.log('Serverless Offline detected; skipping AWS X-Ray setup');
         TestResultsDAO.docClient = DynamoDBDocumentClient.from(client);
       }
-    }
-    if (!TestResultsDAO.lambdaInvokeEndpoints) {
-      TestResultsDAO.lambdaInvokeEndpoints =
-        Configuration.getInstance().getEndpoints();
     }
   }
 

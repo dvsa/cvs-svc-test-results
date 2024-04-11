@@ -1,26 +1,30 @@
-import { InvokeCommand, LambdaClient } from "@aws-sdk/client-lambda";
-import { toUint8Array } from "@smithy/util-utf8";
+import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
+import { toUint8Array } from '@smithy/util-utf8';
 import { Configuration } from '../utils/Configuration';
 import { validateInvocationResponse } from '../utils/validateInvocationResponse';
 /**
  * Helper service for interactions with other lambdas
-*/
+ */
 export class LambdaService {
   public static async invoke(lambdaName: any, lambdaEvent: any) {
     const lambdaInvokeEndpoints = Configuration.getInstance().getEndpoints();
     let AWS: any;
     if (process.env._X_AMZN_TRACE_ID) {
-      AWS = require('aws-xray-sdk').captureAWS(new LambdaClient(lambdaInvokeEndpoints));
+      AWS = require('aws-xray-sdk').captureAWSv3Client(
+        new LambdaClient(lambdaInvokeEndpoints.params),
+      );
     } else {
       console.log('Serverless Offline detected; skipping AWS X-Ray setup');
-      AWS = new LambdaClient(lambdaInvokeEndpoints);
+      AWS = new LambdaClient(lambdaInvokeEndpoints.params);
     }
 
-    const returned = await AWS.send(new InvokeCommand({
-      FunctionName: lambdaName,
-      InvocationType: 'RequestResponse',
-      Payload: toUint8Array(JSON.stringify(lambdaEvent)),
-    }))
+    const returned = await AWS.send(
+      new InvokeCommand({
+        FunctionName: lambdaName,
+        InvocationType: 'RequestResponse',
+        Payload: toUint8Array(JSON.stringify(lambdaEvent)),
+      }),
+    );
 
     const payload = validateInvocationResponse(returned);
     const body = JSON.parse(payload.body);
