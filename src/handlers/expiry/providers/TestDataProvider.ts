@@ -240,6 +240,7 @@ export class TestDataProvider implements ITestDataProvider {
       utils.LoggingUtil.logDefectsReporting(payload);
       return result.Attributes as models.ITestResult[];
     } catch (error) {
+      console.log('payload', payload);
       console.error('TestDataProvider.insertTestResult -> ', error);
       throw error;
     }
