@@ -25,17 +25,20 @@ export class TestResultsDAO {
 
   constructor() {
     const config = Configuration.getInstance().getDynamoDBConfig();
+    const marshallOptions = { removeUndefinedValues: true };
+    const unmarshallOptions = {};
+    const translateConfig = { marshallOptions, unmarshallOptions };
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
       const client = new DynamoDBClient(config.params);
       if (process.env._X_AMZN_TRACE_ID) {
         TestResultsDAO.docClient = require('aws-xray-sdk').captureAWSv3Client(
-          DynamoDBDocumentClient.from(client),
+          DynamoDBDocumentClient.from(client, translateConfig),
         );
       } else {
         console.log('Serverless Offline detected; skipping AWS X-Ray setup');
-        TestResultsDAO.docClient = DynamoDBDocumentClient.from(client);
+        TestResultsDAO.docClient = DynamoDBDocumentClient.from(client, translateConfig);
       }
     }
     if (!TestResultsDAO.lambdaInvokeEndpoints) {
