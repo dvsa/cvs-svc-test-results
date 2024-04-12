@@ -11,10 +11,10 @@ import {
   TransactWriteCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 import { ServiceException } from '@smithy/smithy-client';
+import { fromUtf8 } from '@smithy/util-utf8';
 import * as models from '.';
 import { LambdaService } from '../services/LambdaService';
 import { Configuration } from '../utils/Configuration';
-import { fromUtf8 } from '@smithy/util-utf8';
 
 export class TestResultsDAO {
   private readonly tableName: string;
