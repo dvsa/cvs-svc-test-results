@@ -14,6 +14,7 @@ import { ServiceException } from '@smithy/smithy-client';
 import * as models from '.';
 import { LambdaService } from '../services/LambdaService';
 import { Configuration } from '../utils/Configuration';
+import { fromUtf8 } from '@smithy/util-utf8';
 
 export class TestResultsDAO {
   private readonly tableName: string;
@@ -200,9 +201,9 @@ export class TestResultsDAO {
       TestResultsDAO.lambdaInvokeEndpoints.functions.getTestTypesById.name;
     try {
       console.log('queryString for get Test: ', event);
-      const lambdaResult = LambdaService.invoke(lambdaName, event);
+      const lambdaResult = await LambdaService.invoke(lambdaName, event);
 
-      return await lambdaResult;
+      return lambdaResult;
     } catch (error) {
       console.error(
         `error during lambda invocation: ${lambdaName} and ${event}, \nwith error:${error}`,
