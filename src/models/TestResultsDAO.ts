@@ -38,7 +38,10 @@ export class TestResultsDAO {
         );
       } else {
         console.log('Serverless Offline detected; skipping AWS X-Ray setup');
-        TestResultsDAO.docClient = DynamoDBDocumentClient.from(client, translateConfig);
+        TestResultsDAO.docClient = DynamoDBDocumentClient.from(
+          client,
+          translateConfig,
+        );
       }
     }
     if (!TestResultsDAO.lambdaInvokeEndpoints) {
