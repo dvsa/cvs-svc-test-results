@@ -18,7 +18,7 @@ export const validateInvocationResponse = (response: any) => {
   let payload: any;
 
   try {
-    payload = JSON.parse(response.Payload);
+    payload = JSON.parse(Buffer.from(response.Payload).toString());
   } catch (error) {
     console.log('validateInvocationResponse response parse error', response);
     throw new HTTPError(
