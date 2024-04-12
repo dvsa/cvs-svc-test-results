@@ -27,7 +27,7 @@ export class LambdaService {
     );
 
     const payload = validateInvocationResponse(returned);
-    const body = JSON.parse(payload);
+    const body = payload;
     return body;
   }
 }
