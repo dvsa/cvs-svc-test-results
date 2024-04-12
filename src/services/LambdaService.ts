@@ -1,5 +1,5 @@
 import { InvokeCommand, LambdaClient } from '@aws-sdk/client-lambda';
-import { toUint8Array } from '@smithy/util-utf8';
+import { fromUtf8, toUint8Array } from '@smithy/util-utf8';
 import { Configuration } from '../utils/Configuration';
 import { validateInvocationResponse } from '../utils/validateInvocationResponse';
 /**
@@ -27,7 +27,7 @@ export class LambdaService {
     );
 
     const payload = validateInvocationResponse(returned);
-    const body = JSON.parse(payload.body);
+    const body = fromUtf8(JSON.parse(payload.body));
     return body;
   }
 }
