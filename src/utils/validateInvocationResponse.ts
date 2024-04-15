@@ -5,7 +5,7 @@ import { HTTPError } from '../models/HTTPError';
  */
 export const validateInvocationResponse = (response: any) => {
   if (
-    (!response.Payload || response.Payload === '') &&
+    (!response.Payload || Buffer.from(response.Payload).toString() === '') &&
     response.StatusCode &&
     response.StatusCode < 400
   ) {
@@ -18,10 +18,9 @@ export const validateInvocationResponse = (response: any) => {
   let payload: any;
 
   try {
-    const string = Buffer.from(response.Payload).toString();
-    console.log(string);
-    console.log(typeof string);
-    payload = JSON.parse(string);
+    payload = JSON.parse(Buffer.from(response.Payload).toString());
+    console.log(typeof payload);
+    console.log('payload: ', payload);
   } catch (error) {
     console.log('validateInvocationResponse response parse error', response);
     throw new HTTPError(
