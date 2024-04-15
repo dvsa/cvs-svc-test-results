@@ -19,10 +19,7 @@ export const validateInvocationResponse = (response: any) => {
 
   try {
     payload = JSON.parse(Buffer.from(response.Payload).toString());
-    console.log(typeof payload);
-    console.log('payload: ', payload);
   } catch (error) {
-    console.log('validateInvocationResponse response parse error', response);
     throw new HTTPError(
       500,
       `Lambda invocation returned bad data: ${response.Payload}`,
