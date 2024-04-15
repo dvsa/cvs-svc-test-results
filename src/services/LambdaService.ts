@@ -27,6 +27,7 @@ export class LambdaService {
     );
     const payload = validateInvocationResponse(returned);
     const body = payload;
+    console.log('Lambda Service');
     console.log(lambdaName);
     console.log('returned:', returned);
     console.log('payload');
