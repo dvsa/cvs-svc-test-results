@@ -25,9 +25,12 @@ export class LambdaService {
         Payload: toUint8Array(JSON.stringify(lambdaEvent)),
       }),
     );
-
     const payload = validateInvocationResponse(returned);
     const body = payload;
+    console.log(lambdaName);
+    console.log('returned:', returned);
+    console.log('payload');
+    console.log(payload);
     return body;
   }
 }
