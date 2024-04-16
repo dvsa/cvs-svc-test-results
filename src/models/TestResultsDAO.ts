@@ -25,7 +25,9 @@ export class TestResultsDAO {
 
   constructor() {
     const config = Configuration.getInstance().getDynamoDBConfig();
-    const translateConfig = { marshallOptions: { removeUndefinedValues: true } };
+    const translateConfig = {
+      marshallOptions: { removeUndefinedValues: true },
+    };
 
     this.tableName = config.table;
     if (!TestResultsDAO.docClient) {
