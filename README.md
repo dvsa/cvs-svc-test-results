@@ -144,7 +144,6 @@ npm run test-i # for integration tests
 ```
 
 install and build if not done before
-
 - install deps; `npm install`
 - install local dynamo-db: `npm run tools-setup`
 - build: project: `npm run build`
