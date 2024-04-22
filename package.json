@@ -53,6 +53,7 @@
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
+    "aws-sdk-client-mock": "^4.0.0",
     "commitlint-plugin-function-rules": "^1.7.1",
     "eslint": "^8.28.0",
     "eslint-config-airbnb-base": "^15.0.0",
@@ -79,9 +80,14 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.552.0",
+    "@aws-sdk/client-lambda": "^3.552.0",
+    "@aws-sdk/lib-dynamodb": "^3.552.0",
+    "@aws-sdk/smithy-client": "^3.374.0",
     "@dvsa/cvs-type-definitions": "6.0.0",
+    "@smithy/smithy-client": "^2.5.1",
+    "@smithy/util-utf8": "^2.3.0",
     "aws-lambda": "^1.0.7",
-    "aws-sdk": "^2.1354.0",
     "aws-xray-sdk": "^3.3.4",
     "joi": "^17.12.1",
     "js-yaml": "^3.14.1",
