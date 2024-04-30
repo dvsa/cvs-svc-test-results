@@ -903,7 +903,9 @@ describe('updateTestResults', () => {
           testToUpdate,
           msUserDetails,
         );
-        expect(returnedRecord.testTypes[0].certificateNumber).toBe('testNumber');
+        expect(returnedRecord.testTypes[0].certificateNumber).toBe(
+          'testNumber',
+        );
       });
     });
 

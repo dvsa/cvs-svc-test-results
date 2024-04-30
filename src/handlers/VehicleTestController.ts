@@ -149,12 +149,14 @@ export class VehicleTestController implements IVehicleTestController {
       }
       // map testTypes back after validation
       payload.testTypes = testTypes;
-      payload.testTypes.forEach(x=>{
-        if(VehicleTestController.isSpecialistTestWithoutCertificateNumber(x)
-          && x.testResult !== enums.TEST_RESULT.ABANDONED){
+      payload.testTypes.forEach((x) => {
+        if (
+          VehicleTestController.isSpecialistTestWithoutCertificateNumber(x) &&
+          x.testResult !== enums.TEST_RESULT.ABANDONED
+        ) {
           x.certificateNumber = x.testNumber;
         }
-      })
+      });
 
       newTestResult = await this.mapOldTestResultToNew(
         systemNumber,
