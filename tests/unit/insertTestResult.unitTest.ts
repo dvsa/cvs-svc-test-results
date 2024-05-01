@@ -263,7 +263,7 @@ describe('insertTestResult', () => {
       delete mockData.vehicleId;
       mockData.testResultId = '1111';
 
-      // expect.assertions(3);
+      expect.assertions(3);
       return testResultsService
         .insertTestResult(mockData)
         .catch((error: { statusCode: any; body: any }) => {
