@@ -118,7 +118,8 @@ export class VehicleTestController implements IVehicleTestController {
       return result;
     } catch (error) {
       if (
-        error.statusCode === 400 &&
+        error.$meta &&
+        error.$meta.httpStatusCode === 400 &&
         error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
