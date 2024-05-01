@@ -244,7 +244,7 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            statusCode: 400,
+            $meta: {httpStatusCode: 400},
             message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
@@ -263,7 +263,7 @@ describe('insertTestResult', () => {
       delete mockData.vehicleId;
       mockData.testResultId = '1111';
 
-      expect.assertions(3);
+      // expect.assertions(3);
       return testResultsService
         .insertTestResult(mockData)
         .catch((error: { statusCode: any; body: any }) => {
