@@ -244,7 +244,7 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            $meta: {httpStatusCode: 400},
+            $meta: { httpStatusCode: 400 },
             message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
