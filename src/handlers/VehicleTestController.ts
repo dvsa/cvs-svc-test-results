@@ -117,6 +117,7 @@ export class VehicleTestController implements IVehicleTestController {
       );
       return result;
     } catch (error) {
+      console.info('vehicleTestController error: ', error);
       if (
         error.$meta &&
         error.$meta.httpStatusCode === 400 &&
