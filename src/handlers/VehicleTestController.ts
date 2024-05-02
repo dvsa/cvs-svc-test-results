@@ -1,16 +1,15 @@
-import { cloneDeep, mergeWith, differenceWith, isEqual } from 'lodash';
-import { EPROTONOSUPPORT } from 'constants';
+import { cloneDeep, differenceWith, isEqual, mergeWith } from 'lodash';
 import * as enums from '../assets/Enums';
-import * as utils from '../utils';
 import * as models from '../models';
-import { IVehicleTestController } from './IVehicleTestController';
-import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
-import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
+import { TestType } from '../models';
 import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 import { Service } from '../models/injector/ServiceDecorator';
-import { TestDataProvider } from './expiry/providers/TestDataProvider';
+import * as utils from '../utils';
+import { IVehicleTestController } from './IVehicleTestController';
+import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
+import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
 import { DateProvider } from './expiry/providers/DateProvider';
-import { TestType } from '../models';
+import { TestDataProvider } from './expiry/providers/TestDataProvider';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {

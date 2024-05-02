@@ -1,6 +1,7 @@
-import { Service } from '../../../models/injector/ServiceDecorator';
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import * as enums from '../../../assets/Enums';
 import * as models from '../../../models';
+import { Service } from '../../../models/injector/ServiceDecorator';
 import * as utils from '../../../utils';
 import { DateProvider } from './DateProvider';
 import { ITestDataProvider } from './ITestDataProvider';
@@ -241,6 +242,12 @@ export class TestDataProvider implements ITestDataProvider {
       return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error('TestDataProvider.insertTestResult -> ', error);
+      if (
+        error instanceof ConditionalCheckFailedException &&
+        error.$response?.statusCode
+      ) {
+        throw new models.HTTPError(error.$response?.statusCode, error.message);
+      }
       throw error;
     }
   }
