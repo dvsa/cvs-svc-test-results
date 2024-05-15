@@ -1,5 +1,3 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
-import { ServiceException } from '@smithy/smithy-client';
 import { cloneDeep, differenceWith, isEqual, mergeWith } from 'lodash';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
@@ -12,14 +10,13 @@ import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
 import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
 import { DateProvider } from './expiry/providers/DateProvider';
 import { TestDataProvider } from './expiry/providers/TestDataProvider';
-import { MESSAGES } from '../assets/Enums';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
   constructor(
     public dataProvider: TestDataProvider,
     public dateProvider: DateProvider,
-  ) { }
+  ) {}
 
   // #region [rgba(52, 152, 219, 0.15)] Public functions
   /**
@@ -121,8 +118,8 @@ export class VehicleTestController implements IVehicleTestController {
     } catch (error) {
       console.info('error: ', error);
       if (
-        error.statusCode === 400 && 
-        error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED
+        error.statusCode === 400 &&
+        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
@@ -204,7 +201,7 @@ export class VehicleTestController implements IVehicleTestController {
           testType,
           vehicleType:
             enums.VEHICLE_TYPE[
-            payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
+              payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
             ],
           recentExpiry,
           regnOrFirstUseDate:
@@ -456,7 +453,7 @@ export class VehicleTestController implements IVehicleTestController {
       (testType.testTypeClassification ===
         enums.TEST_TYPE_CLASSIFICATION.IVA_WITH_CERTIFICATE ||
         testType.testTypeClassification ===
-        enums.TEST_TYPE_CLASSIFICATION.MSVA_WITH_CERTIFICATE) &&
+          enums.TEST_TYPE_CLASSIFICATION.MSVA_WITH_CERTIFICATE) &&
       (!testType.certificateNumber || testType.certificateNumber === '')
     );
   }
