@@ -242,12 +242,6 @@ export class TestDataProvider implements ITestDataProvider {
       return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error('TestDataProvider.insertTestResult -> ', error);
-      if (
-        error instanceof ConditionalCheckFailedException &&
-        error.$response?.statusCode
-      ) {
-        throw new models.HTTPError(error.$response?.statusCode, error.message);
-      }
       throw error;
     }
   }

@@ -1,4 +1,3 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
@@ -10,8 +9,9 @@ import {
   TEST_STATUS,
   VEHICLE_TYPES,
 } from '../../src/assets/Enums';
+import { HTTPResponse } from '../../src/models';
+import * as models from '../../src/models/HTTPError';
 import { HTTPError } from '../../src/models/HTTPError';
-import { HTTPResponse } from '../../src/models/HTTPResponse';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
@@ -246,7 +246,7 @@ describe('insertTestResult', () => {
         createSingle: () =>
           Promise.reject({
             statusCode: 400,
-            message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+            body: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
       testResultsService = new TestResultsService(new MockTestResultsDAO());
@@ -268,6 +268,7 @@ describe('insertTestResult', () => {
       return testResultsService
         .insertTestResult(mockData)
         .catch((error: { statusCode: any; body: any }) => {
+          console.log('this error: ', error);
           expect(error).toBeInstanceOf(HTTPResponse);
           expect(error.statusCode).toBe(201);
           expect(error.body).toBe(`"${MESSAGES.ID_ALREADY_EXISTS}"`);
