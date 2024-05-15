@@ -268,7 +268,6 @@ describe('insertTestResult', () => {
       return testResultsService
         .insertTestResult(mockData)
         .catch((error: { statusCode: any; body: any }) => {
-          console.log('this error: ', error);
           expect(error).toBeInstanceOf(HTTPResponse);
           expect(error.statusCode).toBe(201);
           expect(error.body).toBe(`"${MESSAGES.ID_ALREADY_EXISTS}"`);

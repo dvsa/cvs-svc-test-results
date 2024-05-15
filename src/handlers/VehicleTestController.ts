@@ -116,7 +116,6 @@ export class VehicleTestController implements IVehicleTestController {
       );
       return result;
     } catch (error) {
-      console.log('in insert:', error);
       if (
         error.statusCode === 400 &&
         error.body === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
