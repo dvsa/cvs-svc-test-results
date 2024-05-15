@@ -12,6 +12,7 @@ import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
 import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
 import { DateProvider } from './expiry/providers/DateProvider';
 import { TestDataProvider } from './expiry/providers/TestDataProvider';
+import { MESSAGES } from '../assets/Enums';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -119,20 +120,13 @@ export class VehicleTestController implements IVehicleTestController {
       return result;
     } catch (error) {
       console.info('error: ', error);
-      if (error instanceof ConditionalCheckFailedException) {
+      if (error.statusCode === 400 && error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
           error,
         );
         error = new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
       }
-      if ((error as ServiceException).$metadata?.httpStatusCode) {
-        error = new models.HTTPResponse(
-          (error as ServiceException).$metadata?.httpStatusCode ?? 500,
-          (error as ServiceException).message,
-        );
-      }
-
       throw error;
     }
   }
