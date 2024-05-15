@@ -343,7 +343,7 @@ describe('TestDataProvider', () => {
 
     it('should throw the error once it fails', async () => {
       testDataProvider = new TestDataProvider();
-      const error = { $metadata: {httpStatusCode: 400}, message: 'boom' };
+      const error = { $metadata: { httpStatusCode: 400 }, message: 'boom' };
       MockTestResultsDAO = jest.fn().mockImplementation(() => ({
         createSingle: (something: any) => Promise.reject(error),
       }));
