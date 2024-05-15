@@ -242,7 +242,7 @@ export class TestDataProvider implements ITestDataProvider {
       return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error('TestDataProvider.insertTestResult -> ', error);
-      throw error;
+      throw new models.HTTPError(error.$metadata.httpStatusCode, error.message);
     }
   }
 

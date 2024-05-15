@@ -245,8 +245,8 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            statusCode: 400,
-            body: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+            $metadata: {httpStatusCode: 400},
+            message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
       testResultsService = new TestResultsService(new MockTestResultsDAO());
