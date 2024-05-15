@@ -120,7 +120,10 @@ export class VehicleTestController implements IVehicleTestController {
       return result;
     } catch (error) {
       console.info('error: ', error);
-      if (error.statusCode === 400 && error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED) {
+      if (
+        error.statusCode === 400 && 
+        error.message === MESSAGES.CONDITIONAL_REQUEST_FAILED
+      ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
           error,
