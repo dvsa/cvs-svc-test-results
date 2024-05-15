@@ -1,24 +1,24 @@
-import { cloneDeep, mergeWith, differenceWith, isEqual } from 'lodash';
-import { EPROTONOSUPPORT } from 'constants';
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
+import { ServiceException } from '@smithy/smithy-client';
+import { cloneDeep, differenceWith, isEqual, mergeWith } from 'lodash';
 import * as enums from '../assets/Enums';
-import * as utils from '../utils';
 import * as models from '../models';
-import { IVehicleTestController } from './IVehicleTestController';
-import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
-import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
+import { TestType } from '../models';
 import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 import { Service } from '../models/injector/ServiceDecorator';
-import { TestDataProvider } from './expiry/providers/TestDataProvider';
+import * as utils from '../utils';
+import { IVehicleTestController } from './IVehicleTestController';
+import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
+import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
 import { DateProvider } from './expiry/providers/DateProvider';
-import { TestType } from '../models';
-import { ServiceException } from '@smithy/smithy-client';
+import { TestDataProvider } from './expiry/providers/TestDataProvider';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
   constructor(
     public dataProvider: TestDataProvider,
     public dateProvider: DateProvider,
-  ) {}
+  ) { }
 
   // #region [rgba(52, 152, 219, 0.15)] Public functions
   /**
@@ -118,23 +118,21 @@ export class VehicleTestController implements IVehicleTestController {
       );
       return result;
     } catch (error) {
-      console.info('error: ', error)
-      if (
-        (error as ServiceException).$response?.statusCode === 400 &&
-        (error as ServiceException).$response?.body === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
-      ) {
+      console.info('error: ', error);
+      if (error instanceof ConditionalCheckFailedException) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
           error,
         );
         error = new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
       }
-      if (error instanceof ServiceException && error.$response) {
+      if ((error as ServiceException).$metadata?.httpStatusCode) {
         error = new models.HTTPResponse(
-          error.$response.statusCode,
-          error.$response.body,
+          (error as ServiceException).$metadata?.httpStatusCode ?? 500,
+          (error as ServiceException).message,
         );
       }
+
       throw error;
     }
   }
@@ -209,7 +207,7 @@ export class VehicleTestController implements IVehicleTestController {
           testType,
           vehicleType:
             enums.VEHICLE_TYPE[
-              payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
+            payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
             ],
           recentExpiry,
           regnOrFirstUseDate:
@@ -461,7 +459,7 @@ export class VehicleTestController implements IVehicleTestController {
       (testType.testTypeClassification ===
         enums.TEST_TYPE_CLASSIFICATION.IVA_WITH_CERTIFICATE ||
         testType.testTypeClassification ===
-          enums.TEST_TYPE_CLASSIFICATION.MSVA_WITH_CERTIFICATE) &&
+        enums.TEST_TYPE_CLASSIFICATION.MSVA_WITH_CERTIFICATE) &&
       (!testType.certificateNumber || testType.certificateNumber === '')
     );
   }

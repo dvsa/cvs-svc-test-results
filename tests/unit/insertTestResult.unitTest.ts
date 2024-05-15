@@ -1,3 +1,4 @@
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
@@ -244,12 +245,13 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            $response: {
-              statusCode: 400,
-              body: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+            $metadata: {
+              httpStatusCode: 400,
             },
-          }),
+            message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+          } as ConditionalCheckFailedException),
       }));
+      client = mockClient
       testResultsService = new TestResultsService(new MockTestResultsDAO());
       mockData.testTypes.pop(); // removing the second test in the array as the mock implementation makes this record invalid
       for (const testType of mockData.testTypes) {
