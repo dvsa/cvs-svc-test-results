@@ -1,18 +1,18 @@
 import fs from 'fs';
-import path from 'path';
 import { cloneDeep } from 'lodash';
-import { TestResultsService } from '../../src/services/TestResultsService';
-import { HTTPError } from '../../src/models/HTTPError';
+import path from 'path';
 import {
-  MESSAGES,
   ERRORS,
-  VEHICLE_TYPES,
-  TEST_STATUS,
-  TEST_RESULT,
+  MESSAGES,
   TESTING_ERRORS,
+  TEST_RESULT,
+  TEST_STATUS,
+  VEHICLE_TYPES,
 } from '../../src/assets/Enums';
-import { ITestResultPayload } from '../../src/models/ITestResultPayload';
+import { HTTPError } from '../../src/models/HTTPError';
 import { HTTPResponse } from '../../src/models/HTTPResponse';
+import { ITestResultPayload } from '../../src/models/ITestResultPayload';
+import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
 describe('insertTestResult', () => {
@@ -244,8 +244,10 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            statusCode: 400,
-            message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+            $response: {
+              statusCode: 400,
+              body: MESSAGES.CONDITIONAL_REQUEST_FAILED,
+            },
           }),
       }));
       testResultsService = new TestResultsService(new MockTestResultsDAO());

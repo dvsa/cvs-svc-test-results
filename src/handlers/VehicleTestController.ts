@@ -11,6 +11,7 @@ import { Service } from '../models/injector/ServiceDecorator';
 import { TestDataProvider } from './expiry/providers/TestDataProvider';
 import { DateProvider } from './expiry/providers/DateProvider';
 import { TestType } from '../models';
+import { ServiceException } from '@smithy/smithy-client';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -117,15 +118,22 @@ export class VehicleTestController implements IVehicleTestController {
       );
       return result;
     } catch (error) {
+      console.info('error: ', error)
       if (
-        error.statusCode === 400 &&
-        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+        (error as ServiceException).$response?.statusCode === 400 &&
+        (error as ServiceException).$response?.body === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
           error,
         );
         error = new models.HTTPResponse(201, enums.MESSAGES.ID_ALREADY_EXISTS);
+      }
+      if (error instanceof ServiceException && error.$response) {
+        error = new models.HTTPResponse(
+          error.$response.statusCode,
+          error.$response.body,
+        );
       }
       throw error;
     }
