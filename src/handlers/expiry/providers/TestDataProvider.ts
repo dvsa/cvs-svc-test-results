@@ -1,4 +1,4 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
+import { ServiceException } from '@smithy/smithy-client';
 import * as enums from '../../../assets/Enums';
 import * as models from '../../../models';
 import { Service } from '../../../models/injector/ServiceDecorator';
@@ -29,6 +29,9 @@ export class TestDataProvider implements ITestDataProvider {
         'TestDataProvider.getTestResultBySystemNumber: error-> ',
         error,
       );
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
+      }
       throw error;
     }
   }
@@ -46,9 +49,11 @@ export class TestDataProvider implements ITestDataProvider {
       console.error(
         'TestDataProvider.getTestResultBySystemNumber: error-> ',
         error,
-      );
-      throw error;
-    }
+      );  if (error instanceof ServiceException) {
+        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
+      } 
+      throw error
+    };
   }
 
   public async getTestHistory(
@@ -73,6 +78,9 @@ export class TestDataProvider implements ITestDataProvider {
       );
     } catch (error) {
       console.log('TestDataProvider.getTestHistory: error -> ', error);
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
+      }
       throw error;
     }
   }
@@ -252,8 +260,8 @@ export class TestDataProvider implements ITestDataProvider {
     } catch (error) {
       console.error('TestDataProvider.updateTestResult -> ', error);
       throw error;
-    }
   }
+}
 
   // #endregion
   // #region [rgba(0, 205, 30, 0.1)] Private Static functions
