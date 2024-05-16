@@ -30,7 +30,10 @@ export class TestDataProvider implements ITestDataProvider {
         error,
       );
       if (error instanceof ServiceException) {
-        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
       }
       throw error;
     }
@@ -49,11 +52,15 @@ export class TestDataProvider implements ITestDataProvider {
       console.error(
         'TestDataProvider.getTestResultBySystemNumber: error-> ',
         error,
-      );  if (error instanceof ServiceException) {
-        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
-      } 
-      throw error
-    };
+      );
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
+      }
+      throw error;
+    }
   }
 
   public async getTestHistory(
@@ -79,7 +86,10 @@ export class TestDataProvider implements ITestDataProvider {
     } catch (error) {
       console.log('TestDataProvider.getTestHistory: error -> ', error);
       if (error instanceof ServiceException) {
-        throw new models.HTTPError(error.$metadata.httpStatusCode ?? 500, error.message);
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
       }
       throw error;
     }
@@ -260,8 +270,8 @@ export class TestDataProvider implements ITestDataProvider {
     } catch (error) {
       console.error('TestDataProvider.updateTestResult -> ', error);
       throw error;
+    }
   }
-}
 
   // #endregion
   // #region [rgba(0, 205, 30, 0.1)] Private Static functions

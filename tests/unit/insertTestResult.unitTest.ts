@@ -10,7 +10,6 @@ import {
   VEHICLE_TYPES,
 } from '../../src/assets/Enums';
 import { HTTPResponse } from '../../src/models';
-import * as models from '../../src/models/HTTPError';
 import { HTTPError } from '../../src/models/HTTPError';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { TestResultsService } from '../../src/services/TestResultsService';
