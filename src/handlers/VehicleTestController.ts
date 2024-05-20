@@ -118,7 +118,7 @@ export class VehicleTestController implements IVehicleTestController {
     } catch (error) {
       if (
         error.statusCode === 400 &&
-        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+        error.body === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',

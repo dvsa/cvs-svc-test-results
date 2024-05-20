@@ -1,4 +1,4 @@
-import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
+import { ServiceException } from '@smithy/smithy-client';
 import * as enums from '../../../assets/Enums';
 import * as models from '../../../models';
 import { Service } from '../../../models/injector/ServiceDecorator';
@@ -29,6 +29,12 @@ export class TestDataProvider implements ITestDataProvider {
         'TestDataProvider.getTestResultBySystemNumber: error-> ',
         error,
       );
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
+      }
       throw error;
     }
   }
@@ -47,6 +53,12 @@ export class TestDataProvider implements ITestDataProvider {
         'TestDataProvider.getTestResultBySystemNumber: error-> ',
         error,
       );
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
+      }
       throw error;
     }
   }
@@ -73,6 +85,12 @@ export class TestDataProvider implements ITestDataProvider {
       );
     } catch (error) {
       console.log('TestDataProvider.getTestHistory: error -> ', error);
+      if (error instanceof ServiceException) {
+        throw new models.HTTPError(
+          error.$metadata.httpStatusCode ?? 500,
+          error.message,
+        );
+      }
       throw error;
     }
   }
@@ -242,13 +260,7 @@ export class TestDataProvider implements ITestDataProvider {
       return result.Attributes as models.ITestResult[];
     } catch (error) {
       console.error('TestDataProvider.insertTestResult -> ', error);
-      if (
-        error instanceof ConditionalCheckFailedException &&
-        error.$response?.statusCode
-      ) {
-        throw new models.HTTPError(error.$response?.statusCode, error.message);
-      }
-      throw error;
+      throw new models.HTTPError(error.$metadata.httpStatusCode, error.message);
     }
   }
 
