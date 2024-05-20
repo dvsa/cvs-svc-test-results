@@ -876,6 +876,37 @@ describe('updateTestResults', () => {
       });
     });
 
+    context('A failed IVA Test Record with required standards', () => {
+      it('has its certifcate number set to the test number', async () => {
+        setupTestTypes((x) => {
+          x.testTypeId = '125';
+          x.requiredStandards = [
+            {
+              sectionNumber: '01',
+              sectionDescription: 'Noise',
+              rsNumber: 1,
+              requiredStandard: 'This is the new required standard on the test',
+              refCalculation: '1.1',
+              additionalInfo: true,
+              inspectionTypes: ['basic', 'normal'],
+              prs: false,
+            },
+          ];
+          x.testTypeClassification = 'IVA With Certificate';
+          x.testCode = 'cel';
+          x.testNumber = 'testNumber';
+          return x;
+        });
+
+        const returnedRecord = await testResultsService.updateTestResult(
+          testToUpdate.systemNumber,
+          testToUpdate,
+          msUserDetails,
+        );
+        expect(returnedRecord.testTypes[0].certificateNumber).toBe('testNumber');
+      });
+    });
+
     context('A failed IVA Test Record without required standards', () => {
       it('cannot be updated without required standards present', async () => {
         setupTestTypes((x) => delete x.requiredStandards);
