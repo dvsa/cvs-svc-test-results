@@ -50,6 +50,7 @@ export interface ITestResult {
   make?: string;
   model?: string;
   bodyType?: BodyTypeModel;
+  reapplicationDate?: string;
 }
 
 export interface TestType {
