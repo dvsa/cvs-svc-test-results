@@ -210,7 +210,6 @@ export const testResultsCommonSchema = Joi.object().keys({
   lastUpdatedByEmailAddress: Joi.string().optional(),
   lastUpdatedByName: Joi.string().optional(),
   lastUpdatedById: Joi.string().optional(),
-  reapplicationDate: Joi.string().optional().allow(null),
   shouldEmailCertificate: Joi.string().optional(),
   contingencyTestNumber: Joi.string()
     .max(8)
