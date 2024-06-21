@@ -372,7 +372,6 @@ export class ValidationUtil {
     if (validator in validators) {
       return validators[validator as keyof typeof validators];
     }
-
     return null;
   }
 
