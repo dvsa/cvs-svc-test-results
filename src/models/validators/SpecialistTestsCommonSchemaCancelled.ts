@@ -56,7 +56,7 @@ export const testResultsCommonSchemaSpecialistTestsCancelled =
       .required()
       .allow(null),
     reasonForCancellation: Joi.string().max(500).required().allow('', null),
-    reapplicationDate: Joi.string().optional().allow(null),
+    reapplicationDate: Joi.date().optional().allow(null, ''),
     vehicleConfiguration: Joi.any()
       .valid(
         'rigid',
