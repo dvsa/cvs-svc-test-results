@@ -50,7 +50,6 @@ export interface ITestResult {
   make?: string;
   model?: string;
   bodyType?: BodyTypeModel;
-  reapplicationDate?: string;
 }
 
 export interface TestType {
@@ -80,7 +79,7 @@ export interface TestType {
   certificateNumber?: string | null;
   testExpiryDate?: string | Date; // Sent form FE only for LEC tests. For the rest of the test types it is not sent from FE, and calculated in the BE.
   deletionFlag?: boolean | null; // Not sent from FE, calculated in the BE.
-
+  reapplicationDate?: string | Date;
   // Used only for LEC tests.
   modType?: ModType | null;
   particulateTrapSerialNumber?: string | null;
