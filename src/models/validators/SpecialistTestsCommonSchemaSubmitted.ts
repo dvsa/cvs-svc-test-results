@@ -61,6 +61,7 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
       .items(defectsCommonSchemaSpecialistTestsSubmitted)
       .required(),
     requiredStandards: Joi.array().items(requiredStandardsSchema).optional(),
+    reapplicationDate: Joi.date().optional().allow(null, ''),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =

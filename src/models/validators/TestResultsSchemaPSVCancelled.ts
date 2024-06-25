@@ -56,6 +56,7 @@ const testTypesSchema = testTypesCommonSchema.keys({
   smokeTestKLimitApplied: Joi.string().max(100).allow(null),
   modificationTypeUsed: Joi.string().max(100).allow(null),
   particulateTrapFitted: Joi.string().max(100).allow(null),
+  reapplicationDate: Joi.date().optional().allow(null, ''),
 });
 
 export const psvCancelled = testResultsCommonSchema.keys({
