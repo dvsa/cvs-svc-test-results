@@ -3260,31 +3260,7 @@ describe('insertTestResult', () => {
         });
       },
     );
-    it('should create the record successfully when reapplication date is provided', () => {
-      const testResult = {
-        ...testResultsPostMock[13],
-      } as ITestResultPayload;
-      testResult.testTypes.forEach((x) => {
-        x.testTypeId = '125';
-        x.requiredStandards?.push({
-          sectionNumber: '01',
-          sectionDescription: 'Noise',
-          rsNumber: 1,
-          requiredStandard: 'The exhaust must be securely mounted.',
-          refCalculation: '1.1',
-          additionalInfo: true,
-          inspectionTypes: ['basic', 'normal'],
-          prs: false,
-          additionalNotes: ''
-        })
-        return x;
-      });
-      testResult.testTypes[0].reapplicationDate = '2024-06-21T13:21:16.417Z';
 
-      const validationResult =
-        ValidationUtil.validateInsertTestResultPayload(testResult);
-      expect(validationResult).toBe(true);
-    });
     // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
     // context(
     //   'when creating an IVA failed test record without IVA defects',
@@ -3906,106 +3882,6 @@ describe('insertTestResult', () => {
             .insertTestResult(testResult)
             .then((insertedTestResult: any) => {
               expect(insertedTestResult[0].testTypes[0].testTypeId).toBe('133');
-              expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
-                '12345',
-              );
-            });
-        });
-        it('should create the record successfully when reapplication date is provided', () => {
-          const testResult = cloneDeep(testResultsPostMock[13]);
-          testResult.testTypes[0].testTypeId = '133';
-          testResult.testTypes[0].certificateNumber = '12345';
-          testResult.testTypes[0].requiredStandards?.push({
-            sectionNumber: '4',
-            sectionDescription: 'Speedometer',
-            rsNumber: 1,
-            requiredStandard:
-              'A speedometer; does not indicate speed up to the design speed of the vehicle',
-            refCalculation: '41.1c',
-            additionalInfo: true,
-            inspectionTypes: [],
-            prs: false,
-            additionalNotes: '',
-          });
-          testResult.testTypes[0].reapplicationDate = '2024-06-21T13:21:16.417Z';
-          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-            createSingle: () =>
-              Promise.resolve({
-                Attributes: Array.of(testResult),
-              }),
-            createTestNumber: () =>
-              Promise.resolve({
-                testNumber: 'W01A00209',
-                id: 'W01',
-                certLetter: 'A',
-                sequenceNumber: '002',
-              }),
-            getTestCodesAndClassificationFromTestTypes: () =>
-              Promise.resolve({
-                linkedTestCode: null,
-                defaultTestCode: 'qjt1',
-                testTypeClassification: 'MSVA With Certificate',
-              }),
-            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
-          }));
-
-          testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-          expect.assertions(2);
-          return testResultsService
-            .insertTestResult(testResult)
-            .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe('2024-06-21T13:21:16.417Z');
-              expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
-                '12345',
-              );
-            });
-        });
-        it('should create the record successfully with the reapplication date blank', () => {
-          const testResult = cloneDeep(testResultsPostMock[13]);
-          testResult.testTypes[0].testTypeId = '133';
-          testResult.testTypes[0].certificateNumber = '12345';
-          testResult.testTypes[0].requiredStandards?.push({
-            sectionNumber: '4',
-            sectionDescription: 'Speedometer',
-            rsNumber: 1,
-            requiredStandard:
-              'A speedometer; does not indicate speed up to the design speed of the vehicle',
-            refCalculation: '41.1c',
-            additionalInfo: true,
-            inspectionTypes: [],
-            prs: false,
-            additionalNotes: '',
-          });
-          testResult.testTypes[0].reapplicationDate = '';
-          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-            createSingle: () =>
-              Promise.resolve({
-                Attributes: Array.of(testResult),
-              }),
-            createTestNumber: () =>
-              Promise.resolve({
-                testNumber: 'W01A00209',
-                id: 'W01',
-                certLetter: 'A',
-                sequenceNumber: '002',
-              }),
-            getTestCodesAndClassificationFromTestTypes: () =>
-              Promise.resolve({
-                linkedTestCode: null,
-                defaultTestCode: 'qjt1',
-                testTypeClassification: 'MSVA With Certificate',
-              }),
-            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
-          }));
-
-          testResultsService = new TestResultsService(new MockTestResultsDAO());
-
-          expect.assertions(2);
-          return testResultsService
-            .insertTestResult(testResult)
-            .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe('');
               expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
                 '12345',
               );

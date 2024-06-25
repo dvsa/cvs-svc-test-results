@@ -41,7 +41,6 @@ const testTypesSchema = testTypesCommonSchema.keys({
   requiredStandards: array()
     .items(requiredStandardsSchema.required())
     .optional(),
-  reapplicationDate: Joi.date().optional().allow(null, ''),
 });
 
 export const hgvSubmitted = testResultsCommonSchema.keys({
