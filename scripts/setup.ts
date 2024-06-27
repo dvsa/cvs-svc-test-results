@@ -7,7 +7,8 @@ const SERVER_OK = `Server ready: http://localhost:3006 🚀`;
 // we force throwing an error so we always start from a clean slate if java.io.IOException: Failed to bind to 0.0.0.0/0.0.0.0:8006
 const DYNAMO_LOCAL_ERROR_THREAD = `Exception in thread "main"`;
 
-const setupServer = (process: any) => new Promise((resolve, reject) => {
+const setupServer = (process: any) =>
+  new Promise((resolve, reject) => {
     process.stdout.setEncoding('utf-8').on('data', (stream: any) => {
       console.log(`stdout: ${stream}`);
       if (stream.includes(SERVER_OK)) {
@@ -19,15 +20,16 @@ const setupServer = (process: any) => new Promise((resolve, reject) => {
       console.log(`stderr: ${stream}`);
       if (stream.includes(DYNAMO_LOCAL_ERROR_THREAD)) {
         throw new Error('Internal Java process crashed');
-      }
-      else if (stream.includes(SERVER_OK)) {
+      } else if (stream.includes(SERVER_OK)) {
         resolve(process);
       }
     });
 
     process.on('exit', (code: any, signal: any) => {
       if (code !== 137) {
-        console.info(`process terminated with code: ${code} and signal: ${signal}`);
+        console.info(
+          `process terminated with code: ${code} and signal: ${signal}`,
+        );
       }
     });
   });
@@ -36,7 +38,7 @@ const server = exec('npm run start &', (error) => {
   if (error) {
     console.error(`error starting server: ${error}`);
   }
-}); 
+});
 
 module.exports = async () => {
   console.log(`\nSetting up Integration tests...\n\n`);

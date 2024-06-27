@@ -1,18 +1,18 @@
 import fs from 'fs';
-import path from 'path';
 import { cloneDeep } from 'lodash';
-import { TestResultsService } from '../../src/services/TestResultsService';
-import { HTTPError } from '../../src/models/HTTPError';
+import path from 'path';
 import {
-  MESSAGES,
   ERRORS,
-  VEHICLE_TYPES,
-  TEST_STATUS,
-  TEST_RESULT,
+  MESSAGES,
   TESTING_ERRORS,
+  TEST_RESULT,
+  TEST_STATUS,
+  VEHICLE_TYPES,
 } from '../../src/assets/Enums';
+import { HTTPResponse } from '../../src/models';
+import { HTTPError } from '../../src/models/HTTPError';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
-import { HTTPResponse } from '../../src/models/HTTPResponse';
+import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
 describe('insertTestResult', () => {
@@ -244,7 +244,7 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            statusCode: 400,
+            $metadata: { httpStatusCode: 400 },
             message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
