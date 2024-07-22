@@ -1,10 +1,11 @@
-import { ValidationResult, any, string } from 'joi';
+import { any, string, ValidationResult } from 'joi';
 import { isDate } from 'lodash';
 import * as enums from '../assets/Enums';
+import { CENTRAL_DOCS_TEST_TYPES } from '../assets/Enums';
 import * as models from '../models';
+import { TestType } from '../models';
 import * as validators from '../models/validators';
 import { MappingUtil } from './mappingUtil';
-import { TestType } from '../models';
 
 export class ValidationUtil {
   // #region [rgba(52, 152, 219, 0.15)]  Public Functions
@@ -48,6 +49,8 @@ export class ValidationUtil {
     // if (this.isIvaTest(payload.testTypes)) {
     //   this.ivaFailedHasRequiredFields(payload.testTypes);
     // }
+
+    this.validateCentralDocs(payload.testTypes);
 
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validationSchema.validate(payload)
@@ -568,5 +571,31 @@ export class ValidationUtil {
     //   if (allFailWithoutDefects) {
     //     throw new models.HTTPError(400, 'Failed IVA tests must have IVA Defects');
     //   }
+  }
+
+  /**
+   * Checks if the given test type ID is present in the CENTRAL_DOCS_TEST_TYPES array
+   * @param testType TestType
+   * @return boolean
+   */
+  public static isCentralDoc({ testTypeId }: TestType): boolean {
+    return CENTRAL_DOCS_TEST_TYPES.includes(testTypeId);
+  }
+
+  /**
+   * Validates central docs for an array of test types
+   * @param testTypes TestType[]
+   * @throws HTTPError with status 400 if validation fails
+   */
+  public static validateCentralDocs(testTypes: TestType[]): void {
+    testTypes.every((testType) => {
+      if (this.isCentralDoc(testType) && !testType?.centralDocs) {
+        throw new models.HTTPError(
+          400,
+          `Central docs required for test type ${testType.testTypeId}`,
+        );
+      }
+      return true;
+    });
   }
 }

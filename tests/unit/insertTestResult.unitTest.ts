@@ -8,8 +8,9 @@ import {
   TEST_RESULT,
   TEST_STATUS,
   VEHICLE_TYPES,
+  CENTRAL_DOCS_TEST_TYPES,
 } from '../../src/assets/Enums';
-import { HTTPResponse } from '../../src/models';
+import { HTTPResponse, TestType } from '../../src/models';
 import { HTTPError } from '../../src/models/HTTPError';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { TestResultsService } from '../../src/services/TestResultsService';
@@ -3206,7 +3207,174 @@ describe('insertTestResult', () => {
       });
     },
   );
+  describe('central docs', () => {
+    let testResult: ITestResultPayload;
 
+    beforeEach(() => {
+      testResult = { ...testResultsPostMock[15] } as ITestResultPayload;
+    });
+
+    describe('validateInsertTestResultPayload', () => {
+      describe('when submitting a valid test with central docs present', () => {
+        it('should create the record successfully when only issue required is present', () => {
+          testResult.testTypes[0].centralDocs = { issueRequired: true };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully when notes are present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            notes: 'notes',
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully when reason for issue is present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            reasonsForIssue: ['reason'],
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully when notes and reason for issue are present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should throw a validation error when issue required is missing', () => {
+          testResult.testTypes[0].centralDocs = {
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          } as any;
+
+          expect(() =>
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toThrow(HTTPError);
+
+          try {
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          } catch (err) {
+            const error = err as HTTPError;
+            expect(error.statusCode).toBe(400);
+            expect(error.body.errors[0]).toBe(
+              '"testTypes[0].centralDocs.issueRequired" is required',
+            );
+          }
+        });
+      });
+
+      describe('when submitting a valid test without central docs present', () => {
+        it('should create the record successfully', () => {
+          testResult.testTypes[0].testTypeId = '1';
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      });
+    });
+
+    describe('validateCentralDocs', () => {
+      const createTestType = (
+        testTypeId: string,
+        centralDocs?: any,
+      ): TestType => ({
+        ...testResult.testTypes[0],
+        testTypeId,
+        centralDocs,
+      });
+
+      it('should not throw for valid central docs', () => {
+        const testTypes = [
+          createTestType(CENTRAL_DOCS_TEST_TYPES[0], { issueRequired: true }),
+          createTestType('non-central-doc-id'),
+        ];
+        console.log(testTypes);
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for non-central doc types', () => {
+        const testTypes = [
+          createTestType('non-central-doc-id-1'),
+          createTestType('non-central-doc-id-2'),
+        ];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for an empty array', () => {
+        const testTypes: TestType[] = [];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for null or undefined centralDocs for non-central doc types', () => {
+        const testTypes = [
+          createTestType('non-central-doc-id-1', null),
+          createTestType('non-central-doc-id-2', undefined),
+        ];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should throw for invalid central docs', () => {
+        const testTypes = [
+          createTestType(CENTRAL_DOCS_TEST_TYPES[0], undefined),
+          createTestType('non-central-doc-id'),
+        ];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          console.log();
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            `Central docs required for test type ${CENTRAL_DOCS_TEST_TYPES[0]}`,
+          );
+        }
+      });
+
+      it('should throw for mixed valid and invalid types', () => {
+        const testTypes = [
+          createTestType(CENTRAL_DOCS_TEST_TYPES[0], { issueRequired: true }),
+          createTestType(CENTRAL_DOCS_TEST_TYPES[1], undefined),
+          createTestType('non-central-doc-id'),
+        ];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            `Central docs required for test type ${CENTRAL_DOCS_TEST_TYPES[1]}`,
+          );
+        }
+      });
+    });
+  });
   describe('IVA Defects', () => {
     context('when creating an IVA failed test record with IVA defects', () => {
       it('should create the record successfully', () => {
@@ -3275,8 +3443,8 @@ describe('insertTestResult', () => {
           additionalInfo: true,
           inspectionTypes: ['basic', 'normal'],
           prs: false,
-          additionalNotes: ''
-        })
+          additionalNotes: '',
+        });
         return x;
       });
       testResult.testTypes[0].reapplicationDate = '2024-06-21T13:21:16.417Z';
@@ -3927,7 +4095,8 @@ describe('insertTestResult', () => {
             prs: false,
             additionalNotes: '',
           });
-          testResult.testTypes[0].reapplicationDate = '2024-06-21T13:21:16.417Z';
+          testResult.testTypes[0].reapplicationDate =
+            '2024-06-21T13:21:16.417Z';
           MockTestResultsDAO = jest.fn().mockImplementation(() => ({
             createSingle: () =>
               Promise.resolve({
@@ -3955,7 +4124,9 @@ describe('insertTestResult', () => {
           return testResultsService
             .insertTestResult(testResult)
             .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe('2024-06-21T13:21:16.417Z');
+              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe(
+                '2024-06-21T13:21:16.417Z',
+              );
               expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
                 '12345',
               );
@@ -4005,7 +4176,9 @@ describe('insertTestResult', () => {
           return testResultsService
             .insertTestResult(testResult)
             .then((insertedTestResult: any) => {
-              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe('');
+              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe(
+                '',
+              );
               expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
                 '12345',
               );

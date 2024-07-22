@@ -1939,7 +1939,12 @@
         "testTypeEndTimestamp": "2023-01-14T10:36:33.987Z",
         "testTypeId": "95",
         "testTypeName": "First test",
-        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z"
+        "testTypeStartTimestamp": "2023-01-14T10:36:33.987Z",
+        "centralDocs": {
+          "issueRequired": false,
+          "notes": "notes",
+          "reasonsForIssue": ["issue reason"]
+        }
       }
     ],
     "trailerId": "C234567",
