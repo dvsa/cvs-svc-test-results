@@ -36,7 +36,7 @@ export interface ITestResultPayload {
   make?: string;
   model?: string;
   bodyType?: BodyTypeModel;
-  centralDocs: CentralDocs;
+  centralDocs?: CentralDocs;
 }
 
 export interface CentralDocs {

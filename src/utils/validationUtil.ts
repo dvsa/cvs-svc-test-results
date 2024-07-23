@@ -578,7 +578,7 @@ export class ValidationUtil {
    * @param testType TestType
    * @return boolean
    */
-  public static isCentralDoc({ testTypeId }: TestType): boolean {
+  public static IsCentralDocTestType({ testTypeId }: TestType): boolean {
     return CENTRAL_DOCS_TEST_TYPES.includes(testTypeId);
   }
 
@@ -589,7 +589,7 @@ export class ValidationUtil {
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
     testTypes.every((testType) => {
-      if (this.isCentralDoc(testType) && !testType?.centralDocs) {
+      if (this.IsCentralDocTestType(testType) && !testType?.centralDocs) {
         throw new models.HTTPError(
           400,
           `Central docs required for test type ${testType.testTypeId}`,
