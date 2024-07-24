@@ -1,7 +1,7 @@
 import supertest from 'supertest';
+import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import { ITestResultPayload } from '../../src/models';
 import testResultsPostMock from '../resources/test-results-post.json';
-import { CENTRAL_DOCS_TEST_TYPES } from '../../src/assets/Enums';
 
 const url = 'http://localhost:3006/';
 const request = supertest(url);
@@ -12,7 +12,7 @@ describe('postTestResults', () => {
       const testResult =
         testResultsPostMock[15] as unknown as ITestResultPayload;
 
-      testResult.testTypes[0].testTypeId = CENTRAL_DOCS_TEST_TYPES[3];
+      testResult.testTypes[0].testTypeId = CENTRAL_DOCS_TEST.IDS[3];
       delete testResult.testTypes[0].centralDocs;
 
       const res = await request.post('test-results').send(testResult);

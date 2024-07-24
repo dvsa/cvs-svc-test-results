@@ -1,7 +1,8 @@
 import { any, string, ValidationResult } from 'joi';
 import { isDate } from 'lodash';
+import { TestTypeHelper } from '@dvsa/cvs-microservice-common/classes/testTypes/testTypeHelper';
+import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import * as enums from '../assets/Enums';
-import { CENTRAL_DOCS_TEST_TYPES } from '../assets/Enums';
 import * as models from '../models';
 import { TestType } from '../models';
 import * as validators from '../models/validators';
@@ -574,28 +575,19 @@ export class ValidationUtil {
   }
 
   /**
-   * Checks if the given test type ID is present in the CENTRAL_DOCS_TEST_TYPES array
-   * @param testType TestType
-   * @return boolean
-   */
-  public static IsCentralDocTestType({ testTypeId }: TestType): boolean {
-    return CENTRAL_DOCS_TEST_TYPES.includes(testTypeId);
-  }
-
-  /**
    * Validates central docs for an array of test types
    * @param testTypes TestType[]
    * @throws HTTPError with status 400 if validation fails
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
     testTypes.every((testType) => {
-      if (this.IsCentralDocTestType(testType) && !testType?.centralDocs) {
+      if (TestTypeHelper.validateTestTypeIdInList(CENTRAL_DOCS_TEST, testType.testTypeId) && !testType?.centralDocs) {
         throw new models.HTTPError(
           400,
           `Central docs required for test type ${testType.testTypeId}`,
         );
       }
-      if (!this.IsCentralDocTestType(testType) && testType?.centralDocs) {
+      if (!TestTypeHelper.validateTestTypeIdInList(CENTRAL_DOCS_TEST, testType.testTypeId) && testType?.centralDocs) {
         throw new models.HTTPError(
           400,
           `Central docs is not required for test type ${testType.centralDocs}`,

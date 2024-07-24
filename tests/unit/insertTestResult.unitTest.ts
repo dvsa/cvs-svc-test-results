@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
+import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import {
   ERRORS,
   MESSAGES,
@@ -8,7 +9,6 @@ import {
   TEST_RESULT,
   TEST_STATUS,
   VEHICLE_TYPES,
-  CENTRAL_DOCS_TEST_TYPES,
 } from '../../src/assets/Enums';
 import { HTTPResponse, TestType } from '../../src/models';
 import { HTTPError } from '../../src/models/HTTPError';
@@ -3312,7 +3312,7 @@ describe('insertTestResult', () => {
 
       it('should not throw for valid central docs', () => {
         const testTypes = [
-          createTestType(CENTRAL_DOCS_TEST_TYPES[0], { issueRequired: true }),
+          createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
           createTestType('non-central-doc-id'),
         ];
         console.log(testTypes);
@@ -3350,7 +3350,7 @@ describe('insertTestResult', () => {
 
       it('should throw for invalid central docs', () => {
         const testTypes = [
-          createTestType(CENTRAL_DOCS_TEST_TYPES[0], undefined),
+          createTestType(CENTRAL_DOCS_TEST.IDS[0], undefined),
           createTestType('non-central-doc-id'),
         ];
         expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
@@ -3363,15 +3363,15 @@ describe('insertTestResult', () => {
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(
-            `Central docs required for test type ${CENTRAL_DOCS_TEST_TYPES[0]}`,
+            `Central docs required for test type ${CENTRAL_DOCS_TEST.IDS[0]}`,
           );
         }
       });
 
       it('should throw for mixed valid and invalid types', () => {
         const testTypes = [
-          createTestType(CENTRAL_DOCS_TEST_TYPES[0], { issueRequired: true }),
-          createTestType(CENTRAL_DOCS_TEST_TYPES[1], undefined),
+          createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
+          createTestType(CENTRAL_DOCS_TEST.IDS[1], undefined),
           createTestType('non-central-doc-id'),
         ];
         expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
@@ -3383,7 +3383,7 @@ describe('insertTestResult', () => {
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(
-            `Central docs required for test type ${CENTRAL_DOCS_TEST_TYPES[1]}`,
+            `Central docs required for test type ${CENTRAL_DOCS_TEST.IDS[1]}`,
           );
         }
       });
