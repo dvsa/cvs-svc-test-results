@@ -595,6 +595,12 @@ export class ValidationUtil {
           `Central docs required for test type ${testType.testTypeId}`,
         );
       }
+      if (!this.IsCentralDocTestType(testType) && testType?.centralDocs) {
+        throw new models.HTTPError(
+          400,
+          `Central docs is not required for test type ${testType.centralDocs}`,
+        );
+      }
       return true;
     });
   }

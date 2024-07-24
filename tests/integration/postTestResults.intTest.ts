@@ -18,7 +18,7 @@ describe('postTestResults', () => {
       const res = await request.post('test-results').send(testResult);
 
       expect(res.status).toBe(400);
-      expect(res.body).toBe('Central docs required for test type 142');
+      expect(res.body).toBe('Central docs required for test type 47');
     });
   });
 

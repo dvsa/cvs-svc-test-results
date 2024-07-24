@@ -1510,6 +1510,11 @@ describe('insertTestResult', () => {
         testResult.testStatus = TEST_STATUS.CANCELLED;
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
+        testResult.testTypes[0].centralDocs = {
+          'issueRequired': false,
+          'notes': 'notes',
+          'reasonsForIssue': ['issue reason'],
+        };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -1553,6 +1558,11 @@ describe('insertTestResult', () => {
         testResult.testStatus = TEST_STATUS.CANCELLED;
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
+        testResult.testTypes[0].centralDocs = {
+          'issueRequired': false,
+          'notes': 'notes',
+          'reasonsForIssue': ['issue reason'],
+        };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -1763,6 +1773,7 @@ describe('insertTestResult', () => {
         );
         // Setting the testType to any other than ADR
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '95';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -2536,6 +2547,7 @@ describe('insertTestResult', () => {
           testResultsPostMock[6],
         );
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '122';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
             Promise.resolve({
@@ -2580,6 +2592,7 @@ describe('insertTestResult', () => {
           testResultsPostMock[6],
         );
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '91';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
             Promise.resolve({
@@ -3279,6 +3292,7 @@ describe('insertTestResult', () => {
       describe('when submitting a valid test without central docs present', () => {
         it('should create the record successfully', () => {
           testResult.testTypes[0].testTypeId = '1';
+          delete testResult.testTypes[0].centralDocs
           const validationResult =
             ValidationUtil.validateInsertTestResultPayload(testResult);
           expect(validationResult).toBe(true);

@@ -364,11 +364,6 @@
         "certificateNumber": "W01A00209",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "customDefects": [
           {
             "referenceNumber": "abcd",
@@ -450,11 +445,6 @@
         "certificateNumber": "W01A00209",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "customDefects": [
           {
             "referenceNumber": "abcd",
@@ -816,11 +806,6 @@
           "code": "m",
           "description": "modification or change of engine"
         },
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "emissionStandard": "0.10 g/kWh Euro 3 PM",
         "fuelType": "diesel",
         "smokeTestKLimitApplied": "123",
@@ -833,6 +818,11 @@
         "reasonForAbandoning": null,
         "additionalCommentsForAbandon": null,
         "additionalNotesRecorded": "Test notes",
+        "centralDocs": {
+          "issueRequired": false,
+          "notes": "notes",
+          "reasonsForIssue": ["issue reason"]
+        },
         "customDefects": [
           {
             "referenceNumber": "abcd",
