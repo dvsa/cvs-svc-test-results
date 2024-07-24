@@ -581,13 +581,25 @@ export class ValidationUtil {
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
     testTypes.every((testType) => {
-      if (TestTypeHelper.validateTestTypeIdInList(CENTRAL_DOCS_TEST, testType.testTypeId) && !testType?.centralDocs) {
+      if (
+        TestTypeHelper.validateTestTypeIdInList(
+          CENTRAL_DOCS_TEST,
+          testType.testTypeId,
+        ) &&
+        !testType?.centralDocs
+      ) {
         throw new models.HTTPError(
           400,
           `Central docs required for test type ${testType.testTypeId}`,
         );
       }
-      if (!TestTypeHelper.validateTestTypeIdInList(CENTRAL_DOCS_TEST, testType.testTypeId) && testType?.centralDocs) {
+      if (
+        !TestTypeHelper.validateTestTypeIdInList(
+          CENTRAL_DOCS_TEST,
+          testType.testTypeId,
+        ) &&
+        testType?.centralDocs
+      ) {
         throw new models.HTTPError(
           400,
           `Central docs is not required for test type ${testType.centralDocs}`,

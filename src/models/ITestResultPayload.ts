@@ -36,11 +36,4 @@ export interface ITestResultPayload {
   make?: string;
   model?: string;
   bodyType?: BodyTypeModel;
-  centralDocs?: CentralDocs;
-}
-
-export interface CentralDocs {
-  issueRequired: boolean;
-  notes?: string;
-  reasonsForIssue?: string[];
 }

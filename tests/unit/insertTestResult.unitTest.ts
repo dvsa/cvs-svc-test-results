@@ -1511,9 +1511,9 @@ describe('insertTestResult', () => {
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
         testResult.testTypes[0].centralDocs = {
-          'issueRequired': false,
-          'notes': 'notes',
-          'reasonsForIssue': ['issue reason'],
+          issueRequired: false,
+          notes: 'notes',
+          reasonsForIssue: ['issue reason'],
         };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -1559,9 +1559,9 @@ describe('insertTestResult', () => {
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
         testResult.testTypes[0].centralDocs = {
-          'issueRequired': false,
-          'notes': 'notes',
-          'reasonsForIssue': ['issue reason'],
+          issueRequired: false,
+          notes: 'notes',
+          reasonsForIssue: ['issue reason'],
         };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -3292,7 +3292,7 @@ describe('insertTestResult', () => {
       describe('when submitting a valid test without central docs present', () => {
         it('should create the record successfully', () => {
           testResult.testTypes[0].testTypeId = '1';
-          delete testResult.testTypes[0].centralDocs
+          delete testResult.testTypes[0].centralDocs;
           const validationResult =
             ValidationUtil.validateInsertTestResultPayload(testResult);
           expect(validationResult).toBe(true);
