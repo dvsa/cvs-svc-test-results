@@ -580,7 +580,7 @@ export class ValidationUtil {
    * @throws HTTPError with status 400 if validation fails
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
-    testTypes.every((testType) => {
+    testTypes.forEach((testType) => {
       if (
         TestTypeHelper.validateTestTypeIdInList(
           CENTRAL_DOCS_TEST,
