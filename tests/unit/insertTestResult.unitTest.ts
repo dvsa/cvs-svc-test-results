@@ -3229,23 +3229,6 @@ describe('insertTestResult', () => {
 
     describe('validateInsertTestResultPayload', () => {
       describe('when submitting a valid test with central docs present', () => {
-        it('should create the record successfully when only issue required is present', () => {
-          testResult.testTypes[0].centralDocs = { issueRequired: true };
-          const validationResult =
-            ValidationUtil.validateInsertTestResultPayload(testResult);
-          expect(validationResult).toBe(true);
-        });
-
-        it('should create the record successfully when notes are present', () => {
-          testResult.testTypes[0].centralDocs = {
-            issueRequired: true,
-            notes: 'notes',
-          };
-          const validationResult =
-            ValidationUtil.validateInsertTestResultPayload(testResult);
-          expect(validationResult).toBe(true);
-        });
-
         it('should create the record successfully when reason for issue is present', () => {
           testResult.testTypes[0].centralDocs = {
             issueRequired: true,
@@ -3267,10 +3250,20 @@ describe('insertTestResult', () => {
           expect(validationResult).toBe(true);
         });
 
+        it('should throw a validation error when reason for issue is not present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            reasonsForIssue: ['reason'],
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
         it('should throw a validation error when issue required is missing', () => {
           testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
             notes: 'notes',
-            reasonsForIssue: ['reason'],
           } as any;
 
           expect(() =>
@@ -3283,7 +3276,7 @@ describe('insertTestResult', () => {
             const error = err as HTTPError;
             expect(error.statusCode).toBe(400);
             expect(error.body.errors[0]).toBe(
-              '"testTypes[0].centralDocs.issueRequired" is required',
+              '"testTypes[0].centralDocs.reasonsForIssue" is required',
             );
           }
         });

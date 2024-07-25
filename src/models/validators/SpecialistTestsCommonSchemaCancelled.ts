@@ -50,7 +50,7 @@ export const testTypesCommonSchemaSpecialistTestsCancelled =
       .keys({
         issueRequired: Joi.boolean().required(),
         notes: Joi.string().optional(),
-        reasonsForIssue: Joi.array().items(string()).optional(),
+        reasonsForIssue: Joi.array().items(string().optional()).required(),
       })
       .optional(),
   });

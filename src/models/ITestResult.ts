@@ -94,7 +94,7 @@ export interface TestType {
 export interface CentralDocs {
   issueRequired: boolean;
   notes?: string;
-  reasonsForIssue?: string[];
+  reasonsForIssue: string[];
 }
 
 export interface Defect {
