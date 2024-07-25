@@ -602,7 +602,7 @@ export class ValidationUtil {
       ) {
         throw new models.HTTPError(
           400,
-          `Central docs is not required for test type ${testType.testTypeId}`,
+          `Central documents can not be issued for test type ${testType.testTypeId}`,
         );
       }
       return true;

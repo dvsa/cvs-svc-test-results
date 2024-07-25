@@ -3361,6 +3361,30 @@ describe('insertTestResult', () => {
         }
       });
 
+      it('should throw for invalid test type with central docs', () => {
+        const testTypes = [
+          createTestType('1',  {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          }),
+          createTestType('non-central-doc-id'),
+        ];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          console.log();
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            "Central documents can not be issued for test type 1",
+          );
+        }
+      });
+
       it('should throw for mixed valid and invalid types', () => {
         const testTypes = [
           createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
