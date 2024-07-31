@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { array, string } from 'joi';
+import { array } from 'joi';
 import {
   defectsCommonSchema,
   testTypesCommonSchema,
@@ -42,13 +42,6 @@ const testTypesSchema = testTypesCommonSchema.keys({
     .items(requiredStandardsSchema.required())
     .optional(),
   reapplicationDate: Joi.date().optional().allow(null, ''),
-  centralDocs: Joi.object()
-    .keys({
-      issueRequired: Joi.boolean().required(),
-      notes: Joi.string().optional(),
-      reasonsForIssue: Joi.array().items(string().optional()).required(),
-    })
-    .optional(),
 });
 
 export const trlCancelled = testResultsCommonSchema.keys({

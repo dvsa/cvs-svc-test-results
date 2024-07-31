@@ -1,4 +1,4 @@
-import Joi, { string } from 'joi';
+import * as Joi from 'joi';
 import {
   defectsCommonSchema,
   requiredStandardsSchema,
@@ -62,13 +62,6 @@ export const testTypesCommonSchemaSpecialistTestsSubmitted =
       .required(),
     requiredStandards: Joi.array().items(requiredStandardsSchema).optional(),
     reapplicationDate: Joi.date().optional().allow(null, ''),
-    centralDocs: Joi.object()
-      .keys({
-        issueRequired: Joi.boolean().required(),
-        notes: Joi.string().optional(),
-        reasonsForIssue: Joi.array().items(string().optional()).required(),
-      })
-      .optional(),
   });
 
 export const testResultsCommonSchemaSpecialistTestsSubmitted =

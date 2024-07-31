@@ -1,5 +1,4 @@
 import * as Joi from 'joi';
-import { string } from 'joi';
 import { requiredStandardsSchema } from '../CommonSchema';
 
 export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
@@ -21,13 +20,6 @@ export const testTypesCommonSchemaDeskBasedTests = Joi.object().keys({
     .items(requiredStandardsSchema.required())
     .optional(),
   customDefects: Joi.array().max(0).allow(null),
-  centralDocs: Joi.object()
-    .keys({
-      issueRequired: Joi.boolean().required(),
-      notes: Joi.string().optional(),
-      reasonsForIssue: Joi.array().items(string()).optional(),
-    })
-    .optional(),
 });
 
 export const testTypesDeskBasedGroup1 =

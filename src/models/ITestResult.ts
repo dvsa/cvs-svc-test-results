@@ -88,13 +88,6 @@ export interface TestType {
   modificationTypeUsed?: string | null;
   particulateTrapFitted?: string | null;
   fuelType?: string | null;
-  centralDocs?: CentralDocs;
-}
-
-export interface CentralDocs {
-  issueRequired: boolean;
-  notes?: string;
-  reasonsForIssue: string[];
 }
 
 export interface Defect {
