@@ -2399,7 +2399,6 @@ describe('insertTestResult', () => {
       it('should throw error', () => {
         const testResult = testResultsPostMock[8];
         const clonedTestResult = cloneDeep(testResult);
-        delete clonedTestResult.testTypes[0].centralDocs;
         clonedTestResult.testTypes[0].certificateNumber = null;
         clonedTestResult.testTypes[0].testResult = 'fail';
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -3261,12 +3260,12 @@ describe('insertTestResult', () => {
           ).toThrow(HTTPError);
 
           try {
-              ValidationUtil.validateInsertTestResultPayload(testResult);
+            ValidationUtil.validateInsertTestResultPayload(testResult);
           } catch (err) {
             const error = err as HTTPError;
             expect(error.statusCode).toBe(400);
             expect(error.body.errors[0]).toBe(
-                '"testTypes[0].centralDocs.reasonsForIssue" is required',
+              '"testTypes[0].centralDocs.reasonsForIssue" is required',
             );
           }
         });
@@ -3354,7 +3353,7 @@ describe('insertTestResult', () => {
 
       it('should throw for invalid test type with central docs', () => {
         const testTypes = [
-          createTestType('1',  {
+          createTestType('1', {
             issueRequired: true,
             notes: 'notes',
             reasonsForIssue: ['reason'],
@@ -3371,21 +3370,26 @@ describe('insertTestResult', () => {
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(
-            "Central documents can not be issued for test type 1",
+            'Central documents can not be issued for test type 1',
           );
         }
       });
 
       it('should throw for mixed valid and invalid types', () => {
-        const testResultFail = { ...testResultsPostMock[15] } as ITestResultPayload;
-        testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
+        const testResultFail = {
+          ...testResultsPostMock[15],
+        } as ITestResultPayload;
+        testResultFail.testTypes[0].centralDocs = {
+          issueRequired: true,
+          reasonsForIssue: [],
+        };
         const testTypes = [
           createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
-           createTestType('1',  {
-               issueRequired: true,
-               notes: 'notes',
-               reasonsForIssue: ['reason'],
-           }),
+          createTestType('1', {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          }),
         ];
         expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
           HTTPError,
@@ -3402,25 +3406,28 @@ describe('insertTestResult', () => {
       });
 
       it('should throw for valid type but invalid test result', () => {
-          const testResultFail = { ...testResultsPostMock[15] } as ITestResultPayload;
-          testResultFail.testTypes[0].testResult = 'fail';
-          testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
-          const testTypes = [
-              testResultFail.testTypes[0],
-          ];
-          expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
-              HTTPError,
+        const testResultFail = {
+          ...testResultsPostMock[15],
+        } as ITestResultPayload;
+        testResultFail.testTypes[0].testResult = 'fail';
+        testResultFail.testTypes[0].centralDocs = {
+          issueRequired: true,
+          reasonsForIssue: [],
+        };
+        const testTypes = [testResultFail.testTypes[0]];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            `Central documents can not be issued for a test status of fail`,
           );
-          try {
-              ValidationUtil.validateCentralDocs(testTypes);
-          } catch (error) {
-              expect(error).toBeInstanceOf(HTTPError);
-              expect(error.statusCode).toBe(400);
-              expect(error.body).toBe(
-                  `Central documents can not be issued for a test status of fail`,
-              );
-          }
-        });
+        }
+      });
     });
   });
   describe('IVA Defects', () => {
