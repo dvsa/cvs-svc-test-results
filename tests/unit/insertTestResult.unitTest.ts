@@ -3251,20 +3251,30 @@ describe('insertTestResult', () => {
           expect(validationResult).toBe(true);
         });
 
-        it('should throw a validation error when reasons for issue is not present', () => {
+        it('should throw a validation error when reasons for issue is missing', () => {
           testResult.testTypes[0].centralDocs = {
             issueRequired: true,
-            reasonsForIssue: ['reason'],
           } as any;
-          const validationResult =
-            ValidationUtil.validateInsertTestResultPayload(testResult);
-          expect(validationResult).toBe(true);
+
+          expect(() =>
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toThrow(HTTPError);
+
+          try {
+              ValidationUtil.validateInsertTestResultPayload(testResult);
+          } catch (err) {
+            const error = err as HTTPError;
+            expect(error.statusCode).toBe(400);
+            expect(error.body.errors[0]).toBe(
+                '"testTypes[0].centralDocs.reasonsForIssue" is required',
+            );
+          }
         });
 
         it('should throw a validation error when issue required is missing', () => {
           testResult.testTypes[0].centralDocs = {
-            issueRequired: true,
             notes: 'notes',
+            reasonsForIssue: ['reason'],
           } as any;
 
           expect(() =>
@@ -3277,7 +3287,7 @@ describe('insertTestResult', () => {
             const error = err as HTTPError;
             expect(error.statusCode).toBe(400);
             expect(error.body.errors[0]).toBe(
-              '"testTypes[0].centralDocs.reasonsForIssue" is required',
+              '"testTypes[0].centralDocs.issueRequired" is required',
             );
           }
         });
