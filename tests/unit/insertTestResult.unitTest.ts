@@ -3239,7 +3239,7 @@ describe('insertTestResult', () => {
           expect(validationResult).toBe(true);
         });
 
-        it('should create the record successfully when notes and reason for issue are present', () => {
+        it('should create the record successfully when notes and reasons for issue are present', () => {
           testResult.testTypes[0].centralDocs = {
             issueRequired: true,
             notes: 'notes',
@@ -3293,8 +3293,35 @@ describe('insertTestResult', () => {
       });
 
       describe('when submitting a valid test without central docs present', () => {
-        it('should create the record successfully', () => {
+        it('should create the record successfully for a test type id not in the list and status of pass or prs', () => {
           testResult.testTypes[0].testTypeId = '1';
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id not in the list and status of fail', () => {
+          testResult.testTypes[0].testTypeId = '1';
+          testResult.testTypes[0].testResult = 'fail';
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id in the list with status of pass or prs', () => {
+          testResult.testTypes[0].testTypeId = '41';
+          testResult.testTypes[0].testResult = 'prs';
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id in the list with status of fail', () => {
+          testResult.testTypes[0].testTypeId = '41';
+          testResult.testTypes[0].testResult = 'fail';
           delete testResult.testTypes[0].centralDocs;
           const validationResult =
             ValidationUtil.validateInsertTestResultPayload(testResult);
