@@ -601,20 +601,6 @@ export class ValidationUtil {
           `${enums.MESSAGES.CENTRAL_DOCS_NOT_AVAILABLE_FOR_TEST_TYPE} ${testType.testTypeId}`,
         );
       }
-
-      // if it is in the list of central docs test types, is it a valid testResult of pass or prs
-      if (
-        validTestTypeId &&
-        !(
-          testType.testResult === enums.TEST_RESULT.PASS ||
-          testType.testResult === enums.TEST_RESULT.PRS
-        )
-      ) {
-        throw new models.HTTPError(
-          400,
-          enums.MESSAGES.CENTRAL_DOCS_NOT_AVAILABLE_FOR_FAIL_STATUS,
-        );
-      }
     });
   }
 }
