@@ -51,7 +51,9 @@ export class ValidationUtil {
     //   this.ivaFailedHasRequiredFields(payload.testTypes);
     // }
 
-    this.validateCentralDocs(payload.testTypes);
+    if (payload.testStatus === enums.TEST_STATUS.SUBMITTED) {
+      this.validateCentralDocs(payload.testTypes);
+    }
 
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validationSchema.validate(payload)
@@ -581,31 +583,30 @@ export class ValidationUtil {
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
     testTypes.forEach((testType) => {
-      if (
-        TestTypeHelper.validateTestTypeIdInList(
+      // if centralDocs is not present, then no object to validate immediately return true
+      if (!testType.centralDocs) { return true; }
+
+      // if centralDocs is present, does the test type id exist in the list of central docs test types
+      const validTestTypeId = TestTypeHelper.validateTestTypeIdInList(
           CENTRAL_DOCS_TEST,
           testType.testTypeId,
-        ) &&
-        !testType?.centralDocs
-      ) {
+      );
+
+      // if the test type is not in the list of central docs test types, throw an error
+      if (!validTestTypeId) {
         throw new models.HTTPError(
-          400,
-          `Central docs required for test type ${testType.testTypeId}`,
+            400,
+            `${enums.MESSAGES.CENTRAL_DOCS_NOT_AVAILABLE_FOR_TEST_TYPE} ${testType.testTypeId}`,
         );
       }
-      if (
-        !TestTypeHelper.validateTestTypeIdInList(
-          CENTRAL_DOCS_TEST,
-          testType.testTypeId,
-        ) &&
-        testType?.centralDocs
-      ) {
+
+      // if it is in the list of central docs test types, is it a valid testResult of pass or prs
+      if (validTestTypeId && !(testType.testResult === enums.TEST_RESULT.PASS || testType.testResult === enums.TEST_RESULT.PRS)) {
         throw new models.HTTPError(
-          400,
-          `Central documents can not be issued for test type ${testType.testTypeId}`,
+            400,
+            enums.MESSAGES.CENTRAL_DOCS_NOT_AVAILABLE_FOR_FAIL_STATUS,
         );
       }
-      return true;
     });
   }
 }

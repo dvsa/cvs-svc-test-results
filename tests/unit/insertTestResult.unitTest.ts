@@ -2399,6 +2399,7 @@ describe('insertTestResult', () => {
       it('should throw error', () => {
         const testResult = testResultsPostMock[8];
         const clonedTestResult = cloneDeep(testResult);
+        delete clonedTestResult.testTypes[0].centralDocs;
         clonedTestResult.testTypes[0].certificateNumber = null;
         clonedTestResult.testTypes[0].testResult = 'fail';
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -3250,11 +3251,11 @@ describe('insertTestResult', () => {
           expect(validationResult).toBe(true);
         });
 
-        it('should throw a validation error when reason for issue is not present', () => {
+        it('should throw a validation error when reasons for issue is not present', () => {
           testResult.testTypes[0].centralDocs = {
             issueRequired: true,
             reasonsForIssue: ['reason'],
-          };
+          } as any;
           const validationResult =
             ValidationUtil.validateInsertTestResultPayload(testResult);
           expect(validationResult).toBe(true);
@@ -3341,26 +3342,6 @@ describe('insertTestResult', () => {
         ).not.toThrow();
       });
 
-      it('should throw for invalid central docs', () => {
-        const testTypes = [
-          createTestType(CENTRAL_DOCS_TEST.IDS[0], undefined),
-          createTestType('non-central-doc-id'),
-        ];
-        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
-          HTTPError,
-        );
-        try {
-          ValidationUtil.validateCentralDocs(testTypes);
-        } catch (error) {
-          console.log();
-          expect(error).toBeInstanceOf(HTTPError);
-          expect(error.statusCode).toBe(400);
-          expect(error.body).toBe(
-            `Central docs required for test type ${CENTRAL_DOCS_TEST.IDS[0]}`,
-          );
-        }
-      });
-
       it('should throw for invalid test type with central docs', () => {
         const testTypes = [
           createTestType('1',  {
@@ -3386,10 +3367,15 @@ describe('insertTestResult', () => {
       });
 
       it('should throw for mixed valid and invalid types', () => {
+        const testResultFail = { ...testResultsPostMock[16] } as ITestResultPayload;
+        testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
         const testTypes = [
           createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
-          createTestType(CENTRAL_DOCS_TEST.IDS[1], undefined),
-          createTestType('non-central-doc-id'),
+           createTestType('1',  {
+               issueRequired: true,
+               notes: 'notes',
+               reasonsForIssue: ['reason'],
+           }),
         ];
         expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
           HTTPError,
@@ -3400,10 +3386,30 @@ describe('insertTestResult', () => {
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(
-            `Central docs required for test type ${CENTRAL_DOCS_TEST.IDS[1]}`,
+            `Central documents can not be issued for test type 1`,
           );
         }
       });
+
+      it('should throw for valid type but invalid test status', () => {
+          const testResultFail = { ...testResultsPostMock[16] } as ITestResultPayload;
+          testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
+          const testTypes = [
+              testResultFail.testTypes[0],
+          ];
+          expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+              HTTPError,
+          );
+          try {
+              ValidationUtil.validateCentralDocs(testTypes);
+          } catch (error) {
+              expect(error).toBeInstanceOf(HTTPError);
+              expect(error.statusCode).toBe(400);
+              expect(error.body).toBe(
+                  `Central documents can not be issued for a test status of fail`,
+              );
+          }
+        });
     });
   });
   describe('IVA Defects', () => {

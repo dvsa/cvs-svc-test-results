@@ -7,18 +7,18 @@ const url = 'http://localhost:3006/';
 const request = supertest(url);
 
 describe('postTestResults', () => {
-  context('when submitting a test result with central docs', () => {
-    it('should return 400 when central docs are required but missing', async () => {
+  context('when submitting a fail test result with central docs on a valid test type id', () => {
+    it('should return 400', async () => {
       const testResult =
         testResultsPostMock[15] as unknown as ITestResultPayload;
 
       testResult.testTypes[0].testTypeId = CENTRAL_DOCS_TEST.IDS[3];
-      delete testResult.testTypes[0].centralDocs;
+      testResult.testTypes[0].testResult = 'fail';
 
       const res = await request.post('test-results').send(testResult);
 
       expect(res.status).toBe(400);
-      expect(res.body).toBe('Central docs required for test type 47');
+      expect(res.body).toBe('Central documents can not be issued for a test status of fail');
     });
   });
 
