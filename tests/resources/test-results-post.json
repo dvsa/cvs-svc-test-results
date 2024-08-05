@@ -525,11 +525,6 @@
         "certificateNumber": "12512ds",
         "testTypeName": "Annual test",
         "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "customDefects": [
           {
             "referenceNumber": "abcd",
@@ -720,11 +715,6 @@
           "code": "m",
           "description": "modification or change of engine"
         },
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "emissionStandard": "0.03 g/kWh Euro IV PM",
         "fuelType": "gas-cng",
         "smokeTestKLimitApplied": "123",
@@ -818,11 +808,6 @@
         "reasonForAbandoning": null,
         "additionalCommentsForAbandon": null,
         "additionalNotesRecorded": "Test notes",
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "customDefects": [
           {
             "referenceNumber": "abcd",
@@ -896,11 +881,6 @@
             "defectNotes": null
           }
         ],
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "defects": []
       }
     ]
@@ -967,11 +947,6 @@
             "defectNotes": null
           }
         ],
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "defects": []
       }
     ]
@@ -1037,11 +1012,6 @@
             "defectNotes": null
           }
         ],
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        },
         "defects": []
       }
     ],
@@ -1186,42 +1156,62 @@
     "bodyType": { "code": "test code", "description": "test description" }
   },
   {
-    "vin": "YV3S2G5265A101407",
-    "vrm": "PO54ACV",
-    "countryOfRegistration": "gbz",
-    "euVehicleCategory": "m2",
-    "odometerReading": 4000,
-    "odometerReadingUnits": "kilometres",
-    "preparerName": "",
-    "preparerId": "",
-    "make": "DARWIN/EAST LANCS",
-    "model": "VYKING MYLLENIUM",
-    "bodyType": {
-      "code": "d",
-      "description": "double decker"
-    },
-    "contingencyTestNumber": "1534432",
-    "testStartTimestamp": "2024-07-18T10:00:00.000",
-    "testEndTimestamp": "2024-07-18T12:00:00.000",
+    "testerStaffId": "1",
+    "systemNumber": "1218",
+    "testResultId": "195",
+    "testStartTimestamp": "2019-01-14T10:36:33.987Z",
+    "testEndTimestamp": "2019-01-14T10:36:33.987Z",
+    "testStatus": "submitted",
+    "numberOfWheelsDriven": 3,
     "testTypes": [
       {
+        "prohibitionIssued": false,
+        "additionalCommentsForAbandon": "none",
+        "testTypeEndTimestamp": "2019-01-14T10:36:33.987Z",
+        "secondaryCertificateNumber": "1234",
+        "reasonForAbandoning": "none",
+        "testTypeId": "95",
+        "testTypeStartTimestamp": "2019-01-14T10:36:33.987Z",
+        "certificateNumber": "W01A00209",
+        "testTypeName": "First test",
+        "additionalNotesRecorded": "VEHICLE FRONT REGISTRATION PLATE MISSING",
+        "customDefects": [
+          {
+            "referenceNumber": "abcd",
+            "defectName": "Some custom defect",
+            "defectNotes": "some defect noe"
+          }
+        ],
+        "defects": [
+          {
+            "prohibitionIssued": false,
+            "deficiencyCategory": "major",
+            "deficiencyText": "missing.",
+            "prs": false,
+            "additionalInformation": {
+              "location": {
+                "axleNumber": null,
+                "horizontal": null,
+                "vertical": null,
+                "longitudinal": "front",
+                "rowNumber": null,
+                "lateral": null,
+                "seatNumber": null
+              },
+              "notes": "None"
+            },
+            "itemNumber": 1,
+            "deficiencyRef": "1.1.a",
+            "stdForProhibition": false,
+            "deficiencySubId": null,
+            "imDescription": "Registration Plate",
+            "deficiencyId": "a",
+            "itemDescription": "A registration plate:",
+            "imNumber": 1
+          }
+        ],
+        "name": "First test",
         "testResult": "pass",
-        "testTypeName": "COIF with annual test",
-        "reasonForAbandoning": null,
-        "additionalCommentsForAbandon": null,
-        "certificateNumber": "",
-        "secondaryCertificateNumber": "34523453452345",
-        "testTypeStartTimestamp": "2024-07-18T10:00:00.000",
-        "testTypeEndTimestamp": "2024-07-18T12:00:00.000",
-        "prohibitionIssued": false,
-        "seatbeltInstallationCheckDate": true,
-        "numberOfSeatbeltsFitted": 4,
-        "lastSeatbeltInstallationCheckDate": "2024-07-18T00:00:00.000",
-        "additionalNotesRecorded": "",
-        "defects": [],
-        "testTypeId": "142",
-        "name": "With annual test",
-        "customDefects": [],
         "centralDocs": {
           "issueRequired": false,
           "notes": "notes",
@@ -1229,110 +1219,25 @@
         }
       }
     ],
-    "testStationName": "Swansea Test HQ",
-    "testStationPNumber": "14-7160003",
-    "testStationType": "hq",
-    "testerStaffId": "8bd2avcf-c31e-4669-acb7-54bc3878e1b0",
-    "testerName": "CVS Dev",
-    "testerEmailAddress": "CVS.Dev@dvsagov.onmicrosoft.com",
-    "reasonForCreation": "TEST DATA",
-    "testResultId": "4ea8a6a9-b670-4960-9dfc-6a2242791c68",
-    "vehicleType": "psv",
-    "testStatus": "submitted",
-    "reasonForCancellation": "",
-    "systemNumber": "3128310",
     "vehicleClass": {
-      "code": "l",
-      "description": "large psv(ie: greater than 23 seats)"
+      "description": "motorbikes over 200cc or with a sidecar",
+      "code": "2"
     },
+    "vin": "P012301230123",
+    "testStationName": "Rowe, Wunsch and Wisoky",
     "noOfAxles": 2,
-    "numberOfWheelsDriven": 2,
-    "regnDate": "2004-08-23",
-    "firstUseDate": null,
-    "createdByName": "Dobbie1",
-    "createdById": "3341037-bb122-4c54-9gfa-a2413asdfdsaf45",
-    "lastUpdatedAt": "2024-07-18T14:03:23.155Z",
-    "lastUpdatedByName": "SA_Daniel Searle1",
-    "lastUpdatedById": "3341037-bb122-4c54-9gfa-a2413asdfdsaf45",
-    "numberOfSeats": 70,
+    "vehicleType": "trl",
+    "countryOfRegistration": "united kingdom",
+    "preparerId": "ak4434",
+    "preparerName": "Durrell Vehicles Limited",
     "vehicleConfiguration": "rigid",
-    "typeOfTest": "contingency",
-    "source": "vtm",
-    "vehicleSize": "large"
-  },
-  {
-    "vin": "YV3S2G5265A101407",
-    "vrm": "PO54ACV",
-    "countryOfRegistration": "gbz",
-    "euVehicleCategory": "m2",
-    "odometerReading": 4000,
-    "odometerReadingUnits": "kilometres",
-    "preparerName": "",
-    "preparerId": "",
-    "make": "DARWIN/EAST LANCS",
-    "model": "VYKING MYLLENIUM",
-    "bodyType": {
-      "code": "d",
-      "description": "double decker"
-    },
-    "contingencyTestNumber": "1534432",
-    "testStartTimestamp": "2024-07-18T10:00:00.000",
-    "testEndTimestamp": "2024-07-18T12:00:00.000",
-    "testTypes": [
-      {
-        "testResult": "fail",
-        "testTypeName": "COIF with annual test",
-        "reasonForAbandoning": null,
-        "additionalCommentsForAbandon": null,
-        "certificateNumber": "",
-        "secondaryCertificateNumber": "34523453452345",
-        "testTypeStartTimestamp": "2024-07-18T10:00:00.000",
-        "testTypeEndTimestamp": "2024-07-18T12:00:00.000",
-        "prohibitionIssued": false,
-        "seatbeltInstallationCheckDate": true,
-        "numberOfSeatbeltsFitted": 4,
-        "lastSeatbeltInstallationCheckDate": "2024-07-18T00:00:00.000",
-        "additionalNotesRecorded": "",
-        "defects": [],
-        "testTypeId": "142",
-        "name": "With annual test",
-        "customDefects": [],
-        "centralDocs": {
-          "issueRequired": false,
-          "notes": "notes",
-          "reasonsForIssue": ["issue reason"]
-        }
-      }
-    ],
-    "testStationName": "Swansea Test HQ",
-    "testStationPNumber": "14-7160003",
-    "testStationType": "hq",
-    "testerStaffId": "8bd2avcf-c31e-4669-acb7-54bc3878e1b0",
-    "testerName": "CVS Dev",
-    "testerEmailAddress": "CVS.Dev@dvsagov.onmicrosoft.com",
-    "reasonForCreation": "TEST DATA",
-    "testResultId": "4ea8a6a9-b670-4960-9dfc-6a2242791c68",
-    "vehicleType": "psv",
-    "testStatus": "submitted",
-    "reasonForCancellation": "",
-    "systemNumber": "3128310",
-    "vehicleClass": {
-      "code": "l",
-      "description": "large psv(ie: greater than 23 seats)"
-    },
-    "noOfAxles": 2,
-    "numberOfWheelsDriven": 2,
-    "regnDate": "2004-08-23",
-    "firstUseDate": null,
-    "createdByName": "Dobbie1",
-    "createdById": "3341037-bb122-4c54-9gfa-a2413asdfdsaf45",
-    "lastUpdatedAt": "2024-07-18T14:03:23.155Z",
-    "lastUpdatedByName": "SA_Daniel Searle1",
-    "lastUpdatedById": "3341037-bb122-4c54-9gfa-a2413asdfdsaf45",
-    "numberOfSeats": 70,
-    "vehicleConfiguration": "rigid",
-    "typeOfTest": "contingency",
-    "source": "vtm",
-    "vehicleSize": "large"
+    "testStationType": "gvts",
+    "reasonForCancellation": "none",
+    "testerName": "Dorel",
+    "testStationPNumber": "87-1369569",
+    "testerEmailAddress": "dorel.popescu@dvsagov.uk",
+    "euVehicleCategory": "o1",
+    "trailerId": "abcd",
+    "firstUseDate": "2018-11-11"
   }
 ]

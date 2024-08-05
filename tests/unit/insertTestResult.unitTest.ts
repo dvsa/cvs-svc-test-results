@@ -3377,7 +3377,7 @@ describe('insertTestResult', () => {
       });
 
       it('should throw for mixed valid and invalid types', () => {
-        const testResultFail = { ...testResultsPostMock[16] } as ITestResultPayload;
+        const testResultFail = { ...testResultsPostMock[15] } as ITestResultPayload;
         testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
         const testTypes = [
           createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
@@ -3401,8 +3401,9 @@ describe('insertTestResult', () => {
         }
       });
 
-      it('should throw for valid type but invalid test status', () => {
-          const testResultFail = { ...testResultsPostMock[16] } as ITestResultPayload;
+      it('should throw for valid type but invalid test result', () => {
+          const testResultFail = { ...testResultsPostMock[15] } as ITestResultPayload;
+          testResultFail.testTypes[0].testResult = 'fail';
           testResultFail.testTypes[0].centralDocs = { issueRequired: true, reasonsForIssue: [] }
           const testTypes = [
               testResultFail.testTypes[0],
