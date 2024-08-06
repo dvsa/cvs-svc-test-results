@@ -51,9 +51,7 @@ export class ValidationUtil {
     //   this.ivaFailedHasRequiredFields(payload.testTypes);
     // }
 
-    if (payload.testStatus === enums.TEST_STATUS.SUBMITTED) {
-      this.validateCentralDocs(payload.testTypes);
-    }
+    this.validateCentralDocs(payload.testTypes);
 
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validationSchema.validate(payload)
