@@ -63,6 +63,7 @@ export enum MESSAGES {
   ID_ALREADY_EXISTS = 'Test Result id already exists',
   CONDITIONAL_REQUEST_FAILED = 'The conditional request failed',
   REASON_FOR_ABANDONING_NOT_PRESENT = 'Reason for Abandoning not present on all abandoned tests',
+  CENTRAL_DOCS_NOT_AVAILABLE_FOR_TEST_TYPE = 'Central documents can not be issued for test type',
 }
 
 export enum VEHICLE_TYPE {

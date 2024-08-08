@@ -581,31 +581,24 @@ export class ValidationUtil {
    */
   public static validateCentralDocs(testTypes: TestType[]): void {
     testTypes.forEach((testType) => {
-      if (
-        TestTypeHelper.validateTestTypeIdInList(
-          CENTRAL_DOCS_TEST,
-          testType.testTypeId,
-        ) &&
-        !testType?.centralDocs
-      ) {
+      // if centralDocs is not present, then no object to validate immediately return true
+      if (!testType.centralDocs) {
+        return true;
+      }
+
+      // if centralDocs is present, does the test type id exist in the list of central docs test types
+      const validTestTypeId = TestTypeHelper.validateTestTypeIdInList(
+        CENTRAL_DOCS_TEST,
+        testType.testTypeId,
+      );
+
+      // if the test type is not in the list of central docs test types, throw an error
+      if (!validTestTypeId) {
         throw new models.HTTPError(
           400,
-          `Central docs required for test type ${testType.testTypeId}`,
+          `${enums.MESSAGES.CENTRAL_DOCS_NOT_AVAILABLE_FOR_TEST_TYPE} ${testType.testTypeId}`,
         );
       }
-      if (
-        !TestTypeHelper.validateTestTypeIdInList(
-          CENTRAL_DOCS_TEST,
-          testType.testTypeId,
-        ) &&
-        testType?.centralDocs
-      ) {
-        throw new models.HTTPError(
-          400,
-          `Central documents can not be issued for test type ${testType.testTypeId}`,
-        );
-      }
-      return true;
     });
   }
 }
