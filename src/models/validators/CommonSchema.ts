@@ -138,7 +138,7 @@ export const testResultsCommonSchema = Joi.object().keys({
   vin: Joi.string().min(1).max(21).required(),
   testStationName: Joi.string().max(999).required().allow('', null),
   testStationPNumber: Joi.string().max(20).required().allow('', null),
-  testStationType: Joi.string().valid('atf', 'gvts', 'hq', 'potf').required(),
+  testStationType: Joi.string().valid('atf', 'gvts', 'hq', 'potf', 'vef').required(),
   testerName: Joi.string().max(60).required().allow('', null),
   testerEmailAddress: Joi.string().max(60).required().allow('', null),
   testerStaffId: Joi.string().max(36).required().allow(''),
