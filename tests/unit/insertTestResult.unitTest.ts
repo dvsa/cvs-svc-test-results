@@ -2,6 +2,7 @@ import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
 import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
+import { ValidationError } from 'joi';
 import {
   ERRORS,
   MESSAGES,
@@ -15,7 +16,6 @@ import { HTTPError } from '../../src/models/HTTPError';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
-import { ValidationError } from 'joi';
 
 describe('insertTestResult', () => {
   const baseMockTestResultsDAO = {
