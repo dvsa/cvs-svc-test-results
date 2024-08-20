@@ -1,6 +1,6 @@
 import * as Joi from 'joi';
-import { ValidationErrorItem } from 'joi';
-import { TESTING_ERRORS, VEHICLE_TYPES } from '../../assets/Enums';
+import { TestStationTypes } from "@dvsa/cvs-type-definitions/types/v1/enums/testStationType.enum";
+import { VEHICLE_TYPES } from '../../assets/Enums';
 
 const baseTestTypesCommonSchema = Joi.object().keys({
   name: Joi.string().required(),
@@ -138,7 +138,7 @@ export const testResultsCommonSchema = Joi.object().keys({
   vin: Joi.string().min(1).max(21).required(),
   testStationName: Joi.string().max(999).required().allow('', null),
   testStationPNumber: Joi.string().max(20).required().allow('', null),
-  testStationType: Joi.string().valid('atf', 'gvts', 'hq', 'potf').required(),
+  testStationType: Joi.string().valid(...Object.values(TestStationTypes)).required(),
   testerName: Joi.string().max(60).required().allow('', null),
   testerEmailAddress: Joi.string().max(60).required().allow('', null),
   testerStaffId: Joi.string().max(36).required().allow(''),

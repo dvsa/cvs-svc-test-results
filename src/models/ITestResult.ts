@@ -1,4 +1,5 @@
 import { InspectionType } from '@dvsa/cvs-type-definitions/types/required-standards/defects/get';
+import { TestStationTypes } from '@dvsa/cvs-type-definitions/types/v1/enums/testStationType.enum';
 
 export interface ITestResult {
   testResultId: string;
@@ -21,7 +22,7 @@ export interface ITestResult {
   preparerName: string;
   odometerReading: number;
   vehicleConfiguration: string;
-  testStationType: string;
+  testStationType: TestStationTypes;
   reasonForCancellation: string | null;
   testerName: string;
   vrm?: string; // Mandatory for PSV and HGV, not applicable to TRL
