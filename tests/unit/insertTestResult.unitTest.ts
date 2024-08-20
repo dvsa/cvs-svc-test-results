@@ -15,6 +15,7 @@ import { HTTPError } from '../../src/models/HTTPError';
 import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
+import { ValidationError } from 'joi';
 
 describe('insertTestResult', () => {
   const baseMockTestResultsDAO = {
@@ -3405,7 +3406,6 @@ describe('insertTestResult', () => {
         try {
           ValidationUtil.validateCentralDocs(testTypes);
         } catch (error) {
-          console.log();
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(
