@@ -2,7 +2,6 @@ import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
 import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
-import { ValidationError } from 'joi';
 import {
   ERRORS,
   MESSAGES,

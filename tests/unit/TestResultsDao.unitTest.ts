@@ -13,8 +13,6 @@ jest.mock('../../src/services/LambdaService');
 describe('Test Results DAO', () => {
   const dao = new TestResultsDAO();
   const docClient = mockClient(DynamoDBDocumentClient);
-  // const lambClient = mockClient(LambdaClient);
-
   beforeEach(() => {
     docClient.reset();
   });
