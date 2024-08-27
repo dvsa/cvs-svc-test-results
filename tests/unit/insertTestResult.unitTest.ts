@@ -3252,13 +3252,13 @@ describe('insertTestResult', () => {
 
         it('should create the record successfully when all present and test result fail', () => {
           testResult.testTypes[0].centralDocs = {
-             issueRequired: true,
-             notes: 'notes',
-             reasonsForIssue: ['reason'],
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
           };
           testResult.testTypes[0].testResult = 'fail';
           const validationResult =
-              ValidationUtil.validateInsertTestResultPayload(testResult);
+            ValidationUtil.validateInsertTestResultPayload(testResult);
           expect(validationResult).toBe(true);
         });
 
@@ -3405,7 +3405,6 @@ describe('insertTestResult', () => {
         try {
           ValidationUtil.validateCentralDocs(testTypes);
         } catch (error) {
-          console.log();
           expect(error).toBeInstanceOf(HTTPError);
           expect(error.statusCode).toBe(400);
           expect(error.body).toBe(

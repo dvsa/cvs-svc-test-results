@@ -1,18 +1,11 @@
 import {
-  InvokeCommand,
-  InvokeCommandOutput,
-  LambdaClient,
-} from '@aws-sdk/client-lambda';
-import {
   BatchWriteCommand,
   DynamoDBDocumentClient,
   PutCommand,
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
-import { TestTypeParams } from '../../src/models';
-import { ITestResultFilters } from '../../src/models/ITestResultFilter';
-import { TestResultsDAO } from '../../src/models/TestResultsDAO';
+import { TestTypeParams, ITestResultFilters, TestResultsDAO } from '../../src/models';
 import { LambdaService } from '../../src/services/LambdaService';
 
 jest.mock('../../src/services/LambdaService');
@@ -20,8 +13,6 @@ jest.mock('../../src/services/LambdaService');
 describe('Test Results DAO', () => {
   const dao = new TestResultsDAO();
   const docClient = mockClient(DynamoDBDocumentClient);
-  const lambClient = mockClient(LambdaClient);
-
   beforeEach(() => {
     docClient.reset();
   });
