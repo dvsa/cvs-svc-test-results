@@ -5,10 +5,5 @@
   "documentation": "",
   "language": "node",
   "terraform": false,
-  "monorepo": false,
-  "dynamo_tables": [
-    {
-      "test-results": "test-results.json"
-    }
-  ]
+  "monorepo": false
 }
