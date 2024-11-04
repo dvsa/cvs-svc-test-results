@@ -1,3 +1,7 @@
+import {
+  TestResultSchema,
+  TestTypeSchema,
+} from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import * as enums from '../../../src/assets/Enums';
 import * as models from '../../../src/models';
 import * as utils from '../../../src/utils';
@@ -337,7 +341,7 @@ describe('TestDataProvider', () => {
         'logDefectsReporting',
       );
       expect(logDefectsReportingSpy).not.toHaveBeenCalled();
-      await testDataProvider.insertTestResult({} as models.ITestResultPayload);
+      await testDataProvider.insertTestResult({} as TestResultSchema);
       expect(logDefectsReportingSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -350,9 +354,7 @@ describe('TestDataProvider', () => {
 
       testDataProvider.testResultsDAO = new MockTestResultsDAO();
       try {
-        await testDataProvider.insertTestResult(
-          {} as models.ITestResultPayload,
-        );
+        await testDataProvider.insertTestResult({} as TestResultSchema);
       } catch (e) {
         expect(e.body).toEqual(error.message);
       }
@@ -374,7 +376,7 @@ describe('TestDataProvider', () => {
           }),
         );
       const output = await testDataProvider.updateTestTypeDetails(
-        [{} as models.TestType],
+        [{} as TestTypeSchema],
         {} as models.TestTypeParams,
       );
       expect(output[0].testCode).toBe('foo');

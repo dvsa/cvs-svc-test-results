@@ -1,9 +1,9 @@
 import { cloneDeep } from 'lodash';
+import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import testResults from '../../resources/test-results.json';
 import { PsvMostRecentExpiryStrategy } from '../../../src/handlers/expiry/strategies/PsvMostRecentExpiryStrategy';
 import { StrategyMock } from '../../util/expiryStrategyUtil';
-import { TEST_RESULT } from '../../../src/assets/Enums';
-import { TestType } from '../../../src/models/ITestResult';
 
 describe('For PsvMostRecentExpiryStrategy', () => {
   let testResultsMockDB: any;
@@ -37,9 +37,9 @@ describe('For PsvMostRecentExpiryStrategy', () => {
         'The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a recent expiry date of $inputRecentExpiryDate',
         ({ inputRecentExpiryDate, inputTestDate, ExpectedExpiryDate }) => {
           const psvTestResult = cloneDeep(testResultsMockDB[4]);
-          psvTestResult.testTypes.forEach((type: TestType) => {
+          psvTestResult.testTypes.forEach((type: TestTypeSchema) => {
             type.testTypeId = '1';
-            type.testResult = TEST_RESULT.PASS;
+            type.testResult = TestResults.PASS;
           });
 
           psvMostRecentExpiryStrategy = StrategyMock.setupStrategy(

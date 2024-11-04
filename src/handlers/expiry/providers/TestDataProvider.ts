@@ -1,10 +1,15 @@
 import { ServiceException } from '@smithy/smithy-client';
+import {
+  TestResultSchema,
+  TestTypeSchema,
+} from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import * as enums from '../../../assets/Enums';
 import * as models from '../../../models';
 import { Service } from '../../../models/injector/ServiceDecorator';
 import * as utils from '../../../utils';
 import { DateProvider } from './DateProvider';
 import { ITestDataProvider } from './ITestDataProvider';
+import { ITestResultFilters } from '../../../models';
 
 @Service()
 export class TestDataProvider implements ITestDataProvider {
@@ -16,8 +21,8 @@ export class TestDataProvider implements ITestDataProvider {
    * @param filters filters used to search the database
    */
   public async getTestResultBySystemNumber(
-    filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+    filters: ITestResultFilters,
+  ): Promise<TestResultSchema[]> {
     try {
       const testResults = await this.testResultsDAO.getBySystemNumber(filters);
       if (!testResults.length) {
@@ -41,7 +46,7 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async getTestResultByTesterStaffId(
     filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     try {
       const result = await this.testResultsDAO.getByTesterStaffId(filters);
       if (result && !result.length) {
@@ -65,10 +70,10 @@ export class TestDataProvider implements ITestDataProvider {
 
   public async getTestHistory(
     systemNumber: string,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     const fromDateTime = new Date(1970, 1, 1);
     const toDateTime = new Date(2300, 1, 1);
-    let result: models.ITestResult[] = [];
+    let result: TestResultSchema[] = [];
     try {
       const filters: models.ITestResultFilters = {
         systemNumber,
@@ -146,9 +151,9 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static applyTestResultsFilters(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
     filters: models.ITestResultFilters,
-  ): models.ITestResult[] {
+  ): TestResultSchema[] {
     const { testStatus, testResultId, testVersion } = filters;
     testResults = this.filterTestResultsByDeletionFlag(testResults);
     testResults = this.filterTestTypesByDeletionFlag(testResults);
@@ -179,7 +184,7 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async getTestTypesWithTestCodesAndClassification(
-    testTypes: models.TestType[] = [],
+    testTypes: TestTypeSchema[] = [],
     testTypeParams: models.TestTypeParams,
   ) {
     return this.createNewTestTypes(testTypes, testTypeParams);
@@ -194,9 +199,9 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async updateTestTypeDetails(
-    testTypes: models.TestType[],
+    testTypes: TestTypeSchema[],
     testTypeParams: models.TestTypeParams,
-  ): Promise<models.TestType[]> {
+  ): Promise<TestTypeSchema[]> {
     return Promise.all(
       testTypes.map(async (testType) => {
         const { testTypeId } = testType;
@@ -227,9 +232,7 @@ export class TestDataProvider implements ITestDataProvider {
     );
   }
 
-  public async setTestNumberForEachTestType(
-    payload: models.ITestResultPayload,
-  ) {
+  public async setTestNumberForEachTestType(payload: TestResultSchema) {
     const { testTypes } = payload;
 
     if (!testTypes) {
@@ -240,31 +243,31 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private async createNewTestNumber(
-    list: models.TestType[],
-  ): Promise<models.TestType[]> {
+    list: TestTypeSchema[],
+  ): Promise<TestTypeSchema[]> {
     return Promise.all(
       list.map(async (testType) => {
         const { testNumber } = await this.testResultsDAO.createTestNumber();
         return {
           ...testType,
           testNumber,
-        } as models.TestType;
+        } as TestTypeSchema;
       }),
     );
   }
 
-  public async insertTestResult(payload: models.ITestResultPayload) {
+  public async insertTestResult(payload: TestResultSchema) {
     try {
       const result = await this.testResultsDAO.createSingle(payload);
       utils.LoggingUtil.logDefectsReporting(payload);
-      return result.Attributes as models.ITestResult[];
+      return result.Attributes as TestResultSchema[];
     } catch (error) {
       console.error('TestDataProvider.insertTestResult -> ', error);
       throw new models.HTTPError(error.$metadata.httpStatusCode, error.message);
     }
   }
 
-  public async updateTestResult(payload: models.ITestResult) {
+  public async updateTestResult(payload: TestResultSchema) {
     try {
       return await this.testResultsDAO?.updateTestResult(payload);
     } catch (error) {
@@ -276,10 +279,10 @@ export class TestDataProvider implements ITestDataProvider {
   // #endregion
   // #region [rgba(0, 205, 30, 0.1)] Private Static functions
   private static filterTestResultsByParam(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
     filterName: string,
     filterValue: any,
-  ): models.ITestResult[] {
+  ): TestResultSchema[] {
     return filterValue
       ? testResults.filter((testResult) => {
           const k = filterName as keyof typeof testResult;
@@ -289,10 +292,10 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static filterTestResultByDate(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
     fromDateTime: string | number | Date,
     toDateTime: string | number | Date,
-  ): models.ITestResult[] {
+  ): TestResultSchema[] {
     return testResults.filter((testResult) =>
       DateProvider.isBetweenDates(
         testResult.testStartTimestamp,
@@ -304,10 +307,10 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static filterTestResultsByTestVersion(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
     testVersion: string = enums.TEST_VERSION.CURRENT,
-  ): models.ITestResult[] {
-    let result: models.ITestResult[] = [];
+  ): TestResultSchema[] {
+    let result: TestResultSchema[] = [];
     if (testVersion === enums.TEST_VERSION.ALL) {
       return testResults;
     }
@@ -334,7 +337,7 @@ export class TestDataProvider implements ITestDataProvider {
     return result;
   }
 
-  private static removeTestHistory(testResults: models.ITestResult[]) {
+  private static removeTestHistory(testResults: TestResultSchema[]) {
     for (const testResult of testResults) {
       delete testResult.testHistory;
     }
@@ -342,7 +345,7 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static filterTestResultsByDeletionFlag(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
   ) {
     return testResults.filter(
       (testResult) => !testResult.deletionFlag === true,
@@ -350,7 +353,7 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private static filterTestTypesByDeletionFlag(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
   ) {
     testResults.forEach((testResult) => {
       const filteredTestTypes = testResult.testTypes.filter(

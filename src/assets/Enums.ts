@@ -96,13 +96,6 @@ export const TEST_TYPE_CLASSIFICATION = {
   MSVA_WITH_CERTIFICATE: 'MSVA With Certificate',
 };
 
-export const TEST_RESULT = {
-  PASS: 'pass',
-  FAIL: 'fail',
-  ABANDONED: 'abandoned',
-  PRS: 'prs',
-};
-
 export const TEST_STATUS = {
   SUBMITTED: 'submitted',
   CANCELLED: 'cancelled',
@@ -130,18 +123,6 @@ export const HGV_TRL_ROADWORTHINESS_TEST_TYPES = {
 
 export const COIF_EXPIRY_TEST_TYPES = {
   IDS: ['142', '146', '175', '177'],
-};
-
-export const LEC_TEST_TYPES = {
-  IDS: ['39', '201', '44', '45'],
-};
-
-export const ADR_TEST_TYPES = {
-  IDS: ['50', '59', '60'],
-};
-
-export const TIR_TEST_TYPES = {
-  IDS: ['49', '56', '57'],
 };
 
 export const COUNTRY_OF_REGISTRATION: string[] = [

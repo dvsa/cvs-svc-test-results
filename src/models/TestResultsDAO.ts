@@ -12,6 +12,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { ServiceException } from '@smithy/smithy-client';
 import { fromUtf8 } from '@smithy/util-utf8';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import * as models from '.';
 import { LambdaService } from '../services/LambdaService';
 import { Configuration } from '../utils/Configuration';
@@ -83,7 +84,7 @@ export class TestResultsDAO {
 
   public getByTesterStaffId(
     filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     const { testerStaffId } = filters;
     const keyCondition =
       'testerStaffId = :testerStaffId AND testStartTimestamp > :testStartTimestamp';
@@ -108,7 +109,7 @@ export class TestResultsDAO {
     return this.queryAllData(params);
   }
 
-  public createSingle(payload: models.ITestResultPayload) {
+  public createSingle(payload: TestResultSchema) {
     const query = {
       TableName: this.tableName,
       Item: payload,
@@ -121,11 +122,11 @@ export class TestResultsDAO {
   }
 
   public createMultiple(
-    testResultsItems: models.ITestResult[],
+    testResultsItems: TestResultSchema[],
   ): Promise<BatchWriteCommandOutput | ServiceException> {
     const params = this.generateBatchWritePartialParams();
 
-    testResultsItems.forEach((testResultItem: models.ITestResult) => {
+    testResultsItems.forEach((testResultItem: TestResultSchema) => {
       params.RequestItems[this.tableName].push({
         PutRequest: {
           Item: testResultItem,
@@ -256,7 +257,7 @@ export class TestResultsDAO {
   }
 
   public updateTestResult(
-    updatedTestResult: models.ITestResult,
+    updatedTestResult: TestResultSchema,
   ): Promise<TransactWriteCommandOutput | ServiceException> {
     const query: TransactWriteCommandInput = {
       TransactItems: [
@@ -280,13 +281,13 @@ export class TestResultsDAO {
 
   private async queryAllData(
     params: any,
-    allData: models.ITestResult[] = [],
-  ): Promise<models.ITestResult[]> {
+    allData: TestResultSchema[] = [],
+  ): Promise<TestResultSchema[]> {
     const data: QueryCommandOutput | ServiceException =
       await TestResultsDAO.docClient.send(new QueryCommand(params));
 
     if (data.Items && data.Items.length > 0) {
-      allData = [...allData, ...(data.Items as models.ITestResult[])];
+      allData = [...allData, ...(data.Items as TestResultSchema[])];
     }
 
     if (data.LastEvaluatedKey) {

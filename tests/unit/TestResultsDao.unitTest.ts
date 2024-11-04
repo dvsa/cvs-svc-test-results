@@ -5,7 +5,11 @@ import {
   QueryCommand,
 } from '@aws-sdk/lib-dynamodb';
 import { mockClient } from 'aws-sdk-client-mock';
-import { TestTypeParams, ITestResultFilters, TestResultsDAO } from '../../src/models';
+import {
+  TestTypeParams,
+  ITestResultFilters,
+  TestResultsDAO,
+} from '../../src/models';
 import { LambdaService } from '../../src/services/LambdaService';
 
 jest.mock('../../src/services/LambdaService');

@@ -1,13 +1,13 @@
 import { cloneDeep } from 'lodash';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import testResults from '../resources/test-results.json';
 import postTestResults from '../resources/test-results-post.json';
 import {
   TEST_TYPE_CLASSIFICATION,
   VEHICLE_TYPES,
-  TEST_RESULT,
 } from '../../src/assets/Enums';
-import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { VehicleTestController } from '../../src/handlers/VehicleTestController';
 
 describe('TestResultsService calling generateExpiryDate', () => {
@@ -15,7 +15,7 @@ describe('TestResultsService calling generateExpiryDate', () => {
   let MockTestResultsDAO: jest.Mock;
   let testResultsMockDB: any;
   let testResultsPostMock: any;
-  let baseTestResult: ITestResultPayload;
+  let baseTestResult: TestResultSchema;
 
   beforeEach(() => {
     testResultsMockDB = testResults;
@@ -37,32 +37,32 @@ describe('TestResultsService calling generateExpiryDate', () => {
   describe('When inserting a testResult with Annual With Certificate classification', () => {
     test.each`
       vehicleType          | testResult               | testTypeId | shouldSetCertificateNumber
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PASS}      | ${'122'}   | ${true}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PRS}       | ${'122'}   | ${true}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.FAIL}      | ${'122'}   | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.ABANDONED} | ${'122'}   | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PASS}      | ${'122'}   | ${false}
-      ${VEHICLE_TYPES.TRL} | ${TEST_RESULT.PASS}      | ${'91'}    | ${true}
-      ${VEHICLE_TYPES.TRL} | ${TEST_RESULT.PRS}       | ${'91'}    | ${true}
-      ${VEHICLE_TYPES.TRL} | ${TEST_RESULT.FAIL}      | ${'91'}    | ${false}
-      ${VEHICLE_TYPES.TRL} | ${TEST_RESULT.ABANDONED} | ${'91'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PASS}      | ${'91'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PASS}      | ${'1'}     | ${true}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PRS}       | ${'1'}     | ${true}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.FAIL}      | ${'1'}     | ${true}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.ABANDONED} | ${'1'}     | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PASS}      | ${'94'}    | ${true}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PRS}       | ${'94'}    | ${true}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.FAIL}      | ${'94'}    | ${true}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.ABANDONED} | ${'94'}    | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PASS}      | ${'50'}    | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.PRS}       | ${'50'}    | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.FAIL}      | ${'50'}    | ${false}
-      ${VEHICLE_TYPES.HGV} | ${TEST_RESULT.ABANDONED} | ${'50'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PASS}      | ${'39'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.PRS}       | ${'39'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.FAIL}      | ${'39'}    | ${false}
-      ${VEHICLE_TYPES.PSV} | ${TEST_RESULT.ABANDONED} | ${'39'}    | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PASS}      | ${'122'}   | ${true}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PRS}       | ${'122'}   | ${true}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.FAIL}      | ${'122'}   | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.ABANDONED} | ${'122'}   | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PASS}      | ${'122'}   | ${false}
+      ${VEHICLE_TYPES.TRL} | ${TestResults.PASS}      | ${'91'}    | ${true}
+      ${VEHICLE_TYPES.TRL} | ${TestResults.PRS}       | ${'91'}    | ${true}
+      ${VEHICLE_TYPES.TRL} | ${TestResults.FAIL}      | ${'91'}    | ${false}
+      ${VEHICLE_TYPES.TRL} | ${TestResults.ABANDONED} | ${'91'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PASS}      | ${'91'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PASS}      | ${'1'}     | ${true}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PRS}       | ${'1'}     | ${true}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.FAIL}      | ${'1'}     | ${true}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.ABANDONED} | ${'1'}     | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PASS}      | ${'94'}    | ${true}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PRS}       | ${'94'}    | ${true}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.FAIL}      | ${'94'}    | ${true}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.ABANDONED} | ${'94'}    | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PASS}      | ${'50'}    | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.PRS}       | ${'50'}    | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.FAIL}      | ${'50'}    | ${false}
+      ${VEHICLE_TYPES.HGV} | ${TestResults.ABANDONED} | ${'50'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PASS}      | ${'39'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.PRS}       | ${'39'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.FAIL}      | ${'39'}    | ${false}
+      ${VEHICLE_TYPES.PSV} | ${TestResults.ABANDONED} | ${'39'}    | ${false}
     `(
       'for a $vehicleType with testResult $testResult and testTypeId $testTypeId it should generate a certificate: $shouldSetCertificateNumber',
       ({ vehicleType, testResult, testTypeId, shouldSetCertificateNumber }) => {
