@@ -60,7 +60,7 @@ export class ValidationUtil {
     //   this.ivaFailedHasRequiredFields(payload.testTypes);
     // }
 
-    this.validateCentralDocs(payload.testTypes ?? []);
+    this.validateCentralDocs(payload.testTypes);
 
     const validation: ValidationResult<any> | any | null = validationSchema
       ? validationSchema.validate(payload)

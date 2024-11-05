@@ -1,6 +1,5 @@
 import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { MappingUtil } from '../../src/utils';
-import * as models from '../../src/models';
 import * as enums from '../../src/assets/Enums';
 import dateMockUtils from '../util/dateMockUtils';
 

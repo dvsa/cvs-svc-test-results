@@ -2,7 +2,6 @@ import { cloneDeep } from 'lodash';
 import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import testResults from '../../resources/test-results.json';
-
 import { DateProvider } from '../../../src/handlers/expiry/providers/DateProvider';
 import { PsvRegistrationAnniversaryStrategy } from '../../../src/handlers/expiry/strategies/PsvRegistrationAnniversaryStrategy';
 import { StrategyMock } from '../../util/expiryStrategyUtil';

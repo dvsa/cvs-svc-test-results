@@ -11,7 +11,6 @@ import {
   TransactWriteCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 import { ServiceException } from '@smithy/smithy-client';
-import { fromUtf8 } from '@smithy/util-utf8';
 import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import * as models from '.';
 import { LambdaService } from '../services/LambdaService';
