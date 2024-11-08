@@ -5,5 +5,10 @@
   "documentation": "",
   "language": "node",
   "terraform": false,
-  "monorepo": false
+  "monorepo": false,
+  "dynamo_tables": [
+    {
+      "test-results": "empty-seed.json"
+    }
+  ]
 }
