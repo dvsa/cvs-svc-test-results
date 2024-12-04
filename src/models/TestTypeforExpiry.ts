@@ -1,8 +1,8 @@
-import { TestType } from './ITestResult';
+import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { VEHICLE_TYPE } from '../assets/Enums';
 
 export interface TestTypeForExpiry {
-  testType: TestType;
+  testType: TestTypeSchema;
   vehicleType: VEHICLE_TYPE;
   recentExpiry: Date;
   regnOrFirstUseDate?: string;

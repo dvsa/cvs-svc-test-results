@@ -1,5 +1,5 @@
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { VEHICLE_TYPE, VEHICLE_TYPES } from '../../src/assets/Enums';
-import { ITestResultPayload } from '../../src/models/ITestResultPayload';
 import { IExpiryDateStrategy } from '../../src/handlers/expiry/IExpiryDateStrategy';
 import { ExpiryDateStrategyFactory } from '../../src/handlers/expiry/ExpiryDateStrategyFactory';
 import { TestTypeForExpiry } from '../../src/models/TestTypeforExpiry';
@@ -7,7 +7,7 @@ import { DateProvider } from '../../src/handlers/expiry/providers/DateProvider';
 
 export class StrategyMock {
   public static setupStrategy = (
-    testResult: ITestResultPayload,
+    testResult: TestResultSchema,
     recentExpiry: Date,
     testDate: Date,
   ): IExpiryDateStrategy => {
@@ -21,10 +21,12 @@ export class StrategyMock {
         VEHICLE_TYPE[vehicleType.toUpperCase() as keyof typeof VEHICLE_TYPE],
       hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
       hasRegistration: DateProvider.isValidDate(
-        StrategyMock.getRegnDateByVehicleType(testResult),
+        StrategyMock.getRegnDateByVehicleType(testResult) as string,
       ),
       recentExpiry,
-      regnOrFirstUseDate: StrategyMock.getRegnDateByVehicleType(testResult),
+      regnOrFirstUseDate: StrategyMock.getRegnDateByVehicleType(
+        testResult,
+      ) as string,
     };
     const expiryDateStrategy = ExpiryDateStrategyFactory.GetExpiryStrategy(
       testTypeForExpiry,
@@ -38,7 +40,7 @@ export class StrategyMock {
     return expiryDateStrategy;
   };
 
-  private static getRegnDateByVehicleType(payload: ITestResultPayload) {
+  private static getRegnDateByVehicleType(payload: TestResultSchema) {
     return payload.vehicleType === VEHICLE_TYPES.TRL
       ? payload.firstUseDate
       : payload.regnDate;

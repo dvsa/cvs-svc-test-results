@@ -1,18 +1,22 @@
 import fs from 'fs';
-import path from 'path';
 import { cloneDeep } from 'lodash';
-import { TestResultsService } from '../../src/services/TestResultsService';
-import { HTTPError } from '../../src/models/HTTPError';
+import path from 'path';
+import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import {
-  MESSAGES,
+  TestResultSchema,
+  TestTypeSchema,
+} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
+import {
   ERRORS,
-  VEHICLE_TYPES,
+  MESSAGES,
   TEST_STATUS,
-  TEST_RESULT,
   TESTING_ERRORS,
+  VEHICLE_TYPES,
 } from '../../src/assets/Enums';
-import { ITestResultPayload } from '../../src/models/ITestResultPayload';
-import { HTTPResponse } from '../../src/models/HTTPResponse';
+import { HTTPResponse } from '../../src/models';
+import { HTTPError } from '../../src/models/HTTPError';
+import { TestResultsService } from '../../src/services/TestResultsService';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
 describe('insertTestResult', () => {
@@ -71,7 +75,7 @@ describe('insertTestResult', () => {
   context('when inserting an empty test result', () => {
     it('should throw a validation error', () => {
       testResultsService = new TestResultsService(new MockTestResultsDAO());
-      const mockData: ITestResultPayload | any = {};
+      const mockData: TestResultSchema | any = {};
 
       expect.assertions(3);
       return testResultsService
@@ -244,7 +248,7 @@ describe('insertTestResult', () => {
         getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
         createSingle: () =>
           Promise.reject({
-            statusCode: 400,
+            $metadata: { httpStatusCode: 400 },
             message: MESSAGES.CONDITIONAL_REQUEST_FAILED,
           }),
       }));
@@ -1509,6 +1513,11 @@ describe('insertTestResult', () => {
         testResult.testStatus = TEST_STATUS.CANCELLED;
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
+        testResult.testTypes[0].centralDocs = {
+          issueRequired: false,
+          notes: 'notes',
+          reasonsForIssue: ['issue reason'],
+        };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -1552,6 +1561,11 @@ describe('insertTestResult', () => {
         testResult.testStatus = TEST_STATUS.CANCELLED;
         testResult.testTypes[0].testExpiryDate = null;
         testResult.testTypes[0].certificateNumber = null;
+        testResult.testTypes[0].centralDocs = {
+          issueRequired: false,
+          notes: 'notes',
+          reasonsForIssue: ['issue reason'],
+        };
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -1762,6 +1776,7 @@ describe('insertTestResult', () => {
         );
         // Setting the testType to any other than ADR
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '95';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -2051,7 +2066,7 @@ describe('insertTestResult', () => {
         const clonedTestResult = cloneDeep(testResult);
         clonedTestResult.testTypes[0].testExpiryDate = null;
         clonedTestResult.testTypes[0].certificateNumber = null;
-        clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
+        clonedTestResult.testTypes[0].testResult = TestResults.ABANDONED;
         clonedTestResult.testStatus = TEST_STATUS.CANCELLED;
         delete clonedTestResult.testTypes[0].testStatus;
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -2333,10 +2348,9 @@ describe('insertTestResult', () => {
     () => {
       it('should return an error containing all the missing fields', () => {
         const testResult = testResultsPostMock[0];
-        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+        const clonedTestResult: TestResultSchema = cloneDeep(testResult);
 
         clonedTestResult.countryOfRegistration = null;
-        clonedTestResult.euVehicleCategory = null;
         clonedTestResult.odometerReading = null;
         clonedTestResult.odometerReadingUnits = null;
 
@@ -2371,7 +2385,6 @@ describe('insertTestResult', () => {
             expect(error.body.errors).toEqual(
               expect.arrayContaining([
                 ERRORS.CountryOfRegistrationMandatory,
-                ERRORS.EuVehicleCategoryMandatory,
                 ERRORS.OdometerReadingMandatory,
                 ERRORS.OdometerReadingUnitsMandatory,
               ]),
@@ -2432,14 +2445,13 @@ describe('insertTestResult', () => {
     () => {
       it('should insert the test correctly', () => {
         const testResult = testResultsPostMock[1];
-        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+        const clonedTestResult: TestResultSchema = cloneDeep(testResult);
 
         clonedTestResult.countryOfRegistration = null;
-        clonedTestResult.euVehicleCategory = null;
         clonedTestResult.odometerReading = null;
         clonedTestResult.odometerReadingUnits = null;
 
-        clonedTestResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
+        clonedTestResult.testTypes[0].testResult = TestResults.ABANDONED;
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -2464,13 +2476,12 @@ describe('insertTestResult', () => {
 
         testResultsService = new TestResultsService(new MockTestResultsDAO());
 
-        expect.assertions(5);
+        expect.assertions(4);
         return testResultsService
           .insertTestResult(clonedTestResult)
           .then((data: any) => {
             expect(data).toBeDefined();
             expect(data[0].countryOfRegistration).toBeNull();
-            expect(data[0].euVehicleCategory).toBeNull();
             expect(data[0].odometerReading).toBeNull();
             expect(data[0].odometerReadingUnits).toBeNull();
           });
@@ -2483,10 +2494,9 @@ describe('insertTestResult', () => {
     () => {
       it('should return an error containing only the missing fields', () => {
         const testResult = testResultsPostMock[0];
-        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+        const clonedTestResult: TestResultSchema = cloneDeep(testResult);
 
         clonedTestResult.countryOfRegistration = null;
-        clonedTestResult.euVehicleCategory = null;
 
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
@@ -2517,10 +2527,7 @@ describe('insertTestResult', () => {
             expect(error).toBeInstanceOf(HTTPError);
             expect(error.statusCode).toBe(400);
             expect(error.body.errors).toEqual(
-              expect.arrayContaining([
-                ERRORS.CountryOfRegistrationMandatory,
-                ERRORS.EuVehicleCategoryMandatory,
-              ]),
+              expect.arrayContaining([ERRORS.CountryOfRegistrationMandatory]),
             );
           });
       });
@@ -2535,6 +2542,7 @@ describe('insertTestResult', () => {
           testResultsPostMock[6],
         );
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '122';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
             Promise.resolve({
@@ -2579,6 +2587,7 @@ describe('insertTestResult', () => {
           testResultsPostMock[6],
         );
         testResultWithOtherTestTypeWithCertNum.testTypes[0].testTypeId = '91';
+        delete testResultWithOtherTestTypeWithCertNum.testTypes[0].centralDocs;
         MockTestResultsDAO = jest.fn().mockImplementation(() => ({
           createSingle: () =>
             Promise.resolve({
@@ -2620,7 +2629,7 @@ describe('insertTestResult', () => {
     () => {
       it('should insert the test correctly', () => {
         const testResult = testResultsPostMock[1];
-        const clonedTestResult: ITestResultPayload = cloneDeep(testResult);
+        const clonedTestResult: TestResultSchema = cloneDeep(testResult);
 
         clonedTestResult.vin = 'YV31ME00000 1/\\*-1';
 
@@ -3206,11 +3215,234 @@ describe('insertTestResult', () => {
       });
     },
   );
+  describe('central docs', () => {
+    let testResult: TestResultSchema;
 
+    beforeEach(() => {
+      testResult = { ...testResultsPostMock[15] } as TestResultSchema;
+    });
+
+    describe('validateInsertTestResultPayload', () => {
+      describe('when submitting a valid test with central docs present', () => {
+        it('should create the record successfully when reason for issue is present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            reasonsForIssue: ['reason'],
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully when notes and reasons for issue are present', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          };
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully when all present and test result fail', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          };
+          testResult.testTypes[0].testResult = TestResults.FAIL;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should throw a validation error when reasons for issue is missing', () => {
+          testResult.testTypes[0].centralDocs = {
+            issueRequired: true,
+          } as any;
+
+          expect(() =>
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toThrow(HTTPError);
+
+          try {
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          } catch (err) {
+            const error = err as HTTPError;
+            expect(error.statusCode).toBe(400);
+            expect(error.body.errors[0]).toBe(
+              '"testTypes[0].centralDocs.reasonsForIssue" is required',
+            );
+          }
+        });
+
+        it('should throw a validation error when issue required is missing', () => {
+          testResult.testTypes[0].centralDocs = {
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          } as any;
+
+          expect(() =>
+            ValidationUtil.validateInsertTestResultPayload(testResult),
+          ).toThrow(HTTPError);
+
+          try {
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          } catch (err) {
+            const error = err as HTTPError;
+            expect(error.statusCode).toBe(400);
+            expect(error.body.errors[0]).toBe(
+              '"testTypes[0].centralDocs.issueRequired" is required',
+            );
+          }
+        });
+      });
+
+      describe('when submitting a valid test without central docs present', () => {
+        it('should create the record successfully for a test type id not in the list and status of pass or prs', () => {
+          testResult.testTypes[0].testTypeId = '1';
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id not in the list and status of fail', () => {
+          testResult.testTypes[0].testTypeId = '1';
+          testResult.testTypes[0].testResult = TestResults.FAIL;
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id in the list with status of pass or prs', () => {
+          testResult.testTypes[0].testTypeId = '41';
+          testResult.testTypes[0].testResult = TestResults.PRS;
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+
+        it('should create the record successfully for a test type id in the list with status of fail', () => {
+          testResult.testTypes[0].testTypeId = '41';
+          testResult.testTypes[0].testResult = TestResults.FAIL;
+          delete testResult.testTypes[0].centralDocs;
+          const validationResult =
+            ValidationUtil.validateInsertTestResultPayload(testResult);
+          expect(validationResult).toBe(true);
+        });
+      });
+    });
+
+    describe('validateCentralDocs', () => {
+      const createTestType = (
+        testTypeId: string,
+        centralDocs?: any,
+      ): TestTypeSchema => ({
+        ...testResult.testTypes[0],
+        testTypeId,
+        centralDocs,
+      });
+
+      it('should not throw for valid central docs', () => {
+        const testTypes = [
+          createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
+          createTestType('non-central-doc-id'),
+        ];
+        console.log(testTypes);
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for non-central doc types', () => {
+        const testTypes = [
+          createTestType('non-central-doc-id-1'),
+          createTestType('non-central-doc-id-2'),
+        ];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for an empty array', () => {
+        const testTypes: TestTypeSchema[] = [];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should not throw for null or undefined centralDocs for non-central doc types', () => {
+        const testTypes = [
+          createTestType('non-central-doc-id-1', null),
+          createTestType('non-central-doc-id-2', undefined),
+        ];
+        expect(() =>
+          ValidationUtil.validateCentralDocs(testTypes),
+        ).not.toThrow();
+      });
+
+      it('should throw for invalid test type with central docs', () => {
+        const testTypes = [
+          createTestType('1', {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          }),
+          createTestType('non-central-doc-id'),
+        ];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            'Central documents can not be issued for test type 1',
+          );
+        }
+      });
+
+      it('should throw for mixed valid and invalid types', () => {
+        const testResultFail = {
+          ...testResultsPostMock[15],
+        } as TestResultSchema;
+        testResultFail.testTypes[0].centralDocs = {
+          issueRequired: true,
+          reasonsForIssue: [],
+        };
+        const testTypes = [
+          createTestType(CENTRAL_DOCS_TEST.IDS[0], { issueRequired: true }),
+          createTestType('1', {
+            issueRequired: true,
+            notes: 'notes',
+            reasonsForIssue: ['reason'],
+          }),
+        ];
+        expect(() => ValidationUtil.validateCentralDocs(testTypes)).toThrow(
+          HTTPError,
+        );
+        try {
+          ValidationUtil.validateCentralDocs(testTypes);
+        } catch (error) {
+          expect(error).toBeInstanceOf(HTTPError);
+          expect(error.statusCode).toBe(400);
+          expect(error.body).toBe(
+            `Central documents can not be issued for test type 1`,
+          );
+        }
+      });
+    });
+  });
   describe('IVA Defects', () => {
     context('when creating an IVA failed test record with IVA defects', () => {
       it('should create the record successfully', () => {
-        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        const testResult = { ...testResultsPostMock[13] } as TestResultSchema;
         testResult.testTypes.forEach((x) => {
           x.testTypeId = '125';
           x.requiredStandards?.push({
@@ -3238,7 +3470,7 @@ describe('insertTestResult', () => {
         it('should create the record successfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
             x.requiredStandards?.push({
@@ -3260,7 +3492,31 @@ describe('insertTestResult', () => {
         });
       },
     );
+    it('should create the record successfully when reapplication date is provided', () => {
+      const testResult = {
+        ...testResultsPostMock[13],
+      } as TestResultSchema;
+      testResult.testTypes.forEach((x) => {
+        x.testTypeId = '125';
+        x.requiredStandards?.push({
+          sectionNumber: '01',
+          sectionDescription: 'Noise',
+          rsNumber: 1,
+          requiredStandard: 'The exhaust must be securely mounted.',
+          refCalculation: '1.1',
+          additionalInfo: true,
+          inspectionTypes: ['basic', 'normal'],
+          prs: false,
+          additionalNotes: '',
+        });
+        return x;
+      });
+      testResult.testTypes[0].reapplicationDate = '2024-06-21T13:21:16.417Z';
 
+      const validationResult =
+        ValidationUtil.validateInsertTestResultPayload(testResult);
+      expect(validationResult).toBe(true);
+    });
     // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
     // context(
     //   'when creating an IVA failed test record without IVA defects',
@@ -3268,7 +3524,7 @@ describe('insertTestResult', () => {
     //     it('should not create the record', () => {
     //       const testResult = {
     //         ...testResultsPostMock[13],
-    //       } as ITestResultPayload;
+    //       } as TestResultSchema;
     //       testResult.testTypes.forEach((x) => {
     //         x.testTypeId = '125';
     //         return x;
@@ -3282,7 +3538,7 @@ describe('insertTestResult', () => {
 
     context('when creating a non IVA test record without IVA defects', () => {
       it('should create the record successfully', () => {
-        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        const testResult = { ...testResultsPostMock[13] } as TestResultSchema;
         testResult.testTypes.forEach((x) => delete x.requiredStandards);
         const validationResult =
           ValidationUtil.validateInsertTestResultPayload(testResult);
@@ -3292,7 +3548,7 @@ describe('insertTestResult', () => {
 
     context('when creating a COIF test without IVA defects', () => {
       it('should create the record successfully', () => {
-        const testResult = { ...testResultsPostMock[13] } as ITestResultPayload;
+        const testResult = { ...testResultsPostMock[13] } as TestResultSchema;
         testResult.testTypes.forEach((x) => {
           x.testTypeId = '142';
           x.testTypeName = 'COIF with annual test';
@@ -3311,7 +3567,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[12],
-          } as ITestResultPayload;
+          } as TestResultSchema;
           delete testResult.make;
 
           const validationResult =
@@ -3327,7 +3583,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[12],
-          } as ITestResultPayload;
+          } as TestResultSchema;
           delete testResult.model;
 
           const validationResult =
@@ -3343,7 +3599,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[12],
-          } as ITestResultPayload;
+          } as TestResultSchema;
           delete testResult.bodyType;
 
           const validationResult =
@@ -3359,7 +3615,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[12],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           const validationResult =
             ValidationUtil.validateInsertTestResultPayload(testResult);
@@ -3374,7 +3630,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
@@ -3405,12 +3661,13 @@ describe('insertTestResult', () => {
         it('should create the record successfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
             x.customDefects = [
               {
+                referenceNumber: '234',
                 defectName: 'Some custom defect',
                 defectNotes: 'some defect noe',
               },
@@ -3443,7 +3700,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
@@ -3475,7 +3732,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
@@ -3507,7 +3764,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
@@ -3539,7 +3796,7 @@ describe('insertTestResult', () => {
         it('should create the record succesfully', () => {
           const testResult = {
             ...testResultsPostMock[13],
-          } as ITestResultPayload;
+          } as TestResultSchema;
 
           testResult.testTypes.forEach((x) => {
             x.testTypeId = '125';
@@ -3882,6 +4139,111 @@ describe('insertTestResult', () => {
             .insertTestResult(testResult)
             .then((insertedTestResult: any) => {
               expect(insertedTestResult[0].testTypes[0].testTypeId).toBe('133');
+              expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
+                '12345',
+              );
+            });
+        });
+        it('should create the record successfully when reapplication date is provided', () => {
+          const testResult = cloneDeep(testResultsPostMock[13]);
+          testResult.testTypes[0].testTypeId = '133';
+          testResult.testTypes[0].certificateNumber = '12345';
+          testResult.testTypes[0].requiredStandards?.push({
+            sectionNumber: '4',
+            sectionDescription: 'Speedometer',
+            rsNumber: 1,
+            requiredStandard:
+              'A speedometer; does not indicate speed up to the design speed of the vehicle',
+            refCalculation: '41.1c',
+            additionalInfo: true,
+            inspectionTypes: [],
+            prs: false,
+            additionalNotes: '',
+          });
+          testResult.testTypes[0].reapplicationDate =
+            '2024-06-21T13:21:16.417Z';
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            createSingle: () =>
+              Promise.resolve({
+                Attributes: Array.of(testResult),
+              }),
+            createTestNumber: () =>
+              Promise.resolve({
+                testNumber: 'W01A00209',
+                id: 'W01',
+                certLetter: 'A',
+                sequenceNumber: '002',
+              }),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                linkedTestCode: null,
+                defaultTestCode: 'qjt1',
+                testTypeClassification: 'MSVA With Certificate',
+              }),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
+          }));
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+          expect.assertions(2);
+          return testResultsService
+            .insertTestResult(testResult)
+            .then((insertedTestResult: any) => {
+              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe(
+                '2024-06-21T13:21:16.417Z',
+              );
+              expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
+                '12345',
+              );
+            });
+        });
+        it('should create the record successfully with the reapplication date blank', () => {
+          const testResult = cloneDeep(testResultsPostMock[13]);
+          testResult.testTypes[0].testTypeId = '133';
+          testResult.testTypes[0].certificateNumber = '12345';
+          testResult.testTypes[0].requiredStandards?.push({
+            sectionNumber: '4',
+            sectionDescription: 'Speedometer',
+            rsNumber: 1,
+            requiredStandard:
+              'A speedometer; does not indicate speed up to the design speed of the vehicle',
+            refCalculation: '41.1c',
+            additionalInfo: true,
+            inspectionTypes: [],
+            prs: false,
+            additionalNotes: '',
+          });
+          testResult.testTypes[0].reapplicationDate = '';
+          MockTestResultsDAO = jest.fn().mockImplementation(() => ({
+            createSingle: () =>
+              Promise.resolve({
+                Attributes: Array.of(testResult),
+              }),
+            createTestNumber: () =>
+              Promise.resolve({
+                testNumber: 'W01A00209',
+                id: 'W01',
+                certLetter: 'A',
+                sequenceNumber: '002',
+              }),
+            getTestCodesAndClassificationFromTestTypes: () =>
+              Promise.resolve({
+                linkedTestCode: null,
+                defaultTestCode: 'qjt1',
+                testTypeClassification: 'MSVA With Certificate',
+              }),
+            getBySystemNumber: (systemNumber: any) => Promise.resolve([]),
+          }));
+
+          testResultsService = new TestResultsService(new MockTestResultsDAO());
+
+          expect.assertions(2);
+          return testResultsService
+            .insertTestResult(testResult)
+            .then((insertedTestResult: any) => {
+              expect(insertedTestResult[0].testTypes[0].reapplicationDate).toBe(
+                '',
+              );
               expect(insertedTestResult[0].testTypes[0].certificateNumber).toBe(
                 '12345',
               );

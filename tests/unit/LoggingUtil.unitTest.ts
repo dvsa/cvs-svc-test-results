@@ -1,7 +1,8 @@
 import { cloneDeep } from 'lodash';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import { LoggingUtil } from '../../src/utils/LoggingUtil';
 import testResults from '../resources/test-results.json';
-import { TEST_STATUS, TEST_RESULT } from '../../src/assets/Enums';
+import { TEST_STATUS } from '../../src/assets/Enums';
 
 describe('Defects logging util', () => {
   let testResult: any;
@@ -49,7 +50,7 @@ describe('Defects logging util', () => {
 
     it('should not log when the defects are valid but the testType is abandoned', async () => {
       testResult.testTypes[0].defects[0].deficiencyRef = '8.1.i';
-      testResult.testTypes[0].testResult = TEST_RESULT.ABANDONED;
+      testResult.testTypes[0].testResult = TestResults.ABANDONED;
 
       LoggingUtil.logDefectsReporting(testResult);
 
