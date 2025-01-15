@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { cloneDeep } from 'lodash';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import { MESSAGES } from '../../src/assets/Enums';
@@ -125,7 +126,7 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
         testStatus: 'submitted',
       };
       const filteredTestResults = cloneDeep(testResultsMockDB).filter(
-        (test: models.ITestResult) =>
+        (test: TestResultSchema) =>
           test.testerStaffId === '15' &&
           test.testStationPNumber === filters.testStationPNumber &&
           test.testStartTimestamp > filters.fromDateTime &&
@@ -140,7 +141,7 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
       expect.assertions(4);
       return testResultsService
         .getTestResultsByTesterStaffId(filters)
-        .then((returnedRecords: models.ITestResult[]) => {
+        .then((returnedRecords: TestResultSchema[]) => {
           expect(returnedRecords).toBeDefined();
           expect(returnedRecords).not.toEqual({});
           expect(returnedRecords[0]).toEqual(expectedResult);

@@ -1,4 +1,5 @@
 import { cloneDeep } from 'lodash';
+import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import emptyConfig from '../../resources/empty.json';
 import invalidConfig from '../../resources/invalid-mapping.json';
 import duplicatedConfig from '../../resources/duplicated-mapping.json';
@@ -6,7 +7,6 @@ import strategyMapping from '../../../src/assets/strategy-mapping.json';
 import { VEHICLE_TYPE, ERRORS } from '../../../src/assets/Enums';
 import { ExpiryDateStrategyFactory } from '../../../src/handlers/expiry/ExpiryDateStrategyFactory';
 import { TestTypeForExpiry } from '../../../src/models/TestTypeforExpiry';
-import { TestType } from '../../../src/models/ITestResult';
 import { DateProvider } from '../../../src/handlers/expiry/providers/DateProvider';
 import { PsvMostRecentExpiryStrategy } from '../../../src/handlers/expiry/strategies/PsvMostRecentExpiryStrategy';
 import { PsvRegistrationAnniversaryStrategy } from '../../../src/handlers/expiry/strategies/PsvRegistrationAnniversaryStrategy';
@@ -65,7 +65,7 @@ describe('ExpiryDateStrategyFactory', () => {
             .mockReturnValue(duplicatedConfig.psv);
 
           const testTypeForExpiry: TestTypeForExpiry = {
-            testType: { testTypeId: '3' } as TestType,
+            testType: { testTypeId: '3' } as TestTypeSchema,
             vehicleType: VEHICLE_TYPE.PSV,
             recentExpiry: new Date(0),
             hasHistory: true,
@@ -121,7 +121,7 @@ describe('ExpiryDateStrategyFactory', () => {
         }) => {
           expect.assertions(1);
           const testTypeForExpiry: TestTypeForExpiry = {
-            testType: { testTypeId } as TestType,
+            testType: { testTypeId } as TestTypeSchema,
             vehicleType,
             recentExpiry: new Date(0),
             hasHistory,

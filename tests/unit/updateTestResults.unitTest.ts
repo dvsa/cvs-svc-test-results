@@ -1,6 +1,10 @@
 import { cloneDeep } from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import {
+  TestResultSchema,
+  TestTypeSchema,
+} from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import testResults from '../resources/test-results.json';
@@ -10,12 +14,7 @@ import { ValidationUtil } from '../../src/utils/validationUtil';
 import { VehicleTestController } from '../../src/handlers/VehicleTestController';
 import { TestDataProvider } from '../../src/handlers/expiry/providers/TestDataProvider';
 import { DateProvider } from '../../src/handlers/expiry/providers/DateProvider';
-import {
-  IMsUserDetails,
-  ITestResult,
-  TestType,
-  ITestResultPayload,
-} from '../../src/models';
+import { IMsUserDetails } from '../../src/models';
 
 describe('updateTestResults', () => {
   let testResultsService: TestResultsService | any;
@@ -824,9 +823,9 @@ describe('updateTestResults', () => {
     );
 
     beforeEach(() => {
-      testToUpdate = cloneDeep(testResultsPostMock[13] as ITestResult);
+      testToUpdate = cloneDeep(testResultsPostMock[13] as TestResultSchema);
       MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-        updateTestResult: jest.fn().mockResolvedValue({} as ITestResult),
+        updateTestResult: jest.fn().mockResolvedValue({} as TestResultSchema),
         getActivity: jest
           .fn()
           .mockResolvedValue([
@@ -840,7 +839,7 @@ describe('updateTestResults', () => {
     });
     afterEach(() => MockTestResultsDAO.mockReset());
     const setupTestTypes = (
-      modificationCallback: (testType: TestType) => void,
+      modificationCallback: (testType: TestTypeSchema) => void,
     ) => {
       testToUpdate.testTypes.forEach(modificationCallback);
     };
@@ -954,7 +953,7 @@ describe('updateTestResults', () => {
           return x;
         });
 
-        const res: ITestResult = await testResultsService.updateTestResult(
+        const res: TestResultSchema = await testResultsService.updateTestResult(
           testToUpdate.systemNumber,
           testToUpdate,
           msUserDetails,
@@ -973,7 +972,7 @@ describe('updateTestResults', () => {
           x.testNumber = '213213123';
           delete x.requiredStandards;
         });
-        const res: ITestResult = await testResultsService.updateTestResult(
+        const res: TestResultSchema = await testResultsService.updateTestResult(
           testToUpdate.systemNumber,
           testToUpdate,
           msUserDetails,
