@@ -1,3 +1,4 @@
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
 import { VehicleTestController } from '../handlers/VehicleTestController';
@@ -27,7 +28,7 @@ export class TestResultsService {
 
   public async getTestResultBySystemNumber(
     filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     try {
       return await this.vehicleTestController.getTestResultBySystemNumber(
         filters,
@@ -51,7 +52,7 @@ export class TestResultsService {
 
   public async updateTestResult(
     systemNumber: string,
-    payload: models.ITestResult,
+    payload: TestResultSchema,
     msUserDetails: models.IMsUserDetails,
   ) {
     try {
@@ -67,7 +68,7 @@ export class TestResultsService {
     }
   }
 
-  public async insertTestResult(payload: models.ITestResultPayload) {
+  public async insertTestResult(payload: TestResultSchema) {
     try {
       const result = await this.vehicleTestController.insertTestResult(payload);
       return result;
