@@ -1,6 +1,10 @@
-import { TEST_STATUS, TEST_RESULT } from '../assets/Enums';
-import { Defect, TestType } from '../models/ITestResult';
-import { ITestResultPayload } from '../models/ITestResultPayload';
+import {
+  TestResultSchema,
+  TestTypeSchema,
+} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { DefectDetailsSchema } from '@dvsa/cvs-type-definitions/types/v1/test';
+import { TestStatus } from '@dvsa/cvs-type-definitions/types/v1/enums/testStatus.enum';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 
 export class LoggingUtil {
   private static readonly reportingDeficiencyRef = [
@@ -16,14 +20,14 @@ export class LoggingUtil {
    *
    * To be removed with CVSB-19020
    */
-  public static logDefectsReporting(testResult: ITestResultPayload): void {
-    if (testResult.testStatus === TEST_STATUS.CANCELLED) {
+  public static logDefectsReporting(testResult: TestResultSchema): void {
+    if (testResult.testStatus === TestStatus.CANCELLED) {
       return;
     }
 
-    testResult.testTypes.forEach((testType: TestType) => {
-      if (testType.testResult !== TEST_RESULT.ABANDONED) {
-        testType.defects?.forEach((defect: Defect) => {
+    testResult.testTypes.forEach((testType: TestTypeSchema) => {
+      if (testType.testResult !== TestResults.ABANDONED) {
+        testType.defects?.forEach((defect: DefectDetailsSchema) => {
           if (
             LoggingUtil.reportingDeficiencyRef.includes(defect.deficiencyRef)
           ) {

@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { array } from 'joi';
+import { array, string } from 'joi';
 import {
   defectsCommonSchema,
   testTypesCommonSchema,
@@ -56,6 +56,14 @@ const testTypesSchema = testTypesCommonSchema.keys({
   smokeTestKLimitApplied: Joi.string().max(100).allow(null),
   modificationTypeUsed: Joi.string().max(100).allow(null),
   particulateTrapFitted: Joi.string().max(100).allow(null),
+  reapplicationDate: Joi.date().optional().allow(null, ''),
+  centralDocs: Joi.object()
+    .keys({
+      issueRequired: Joi.boolean().required(),
+      notes: Joi.string().optional(),
+      reasonsForIssue: Joi.array().items(string().optional()).required(),
+    })
+    .optional(),
 });
 
 export const psvSubmitted = testResultsCommonSchema.keys({
@@ -71,4 +79,10 @@ export const psvSubmitted = testResultsCommonSchema.keys({
   vehicleSize: Joi.string().valid('small', 'large').required(),
   reasonForCancellation: Joi.string().max(500).required().allow('', null),
   testTypes: Joi.array().items(testTypesSchema).required(),
+  recalls: Joi.object()
+    .keys({
+      hasRecall: Joi.boolean().required(),
+      manufacturer: Joi.string().required().allow('', null),
+    })
+    .optional(),
 });

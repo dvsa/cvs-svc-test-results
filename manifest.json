@@ -8,7 +8,7 @@
   "monorepo": false,
   "dynamo_tables": [
     {
-      "test-results": "test-results.json"
+      "test-results": "empty-seed.json"
     }
   ]
 }

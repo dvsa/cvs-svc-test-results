@@ -1,5 +1,5 @@
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { MappingUtil } from '../../src/utils';
-import * as models from '../../src/models';
 import * as enums from '../../src/assets/Enums';
 import dateMockUtils from '../util/dateMockUtils';
 
@@ -17,7 +17,7 @@ describe('setCreatedAtAndLastUpdatedAtDates', () => {
       testerStaffId: 'foo',
       testerName: 'bar',
       testTypes: [{}],
-    } as models.ITestResultPayload);
+    } as TestResultSchema);
     expect(payload.createdAt).toEqual(mockDate);
     expect(payload.testVersion).toEqual(enums.TEST_VERSION.CURRENT);
     expect(payload.createdById).toBe('foo');
@@ -38,7 +38,7 @@ describe('setCreatedAtAndLastUpdatedAtDates', () => {
       createdById: '1234',
       typeOfTest: enums.TYPE_OF_TEST.CONTINGENCY,
       testTypes: [{}],
-    } as models.ITestResultPayload);
+    } as TestResultSchema);
     expect(payload.createdAt).toEqual(mockDate);
     expect(payload.testVersion).toEqual(enums.TEST_VERSION.CURRENT);
     expect(payload.createdById).toBe('1234');
@@ -57,7 +57,7 @@ describe('setCreatedAtAndLastUpdatedAtDates', () => {
       createdById: '1234',
       typeOfTest: enums.TYPE_OF_TEST.DESK_BASED,
       testTypes: [{}],
-    } as models.ITestResultPayload);
+    } as TestResultSchema);
     expect(payload.createdAt).toEqual(mockDate);
     expect(payload.testVersion).toEqual(enums.TEST_VERSION.CURRENT);
     expect(payload.createdById).toBe('1234');
