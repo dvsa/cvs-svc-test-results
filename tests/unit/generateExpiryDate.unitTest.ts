@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { cloneDeep } from 'lodash';
 import moment from 'moment';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { COIF_EXPIRY_TEST_TYPES } from '../../src/assets/Enums';
 import dateMockUtils from '../util/dateMockUtils';
-import { ITestResult } from '../../src/models/ITestResult';
 import testResults from '../resources/test-results.json';
 import { VehicleTestController } from '../../src/handlers/VehicleTestController';
 import { TestDataProvider } from '../../src/handlers/expiry/providers/TestDataProvider';
@@ -119,7 +119,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to 1 day prior to one year from "now" for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
               delete test.regnDate;
               test.testTypes.forEach((type) => {
                 delete type.testExpiryDate;
@@ -127,7 +127,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -173,15 +173,15 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to 1 day prior to one year from "now" for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
-              test.regnDate = new Date('2019-08-01');
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
+              test.regnDate = new Date('2019-08-01').toString();
               test.testTypes.forEach((type) => {
                 delete type.testExpiryDate;
                 delete type.testAnniversaryDate;
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -226,15 +226,15 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to 1 day prior to one year from "now" for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
-              test.regnDate = new Date('2019-04-01');
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
+              test.regnDate = new Date('2019-04-01').toString();
               test.testTypes.forEach((type) => {
                 delete type.testExpiryDate;
                 delete type.testAnniversaryDate;
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -281,16 +281,16 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to 1 day prior to one year from "now" for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
               test.testTypes.forEach((type) => {
                 if (type.testResult === 'pass') {
-                  type.testExpiryDate = new Date('2020-04-02');
+                  type.testExpiryDate = new Date('2020-04-02').toString();
                 }
                 delete type.testAnniversaryDate;
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -336,16 +336,16 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to one year from previous expiry date for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
               test.testTypes.forEach((type) => {
                 if (type.testResult === 'pass') {
-                  type.testExpiryDate = new Date('2020-03-31');
+                  type.testExpiryDate = new Date('2020-03-31').toISOString();
                 }
                 delete type.testAnniversaryDate;
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toISOString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -391,16 +391,16 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
 
             it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-              const test: ITestResult = cloneDeep(testResultsMockDB[0]);
+              const test: TestResultSchema = cloneDeep(testResultsMockDB[0]);
               test.testTypes.forEach((type) => {
                 if (type.testResult === 'pass') {
-                  type.testExpiryDate = new Date('2020-01-21');
+                  type.testExpiryDate = new Date('2020-01-21').toString();
                 }
                 delete type.testAnniversaryDate;
                 return type;
               });
               const psvTestResult = test;
-              psvTestResult.testEndTimestamp = new Date();
+              psvTestResult.testEndTimestamp = new Date().toString();
               const getBySystemNumberResponse = test;
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -447,9 +447,9 @@ describe('VehicleTestController calling generateExpiryDate', () => {
 
           const getBySystemNumberResponse = cloneDeep(
             testResultsMockDB[0],
-          ) as ITestResult;
+          ) as TestResultSchema;
           getBySystemNumberResponse.testTypes.forEach((test) => {
-            test.testExpiryDate = new Date('2020-0'); // Invalid Date object
+            test.testExpiryDate = new Date('2020-0').toString(); // Invalid Date object
             return test;
           });
           MockTestResultsDAO = jest.fn().mockImplementation(() => ({
@@ -487,12 +487,12 @@ describe('VehicleTestController calling generateExpiryDate', () => {
 
           const getBySystemNumberResponse = cloneDeep(
             testResultsMockDB[0],
-          ) as ITestResult;
+          ) as TestResultSchema;
           const goodExpiry = moment().add(5, 'days').toDate();
-          getBySystemNumberResponse.testTypes[0].testExpiryDate = goodExpiry;
-          getBySystemNumberResponse.testTypes[1].testExpiryDate = new Date(
-            '2020-0',
-          );
+          getBySystemNumberResponse.testTypes[0].testExpiryDate =
+            goodExpiry.toISOString();
+          getBySystemNumberResponse.testTypes[1].testExpiryDate = '2020-0';
+
           MockTestResultsDAO = jest.fn().mockImplementation(() => ({
             getBySystemNumber: () =>
               Promise.resolve(Array.of(getBySystemNumberResponse)),
@@ -504,8 +504,10 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               }),
           }));
 
-          const expectedExpiryDate = cloneDeep(goodExpiry);
-          expectedExpiryDate.setFullYear(goodExpiry.getFullYear() + 1);
+          const expectedExpiryDate = new Date(cloneDeep(goodExpiry));
+          expectedExpiryDate.setFullYear(
+            new Date(goodExpiry).getFullYear() + 1,
+          );
           vehicleTestController.dataProvider.testResultsDAO =
             new MockTestResultsDAO();
           // @ts-ignore
@@ -727,7 +729,9 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             });
           });
           describe('First test types', () => {
-            const hgvTestResult = cloneDeep(testResults[15]) as ITestResult;
+            const hgvTestResult = cloneDeep(
+              testResults[15],
+            ) as TestResultSchema;
             hgvTestResult.testTypes.forEach((type) => {
               type.testTypeId = '65';
               delete type.testExpiryDate;
@@ -738,7 +742,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with no previous expiry, anniversary or registration date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -773,13 +777,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with no previous expiry date, and today is >2 months before registration anniversary', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
               });
               it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-                hgvTestResult.regnDate = new Date('2019-04-02');
+                hgvTestResult.regnDate = new Date('2019-04-02').toString();
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                   getBySystemNumber: () => Promise.resolve([]),
@@ -812,13 +816,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
               beforeAll(() => {
                 // "Today"
                 dateMockUtils.setupDateMock('2020-02-20T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
               });
               it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-                hgvTestResult.regnDate = new Date('2019-04-01');
+                hgvTestResult.regnDate = new Date('2019-04-01').toString();
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                   getBySystemNumber: () => Promise.resolve([]),
@@ -848,13 +852,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with no previous expiry date, and today is in the month before registration anniversary', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-03-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
               });
               it('should set the expiryDate to the last day of the month of the RegnAnniversary plus 1 year (RegnDate + 2 years)', () => {
-                hgvTestResult.regnDate = new Date('2019-04-02');
+                hgvTestResult.regnDate = new Date('2019-04-02').toISOString();
 
                 MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                   getBySystemNumber: () => Promise.resolve([]),
@@ -884,7 +888,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with no previous expiry date, and today is in the month of registration anniversary', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-04-10T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -920,7 +924,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with no previous expiry date, and today is after the month of registration anniversary', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-05-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -956,11 +960,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           });
 
           describe('Non-First-Test Types', () => {
-            const hgvTestResult = cloneDeep(testResults[15]) as ITestResult;
+            const hgvTestResult = cloneDeep(
+              testResults[15],
+            ) as TestResultSchema;
             describe('with Today >2 months before previous expiry date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2019-02-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -999,7 +1005,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with Today <2 months before previous expiry date, but >2 months before end of expiry date month', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-02-10T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -1038,7 +1044,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with Today in month prior to month of expiry date month', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-03-10T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -1077,7 +1083,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with Today after expiry date, but in month of expiry date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-03-31T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -1116,7 +1122,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             describe('with Today after month of expiry date', () => {
               beforeAll(() => {
                 dateMockUtils.setupDateMock('2020-04-01T10:00:00.000Z');
-                hgvTestResult.testEndTimestamp = new Date();
+                hgvTestResult.testEndTimestamp = new Date().toString();
               });
               afterAll(() => {
                 dateMockUtils.restoreDateMock();
@@ -1158,7 +1164,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
 
       describe('for TRL vehicles', () => {
         describe('First test types', () => {
-          const trlTestResult = cloneDeep(testResults[17]) as ITestResult;
+          const trlTestResult = cloneDeep(testResults[17]) as TestResultSchema;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '95';
             delete type.testExpiryDate;
@@ -1168,7 +1174,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry, anniversary or registration date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1203,13 +1209,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is >2 months before registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-02');
+              trlTestResult.firstUseDate = new Date('2019-04-02').toString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1242,13 +1248,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             beforeAll(() => {
               // "Today"
               dateMockUtils.setupDateMock('2020-02-20T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-01');
+              trlTestResult.firstUseDate = new Date('2019-04-01').toString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1278,13 +1284,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is in the month before registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-03-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to the last day of the month of the RegnAnniversary plus 1 year (RegnDate + 2 years)', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-02');
+              trlTestResult.firstUseDate = new Date('2019-04-02').toISOString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1314,7 +1320,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is in the month of registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-04-10T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1350,7 +1356,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is after the month of registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-05-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1386,7 +1392,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
         });
 
         describe('Annual test types', () => {
-          const trlTestResult = cloneDeep(testResults[17]) as ITestResult;
+          const trlTestResult = cloneDeep(testResults[17]) as TestResultSchema;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '94';
             delete type.testExpiryDate;
@@ -1396,7 +1402,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry, anniversary or registration date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1431,13 +1437,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is >2 months before registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-02-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-02');
+              trlTestResult.firstUseDate = new Date('2019-04-02').toString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1470,13 +1476,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
             beforeAll(() => {
               // "Today"
               dateMockUtils.setupDateMock('2020-02-20T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to 1 day before one year from today for Pass results - not for PRS and Fail', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-01');
+              trlTestResult.firstUseDate = new Date('2019-04-01').toString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1506,13 +1512,13 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is in the month before registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-03-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toISOString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
             });
             it('should set the expiryDate to the last day of the month of the RegnAnniversary plus 1 year (RegnDate + 2 years)', () => {
-              trlTestResult.firstUseDate = new Date('2019-04-02');
+              trlTestResult.firstUseDate = new Date('2019-04-02').toISOString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: () => Promise.resolve([]),
@@ -1542,7 +1548,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is in the month of registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-04-10T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1578,7 +1584,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is after the month of registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-05-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1614,7 +1620,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is exactly 2 months before the anniversary date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-04-30T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1649,7 +1655,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today is the same day as the registration anniversary', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-04-30T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1684,7 +1690,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with no previous expiry date, and today (local date) is within the 2 months of the anniversary date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-05-01T00:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1718,14 +1724,14 @@ describe('VehicleTestController calling generateExpiryDate', () => {
         });
 
         describe('Non-First-Test Types', () => {
-          const trlTestResult = cloneDeep(testResults[15]) as ITestResult;
+          const trlTestResult = cloneDeep(testResults[15]) as TestResultSchema;
           trlTestResult.testTypes.forEach((type) => {
             type.testTypeId = '94';
           });
           describe('with Today >2 months before previous expiry date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2019-02-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1763,7 +1769,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with Today <2 months before previous expiry date, but >2 months before end of expiry date month', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-02-10T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1801,7 +1807,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with Today in month prior to month of expiry date month', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-03-10T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1839,7 +1845,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with Today after expiry date, but in month of expiry date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-03-31T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1877,7 +1883,7 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           describe('with Today after month of expiry date', () => {
             beforeAll(() => {
               dateMockUtils.setupDateMock('2020-04-01T10:00:00.000Z');
-              trlTestResult.testEndTimestamp = new Date();
+              trlTestResult.testEndTimestamp = new Date().toString();
             });
             afterAll(() => {
               dateMockUtils.restoreDateMock();
@@ -1923,13 +1929,16 @@ describe('VehicleTestController calling generateExpiryDate', () => {
           'when there is a First Test Type with no existing expiryDate and testDate is 2 months or more before Registration Anniversary date.',
           () => {
             it('should set the expiry date to last day of test date month + 1 year', () => {
-              const hgvTestResult = cloneDeep(testResults[16]) as ITestResult;
+              const hgvTestResult = cloneDeep(
+                testResults[16],
+              ) as TestResultSchema;
               // Setting regnDate to a year older + 2 months
               hgvTestResult.regnDate = moment()
                 .add(2, 'months')
                 .subtract(1, 'years')
-                .toDate();
-              hgvTestResult.testEndTimestamp = new Date();
+                .toDate()
+                .toString();
+              hgvTestResult.testEndTimestamp = new Date().toString();
 
               MockTestResultsDAO = jest.fn().mockImplementation(() => ({
                 getBySystemNumber: (systemNumber: any) =>
