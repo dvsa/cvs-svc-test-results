@@ -116,13 +116,13 @@ describe('getTestResultsByTesterStaffId path of TestResultsService', () => {
     });
   });
 
-  context('when using testStatus filter)', () => {
+  context('when using testStatus filter', () => {
     it('should only return submitted tests, not cancelled', () => {
       const filters: models.ITestResultFilters = {
         testerStaffId: '15',
         testStationPNumber: '84-926821',
         fromDateTime: '2015-02-22',
-        toDateTime: '2023-02-22',
+        toDateTime: '2024-02-22',
         testStatus: 'submitted',
       };
       const filteredTestResults = cloneDeep(testResultsMockDB).filter(
