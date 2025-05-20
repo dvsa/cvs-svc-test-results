@@ -3,8 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResultsService } from '../../src/services/TestResultsService';
 import { HTTPError } from '../../src/models/HTTPError';
 import testResults from '../resources/test-results.json';
@@ -839,7 +839,7 @@ describe('updateTestResults', () => {
     });
     afterEach(() => MockTestResultsDAO.mockReset());
     const setupTestTypes = (
-      modificationCallback: (testType: TestTypeSchema) => void,
+      modificationCallback: (testType: TestResultTestTypeSchema) => void,
     ) => {
       testToUpdate.testTypes.forEach(modificationCallback);
     };

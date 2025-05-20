@@ -2,8 +2,8 @@ import { ValidationResult } from 'joi';
 import { isArray } from 'lodash';
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
 import { ISubSeg } from '../models/ISubSeg';
@@ -125,7 +125,7 @@ export class MappingUtil {
   public static cleanDefectsArrayForSpecialistTests(
     testResult: TestResultSchema,
   ) {
-    testResult.testTypes.forEach((testType: TestTypeSchema) => {
+    testResult.testTypes.forEach((testType: TestResultTestTypeSchema) => {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
         testType.defects = [];
       } else {
@@ -212,8 +212,8 @@ export class MappingUtil {
     async (
       testType: any,
       _: number,
-      testTypes: TestTypeSchema[],
-    ): Promise<TestTypeSchema[]> => {
+      testTypes: TestResultTestTypeSchema[],
+    ): Promise<TestResultTestTypeSchema[]> => {
       const { testTypeId } = testType;
       const { defaultTestCode, linkedTestCode, testTypeClassification } =
         await service.getTestCodesAndClassificationFromTestTypes(

@@ -1,7 +1,7 @@
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../../../src/assets/Enums';
 import * as models from '../../../src/models';
 import * as utils from '../../../src/utils';
@@ -376,7 +376,7 @@ describe('TestDataProvider', () => {
           }),
         );
       const output = await testDataProvider.updateTestTypeDetails(
-        [{} as TestTypeSchema],
+        [{} as TestResultTestTypeSchema],
         {} as models.TestTypeParams,
       );
       expect(output[0].testCode).toBe('foo');

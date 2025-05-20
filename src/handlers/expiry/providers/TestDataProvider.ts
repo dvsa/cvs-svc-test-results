@@ -1,8 +1,8 @@
 import { ServiceException } from '@smithy/smithy-client';
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../../../assets/Enums';
 import * as models from '../../../models';
 import { Service } from '../../../models/injector/ServiceDecorator';
@@ -184,7 +184,7 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async getTestTypesWithTestCodesAndClassification(
-    testTypes: TestTypeSchema[] = [],
+    testTypes: TestResultTestTypeSchema[] = [],
     testTypeParams: models.TestTypeParams,
   ) {
     return this.createNewTestTypes(testTypes, testTypeParams);
@@ -199,9 +199,9 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   public async updateTestTypeDetails(
-    testTypes: TestTypeSchema[],
+    testTypes: TestResultTestTypeSchema[],
     testTypeParams: models.TestTypeParams,
-  ): Promise<TestTypeSchema[]> {
+  ): Promise<TestResultTestTypeSchema[]> {
     return Promise.all(
       testTypes.map(async (testType) => {
         const { testTypeId } = testType;
@@ -243,15 +243,15 @@ export class TestDataProvider implements ITestDataProvider {
   }
 
   private async createNewTestNumber(
-    list: TestTypeSchema[],
-  ): Promise<TestTypeSchema[]> {
+    list: TestResultTestTypeSchema[],
+  ): Promise<TestResultTestTypeSchema[]> {
     return Promise.all(
       list.map(async (testType) => {
         const { testNumber } = await this.testResultsDAO.createTestNumber();
         return {
           ...testType,
           testNumber,
-        } as TestTypeSchema;
+        } as TestResultTestTypeSchema;
       }),
     );
   }

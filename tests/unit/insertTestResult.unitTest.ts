@@ -4,8 +4,8 @@ import path from 'path';
 import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import { RecallsSchema } from '@dvsa/cvs-type-definitions/types/v1/recalls';
 import { TestStatus } from '@dvsa/cvs-type-definitions/types/v1/enums/testStatus.enum';
@@ -3343,7 +3343,7 @@ describe('insertTestResult', () => {
       const createTestType = (
         testTypeId: string,
         centralDocs?: any,
-      ): TestTypeSchema => ({
+      ): TestResultTestTypeSchema => ({
         ...testResult.testTypes[0],
         testTypeId,
         centralDocs,
@@ -3371,7 +3371,7 @@ describe('insertTestResult', () => {
       });
 
       it('should not throw for an empty array', () => {
-        const testTypes: TestTypeSchema[] = [];
+        const testTypes: TestResultTestTypeSchema[] = [];
         expect(() =>
           ValidationUtil.validateCentralDocs(testTypes),
         ).not.toThrow();

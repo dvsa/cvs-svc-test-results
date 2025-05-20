@@ -12,8 +12,8 @@ import {
 } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
@@ -176,7 +176,7 @@ export class ValidationUtil {
     ].includes(vehicleType);
   }
 
-  public static isAllowedTestTypeForExpiry(testType: TestTypeSchema) {
+  public static isAllowedTestTypeForExpiry(testType: TestResultTestTypeSchema) {
     const { testTypeClassification, testResult, testTypeId } = testType;
     return (
       testTypeClassification ===
@@ -193,7 +193,7 @@ export class ValidationUtil {
     );
   }
 
-  public static isTestTypeAdr(testType: TestTypeSchema): boolean {
+  public static isTestTypeAdr(testType: TestResultTestTypeSchema): boolean {
     return TestTypeHelper.validateTestTypeIdInList(
       ADR_TEST,
       testType.testTypeId,
@@ -287,8 +287,8 @@ export class ValidationUtil {
     return missingFields;
   }
 
-  private static isIvaTest(tests: TestTypeSchema[]): boolean {
-    return tests.every((test: TestTypeSchema) =>
+  private static isIvaTest(tests: TestResultTestTypeSchema[]): boolean {
+    return tests.every((test: TestResultTestTypeSchema) =>
       TestTypeHelper.validateTestTypeIdInLists(
         [IVA_TEST, MSVA_TEST],
         test.testTypeId,
@@ -314,7 +314,7 @@ export class ValidationUtil {
       testStatus !== enums.TEST_STATUS.SUBMITTED ||
       enums.TYPE_OF_TEST.DESK_BASED === typeOfTest ||
       testTypes.every(
-        (testType: TestTypeSchema) =>
+        (testType: TestResultTestTypeSchema) =>
           testType.testResult === TestResults.ABANDONED,
       )
     ) {
@@ -424,7 +424,7 @@ export class ValidationUtil {
   }
 
   private static isMissingRequiredCertificateNumber(
-    typeFunc: (testType: TestTypeSchema) => boolean,
+    typeFunc: (testType: TestResultTestTypeSchema) => boolean,
     payload: TestResultSchema,
   ): boolean {
     const { testTypes, testStatus } = payload;
@@ -482,7 +482,7 @@ export class ValidationUtil {
     );
   }
 
-  private static isTestTypeTir(testType: TestTypeSchema): boolean {
+  private static isTestTypeTir(testType: TestResultTestTypeSchema): boolean {
     return TestTypeHelper.validateTestTypeIdInList(
       TIR_TEST,
       testType.testTypeId,
@@ -545,7 +545,7 @@ export class ValidationUtil {
   }
 
   // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
-  public static ivaFailedHasRequiredFields(testTypes: TestTypeSchema[]) {
+  public static ivaFailedHasRequiredFields(testTypes: TestResultTestTypeSchema[]) {
     const allFailWithoutDefects = testTypes.every(
       (test) =>
         test.testResult === 'fail' &&
@@ -563,7 +563,7 @@ export class ValidationUtil {
    * @param testTypes TestType[]
    * @throws HTTPError with status 400 if validation fails
    */
-  public static validateCentralDocs(testTypes: TestTypeSchema[]): void {
+  public static validateCentralDocs(testTypes: TestResultTestTypeSchema[]): void {
     testTypes.forEach((testType) => {
       // if centralDocs is not present, then no object to validate immediately return true
       if (!testType.centralDocs) {

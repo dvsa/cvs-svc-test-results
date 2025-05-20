@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import testResults from '../../resources/test-results.json';
 import { DateProvider } from '../../../src/handlers/expiry/providers/DateProvider';
@@ -35,7 +35,7 @@ describe('For PsvRegistrationAnniversaryStrategy', () => {
         'The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRegistrationDate',
         ({ inputRegistrationDate, inputTestDate, ExpectedExpiryDate }) => {
           const psvTestResult = cloneDeep(testResultsMockDB[4]);
-          psvTestResult.testTypes.forEach((type: TestTypeSchema) => {
+          psvTestResult.testTypes.forEach((type: TestResultTestTypeSchema) => {
             type.testTypeId = '1';
             type.testResult = TestResults.PASS;
           });

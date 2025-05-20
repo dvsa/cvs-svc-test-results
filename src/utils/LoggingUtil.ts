@@ -1,7 +1,7 @@
 import {
   TestResultSchema,
-  TestTypeSchema,
 } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { DefectDetailsSchema } from '@dvsa/cvs-type-definitions/types/v1/test';
 import { TestStatus } from '@dvsa/cvs-type-definitions/types/v1/enums/testStatus.enum';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
@@ -25,7 +25,7 @@ export class LoggingUtil {
       return;
     }
 
-    testResult.testTypes.forEach((testType: TestTypeSchema) => {
+    testResult.testTypes.forEach((testType: TestResultTestTypeSchema) => {
       if (testType.testResult !== TestResults.ABANDONED) {
         testType.defects?.forEach((defect: DefectDetailsSchema) => {
           if (

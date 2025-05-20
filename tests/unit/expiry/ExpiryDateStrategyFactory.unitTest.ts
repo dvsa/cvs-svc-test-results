@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { TestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import emptyConfig from '../../resources/empty.json';
 import invalidConfig from '../../resources/invalid-mapping.json';
 import duplicatedConfig from '../../resources/duplicated-mapping.json';
@@ -65,7 +65,7 @@ describe('ExpiryDateStrategyFactory', () => {
             .mockReturnValue(duplicatedConfig.psv);
 
           const testTypeForExpiry: TestTypeForExpiry = {
-            testType: { testTypeId: '3' } as TestTypeSchema,
+            testType: { testTypeId: '3' } as TestResultTestTypeSchema,
             vehicleType: VEHICLE_TYPE.PSV,
             recentExpiry: new Date(0),
             hasHistory: true,
@@ -121,7 +121,7 @@ describe('ExpiryDateStrategyFactory', () => {
         }) => {
           expect.assertions(1);
           const testTypeForExpiry: TestTypeForExpiry = {
-            testType: { testTypeId } as TestTypeSchema,
+            testType: { testTypeId } as TestResultTestTypeSchema,
             vehicleType,
             recentExpiry: new Date(0),
             hasHistory,
