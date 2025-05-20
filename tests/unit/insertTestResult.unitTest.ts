@@ -2,9 +2,7 @@ import fs from 'fs';
 import { cloneDeep } from 'lodash';
 import path from 'path';
 import { CENTRAL_DOCS_TEST } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
-import {
-  TestResultSchema,
-} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import { RecallsSchema } from '@dvsa/cvs-type-definitions/types/v1/recalls';

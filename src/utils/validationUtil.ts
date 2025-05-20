@@ -10,9 +10,7 @@ import {
   MSVA_TEST,
   TIR_TEST,
 } from '@dvsa/cvs-microservice-common/classes/testTypes/Constants';
-import {
-  TestResultSchema,
-} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import * as enums from '../assets/Enums';
@@ -545,7 +543,9 @@ export class ValidationUtil {
   }
 
   // TODO COMMENTED OUT UNTIL FEATURE TEAMS COMPLETE IVA DEFECT WORK
-  public static ivaFailedHasRequiredFields(testTypes: TestResultTestTypeSchema[]) {
+  public static ivaFailedHasRequiredFields(
+    testTypes: TestResultTestTypeSchema[],
+  ) {
     const allFailWithoutDefects = testTypes.every(
       (test) =>
         test.testResult === 'fail' &&
@@ -563,7 +563,9 @@ export class ValidationUtil {
    * @param testTypes TestType[]
    * @throws HTTPError with status 400 if validation fails
    */
-  public static validateCentralDocs(testTypes: TestResultTestTypeSchema[]): void {
+  public static validateCentralDocs(
+    testTypes: TestResultTestTypeSchema[],
+  ): void {
     testTypes.forEach((testType) => {
       // if centralDocs is not present, then no object to validate immediately return true
       if (!testType.centralDocs) {

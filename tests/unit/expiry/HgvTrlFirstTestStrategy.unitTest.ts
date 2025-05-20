@@ -42,9 +42,11 @@ describe('HgvTrlFirstTestStrategy', () => {
           'The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRegistrationDate',
           ({ inputRegistrationDate, inputTestDate, ExpectedExpiryDate }) => {
             const hgvTestResult = cloneDeep(testResultsMockDB[4]);
-            hgvTestResult.testTypes.forEach((type: TestResultTestTypeSchema) => {
-              type.testTypeId = '64';
-            });
+            hgvTestResult.testTypes.forEach(
+              (type: TestResultTestTypeSchema) => {
+                type.testTypeId = '64';
+              },
+            );
             hgvTestResult.vehicleType = VEHICLE_TYPES.HGV;
             hgvTestResult.regnDate = inputRegistrationDate;
 

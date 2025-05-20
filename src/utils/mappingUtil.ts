@@ -1,8 +1,6 @@
 import { ValidationResult } from 'joi';
 import { isArray } from 'lodash';
-import {
-  TestResultSchema,
-} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../assets/Enums';
 import * as models from '../models';

@@ -1,6 +1,4 @@
-import {
-  TestResultSchema,
-} from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
 import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
@@ -311,7 +309,9 @@ describe('validateTestTypes with desk based group 3', () => {
 
   describe('Is IVA test', () => {
     it('Should return true if given 1 IVA test', () => {
-      const tests = [{ testTypeId: '125' }] as unknown as TestResultTestTypeSchema[];
+      const tests = [
+        { testTypeId: '125' },
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
@@ -328,7 +328,9 @@ describe('validateTestTypes with desk based group 3', () => {
       expect(result).toBeTruthy();
     });
     it('Should return false if given 1 non-IVA test', () => {
-      const tests = [{ testTypeId: '94' }] as unknown as TestResultTestTypeSchema[];
+      const tests = [
+        { testTypeId: '94' },
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
