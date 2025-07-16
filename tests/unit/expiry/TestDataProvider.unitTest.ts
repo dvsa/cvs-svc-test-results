@@ -1,3 +1,5 @@
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../../../src/assets/Enums';
 import * as models from '../../../src/models';
 import * as utils from '../../../src/utils';
@@ -337,24 +339,22 @@ describe('TestDataProvider', () => {
         'logDefectsReporting',
       );
       expect(logDefectsReportingSpy).not.toHaveBeenCalled();
-      await testDataProvider.insertTestResult({} as models.ITestResultPayload);
+      await testDataProvider.insertTestResult({} as TestResultSchema);
       expect(logDefectsReportingSpy).toHaveBeenCalledTimes(1);
     });
 
     it('should throw the error once it fails', async () => {
       testDataProvider = new TestDataProvider();
-      const errorMsg = 'boom';
+      const error = { $metadata: { httpStatusCode: 400 }, message: 'boom' };
       MockTestResultsDAO = jest.fn().mockImplementation(() => ({
-        createSingle: (something: any) => Promise.reject(errorMsg),
+        createSingle: (something: any) => Promise.reject(error),
       }));
 
       testDataProvider.testResultsDAO = new MockTestResultsDAO();
       try {
-        await testDataProvider.insertTestResult(
-          {} as models.ITestResultPayload,
-        );
+        await testDataProvider.insertTestResult({} as TestResultSchema);
       } catch (e) {
-        expect(e).toBe(errorMsg);
+        expect(e.body).toEqual(error.message);
       }
     });
   });
@@ -374,7 +374,7 @@ describe('TestDataProvider', () => {
           }),
         );
       const output = await testDataProvider.updateTestTypeDetails(
-        [{} as models.TestType],
+        [{} as TestResultTestTypeSchema],
         {} as models.TestTypeParams,
       );
       expect(output[0].testCode).toBe('foo');

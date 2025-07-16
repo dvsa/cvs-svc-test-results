@@ -1,8 +1,6 @@
 export { IDBConfig } from './IDBConfig';
-export { ITestResultPayload } from './ITestResultPayload';
 export { ITestResultData } from './ITestResultData';
 export { ITestResultFilters } from './ITestResultFilter';
-export { ITestResult, TestType } from './ITestResult';
 export { HTTPResponse } from './HTTPResponse';
 export { TestTypeForExpiry } from './TestTypeforExpiry';
 export { IMsUserDetails } from './IMsUserDetails';
