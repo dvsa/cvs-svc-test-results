@@ -41,6 +41,10 @@ custom:
         sources:
           - table: cvs-${self:provider.environment.BRANCH}-test-results
             sources: [./tests/resources/test-results.json]
+      test-results:
+        sources:
+          - table: cvs-${self:provider.environment.BRANCH}-test-results
+            sources: [./tests/resources/test-results.json]
 
 functions:
   getTestResults:
