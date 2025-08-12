@@ -82,7 +82,7 @@ functions:
 
 resources:
   Resources:
-    Users:
+    TestResults:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: cvs-${self:provider.environment.BRANCH}-test-results
