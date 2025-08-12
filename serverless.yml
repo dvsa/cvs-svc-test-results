@@ -32,7 +32,7 @@ custom:
     stages:
       - dev
     start:
-      port: 8000
+      port: 8004
       inMemory: true
       migrate: true
       seed: true
