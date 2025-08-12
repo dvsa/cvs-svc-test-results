@@ -18,6 +18,8 @@ provider:
             - 'xray:PutTelemetryRecords'
           Resource:
             - '*'
+  environment:
+    BRANCH: local
 
 plugins:
   - serverless-dynamodb
@@ -28,22 +30,19 @@ plugins:
 custom:
   serverless-offline:
     httpPort: 3006
-  serverless-dynamodb:
+  dynamodb:
+    stages:
+      - dev
     start:
       port: 8004
       inMemory: true
       migrate: true
       seed: true
-      noStart: false
-      host: 127.0.0.1
     seed:
-      test-results:
+      dev:
         sources:
-          - table: cvs-local-test-results
+          - table: cvs-${self:provider.environment.BRANCH}-test-results
             sources: [./tests/resources/test-results.json]
-    stages:
-      - dev
-      - test
 
 functions:
   getTestResults:
@@ -83,10 +82,10 @@ functions:
 
 resources:
   Resources:
-    Users:
+    TestResults:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: cvs-local-test-results
+        TableName: cvs-${self:provider.environment.BRANCH}-test-results
         AttributeDefinitions:
           - AttributeName: vin
             AttributeType: S

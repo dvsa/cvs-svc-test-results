@@ -1,8 +1,8 @@
 import { cloneDeep } from 'lodash';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import testResults from '../../resources/test-results.json';
 import { HgvTrlFirstTestStrategy } from '../../../src/handlers/expiry/strategies/HgvTrlFirstTestStrategy';
 import { DateProvider } from '../../../src/handlers/expiry/providers/DateProvider';
-import { TestType } from '../../../src/models/ITestResult';
 import { StrategyMock } from '../../util/expiryStrategyUtil';
 import { VEHICLE_TYPES } from '../../../src/assets/Enums';
 
@@ -42,9 +42,11 @@ describe('HgvTrlFirstTestStrategy', () => {
           'The expiry Date $ExpectedExpiryDate is calculated given a test date of $inputTestDate and a registration date of $inputRegistrationDate',
           ({ inputRegistrationDate, inputTestDate, ExpectedExpiryDate }) => {
             const hgvTestResult = cloneDeep(testResultsMockDB[4]);
-            hgvTestResult.testTypes.forEach((type: TestType) => {
-              type.testTypeId = '64';
-            });
+            hgvTestResult.testTypes.forEach(
+              (type: TestResultTestTypeSchema) => {
+                type.testTypeId = '64';
+              },
+            );
             hgvTestResult.vehicleType = VEHICLE_TYPES.HGV;
             hgvTestResult.regnDate = inputRegistrationDate;
 

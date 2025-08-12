@@ -1,5 +1,7 @@
 import { ValidationResult } from 'joi';
 import { isArray } from 'lodash';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import * as enums from '../assets/Enums';
 import * as models from '../models';
 import { ISubSeg } from '../models/ISubSeg';
@@ -119,9 +121,9 @@ export class MappingUtil {
   }
 
   public static cleanDefectsArrayForSpecialistTests(
-    testResult: models.ITestResult,
+    testResult: TestResultSchema,
   ) {
-    testResult.testTypes.forEach((testType: models.TestType) => {
+    testResult.testTypes.forEach((testType: TestResultTestTypeSchema) => {
       if (enums.SPECIALIST_TEST_TYPE_IDS.includes(testType.testTypeId)) {
         testType.defects = [];
       } else {
@@ -131,8 +133,8 @@ export class MappingUtil {
   }
 
   public static setCreatedAtAndLastUpdatedAtDates(
-    payload: models.ITestResultPayload,
-  ): models.ITestResultPayload {
+    payload: TestResultSchema,
+  ): TestResultSchema {
     const createdAtDate = new Date().toISOString();
     payload.createdAt = createdAtDate;
     payload.testVersion = enums.TEST_VERSION.CURRENT;
@@ -145,7 +147,7 @@ export class MappingUtil {
         break;
       default:
         payload.createdById = payload.testerStaffId;
-        payload.createdByName = payload.testerName;
+        payload.createdByName = payload.testerName ?? '';
         payload.reasonForCreation = enums.REASON_FOR_CREATION.TEST_CONDUCTED;
     }
 
@@ -159,8 +161,8 @@ export class MappingUtil {
   }
 
   public static setAuditDetails(
-    newTestResult: models.ITestResult,
-    oldTestResult: models.ITestResult,
+    newTestResult: TestResultSchema,
+    oldTestResult: TestResultSchema,
     msUserDetails: models.IMsUserDetails,
   ) {
     const date = new Date().toISOString();
@@ -185,7 +187,7 @@ export class MappingUtil {
     }
   }
 
-  public static removeNonEditableAttributes(testResult: models.ITestResult) {
+  public static removeNonEditableAttributes(testResult: TestResultSchema) {
     delete testResult.vehicleId;
     delete testResult.testEndTimestamp;
     delete testResult.testVersion;
@@ -208,8 +210,8 @@ export class MappingUtil {
     async (
       testType: any,
       _: number,
-      testTypes: models.TestType[],
-    ): Promise<models.TestType[]> => {
+      testTypes: TestResultTestTypeSchema[],
+    ): Promise<TestResultTestTypeSchema[]> => {
       const { testTypeId } = testType;
       const { defaultTestCode, linkedTestCode, testTypeClassification } =
         await service.getTestCodesAndClassificationFromTestTypes(
