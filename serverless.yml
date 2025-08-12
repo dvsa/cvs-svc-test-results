@@ -18,6 +18,8 @@ provider:
             - 'xray:PutTelemetryRecords'
           Resource:
             - '*'
+  environment:
+    BRANCH: local
 
 plugins:
   - serverless-dynamodb
@@ -43,6 +45,7 @@ custom:
             sources: [./tests/resources/test-results.json]
     stages:
       - dev
+      - test
 
 functions:
   getTestResults:
