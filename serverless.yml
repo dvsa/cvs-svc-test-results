@@ -28,6 +28,8 @@ plugins:
   - serverless-plugin-typescript
 
 custom:
+  serverless-offline:
+    httpPort: 3006
   dynamodb:
     stages:
       - dev
@@ -38,10 +40,6 @@ custom:
       seed: true
     seed:
       dev:
-        sources:
-          - table: cvs-${self:provider.environment.BRANCH}-test-results
-            sources: [./tests/resources/test-results.json]
-      test-results:
         sources:
           - table: cvs-${self:provider.environment.BRANCH}-test-results
             sources: [./tests/resources/test-results.json]
