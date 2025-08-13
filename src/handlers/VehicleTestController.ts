@@ -1,16 +1,17 @@
-import { cloneDeep, mergeWith, differenceWith, isEqual } from 'lodash';
-import { EPROTONOSUPPORT } from 'constants';
+import { cloneDeep, differenceWith, isEqual, mergeWith } from 'lodash';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
+import { TestResults } from '@dvsa/cvs-type-definitions/types/v1/enums/testResult.enum';
 import * as enums from '../assets/Enums';
-import * as utils from '../utils';
 import * as models from '../models';
-import { IVehicleTestController } from './IVehicleTestController';
-import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
-import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
 import { TestTypeForExpiry } from '../models/TestTypeforExpiry';
 import { Service } from '../models/injector/ServiceDecorator';
-import { TestDataProvider } from './expiry/providers/TestDataProvider';
+import * as utils from '../utils';
+import { IVehicleTestController } from './IVehicleTestController';
+import { ExpiryDateStrategyFactory } from './expiry/ExpiryDateStrategyFactory';
+import { IExpiryDateStrategy } from './expiry/IExpiryDateStrategy';
 import { DateProvider } from './expiry/providers/DateProvider';
-import { TestType } from '../models';
+import { TestDataProvider } from './expiry/providers/TestDataProvider';
 
 @Service()
 export class VehicleTestController implements IVehicleTestController {
@@ -26,7 +27,7 @@ export class VehicleTestController implements IVehicleTestController {
    */
   public async getTestResultBySystemNumber(
     filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     if (
       !filters.systemNumber ||
       !utils.ValidationUtil.validateGetTestResultFilters(filters)
@@ -46,7 +47,7 @@ export class VehicleTestController implements IVehicleTestController {
    */
   public async getTestResultByTestStaffId(
     filters: models.ITestResultFilters,
-  ): Promise<models.ITestResult[]> {
+  ): Promise<TestResultSchema[]> {
     if (
       !filters.testerStaffId ||
       !utils.ValidationUtil.validateGetTestResultFilters(filters)
@@ -76,7 +77,7 @@ export class VehicleTestController implements IVehicleTestController {
     return selectedStrategy;
   }
 
-  public async insertTestResult(payload: models.ITestResultPayload) {
+  public async insertTestResult(payload: TestResultSchema) {
     try {
       utils.ValidationUtil.validateInsertTestResultPayload(payload);
       console.info('validation is success');
@@ -96,11 +97,12 @@ export class VehicleTestController implements IVehicleTestController {
           payload.testTypes,
           testTypeParams,
         );
-      payload.testTypes = testTypesWithTestCodesAndClassification as TestType[];
+      payload.testTypes =
+        testTypesWithTestCodesAndClassification as TestResultTestTypeSchema[];
 
       const payloadWithTestNumber =
         await this.dataProvider.setTestNumberForEachTestType(payload);
-      payload.testTypes = payloadWithTestNumber as models.TestType[];
+      payload.testTypes = payloadWithTestNumber as TestResultTestTypeSchema[];
 
       const payloadWithExpiryDate = await this.generateExpiryDate(payload);
       const payloadWithCertificateNumber =
@@ -119,7 +121,7 @@ export class VehicleTestController implements IVehicleTestController {
     } catch (error) {
       if (
         error.statusCode === 400 &&
-        error.message === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
+        error.body === enums.MESSAGES.CONDITIONAL_REQUEST_FAILED
       ) {
         console.info(
           'TestResultService.insertTestResult: Test Result id already exists',
@@ -133,10 +135,10 @@ export class VehicleTestController implements IVehicleTestController {
 
   public async updateTestResult(
     systemNumber: string,
-    payload: models.ITestResult,
+    payload: TestResultSchema,
     msUserDetails: models.IMsUserDetails,
   ) {
-    let newTestResult: models.ITestResult;
+    let newTestResult: TestResultSchema;
     try {
       const { testTypes } = payload;
       utils.MappingUtil.removeNonEditableAttributes(payload);
@@ -177,8 +179,8 @@ export class VehicleTestController implements IVehicleTestController {
    * @param payload
    */
   private async generateExpiryDate(
-    payload: models.ITestResultPayload,
-  ): Promise<models.ITestResultPayload> {
+    payload: TestResultSchema,
+  ): Promise<TestResultSchema> {
     try {
       if (
         payload.testStatus !== enums.TEST_STATUS.SUBMITTED ||
@@ -195,40 +197,45 @@ export class VehicleTestController implements IVehicleTestController {
       const recentExpiry = await this.dataProvider.getMostRecentExpiryDate(
         payload.systemNumber,
       );
+      const registrationDate =
+        VehicleTestController.getRegistrationOrFirstUseDate(payload);
 
-      expiryTestTypes.forEach((testType: any, index: number) => {
-        const testTypeForExpiry: models.TestTypeForExpiry = {
-          testType,
-          vehicleType:
-            enums.VEHICLE_TYPE[
-              payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
-            ],
-          recentExpiry,
-          regnOrFirstUseDate:
-            VehicleTestController.getRegistrationOrFirstUseDate(payload),
-          hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
-          hasRegistration: DateProvider.isValidDate(
-            VehicleTestController.getRegistrationOrFirstUseDate(payload),
-          ),
-        };
-        console.log('testTypeForExpiry');
-        console.log(testTypeForExpiry);
+      expiryTestTypes.forEach(
+        (testType: TestResultTestTypeSchema, index: number) => {
+          const testTypeForExpiry: TestTypeForExpiry = {
+            testType,
+            vehicleType:
+              enums.VEHICLE_TYPE[
+                payload.vehicleType.toUpperCase() as keyof typeof enums.VEHICLE_TYPE
+              ],
+            recentExpiry,
+            regnOrFirstUseDate: registrationDate ?? '',
+            hasHistory: !DateProvider.isSameAsEpoc(recentExpiry),
+            hasRegistration: DateProvider.isValidDate(
+              VehicleTestController.getRegistrationOrFirstUseDate(
+                payload,
+              ) as string,
+            ),
+          };
+          console.log('testTypeForExpiry');
+          console.log(testTypeForExpiry);
 
-        if (payload.testEndTimestamp) {
-          console.log(
-            'testEndTimestamp exists, setting date provider test date',
-          );
-          this.dateProvider.setTestDate(new Date(payload.testEndTimestamp));
-        } else {
-          console.log(
-            'testEndTimestamp does not exist, date provider will set test date to today',
-          );
-        }
+          if (payload.testEndTimestamp) {
+            console.log(
+              'testEndTimestamp exists, setting date provider test date',
+            );
+            this.dateProvider.setTestDate(new Date(payload.testEndTimestamp));
+          } else {
+            console.log(
+              'testEndTimestamp does not exist, date provider will set test date to today',
+            );
+          }
 
-        const strategy = this.getExpiryStrategy(testTypeForExpiry);
-        console.log(strategy.constructor.name);
-        testType.testExpiryDate = strategy.getExpiryDate();
-      });
+          const strategy = this.getExpiryStrategy(testTypeForExpiry);
+          console.log(strategy.constructor.name);
+          testType.testExpiryDate = strategy.getExpiryDate();
+        },
+      );
       console.log('generateExpiryDate: testTypes ->', payload.testTypes);
       return await Promise.resolve(payload);
     } catch (error) {
@@ -240,23 +247,21 @@ export class VehicleTestController implements IVehicleTestController {
   /**
    * This function will not remove the certificate number on the test types which already have it set
    */
-  private static AssignCertificateNumberToTestTypes(
-    payload: models.ITestResultPayload,
-  ) {
+  private static AssignCertificateNumberToTestTypes(payload: TestResultSchema) {
     if (payload.testStatus !== enums.TEST_STATUS.SUBMITTED) {
       return payload;
     }
     payload.testTypes.forEach((testType) => {
       if (this.shouldGenerateCertificateNumber(testType, payload.vehicleType)) {
-        testType.certificateNumber = testType.testNumber;
+        testType.certificateNumber = testType.testNumber as string;
       }
     });
     return payload;
   }
 
-  private static calculateAnniversaryDate(payload: models.ITestResultPayload) {
+  private static calculateAnniversaryDate(payload: TestResultSchema) {
     const { vehicleType } = payload;
-    payload.testTypes.forEach((testType: models.TestType) => {
+    payload.testTypes.forEach((testType: TestResultTestTypeSchema) => {
       const { testExpiryDate } = testType;
       if (!testExpiryDate) {
         return;
@@ -269,9 +274,7 @@ export class VehicleTestController implements IVehicleTestController {
     return payload;
   }
 
-  private static getRegistrationOrFirstUseDate(
-    payload: models.ITestResultPayload,
-  ) {
+  private static getRegistrationOrFirstUseDate(payload: TestResultSchema) {
     return payload.vehicleType === enums.VEHICLE_TYPES.TRL
       ? payload.firstUseDate
       : payload.regnDate;
@@ -280,7 +283,7 @@ export class VehicleTestController implements IVehicleTestController {
   // #endregion
   public async mapOldTestResultToNew(
     systemNumber: string,
-    payload: models.ITestResult,
+    payload: TestResultSchema,
     msUserDetails: models.IMsUserDetails,
   ) {
     const testResults = await this.dataProvider.getBySystemNumber(systemNumber);
@@ -323,8 +326,8 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   private async generateNewTestCode(
-    oldTestResult: models.ITestResult,
-    newTestResult: models.ITestResult,
+    oldTestResult: TestResultSchema,
+    newTestResult: TestResultSchema,
   ) {
     const {
       vehicleType,
@@ -355,8 +358,8 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   private static shouldGenerateNewTestCode(
-    oldTestResult: models.ITestResult,
-    newTestResult: models.ITestResult,
+    oldTestResult: TestResultSchema,
+    newTestResult: TestResultSchema,
   ) {
     const attributesToCheck = [
       'vehicleType',
@@ -384,14 +387,14 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   public async checkTestTypeStartAndEndTimestamp(
-    newTestResult: models.ITestResult,
+    newTestResult: TestResultSchema,
   ) {
     const { testTypes } = newTestResult;
     const isStartAfterEnd = testTypes.some((testType) => {
       const { testTypeStartTimestamp, testTypeEndTimestamp } = testType;
       return DateProvider.isAfterDate(
-        testTypeStartTimestamp,
-        testTypeEndTimestamp,
+        testTypeStartTimestamp as string,
+        testTypeEndTimestamp as string,
       );
     });
     if (isStartAfterEnd) {
@@ -400,9 +403,9 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   private static getTestResultToArchive(
-    testResults: models.ITestResult[],
+    testResults: TestResultSchema[],
     testResultId: string,
-  ): models.ITestResult {
+  ): TestResultSchema {
     testResults = testResults.filter(
       (testResult) =>
         testResult.testResultId === testResultId &&
@@ -416,14 +419,14 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   private static shouldGenerateCertificateNumber(
-    testType: models.TestType,
+    testType: TestResultTestTypeSchema,
     vehicleType: string,
   ): boolean {
     if (
       (testType.testTypeClassification ===
         enums.TEST_TYPE_CLASSIFICATION.ANNUAL_WITH_CERTIFICATE ||
         this.isSpecialistTestWithoutCertificateNumber(testType)) &&
-      testType.testResult !== enums.TEST_RESULT.ABANDONED
+      testType.testResult !== TestResults.ABANDONED
     ) {
       if (
         utils.ValidationUtil.isTestTypeAdr(testType) ||
@@ -438,7 +441,7 @@ export class VehicleTestController implements IVehicleTestController {
         return (
           // @ts-ignore
           utils.ValidationUtil.isHgvOrTrl(vehicleType) &&
-          testType.testResult !== enums.TEST_RESULT.FAIL
+          testType.testResult !== TestResults.FAIL
         );
       }
       return true;
@@ -447,7 +450,7 @@ export class VehicleTestController implements IVehicleTestController {
   }
 
   private static isSpecialistTestWithoutCertificateNumber(
-    testType: models.TestType,
+    testType: TestResultTestTypeSchema,
   ): boolean {
     return (
       (testType.testTypeClassification ===

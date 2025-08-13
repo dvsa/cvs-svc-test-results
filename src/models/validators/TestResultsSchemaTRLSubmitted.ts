@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { array } from 'joi';
+import { array, string } from 'joi';
 import {
   defectsCommonSchema,
   testTypesCommonSchema,
@@ -42,6 +42,14 @@ const testTypesSchema = testTypesCommonSchema.keys({
   requiredStandards: array()
     .items(requiredStandardsSchema.required())
     .optional(),
+  reapplicationDate: Joi.date().optional().allow(null, ''),
+  centralDocs: Joi.object()
+    .keys({
+      issueRequired: Joi.boolean().required(),
+      notes: Joi.string().optional(),
+      reasonsForIssue: Joi.array().items(string().optional()).required(),
+    })
+    .optional(),
 });
 
 export const trlSubmitted = testResultsCommonSchema.keys({
@@ -66,4 +74,10 @@ export const trlSubmitted = testResultsCommonSchema.keys({
   trailerId: Joi.string().required(),
   testTypes: Joi.array().items(testTypesSchema).required(),
   firstUseDate: Joi.string().allow('', null),
+  recalls: Joi.object()
+    .keys({
+      hasRecall: Joi.boolean().required(),
+      manufacturer: Joi.string().required().allow('', null),
+    })
+    .optional(),
 });

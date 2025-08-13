@@ -1,4 +1,5 @@
-import { ITestResult, TestType } from '../../src/models';
+import { TestResultSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result';
+import { TestResultTestTypeSchema } from '@dvsa/cvs-type-definitions/types/v1/test-result-test-type';
 import { ValidationUtil } from '../../src/utils/validationUtil';
 
 describe('validateTestTypes with desk based group 5', () => {
@@ -56,7 +57,7 @@ describe('validateTestTypes with desk based group 5', () => {
       testerName: 'tester',
       testerEmailAddress: 'user@test.com',
       reasonForCreation: 'sdfgh',
-    } as unknown as ITestResult;
+    } as unknown as TestResultSchema;
     const expected = ValidationUtil.validateTestTypes(testResult);
 
     expect(expected).toEqual(['"certificateNumber" must be a string']);
@@ -118,7 +119,7 @@ describe('validateTestTypes with desk based group 4', () => {
       testerName: 'tester',
       testerEmailAddress: 'user@test.com',
       reasonForCreation: 'sdfgh',
-    } as unknown as ITestResult;
+    } as unknown as TestResultSchema;
     const expected = ValidationUtil.validateTestTypes(testResult);
 
     expect(expected).toEqual([]);
@@ -177,7 +178,7 @@ describe('validateTestTypes with desk based group 4', () => {
       testerName: 'tester',
       testerEmailAddress: 'user@test.com',
       reasonForCreation: 'sdfgh',
-    } as unknown as ITestResult;
+    } as unknown as TestResultSchema;
     const expected = ValidationUtil.validateTestTypes(testResult);
 
     expect(expected).toEqual([
@@ -243,7 +244,7 @@ describe('validateTestTypes with desk based group 3', () => {
       testerName: 'tester',
       testerEmailAddress: 'user@test.com',
       reasonForCreation: 'sdfgh',
-    } as unknown as ITestResult;
+    } as unknown as TestResultSchema;
     const result = ValidationUtil.validateTestTypes(testResult);
     expect(result).toEqual([]);
   });
@@ -301,14 +302,16 @@ describe('validateTestTypes with desk based group 3', () => {
       testerName: 'tester',
       testerEmailAddress: 'user@test.com',
       reasonForCreation: 'sdfgh',
-    } as unknown as ITestResult;
+    } as unknown as TestResultSchema;
     const result = ValidationUtil.validateTestTypes(testResult);
     expect(result).toEqual(['"certificateNumber" is required']);
   });
 
   describe('Is IVA test', () => {
     it('Should return true if given 1 IVA test', () => {
-      const tests = [{ testTypeId: '125' }] as unknown as TestType[];
+      const tests = [
+        { testTypeId: '125' },
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
@@ -318,14 +321,16 @@ describe('validateTestTypes with desk based group 3', () => {
       const tests = [
         { testTypeId: '125' },
         { testTypeId: '126' },
-      ] as unknown as TestType[];
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
       expect(result).toBeTruthy();
     });
     it('Should return false if given 1 non-IVA test', () => {
-      const tests = [{ testTypeId: '94' }] as unknown as TestType[];
+      const tests = [
+        { testTypeId: '94' },
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
@@ -335,7 +340,7 @@ describe('validateTestTypes with desk based group 3', () => {
       const tests = [
         { testTypeId: '94' },
         { testTypeId: '95' },
-      ] as unknown as TestType[];
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
@@ -345,7 +350,7 @@ describe('validateTestTypes with desk based group 3', () => {
       const tests = [
         { testTypeId: '94' },
         { testTypeId: '126' },
-      ] as unknown as TestType[];
+      ] as unknown as TestResultTestTypeSchema[];
 
       const result = (ValidationUtil as any).isIvaTest(tests);
 
